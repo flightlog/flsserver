@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using FLS.Server.Data.DbEntities;
+using FLS.Server.WebApi.Identity;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using Microsoft.Practices.Unity;
-using FLS.Server.Web.Identity;
-using Microsoft.AspNet.Identity.Owin;
 
-namespace FLS.Server.Web.Providers
+namespace FLS.Server.WebApi.Providers
 {
     public class FLSOAuthAuthorizationServerProvider : OAuthAuthorizationServerProvider
     {

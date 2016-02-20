@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FLS.Server.Web.Handlers
+namespace FLS.Server.WebApi.Handlers
 {
     public class MethodOverrideHandler : DelegatingHandler
     {

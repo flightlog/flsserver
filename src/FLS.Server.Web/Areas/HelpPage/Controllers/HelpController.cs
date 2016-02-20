@@ -1,10 +1,10 @@
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
-using FLS.Server.Web.Areas.HelpPage.ModelDescriptions;
-using FLS.Server.Web.Areas.HelpPage.Models;
+using FLS.Server.WebApi.Areas.HelpPage.ModelDescriptions;
+using FLS.Server.WebApi.Areas.HelpPage.Models;
 
-namespace FLS.Server.Web.Areas.HelpPage.Controllers
+namespace FLS.Server.WebApi.Areas.HelpPage.Controllers
 {
     /// <summary>
     /// The controller that will handle requests for the help page.
