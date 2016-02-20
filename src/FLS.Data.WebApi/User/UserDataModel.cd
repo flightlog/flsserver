@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FLS.Data.FLSMetadata">
+    <Position X="7.25" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAACIABIAAIAAAAEAAAAAAAAAAACAAAEAAgAAAAABAA=</HashCode>
+      <FileName>FLSMetadata.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FLS.Data.User.RoleOverview" BaseTypeListCollapsed="true">
+    <Position X="3.25" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAIAAAAAAAAAAAAAAgAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>User\RoleOverview.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FLS.Data.User.UserPermissions">
+    <Position X="3.25" Y="2.5" Width="2" />
+    <Members>
+      <Property Name="CanCreateLocations" Hidden="true" />
+      <Property Name="CanCreateMemberStates" Hidden="true" />
+      <Property Name="CanCreatePersonCategories" Hidden="true" />
+      <Property Name="CanCreatePersons" Hidden="true" />
+      <Property Name="CanCreateSystemFlights" Hidden="true" />
+      <Property Name="CanCreateUsers" Hidden="true" />
+      <Property Name="CanDeleteClubOwnedAircrafts" Hidden="true" />
+      <Property Name="CanDeleteClubOwnedCountries" Hidden="true" />
+      <Property Name="CanDeleteClubOwnedFlights" Hidden="true" />
+      <Property Name="CanDeleteClubOwnedFlightTypes" Hidden="true" />
+      <Property Name="CanDeleteClubOwnedLocations" Hidden="true" />
+      <Property Name="CanDeleteClubOwnedMemberStates" Hidden="true" />
+      <Property Name="CanDeleteClubOwnedPersonCategories" Hidden="true" />
+      <Property Name="CanDeleteClubOwnedPersons" Hidden="true" />
+      <Property Name="CanDeleteClubOwnedSystemFlights" Hidden="true" />
+      <Property Name="CanDeleteClubOwnedUsers" Hidden="true" />
+      <Property Name="CanDeleteOtherAircrafts" Hidden="true" />
+      <Property Name="CanDeleteOtherClubs" Hidden="true" />
+      <Property Name="CanDeleteOtherCountries" Hidden="true" />
+      <Property Name="CanDeleteOtherFlights" Hidden="true" />
+      <Property Name="CanDeleteOtherFlightTypes" Hidden="true" />
+      <Property Name="CanDeleteOtherLocations" Hidden="true" />
+      <Property Name="CanDeleteOtherMemberStates" Hidden="true" />
+      <Property Name="CanDeleteOtherPersonCategories" Hidden="true" />
+      <Property Name="CanDeleteOtherPersons" Hidden="true" />
+      <Property Name="CanDeleteOtherSystemFlights" Hidden="true" />
+      <Property Name="CanDeleteOtherUsers" Hidden="true" />
+      <Property Name="CanDeleteOwnClub" Hidden="true" />
+      <Property Name="CanDeleteOwnedAircrafts" Hidden="true" />
+      <Property Name="CanDeleteOwnedClubs" Hidden="true" />
+      <Property Name="CanDeleteOwnedCountries" Hidden="true" />
+      <Property Name="CanDeleteOwnedFlights" Hidden="true" />
+      <Property Name="CanDeleteOwnedFlightTypes" Hidden="true" />
+      <Property Name="CanDeleteOwnedLocations" Hidden="true" />
+      <Property Name="CanDeleteOwnedMemberStates" Hidden="true" />
+      <Property Name="CanDeleteOwnedPersonCategories" Hidden="true" />
+      <Property Name="CanDeleteOwnedPersons" Hidden="true" />
+      <Property Name="CanDeleteOwnedSystemFlights" Hidden="true" />
+      <Property Name="CanDeleteOwnedUsers" Hidden="true" />
+      <Property Name="CanExportClubOwnedAircrafts" Hidden="true" />
+      <Property Name="CanExportClubOwnedCountries" Hidden="true" />
+      <Property Name="CanExportClubOwnedFlights" Hidden="true" />
+      <Property Name="CanExportClubOwnedFlightTypes" Hidden="true" />
+      <Property Name="CanExportClubOwnedLocations" Hidden="true" />
+      <Property Name="CanExportClubOwnedMemberStates" Hidden="true" />
+      <Property Name="CanExportClubOwnedPersonCategories" Hidden="true" />
+      <Property Name="CanExportClubOwnedPersons" Hidden="true" />
+      <Property Name="CanExportClubOwnedPersonsSensitiveData" Hidden="true" />
+      <Property Name="CanExportClubOwnedSystemFlights" Hidden="true" />
+      <Property Name="CanExportClubOwnedUsers" Hidden="true" />
+      <Property Name="CanExportOtherAircrafts" Hidden="true" />
+      <Property Name="CanExportOtherClubs" Hidden="true" />
+      <Property Name="CanExportOtherCountries" Hidden="true" />
+      <Property Name="CanExportOtherFlights" Hidden="true" />
+      <Property Name="CanExportOtherFlightTypes" Hidden="true" />
+      <Property Name="CanExportOtherLocations" Hidden="true" />
+      <Property Name="CanExportOtherMemberStates" Hidden="true" />
+      <Property Name="CanExportOtherPersonCategories" Hidden="true" />
+      <Property Name="CanExportOtherPersons" Hidden="true" />
+      <Property Name="CanExportOtherPersonsSensitiveData" Hidden="true" />
+      <Property Name="CanExportOtherSystemFlights" Hidden="true" />
+      <Property Name="CanExportOtherUsers" Hidden="true" />
+      <Property Name="CanExportOwnClub" Hidden="true" />
+      <Property Name="CanExportOwnedAircrafts" Hidden="true" />
+      <Property Name="CanExportOwnedClubs" Hidden="true" />
+      <Property Name="CanExportOwnedCountries" Hidden="true" />
+      <Property Name="CanExportOwnedFlights" Hidden="true" />
+      <Property Name="CanExportOwnedFlightTypes" Hidden="true" />
+      <Property Name="CanExportOwnedLocations" Hidden="true" />
+      <Property Name="CanExportOwnedMemberStates" Hidden="true" />
+      <Property Name="CanExportOwnedPersonCategories" Hidden="true" />
+      <Property Name="CanExportOwnedPersons" Hidden="true" />
+      <Property Name="CanExportOwnedPersonsSensitiveData" Hidden="true" />
+      <Property Name="CanExportOwnedSystemFlights" Hidden="true" />
+      <Property Name="CanExportOwnedUsers" Hidden="true" />
+      <Property Name="CanImportAircrafts" Hidden="true" />
+      <Property Name="CanImportClubs" Hidden="true" />
+      <Property Name="CanImportCountries" Hidden="true" />
+      <Property Name="CanImportFlights" Hidden="true" />
+      <Property Name="CanImportFlightTypes" Hidden="true" />
+      <Property Name="CanImportLocations" Hidden="true" />
+      <Property Name="CanImportMemberStates" Hidden="true" />
+      <Property Name="CanImportPersonCategories" Hidden="true" />
+      <Property Name="CanImportPersons" Hidden="true" />
+      <Property Name="CanImportSystemFlights" Hidden="true" />
+      <Property Name="CanImportUsers" Hidden="true" />
+      <Property Name="CanReadClubOwnedAircrafts" Hidden="true" />
+      <Property Name="CanReadClubOwnedCountries" Hidden="true" />
+      <Property Name="CanReadClubOwnedFlights" Hidden="true" />
+      <Property Name="CanReadClubOwnedFlightTypes" Hidden="true" />
+      <Property Name="CanReadClubOwnedLocations" Hidden="true" />
+      <Property Name="CanReadClubOwnedMemberStates" Hidden="true" />
+      <Property Name="CanReadClubOwnedPersonCategories" Hidden="true" />
+      <Property Name="CanReadClubOwnedPersons" Hidden="true" />
+      <Property Name="CanReadClubOwnedPersonsSensitiveData" Hidden="true" />
+      <Property Name="CanReadClubOwnedSystemFlights" Hidden="true" />
+      <Property Name="CanReadClubOwnedUsers" Hidden="true" />
+      <Property Name="CanReadOtherAircrafts" Hidden="true" />
+      <Property Name="CanReadOtherClubs" Hidden="true" />
+      <Property Name="CanReadOtherCountries" Hidden="true" />
+      <Property Name="CanReadOtherFlights" Hidden="true" />
+      <Property Name="CanReadOtherFlightTypes" Hidden="true" />
+      <Property Name="CanReadOtherLocations" Hidden="true" />
+      <Property Name="CanReadOtherMemberStates" Hidden="true" />
+      <Property Name="CanReadOtherPersonCategories" Hidden="true" />
+      <Property Name="CanReadOtherPersons" Hidden="true" />
+      <Property Name="CanReadOtherPersonsSensitiveData" Hidden="true" />
+      <Property Name="CanReadOtherSystemFlights" Hidden="true" />
+      <Property Name="CanReadOtherUsers" Hidden="true" />
+      <Property Name="CanReadOwnClub" Hidden="true" />
+      <Property Name="CanReadOwnedAircrafts" Hidden="true" />
+      <Property Name="CanReadOwnedClubs" Hidden="true" />
+      <Property Name="CanReadOwnedCountries" Hidden="true" />
+      <Property Name="CanReadOwnedFlights" Hidden="true" />
+      <Property Name="CanReadOwnedFlightTypes" Hidden="true" />
+      <Property Name="CanReadOwnedLocations" Hidden="true" />
+      <Property Name="CanReadOwnedMemberStates" Hidden="true" />
+      <Property Name="CanReadOwnedPersonCategories" Hidden="true" />
+      <Property Name="CanReadOwnedPersons" Hidden="true" />
+      <Property Name="CanReadOwnedPersonsSensitiveData" Hidden="true" />
+      <Property Name="CanReadOwnedSystemFlights" Hidden="true" />
+      <Property Name="CanReadOwnedUsers" Hidden="true" />
+      <Property Name="CanSetLandingDataOfOtherFlights" Hidden="true" />
+      <Property Name="CanUnlockClubOwnedFlights" Hidden="true" />
+      <Property Name="CanUnlockOtherFlights" Hidden="true" />
+      <Property Name="CanUnlockOwnedFlights" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedAircrafts" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedCountries" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedFlights" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedFlightTypes" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedLocations" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedMemberStates" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedPersonCategories" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedPersons" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedPersonsSensitiveData" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedSystemFlights" Hidden="true" />
+      <Property Name="CanUpdateClubOwnedUsers" Hidden="true" />
+      <Property Name="CanUpdateOtherAircrafts" Hidden="true" />
+      <Property Name="CanUpdateOtherClubs" Hidden="true" />
+      <Property Name="CanUpdateOtherCountries" Hidden="true" />
+      <Property Name="CanUpdateOtherFlights" Hidden="true" />
+      <Property Name="CanUpdateOtherFlightTypes" Hidden="true" />
+      <Property Name="CanUpdateOtherLocations" Hidden="true" />
+      <Property Name="CanUpdateOtherMemberStates" Hidden="true" />
+      <Property Name="CanUpdateOtherPersonCategories" Hidden="true" />
+      <Property Name="CanUpdateOtherPersons" Hidden="true" />
+      <Property Name="CanUpdateOtherPersonsSensitiveData" Hidden="true" />
+      <Property Name="CanUpdateOtherSystemFlights" Hidden="true" />
+      <Property Name="CanUpdateOtherUsers" Hidden="true" />
+      <Property Name="CanUpdateOwnClub" Hidden="true" />
+      <Property Name="CanUpdateOwnedAircrafts" Hidden="true" />
+      <Property Name="CanUpdateOwnedClubs" Hidden="true" />
+      <Property Name="CanUpdateOwnedCountries" Hidden="true" />
+      <Property Name="CanUpdateOwnedFlights" Hidden="true" />
+      <Property Name="CanUpdateOwnedFlightTypes" Hidden="true" />
+      <Property Name="CanUpdateOwnedLocations" Hidden="true" />
+      <Property Name="CanUpdateOwnedMemberStates" Hidden="true" />
+      <Property Name="CanUpdateOwnedPersonCategories" Hidden="true" />
+      <Property Name="CanUpdateOwnedPersons" Hidden="true" />
+      <Property Name="CanUpdateOwnedPersonsSensitiveData" Hidden="true" />
+      <Property Name="CanUpdateOwnedSystemFlights" Hidden="true" />
+      <Property Name="CanUpdateOwnedUsers" Hidden="true" />
+      <Property Name="CanUpdateStateOfClubOwnedAircrafts" Hidden="true" />
+      <Property Name="CanUpdateStateOfOtherAircrafts" Hidden="true" />
+      <Property Name="CanUpdateStateOfOwnedAircrafts" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>1NHZFAXxZwNpodDWyfYg2U1daWAwGS0zljRlr5jPuyk=</HashCode>
+      <FileName>User\UserPermissions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.User.UserDetails">
+    <Position X="7.25" Y="6.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAJAAAAAEAAAAAAgAAEAAAAAAQQAQAAAgAAA=</HashCode>
+      <FileName>User\UserDetails.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.User.UserOverview" BaseTypeListCollapsed="true">
+    <Position X="5.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAgAAAAIAAgAAEAAAAgAAQAQAAAgAAA=</HashCode>
+      <FileName>User\UserOverview.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="FLS.Data.IFLSMetaData">
+    <Position X="1.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAIABIAAIAAAAAAAAAAAAAAAACAAAEAAgAAAAABAA=</HashCode>
+      <FileName>IFLSMetaData.shared.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FLS.Data.IFLSDataEntityKey">
+    <Position X="1.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IFLSDataEntityKey.shared.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

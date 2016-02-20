@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C0E82ADD-CC87-4E9C-99C8-FA041522D51C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FLS.Server.Data</RootNamespace>
+    <AssemblyName>FLS.Server.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.2.0\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.Extended, Version=6.0.0.0, Culture=neutral, PublicKeyToken=05b7e29bdd433584, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.Extended.6.1.0.168\lib\net45\EntityFramework.Extended.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.MappingAPI, Version=6.1.0.9, Culture=neutral, PublicKeyToken=7ee2e825d201459e, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.MappingAPI.6.1.0.9\lib\net45\EntityFramework.MappingAPI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TrackerEnabledDbContext, Version=3.5.2.0, Culture=neutral, PublicKeyToken=4f92af0b908c4a0a, processorArchitecture=MSIL">
+      <HintPath>..\packages\TrackerEnabledDbContext.3.5.2\lib\net45\TrackerEnabledDbContext.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="TrackerEnabledDbContext.Common, Version=3.5.2.0, Culture=neutral, PublicKeyToken=4f92af0b908c4a0a, processorArchitecture=MSIL">
+      <HintPath>..\packages\TrackerEnabledDbContext.Common.3.5.2\lib\net45\TrackerEnabledDbContext.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DbEntities\AircraftOperatingCounter.cs" />
+    <Compile Include="DbEntities\EmailTemplate.cs" />
+    <Compile Include="DbEntities\Aircraft.cs" />
+    <Compile Include="DbEntities\AircraftAircraftState.cs" />
+    <Compile Include="DbEntities\AircraftState.cs" />
+    <Compile Include="DbEntities\AircraftType.cs" />
+    <Compile Include="DbEntities\AircraftReservation.cs" />
+    <Compile Include="DbEntities\AircraftReservationType.cs" />
+    <Compile Include="DbEntities\ClubState.cs" />
+    <Compile Include="DbEntities\LanguageTranslation.cs" />
+    <Compile Include="DbEntities\Language.cs" />
+    <Compile Include="DbEntities\PlanningDayAssignment.cs" />
+    <Compile Include="DbEntities\PlanningDayAssignmentType.cs" />
+    <Compile Include="DbEntities\Club.cs" />
+    <Compile Include="DbEntities\ClubExtension.cs" />
+    <Compile Include="DbEntities\Country.cs" />
+    <Compile Include="DbEntities\ElevationUnitType.cs" />
+    <Compile Include="DbEntities\Extension.cs" />
+    <Compile Include="DbEntities\ExtensionParameter.cs" />
+    <Compile Include="DbEntities\ExtensionParameterType.cs" />
+    <Compile Include="DbEntities\ExtensionParameterValue.cs" />
+    <Compile Include="DbEntities\ExtensionType.cs" />
+    <Compile Include="DbEntities\Flight.cs" />
+    <Compile Include="DbEntities\FlightCostBalanceType.cs" />
+    <Compile Include="DbEntities\FlightCrew.cs" />
+    <Compile Include="DbEntities\FlightCrewType.cs" />
+    <Compile Include="DbEntities\FlightState.cs" />
+    <Compile Include="DbEntities\FlightType.cs" />
+    <Compile Include="DbEntities\PlanningDay.cs" />
+    <Compile Include="Exceptions\DeleteEntityException.cs" />
+    <Compile Include="Extensions\EntityTrackerExtensions.cs" />
+    <Compile Include="Mapping\AircraftOperatingCounterMappingExtensions.cs" />
+    <Compile Include="Mapping\MappingExtensions.cs" />
+    <Compile Include="Enums\AircraftStartType.cs" />
+    <Compile Include="Enums\AircraftStateKey.cs" />
+    <Compile Include="Enums\AirfieldLocationType.cs" />
+    <Compile Include="Enums\CostCenterUnitType.cs" />
+    <Compile Include="Enums\EntityRecordState.cs" />
+    <Compile Include="Enums\FlightAircraftTypeValue.cs" />
+    <Compile Include="Enums\OwnershipType.cs" />
+    <Compile Include="Enums\PasswordRequestFeedback.cs" />
+    <Compile Include="Exceptions\BadRequestException.cs" />
+    <Compile Include="Exceptions\InternalServerException.cs" />
+    <Compile Include="Exceptions\LockedFlightException.cs" />
+    <Compile Include="FLSDataEntities.cs" />
+    <Compile Include="DbEntities\InOutboundPoint.cs" />
+    <Compile Include="DbEntities\LengthUnitType.cs" />
+    <Compile Include="DbEntities\Location.cs" />
+    <Compile Include="DbEntities\LocationType.cs" />
+    <Compile Include="DbEntities\MemberState.cs" />
+    <Compile Include="DbEntities\Person.cs" />
+    <Compile Include="DbEntities\PersonCategory.cs" />
+    <Compile Include="DbEntities\PersonClub.cs" />
+    <Compile Include="DbEntities\PersonPersonCategory.cs" />
+    <Compile Include="IIdentityService.cs" />
+    <Compile Include="Mapping\QueryExtensions.cs" />
+    <Compile Include="Migrations\201501222055041_InitialCreate.cs" />
+    <Compile Include="Migrations\201501222055041_InitialCreate.Designer.cs">
+      <DependentUpon>201501222055041_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DbEntities\Role.cs" />
+    <Compile Include="DbEntities\StartType.cs" />
+    <Compile Include="DbEntities\SystemData.cs" />
+    <Compile Include="DbEntities\SystemLog.cs" />
+    <Compile Include="DbEntities\SystemVersion.cs" />
+    <Compile Include="DbEntities\User.cs" />
+    <Compile Include="DbEntities\UserAccountState.cs" />
+    <Compile Include="DbEntities\UserRole.cs" />
+    <Compile Include="Resources\Constants.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FLS.Common\FLS.Common.csproj">
+      <Project>{eb8a37ab-cded-41d3-aa3e-d18d8f64a490}</Project>
+      <Name>FLS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FLS.Data.WebApi\FLS.Data.WebApi.csproj">
+      <Project>{cec41590-37bc-4251-8bae-4f0642c7f77a}</Project>
+      <Name>FLS.Data.WebApi</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201501222055041_InitialCreate.resx">
+      <DependentUpon>201501222055041_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Constants.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Validators\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="FLS.Workflow.Activator" GeneratedClassName="AppSettings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Username" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">workflow</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Workflow@2015$$</Value>
+    </Setting>
+    <Setting Name="BaseUri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:25567/</Value>
+    </Setting>
+    <Setting Name="WorkflowControllerUri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">api/v1/workflows/</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

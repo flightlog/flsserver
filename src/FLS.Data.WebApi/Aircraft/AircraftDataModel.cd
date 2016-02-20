@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FLS.Data.FLSMetadata">
+    <Position X="5.25" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAACIABIAAIAAAAEAAAAAAAAAAACAAAEAAgAAAAABAA=</HashCode>
+      <FileName>FLSMetadata.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FLS.Data.Aircraft.AircraftDetails">
+    <Position X="5" Y="5.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAiAAAGgAAAAAAAAIAAAQIIAAAAYAAAAABASABAARA=</HashCode>
+      <FileName>Aircraft\AircraftDetails.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="AircraftStateData" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="FLS.Data.Aircraft.AircraftOverview" BaseTypeListCollapsed="true">
+    <Position X="2.5" Y="4" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAiAAAEgAAAEAAAAIAAAQIIAAAAIAAAAAAACAAAAVA=</HashCode>
+      <FileName>Aircraft\AircraftOverview.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FLS.Data.Aircraft.AircraftStateData">
+    <Position X="8.75" Y="5.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgIAAAAAAAAAAAAAAAAAAACAAACAAAGAAAAA=</HashCode>
+      <FileName>Aircraft\AircraftStateData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.Aircraft.AircraftStateOverview" BaseTypeListCollapsed="true">
+    <Position X="2.5" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>CAACAAAAAACAAAAAAAAAAAAAAAAAAAAAABAAAEAAAAA=</HashCode>
+      <FileName>Aircraft\AircraftStateOverview.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="FLS.Data.IFLSMetaData">
+    <Position X="0.5" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAAAIABIAAIAAAAAAAAAAAAAAAACAAAEAAgAAAAABAA=</HashCode>
+      <FileName>IFLSMetaData.shared.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FLS.Data.IFLSDataEntityKey">
+    <Position X="0.5" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IFLSDataEntityKey.shared.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="FLS.Data.Aircraft.AircraftType">
+    <Position X="7.5" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAQAgAAAAgAAEAAgAAAgAAABA=</HashCode>
+      <FileName>Aircraft\AircraftType.shared.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

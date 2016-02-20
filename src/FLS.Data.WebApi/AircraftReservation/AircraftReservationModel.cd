@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FLS.Data.WebApi.AircraftReservation.AircraftReservationDetails">
+    <Position X="1.5" Y="4" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAICAAAAgKAAAAAAAAAAAAACAAEAAAAAAAAAAQAAgAE=</HashCode>
+      <FileName>AircraftReservation\AircraftReservationDetails.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.AircraftReservation.AircraftReservationOverview">
+    <Position X="1.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAICEAAEAKAACABAAAAAAAACAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>AircraftReservation\AircraftReservationOverview.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.AircraftReservation.AircraftReservationTypeListItem">
+    <Position X="4.75" Y="2.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>AircraftReservation\AircraftReservationTypeListItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

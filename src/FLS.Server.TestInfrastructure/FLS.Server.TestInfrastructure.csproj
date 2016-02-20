@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1074B708-B1F8-4CF2-BB33-083D3637DB01}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FLS.Server.TestInfrastructure</RootNamespace>
+    <AssemblyName>FLS.Server.TestInfrastructure</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\FLS.Server.Data\bin\Debug\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="NLog, Version=3.2.1.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.3.2.1\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ClubHelper.cs" />
+    <Compile Include="AircraftHelper.cs" />
+    <Compile Include="AircraftReservationHelper.cs" />
+    <Compile Include="BaseHelper.cs" />
+    <Compile Include="UserHelper.cs" />
+    <Compile Include="PlanningDayHelper.cs" />
+    <Compile Include="PersonHelper.cs" />
+    <Compile Include="FlightHelper.cs" />
+    <Compile Include="LocationHelper.cs" />
+    <Compile Include="DatabasePreparer.cs" />
+    <Compile Include="Extensions\FLSMetaDataExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceExtractor.cs" />
+    <Compile Include="TestConfigurationSettings.cs" />
+    <Compile Include="TestUtilities.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FLS.Common\FLS.Common.csproj">
+      <Project>{EB8A37AB-CDED-41D3-AA3E-D18D8F64A490}</Project>
+      <Name>FLS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FLS.Data.WebApi\FLS.Data.WebApi.csproj">
+      <Project>{CEC41590-37BC-4251-8BAE-4F0642C7F77A}</Project>
+      <Name>FLS.Data.WebApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FLS.Server.Data\FLS.Server.Data.csproj">
+      <Project>{C0E82ADD-CC87-4E9C-99C8-FA041522D51C}</Project>
+      <Name>FLS.Server.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FLS.Server.Service\FLS.Server.Service.csproj">
+      <Project>{ABAF4760-2558-4FC0-8D42-2F4D1B1AA8BD}</Project>
+      <Name>FLS.Server.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ObjectHydrator-master\Foundation.ObjectHydrator\Foundation.ObjectHydrator.csproj">
+      <Project>{8b60029e-dc22-4019-8ad6-e6a6a0caebfa}</Project>
+      <Name>Foundation.ObjectHydrator</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\sql\UnitTest-Scripts\3 Insert Static Data.sql">
+      <Link>Resources\3 Insert Static Data.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\sql\UnitTest-Scripts\4 Insert Data FGZO.sql">
+      <Link>Resources\4 Insert Data FGZO.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\sql\UnitTest-Scripts\4 or 5 Insert Test Data.sql">
+      <Link>Resources\4 or 5 Insert Test Data.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\sql\UnitTest-Scripts\6 Insert Test Flights.sql">
+      <Link>Resources\6 Insert Test Flights.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\sql\UnitTest-Scripts\99 Insert SystemData.sql">
+      <Link>Resources\99 Insert SystemData.sql</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\sql\UnitTest-Scripts\10 insert internationalisation values.sql">
+      <Link>Resources\10 insert internationalisation values.sql</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

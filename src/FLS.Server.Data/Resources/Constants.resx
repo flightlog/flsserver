@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Club" xml:space="preserve">
+    <value>Club</value>
+  </data>
+  <data name="ClubId" xml:space="preserve">
+    <value>ClubId</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="CountryId" xml:space="preserve">
+    <value>CountryId</value>
+  </data>
+  <data name="DefaultPassword" xml:space="preserve">
+    <value>Hallo</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="LocationType" xml:space="preserve">
+    <value>LocationType</value>
+  </data>
+  <data name="Person" xml:space="preserve">
+    <value>Person</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="UserRoles" xml:space="preserve">
+    <value>UserRoles</value>
+  </data>
+  <data name="UserRolesRole" xml:space="preserve">
+    <value>UserRoles.Role</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="AircraftId" xml:space="preserve">
+    <value>AircraftId</value>
+  </data>
+  <data name="FlightCrews" xml:space="preserve">
+    <value>FlightCrews</value>
+  </data>
+  <data name="FlightCrewsPerson" xml:space="preserve">
+    <value>FlightCrews.Person</value>
+  </data>
+  <data name="FlightType" xml:space="preserve">
+    <value>FlightType</value>
+  </data>
+  <data name="FlightTypeId" xml:space="preserve">
+    <value>FlightTypeId</value>
+  </data>
+  <data name="PersonClubs" xml:space="preserve">
+    <value>PersonClubs</value>
+  </data>
+  <data name="PersonClubsClub" xml:space="preserve">
+    <value>PersonClubs.Club</value>
+  </data>
+  <data name="MemberStates" xml:space="preserve">
+    <value>MemberStates</value>
+  </data>
+  <data name="PersonCategories" xml:space="preserve">
+    <value>PersonCategories</value>
+  </data>
+  <data name="LocationTypeId" xml:space="preserve">
+    <value>LocationTypeId</value>
+  </data>
+  <data name="CanHaveTwoPilots" xml:space="preserve">
+    <value>CanHaveTwoPilots</value>
+  </data>
+  <data name="CanLand" xml:space="preserve">
+    <value>CanLand</value>
+  </data>
+  <data name="CanStart" xml:space="preserve">
+    <value>CanStart</value>
+  </data>
+  <data name="FlightStatus" xml:space="preserve">
+    <value>FlightStatus</value>
+  </data>
+  <data name="FlightTypeInstructorRequired" xml:space="preserve">
+    <value>FlightType.InstructorRequired</value>
+  </data>
+  <data name="FlightTypeIsPassengerFlight" xml:space="preserve">
+    <value>FlightType.IsPassengerFlight</value>
+  </data>
+  <data name="IsLanded" xml:space="preserve">
+    <value>IsLanded</value>
+  </data>
+  <data name="LdgDate" xml:space="preserve">
+    <value>LdgDate</value>
+  </data>
+  <data name="LdgDateTime" xml:space="preserve">
+    <value>LdgDateTime</value>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>StartDate</value>
+  </data>
+  <data name="StartDateTime" xml:space="preserve">
+    <value>StartDateTime</value>
+  </data>
+  <data name="Clubname" xml:space="preserve">
+    <value>Clubname</value>
+  </data>
+  <data name="LocationId" xml:space="preserve">
+    <value>LocationId</value>
+  </data>
+  <data name="FlightTypes" xml:space="preserve">
+    <value>FlightTypes</value>
+  </data>
+  <data name="HashMethodMD5" xml:space="preserve">
+    <value>MD5</value>
+  </data>
+  <data name="EmailSendFailed" xml:space="preserve">
+    <value>EmailSendFailed</value>
+  </data>
+  <data name="CountryNotSetOrInvalid" xml:space="preserve">
+    <value>CountryNotSetOrInvalid</value>
+  </data>
+  <data name="LocationName" xml:space="preserve">
+    <value>Flugplatz / Standort</value>
+  </data>
+  <data name="LocationTypeNotSetOrInvalid" xml:space="preserve">
+    <value>LocationTypeNotSetOrInvalid</value>
+  </data>
+  <data name="NumberOfFieldsWrong" xml:space="preserve">
+    <value>NumberOfFieldsWrong</value>
+  </data>
+  <data name="SameEntityAlreadyExists" xml:space="preserve">
+    <value>SameEntityAlreadyExists</value>
+  </data>
+  <data name="Aircraft" xml:space="preserve">
+    <value>Aircraft</value>
+  </data>
+  <data name="AircraftAircraftStates" xml:space="preserve">
+    <value>AircraftAircraftStates</value>
+  </data>
+  <data name="AircraftAircraftStatesAircraftStateRelation" xml:space="preserve">
+    <value>AircraftAircraftStates.AircraftState</value>
+  </data>
+  <data name="AircraftState" xml:space="preserve">
+    <value>AircraftState</value>
+  </data>
+  <data name="LdgLocation" xml:space="preserve">
+    <value>LdgLocation</value>
+  </data>
+  <data name="LockedFlightCantBeUpdatedExceptionMessage" xml:space="preserve">
+    <value>Locked Flights could'nt be updated.</value>
+  </data>
+  <data name="StartLocation" xml:space="preserve">
+    <value>StartLocation</value>
+  </data>
+  <data name="StartType" xml:space="preserve">
+    <value>StartType</value>
+  </data>
+  <data name="TowFlight" xml:space="preserve">
+    <value>TowFlight</value>
+  </data>
+  <data name="UserRolesRolePermissions" xml:space="preserve">
+    <value>UserRoles.Role.Permissions</value>
+  </data>
+  <data name="PersonCategoryId" xml:space="preserve">
+    <value>PersonCategoryId</value>
+  </data>
+  <data name="DefaultGliderFlightType" xml:space="preserve">
+    <value>DefaultGliderFlightType</value>
+  </data>
+  <data name="PersonMemberStates" xml:space="preserve">
+    <value>PersonMemberStates</value>
+  </data>
+  <data name="PersonPersonCategories" xml:space="preserve">
+    <value>PersonPersonCategories</value>
+  </data>
+  <data name="StartTypeRelation" xml:space="preserve">
+    <value>StartTypeRelation</value>
+  </data>
+</root>

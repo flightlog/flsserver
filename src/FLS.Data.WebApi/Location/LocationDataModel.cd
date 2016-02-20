@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FLS.Data.FLSMetadata">
+    <Position X="3.25" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAACIABIAAIAAAAEAAAAAAAAAAACAAAEAAgAAAAABAA=</HashCode>
+      <FileName>FLSMetadata.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FLS.Data.Location.LocationDetails">
+    <Position X="5.5" Y="3.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>wAAKACBAAEAgAAAAAAIIAAAAEEAQACAAAAAAAAgIAAA=</HashCode>
+      <FileName>Location\LocationDetails.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.Location.LocationTypeOverview" BaseTypeListCollapsed="true">
+    <Position X="8" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAACAAAAAAgAAAAAAAAAAAAAEAIAAA=</HashCode>
+      <FileName>Location\LocationTypeOverview.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FLS.Data.Location.LocationListItem" BaseTypeListCollapsed="true">
+    <Position X="8" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>wCAKAAAAAAAAAAAAAAIAAAAgAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Location\LocationListItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FLS.Data.Location.LocationOverview" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>4AAKACAAAAAgAAAAAAIAAAAgEEAAACAAAAAAAEAAAAA=</HashCode>
+      <FileName>Location\LocationOverview.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FLS.Data.Location.CountryOverview" BaseTypeListCollapsed="true">
+    <Position X="12.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ICACAAAAAAAAAAAAAAAAAAAAAAAQAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Location\CountryOverview.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="FLS.Data.IFLSMetaData">
+    <Position X="1.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAIABIAAIAAAAAAAAAAAAAAAACAAAEAAgAAAAABAA=</HashCode>
+      <FileName>IFLSMetaData.shared.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FLS.Data.IFLSDataEntityKey">
+    <Position X="1.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IFLSDataEntityKey.shared.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="FLS.Data.Location.LocationType">
+    <Position X="14.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UQAIAQAAJCAAAAAgAACCAgBAAAQAAAgIAAAAAAAIAAA=</HashCode>
+      <FileName>Location\LocationType.shared.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="FLS.Data.Location.LengthUnitType">
+    <Position X="14.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Location\LengthUnitType.shared.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="FLS.Data.Location.ElevationUnitType">
+    <Position X="14.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Location\ElevationUnitType.shared.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

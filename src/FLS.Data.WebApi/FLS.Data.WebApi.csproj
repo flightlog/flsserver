@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CEC41590-37BC-4251-8BAE-4F0642C7F77A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FLS.Data.WebApi</RootNamespace>
+    <AssemblyName>FLS.Data.WebApi</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Validation">
+      <HintPath>..\packages\EnterpriseLibrary.Validation.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AircraftReservation\AircraftReservationDetails.cs" />
+    <Compile Include="AircraftReservation\AircraftReservationOverview.cs" />
+    <Compile Include="AircraftReservation\AircraftReservationTypeListItem.cs" />
+    <Compile Include="Aircraft\AircraftDetails.cs" />
+    <Compile Include="Aircraft\AircraftEngineOperatingCounterResult.cs" />
+    <Compile Include="Aircraft\AircraftListItem.cs" />
+    <Compile Include="Aircraft\AircraftOperatingCounterOverview.cs" />
+    <Compile Include="Aircraft\AircraftOperatingCounterDetails.cs" />
+    <Compile Include="Aircraft\AircraftOverview.cs" />
+    <Compile Include="Aircraft\AircraftStateData.cs" />
+    <Compile Include="Aircraft\AircraftStateListItem.cs" />
+    <Compile Include="Aircraft\AircraftType.cs" />
+    <Compile Include="Aircraft\AircraftTypeListItem.cs" />
+    <Compile Include="Aircraft\AircraftEngineOperatingCounterRequest.cs" />
+    <Compile Include="Audit\PropertyChangeLogDetails.cs" />
+    <Compile Include="Audit\AuditLogOverview.cs" />
+    <Compile Include="Club\ClubDetails.cs" />
+    <Compile Include="Club\ClubOverview.cs" />
+    <Compile Include="Club\ClubState.cs" />
+    <Compile Include="Club\FlightTypeDetails.cs" />
+    <Compile Include="Club\FlightTypeOverview.cs" />
+    <Compile Include="Club\MemberStateDetails.cs" />
+    <Compile Include="Club\MemberStateOverview.cs" />
+    <Compile Include="Club\PersonCategoryDetails.cs" />
+    <Compile Include="Club\PersonCategoryOverview.cs" />
+    <Compile Include="Dashboard\DashboardDetails.cs" />
+    <Compile Include="Dashboard\FlightStatisticDashboardDetails.cs" />
+    <Compile Include="Dashboard\SafetyDashboardDetails.cs" />
+    <Compile Include="Dashboard\PersonDashboardDetails.cs" />
+    <Compile Include="Emails\EmailTemplateOverview.cs" />
+    <Compile Include="Emails\EmailTemplateDetails.cs" />
+    <Compile Include="Exceptions\FLSServerException.cs" />
+    <Compile Include="Flight\FlightOverview.cs" />
+    <Compile Include="FLSBaseData.cs" />
+    <Compile Include="Flight\FlightCostBalanceType.cs" />
+    <Compile Include="Flight\FlightCostBalanceTypeListItem.cs" />
+    <Compile Include="Flight\FlightCrewType.cs" />
+    <Compile Include="Flight\FlightDetails.cs" />
+    <Compile Include="Flight\FlightDetailsData.cs" />
+    <Compile Include="Flight\FlightFilterSettings.cs" />
+    <Compile Include="Flight\GliderFlightOverview.cs" />
+    <Compile Include="Flight\FlightState.cs" />
+    <Compile Include="Flight\FlightStateListItem.cs" />
+    <Compile Include="Flight\GliderFlightDetailsData.cs" />
+    <Compile Include="Flight\MotorFlightDetailsData.cs" />
+    <Compile Include="Flight\StartTypeListItem.cs" />
+    <Compile Include="Flight\TowFlightDetailsData.cs" />
+    <Compile Include="Globalization\LanguageListItem.cs" />
+    <Compile Include="Globalization\Translation.cs" />
+    <Compile Include="IFLSMetaData.cs" />
+    <Compile Include="Invoicing\InvoicePaymentDetails.cs" />
+    <Compile Include="Invoicing\DeliveryDetails.cs" />
+    <Compile Include="Invoicing\FlightInvoiceBooking.cs" />
+    <Compile Include="Invoicing\FlightInvoiceDetails.cs" />
+    <Compile Include="Invoicing\FlightInvoiceLineItem.cs" />
+    <Compile Include="IOwnershipMetaData.cs" />
+    <Compile Include="Licensing\LicenseTrainingStateResult.cs" />
+    <Compile Include="Licensing\LicenseTrainingStateRequest.cs" />
+    <Compile Include="Licensing\LicenseTrainingStateListItem.cs" />
+    <Compile Include="Location\LengthUnitTypeListItem.cs" />
+    <Compile Include="Location\ElevationUnitTypeListItem.cs" />
+    <Compile Include="Location\CountryListItem.cs" />
+    <Compile Include="Location\CountryOverview.cs" />
+    <Compile Include="Location\ElevationUnitType.cs" />
+    <Compile Include="Location\LengthUnitType.cs" />
+    <Compile Include="Location\LocationDetails.cs" />
+    <Compile Include="Location\LocationListItem.cs" />
+    <Compile Include="Location\LocationOverview.cs" />
+    <Compile Include="Location\LocationType.cs" />
+    <Compile Include="Location\LocationTypeListItem.cs" />
+    <Compile Include="Person\ClubRelatedPersonDetails.cs" />
+    <Compile Include="Person\PersonDetails.cs" />
+    <Compile Include="Person\PersonOverview.cs" />
+    <Compile Include="Person\PersonListItem.cs" />
+    <Compile Include="Person\PassengerOverview.cs" />
+    <Compile Include="Person\PassengerListItem.cs" />
+    <Compile Include="Person\PassengerDetails.cs" />
+    <Compile Include="Person\PilotPersonFullDetails.cs" />
+    <Compile Include="Person\PilotPersonDetails.cs" />
+    <Compile Include="Person\PilotPersonListItem.cs" />
+    <Compile Include="Person\PilotPersonOverview.cs" />
+    <Compile Include="PlanningDay\PlanningDayCreatorRule.cs" />
+    <Compile Include="PlanningDay\PlanningDayDetails.cs" />
+    <Compile Include="PlanningDay\PlanningDayOverview.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reporting\AircraftFlightReport.cs" />
+    <Compile Include="Reporting\AircraftFlightReportData.cs" />
+    <Compile Include="Reporting\AircraftFlightReportFilterCriteria.cs" />
+    <Compile Include="Reporting\FlightDetailsReportData.cs" />
+    <Compile Include="Reporting\FlightStatisticData.cs" />
+    <Compile Include="Reporting\FlightReportData.cs" />
+    <Compile Include="Resources\ConstantUIStrings.cs" />
+    <Compile Include="Resources\RoleApplicationKeyStrings.cs" />
+    <Compile Include="System\AssemblyInfo.cs" />
+    <Compile Include="System\SystemVersionInfoOverview.cs" />
+    <Compile Include="System\SystemVersionInfoDetails.cs" />
+    <Compile Include="System\SystemDataDetails.cs" />
+    <Compile Include="System\SystemLogDetails.cs" />
+    <Compile Include="System\SystemLogOverview.cs" />
+    <Compile Include="User\EmailConfirmationResult.cs" />
+    <Compile Include="User\PasswordResetRequest.cs" />
+    <Compile Include="User\LostPasswordRequest.cs" />
+    <Compile Include="User\PasswordChangeRequest.cs" />
+    <Compile Include="User\RoleOverview.cs" />
+    <Compile Include="User\UserAccountState.cs" />
+    <Compile Include="User\UserAccountStateListItem.cs" />
+    <Compile Include="User\UserRegistrationDetails.cs" />
+    <Compile Include="User\UserDetails.cs" />
+    <Compile Include="User\UserOverview.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AircraftReservation\AircraftReservationModel.cd" />
+    <None Include="Aircraft\AircraftDataModel.cd" />
+    <None Include="Club\ClubDataModel.cd" />
+    <None Include="Flight\FlightDataModel.cd" />
+    <None Include="Location\LocationDataModel.cd" />
+    <None Include="packages.config" />
+    <None Include="Person\PersonDataModel.cd" />
+    <None Include="PlanningDay\PlanningDayModel.cd" />
+    <None Include="User\UserDataModel.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FLS.Common\FLS.Common.csproj">
+      <Project>{EB8A37AB-CDED-41D3-AA3E-D18D8F64A490}</Project>
+      <Name>FLS.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

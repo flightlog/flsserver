@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FLS.Data.WebApi.Person.PersonListItem" BaseTypeListCollapsed="true">
+    <Position X="13" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Person\PersonListItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.Person.PersonDetails">
+    <Position X="6.25" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAICQEAAgAEAIAAMAAAAAAAAAAAYIAABAAAAABAYCAA=</HashCode>
+      <FileName>Person\PersonDetails.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ClubRelatedPersonDetails" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="FLS.Data.WebApi.Person.ClubRelatedPersonDetails">
+    <Position X="2" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQCAAIEBIAgAAAAAQAAAEBgACAgAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Person\ClubRelatedPersonDetails.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.Person.PassengerDetails">
+    <Position X="5.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Person\PassengerDetails.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.Person.PassengerListItem">
+    <Position X="11.25" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Person\PassengerListItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.Person.PassengerOverview">
+    <Position X="10.25" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Person\PassengerOverview.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.Person.PersonOverview" Collapsed="true">
+    <Position X="11.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAACAEAAAAAAAAAMAAAAAAAAAAAAAAABAAAAAAAQAAA=</HashCode>
+      <FileName>Person\PersonOverview.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.Person.PilotPersonDetails">
+    <Position X="7.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIACAkCAAAQABAAAAAAAGAAAAJAAQICAAAAAAADAACA=</HashCode>
+      <FileName>Person\PilotPersonDetails.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.Person.PilotPersonFullDetails">
+    <Position X="7.5" Y="13.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAAAIABIAAIAAAAAAAAAAAAAAAACAAAEAAgAAAAABAA=</HashCode>
+      <FileName>Person\PilotPersonFullDetails.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FLS.Data.WebApi.Person.PilotPersonListItem">
+    <Position X="13.5" Y="11" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAIAAQICAAAAAAAAAACA=</HashCode>
+      <FileName>Person\PilotPersonListItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.Person.PilotPersonOverview">
+    <Position X="12.75" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AIAAAgCAAAQABAAAAAAAGAAAAJAAQICAAAAAAADAACA=</HashCode>
+      <FileName>Person\PilotPersonOverview.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

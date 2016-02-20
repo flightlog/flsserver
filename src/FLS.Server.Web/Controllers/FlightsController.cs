@@ -1,0 +1,222 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Web.Http;
+using System.Web.Http.Description;
+using FLS.Data.WebApi.Flight;
+using FLS.Server.Service;
+using FLS.Server.WebApi.ActionFilters;
+
+namespace FLS.Server.WebApi.Controllers
+{
+    /// <summary>
+    /// Api controller for flight entities
+    /// </summary>
+    [Authorize]
+    [RoutePrefix("api/v1/flights")]
+    public class FlightsController : ApiController
+    {
+        private readonly FlightService _flightService;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FlightsController"/> class.
+        /// </summary>
+        public FlightsController(FlightService flightService)
+        {
+            _flightService = flightService;
+        }
+
+        /// <summary>
+        /// Gets the flight overviews of all flights and flight types.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("")]
+        [Route("overview")]
+        [ResponseType(typeof(List<FlightOverview>))]
+        public IHttpActionResult GetFlightOverviews()
+        {
+            var flights = _flightService.GetFlightOverviews();
+            return Ok(flights);
+        }
+
+        /// <summary>
+        /// Gets the glider flight overviews within today.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("today")]
+        [Route("today/overview")]
+        [ResponseType(typeof(List<FlightOverview>))]
+        public IHttpActionResult GetFlightOverviewsWithinToday()
+        {
+            var flights = _flightService.GetFlightOverviewsWithinToday();
+            return Ok(flights);
+        }
+
+        
+        //http://www.asp.net/web-api/overview/web-api-routing-and-actions/create-a-rest-api-with-attribute-routing
+        /// <summary>
+        /// Gets the flight overviews.
+        /// </summary>
+        /// <param name="fromDate">From date.</param>
+        /// <param name="toDate">To date.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("daterange/{fromDate:datetime:regex(\\d{4}-\\d{2}-\\d{2})}/{toDate:datetime:regex(\\d{4}-\\d{2}-\\d{2})}")]
+        [ResponseType(typeof(List<FlightOverview>))]
+        public IHttpActionResult GetFlightOverviews(DateTime fromDate, DateTime toDate)
+        {
+            var flights = _flightService.GetFlightOverviews(fromDate, toDate);
+            return Ok(flights);
+        }
+
+        /// <summary>
+        /// Gets the glider flight overviews with referenced tow flights.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("gliderflights")]
+        [Route("gliderflights/overview")]
+        [ResponseType(typeof(List<GliderFlightOverview>))]
+        public IHttpActionResult GetGliderFlightOverviews()
+        {
+            var flights = _flightService.GetGliderFlightOverviews();
+            return Ok(flights);
+        }
+        
+        /// <summary>
+        /// Gets the glider flight overviews within today.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("gliderflights/today")]
+        [Route("gliderflights/today/overview")]
+        [ResponseType(typeof(List<GliderFlightOverview>))]
+        public IHttpActionResult GetGliderFlightOverviewsWithinToday()
+        {
+            var flights = _flightService.GetGliderFlightOverviewsWithinToday();
+            return Ok(flights);
+        }
+
+        
+        //http://www.asp.net/web-api/overview/web-api-routing-and-actions/create-a-rest-api-with-attribute-routing
+        /// <summary>
+        /// Gets the glider flight overviews.
+        /// </summary>
+        /// <param name="fromDate">From date.</param>
+        /// <param name="toDate">To date.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("gliderflights/daterange/{fromDate:datetime:regex(\\d{4}-\\d{2}-\\d{2})}/{toDate:datetime:regex(\\d{4}-\\d{2}-\\d{2})}")]
+        [ResponseType(typeof(List<GliderFlightOverview>))]
+        public IHttpActionResult GetGliderFlightOverviews(DateTime fromDate, DateTime toDate)
+        {
+            var flights = _flightService.GetGliderFlightOverviews(fromDate, toDate);
+            return Ok(flights);
+        }
+
+        /// <summary>
+        /// Gets the motor flight overviews of all flights and flight types.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("motorflights")]
+        [Route("motorflights/overview")]
+        [ResponseType(typeof(List<FlightOverview>))]
+        public IHttpActionResult GetMotorFlightOverviews()
+        {
+            var flights = _flightService.GetMotorFlightOverviews();
+            return Ok(flights);
+        }
+
+        /// <summary>
+        /// Gets the motor flight overviews within today.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("motorflights/today")]
+        [Route("motorflights/today/overview")]
+        [ResponseType(typeof(List<FlightOverview>))]
+        public IHttpActionResult GetMotorFlightOverviewsWithinToday()
+        {
+            var flights = _flightService.GetMotorFlightOverviewsWithinToday();
+            return Ok(flights);
+        }
+
+
+        //http://www.asp.net/web-api/overview/web-api-routing-and-actions/create-a-rest-api-with-attribute-routing
+        /// <summary>
+        /// Gets the motor flight overviews.
+        /// </summary>
+        /// <param name="fromDate">From date.</param>
+        /// <param name="toDate">To date.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("motorflights/daterange/{fromDate:datetime:regex(\\d{4}-\\d{2}-\\d{2})}/{toDate:datetime:regex(\\d{4}-\\d{2}-\\d{2})}")]
+        [ResponseType(typeof(List<FlightOverview>))]
+        public IHttpActionResult GetMotorFlightOverviews(DateTime fromDate, DateTime toDate)
+        {
+            var flights = _flightService.GetMotorFlightOverviews(fromDate, toDate);
+            return Ok(flights);
+        }
+
+        /// <summary>
+        /// Gets the flight details.
+        /// </summary>
+        /// <param name="flightId">The flight identifier.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{flightId}")]
+        [ResponseType(typeof(FlightDetails))]
+        public IHttpActionResult GetFlightDetails(Guid flightId)
+        {
+            var flightDetails = _flightService.GetFlightDetails(flightId);
+            return Ok(flightDetails);
+        }
+
+        /// <summary>
+        /// Inserts the specified flight details.
+        /// </summary>
+        /// <param name="flightDetails">The flight details.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("")]
+        [DontValidateModelState]
+        [ResponseType(typeof(FlightDetails))]
+        public IHttpActionResult Insert([FromBody] FlightDetails flightDetails)
+        {
+            _flightService.InsertFlightDetails(flightDetails);
+            return Ok(flightDetails);
+        }
+
+        /// <summary>
+        /// Updates the specified flight.
+        /// </summary>
+        /// <param name="flightId">The flight identifier.</param>
+        /// <param name="flightDetails">The flight details.</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("{flightId}")]
+        [DontValidateModelState]
+        [ResponseType(typeof(FlightDetails))]
+        public IHttpActionResult Update(Guid flightId, [FromBody]FlightDetails flightDetails)
+        {
+            _flightService.UpdateFlightDetails(flightDetails);
+            return Ok(flightDetails);
+        }
+
+        /// <summary>
+        /// Deletes the specified flight.
+        /// </summary>
+        /// <param name="flightId">The flight identifier.</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{flightId}")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult Delete(Guid flightId)
+        {
+            _flightService.DeleteFlight(flightId);
+            return Ok();
+        }
+    }
+}
