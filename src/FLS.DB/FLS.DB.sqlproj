@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>FLS.DB</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{15aced7c-3b0f-4ac2-b8ae-ef015a77be4b}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>FLS.DB</RootNamespace>
+    <AssemblyName>FLS.DB</AssemblyName>
+    <ModelCollation>1033,CI</ModelCollation>
+    <DefaultFileStructure>BySchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DefaultCollation>Latin1_General_CI_AS</DefaultCollation>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Tables\" />
+    <Folder Include="Security\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\Users.sql" />
+    <Build Include="Tables\AircraftAircraftStates.sql" />
+    <Build Include="Tables\Aircrafts.sql" />
+    <Build Include="Tables\AircraftStates.sql" />
+    <Build Include="Tables\AircraftTypes.sql" />
+    <Build Include="Tables\Clubs.sql" />
+    <Build Include="Tables\EmailTemplates.sql" />
+    <Build Include="Tables\PlanningDayAssignments.sql" />
+    <Build Include="Tables\Countries.sql" />
+    <Build Include="Tables\PlanningDayAssignmentTypes.sql" />
+    <Build Include="Tables\AuditLogs.sql" />
+    <Build Include="Tables\PlanningDays.sql" />
+    <Build Include="Tables\AuditLogDetails.sql" />
+    <Build Include="Tables\ElevationUnitTypes.sql" />
+    <Build Include="Tables\AuditLogEventTypes.sql" />
+    <Build Include="Tables\AircraftOperatingCounters.sql" />
+    <Build Include="Tables\AircraftReservations.sql" />
+    <Build Include="Tables\AircraftReservationTypes.sql" />
+    <Build Include="Tables\FlightCostBalanceTypes.sql" />
+    <Build Include="Tables\FlightCrew.sql" />
+    <Build Include="Tables\FlightCrewTypes.sql" />
+    <Build Include="Tables\LanguageTranslations.sql" />
+    <Build Include="Tables\Flights.sql" />
+    <Build Include="Tables\Languages.sql" />
+    <Build Include="Tables\FlightStates.sql" />
+    <Build Include="Tables\FlightTypes.sql" />
+    <Build Include="Tables\SystemData.sql" />
+    <Build Include="Tables\ClubStates.sql" />
+    <Build Include="Tables\InOutboundPoints.sql" />
+    <Build Include="Tables\LengthUnitTypes.sql" />
+    <Build Include="Tables\Locations.sql" />
+    <Build Include="Tables\LocationTypes.sql" />
+    <Build Include="Tables\MemberStates.sql" />
+    <Build Include="Tables\PersonCategories.sql" />
+    <Build Include="Tables\PersonClub.sql" />
+    <Build Include="Tables\Persons.sql" />
+    <Build Include="Tables\Roles.sql" />
+    <Build Include="Tables\StartTypes.sql" />
+    <Build Include="Tables\ClubExtensions.sql" />
+    <Build Include="Tables\SystemLogs.sql" />
+    <Build Include="Tables\ExtensionParameters.sql" />
+    <Build Include="Tables\SystemVersion.sql" />
+    <Build Include="Tables\ExtensionParameterTypes.sql" />
+    <Build Include="Tables\UserAccountStates.sql" />
+    <Build Include="Tables\ExtensionParameterValues.sql" />
+    <Build Include="Tables\UserRoles.sql" />
+    <Build Include="Tables\Extensions.sql" />
+    <Build Include="Tables\ExtensionTypes.sql" />
+    <Build Include="Tables\PersonPersonCategories.sql" />
+    <Build Include="Security\flstest_user.sql" />
+    <Build Include="Security\flstest_logwriter.sql" />
+    <Build Include="Security\flstest_reporting_user.sql" />
+    <Build Include="Security\flstest_logwriter_1.sql" />
+    <Build Include="Security\flstest_reporting_user_1.sql" />
+    <Build Include="Security\flstest_user_1.sql" />
+    <Build Include="Security\Permissions.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="_local.publish.xml" />
+  </ItemGroup>
+</Project>

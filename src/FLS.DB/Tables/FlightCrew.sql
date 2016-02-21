@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[FlightCrew] (
+    [FlightCrewId]             UNIQUEIDENTIFIER NOT NULL,
+    [FlightId]                 UNIQUEIDENTIFIER NOT NULL,
+    [PersonId]                 UNIQUEIDENTIFIER NOT NULL,
+    [FlightCrewType]           INT              NOT NULL,
+    [CreatedOn]                DATETIME2 (7)    NOT NULL,
+    [CreatedByUserId]          UNIQUEIDENTIFIER NOT NULL,
+    [ModifiedOn]               DATETIME2 (7)    NULL,
+    [ModifiedByUserId]         UNIQUEIDENTIFIER NULL,
+    [DeletedOn]                DATETIME2 (7)    NULL,
+    [DeletedByUserId]          UNIQUEIDENTIFIER NULL,
+    [RecordState]              INT              NULL,
+    [OwnerId]                  UNIQUEIDENTIFIER NOT NULL,
+    [OwnershipType]            INT              NOT NULL,
+    [IsDeleted]                BIT              DEFAULT ((0)) NOT NULL,
+    [BeginFlightDateTime]      DATETIME2 (7)    NULL,
+    [EndFlightDateTime]        DATETIME2 (7)    NULL,
+    [BeginInstructionDateTime] DATETIME2 (7)    NULL,
+    [EndInstructionDateTime]   DATETIME2 (7)    NULL,
+    [NrOfLdgs]                 INT              NULL,
+    CONSTRAINT [PK_FlightCrew] PRIMARY KEY CLUSTERED ([FlightCrewId] ASC),
+    CONSTRAINT [FK_FlightCrew_FlightCrewTypes] FOREIGN KEY ([FlightCrewType]) REFERENCES [dbo].[FlightCrewTypes] ([FlightCrewTypeId]),
+    CONSTRAINT [FK_FlightCrew_Flights] FOREIGN KEY ([FlightId]) REFERENCES [dbo].[Flights] ([FlightId]) ON DELETE CASCADE,
+    CONSTRAINT [FK_FlightCrew_Persons] FOREIGN KEY ([PersonId]) REFERENCES [dbo].[Persons] ([PersonId]),
+    CONSTRAINT [UNIQUE_FlightCrews_Person_Flight_FlightCrewType] UNIQUE NONCLUSTERED ([FlightId] ASC, [PersonId] ASC, [FlightCrewType] ASC, [DeletedOn] ASC)
+);
+
