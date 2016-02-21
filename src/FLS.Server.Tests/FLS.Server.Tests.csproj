@@ -221,9 +221,6 @@
     <Compile Include="Infrastructure\WebApi\TestStartup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\..\database\FLSTest\3 insert\10 insert internationalisation values.sql">
-      <Link>Resources\10 insert internationalisation values.sql</Link>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\database\FLSTest\3 insert\3 Insert Static Data.sql">
       <Link>Resources\3 Insert Static Data.sql</Link>
     </EmbeddedResource>

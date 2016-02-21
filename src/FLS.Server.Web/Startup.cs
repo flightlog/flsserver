@@ -9,6 +9,8 @@ using Microsoft.Owin.Security.OAuth;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.WebApi;
 using Owin;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security.Cookies;
 
 [assembly: OwinStartup(typeof(Startup))]
 namespace FLS.Server.WebApi
@@ -109,13 +111,14 @@ namespace FLS.Server.WebApi
 
             // Enable the application to use a cookie to store information for the signed in user
             // and to use a cookie to temporarily store information about a user logging in with a third party login provider
-            //app.UseCookieAuthentication(new CookieAuthenticationOptions());
-            //// Enable the application to use a cookie to store information for the signed in user
-            //// and to use a cookie to temporarily store information about a user logging in with a third party login provider
-            //// Configure the sign in cookie
+            app.UseCookieAuthentication(new CookieAuthenticationOptions());
+
+            // Enable the application to use a cookie to store information for the signed in user
+            // and to use a cookie to temporarily store information about a user logging in with a third party login provider
+            // Configure the sign in cookie
             //app.UseCookieAuthentication(new CookieAuthenticationOptions
             //{
-            //    AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+            //    AuthenticationType = DefaultAuthenticationTypes.ExternalCookie,
             //    LoginPath = new PathString("/Account/Login"),
             //    Provider = new CookieAuthenticationProvider
             //    {
@@ -125,7 +128,7 @@ namespace FLS.Server.WebApi
             //    }
             //});
 
-            //app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+            app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
             // Enable the application to use bearer tokens to authenticate users
             app.UseOAuthAuthorizationServer(OAuthOptions);
@@ -144,8 +147,7 @@ namespace FLS.Server.WebApi
             //    appId: "",
             //    appSecret: "");
 
-            //app.UseGoogleAuthentication();
-
+            app.UseGoogleAuthentication(clientId: "721862177625-okeu8trhtrno0pml026tf1ti1geho35u.apps.googleusercontent.com", clientSecret: "3GOKs5WFHboQNGkfNBaawpZt");
         }
     }
 }

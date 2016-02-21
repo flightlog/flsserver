@@ -1,0 +1,118 @@
+﻿@section scripts {
+    <script type="text/javascript">
+
+        var bearerToken = null;
+        var bearerUsername = null;
+
+        $.ajaxSetup({
+            beforeSend: function (jqXHR) {
+                if (!bearerToken)
+                    return;
+                jqXHR.setRequestHeader("Authorization", "Bearer " + bearerToken);
+            }
+        });
+
+        function login() {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            $.post("/Token", { username: username, password: password, grant_type: "password" }, function (data, status, jqXHR) {
+                bearerToken = data.access_token;
+                bearerUsername = data.userName;
+                refreshDisplay();
+            });
+        }
+
+        function externalLogin(provider) {
+            $.ajax({
+                url: "/auth/external?provider=" + provider,
+                method: "GET"
+            }).done(function(data) {
+                console.log("done: ", data);
+            }).fail(function (jqXHR, status) {
+                var extAuthWindow = window.open("/auth/external/signin?provider=" + provider, "extAuth", "width=800,height=600", true);
+                $(extAuthWindow).on("beforeunload", function (e)  {
+                    alert("auth window closed");
+                });
+            });
+        }
+
+        function logout() {
+            bearerToken = null;
+            bearerUsername = null;
+            refreshDisplay();
+        }
+
+        function getFlights() {
+            $.getJSON("http://localhost:3000/api/v1/flights/gliderflights/daterange/2016-02-20/2016-02-20", function (data, status, jqXHR) {
+                var targetElement = $("#flightsDisplay tbody");
+                targetElement.empty();
+                data.forEach(function (row) {
+                    var tr = $("<tr></tr>");
+                    $("<td></td>").text(row.StartDateTime).appendTo(tr);
+                    $("<td></td>").text(row.Immatriculation).appendTo(tr);
+                    tr.appendTo(targetElement);
+                });
+            });
+        }
+
+        function refreshDisplay() {
+            $("#userDisplay").text(bearerUsername);
+            if (bearerToken) {
+                $("#bearerDisplay").text(bearerToken.substring(0, 20) + "...");
+                $("#loginForm").hide();
+                $("#loggedIn").show();
+            }
+            else {
+                $("#bearerDisplay").text("");
+                $("#loginForm").show();
+                $("#loggedIn").hide();
+            }
+        }
+
+    </script>
+
+}
+
+
+
+<h2>test calls</h2>
+
+<div class="row" id="loginForm">
+    <div class="col-md-4">
+        <form onsubmit="login(); return false;" action="#">
+            <div class="form-group">
+                <label for="username">user:</label>
+                <input id="username" name="username" type="text" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="username">password:</label>
+                <input id="password" name="password" type="password" class="form-control" />
+            </div>
+            <input type="submit" class="btn btn-primary" />
+        </form>
+    </div>
+    <div class="col-md-4">
+        <button class="btn btn-danger" onclick="externalLogin('Google');">Google login</button>
+        <button class="btn btn-danger" onclick="externalLogin('Facebook');">Facebook login</button>
+    </div>
+</div>
+
+<div class="row" id="loggedIn" style="display: none;">
+    <div class="col-md-4">
+        User: <span id="userDisplay"></span><br />
+        BearerToken: <span id="bearerDisplay"></span>
+    </div>
+    <div class="col-md-4">
+        <button class="btn btn-primary" onclick="getFlights();">get flights</button>
+        <table id="flightsDisplay" class="table table-striped">
+            <tbody>
+                <tr>
+                    <td>load please...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <button class="btn btn-danger" onclick="logout();">logout</button>
+    </div>
+</div>

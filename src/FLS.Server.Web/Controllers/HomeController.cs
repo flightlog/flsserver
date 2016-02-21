@@ -17,5 +17,10 @@ namespace FLS.Server.WebApi.Controllers
 
             return View();
         }
+
+        public ActionResult Test()
+        {
+            return View();
+        }
     }
 }
