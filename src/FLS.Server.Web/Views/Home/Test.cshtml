@@ -16,24 +16,39 @@
             var username = $("#username").val();
             var password = $("#password").val();
             $.post("/Token", { username: username, password: password, grant_type: "password" }, function (data, status, jqXHR) {
-                bearerToken = data.access_token;
-                bearerUsername = data.userName;
-                refreshDisplay();
+                checkTokenResponse(data);
             });
         }
 
         function externalLogin(provider) {
+            var extTokenUrl = "/api/v1/auth/external/token";
             $.ajax({
-                url: "/auth/external?provider=" + provider,
+                url: extTokenUrl,
                 method: "GET"
-            }).done(function(data) {
-                console.log("done: ", data);
+            }).done(function (data, status, jqXHR) {
+                checkTokenResponse(data);
             }).fail(function (jqXHR, status) {
-                var extAuthWindow = window.open("/auth/external/signin?provider=" + provider, "extAuth", "width=800,height=600", true);
-                $(extAuthWindow).on("beforeunload", function (e)  {
-                    alert("auth window closed");
+                if (jqXHR.status != 401) {
+                    alert("unknown error: " + status);
+                    return
+                }
+                var extAuthWindow = window.open("/api/v1/auth/external/signin/" + provider, "extAuth", "width=800,height=600", true);
+                $(extAuthWindow).on("beforeunload", function (e) {
+                    $.getJSON(extTokenUrl, function (data, status, jqXHR) {
+                        checkTokenResponse(data);
+                    });
                 });
             });
+        }
+
+        function checkTokenResponse(data) {
+            if (!data.access_token) {
+                alert("invalid response!");
+                return;
+            }
+            bearerToken = data.access_token;
+            bearerUsername = data.userName;
+            refreshDisplay();
         }
 
         function logout() {
@@ -43,7 +58,7 @@
         }
 
         function getFlights() {
-            $.getJSON("http://localhost:3000/api/v1/flights/gliderflights/daterange/2016-02-20/2016-02-20", function (data, status, jqXHR) {
+            $.getJSON("/api/v1/flights/gliderflights/daterange/2016-02-20/2016-02-20", function (data, status, jqXHR) {
                 var targetElement = $("#flightsDisplay tbody");
                 targetElement.empty();
                 data.forEach(function (row) {

@@ -1,133 +1,97 @@
-﻿using FLS.Server.WebApi.Models;
+﻿using FLS.Server.WebApi.Identity;
+using FLS.Server.WebApi.Models;
+using FLS.Server.WebApi.Providers;
 using Microsoft.AspNet.Identity;
+using Microsoft.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Web;
-using System.Web.Mvc;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace FLS.Server.WebApi.Controllers
 {
-    [RoutePrefix("auth")]
-    public class AuthenticationController : Controller
+    [RoutePrefix("api/v1/auth")]
+    public class AuthenticationController : ApiController
     {
-        private IAuthenticationManager Authentication { get { return Request.GetOwinContext().Authentication; } }
+        private IAuthenticationManager authContext { get { return Request.GetOwinContext().Authentication; } }
+        private readonly IdentityUserManager userManager;
 
-        [AllowAnonymous]
-        [HttpGet, Route("external")]
-        public ActionResult ExternalJson(string provider)
+        public AuthenticationController(IdentityUserManager userManager)
         {
-            string redirectUri = "";
-
-            if (!User.Identity.IsAuthenticated)
-                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
-
-            // create bearer token and return... like /Token
-            return Json(new { token = "todo" }, JsonRequestBehavior.AllowGet);
+            this.userManager = userManager;
         }
 
+        /// <summary>
+        /// Validate external login. Basically like "/Token" action, but checks "external login" authentication method (OverrideAuthentication / HostAuthentication attibutes).
+        /// Normal web-api controllers are configured to allow only a local oauth bearer token.
+        /// </summary>
+        /// <param name="provider">External login provider "eg. Google"</param>
+        /// <returns>403 unauthorized or bearer token.</returns>
         [AllowAnonymous]
-        [HttpGet, Route("external/signin")]
-        public ActionResult ExternalSignIn(string provider, string error = null)
+        [OverrideAuthentication]
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
+        [HttpGet, Route("external/token")]
+        public async Task<IHttpActionResult> ExternalToken()
         {
-            if(string.IsNullOrEmpty(provider))
-                return View(new ExternalChallangeResultViewModel { Failed = true, ErrorMessage = "no provider set." });
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized();
 
-            if (!string.IsNullOrEmpty(error))
-                return View(new ExternalChallangeResultViewModel { Failed = true, ErrorMessage = error });
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+
+            // TODO: auflösen zum app user
+            var username = "testclubuser";
+            var user = userManager.FindByName(username);
+            
+            // create oauth taken manually.
+            ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
+            AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, new AuthenticationProperties());
+
+            DateTime currentUtc = DateTime.UtcNow;
+            ticket.Properties.IssuedUtc = currentUtc;
+            ticket.Properties.ExpiresUtc = currentUtc.Add(TimeSpan.FromDays(Startup.AccessTokenDaysValid));
+
+            string accessToken = Startup.OAuthOptions.AccessTokenFormat.Protect(ticket);
+
+            return Ok(new { access_token = accessToken, userName = username });
+        }
+
+        /// <summary>
+        /// Sign in external login. Double check Identity again and redirect to challange / response handler
+        /// of the external authentication provider if necessary.
+        /// External authentication gets called in a popup window to avoid refreshing the whole page. Therefore the external auth flow
+        /// has to end somewhere. In this case in a static html page, which just closes the popup window.
+        /// </summary>
+        /// <param name="provider">External login provider "eg. Google"</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [OverrideAuthentication]
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
+        [HttpGet, Route("external/signin/{provider}")]
+        public IHttpActionResult ExternalSignIn(string provider)
+        {
+            if (string.IsNullOrEmpty(provider))
+                throw new ArgumentException("provider not set.", "provider");
+
+            // check error querystring.
+            if (Request.RequestUri.Query.Contains("?error="))
+            {
+                string error = Request.RequestUri.Query.Substring("!error=".Length);
+                if(!string.IsNullOrWhiteSpace(error))
+                    throw new InvalidOperationException(error);
+            }
 
             // unauthorized - send challange (redirects to login provider)
             if (!User.Identity.IsAuthenticated)
             {
-                var owinContext = Request.GetOwinContext();
-                owinContext.Authentication.Challenge(provider);
-                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+                authContext.Challenge(provider);
+                return Unauthorized();
             }
 
-            return View(new ExternalChallangeResultViewModel { Failed = false });
+            return Redirect(Url.Content("/Content/auth_success.html"));
         }
-
-
-
-
-            //var redirectUriValidationResult = ValidateClientAndRedirectUri(Request, ref redirectUri);
-
-            //if (!string.IsNullOrWhiteSpace(redirectUriValidationResult))
-            //    return BadRequest(redirectUriValidationResult);
-
-            //var claimsIdentity = User.Identity as ClaimsIdentity;
-            ////var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
-
-            //if (claimsIdentity == null)
-            //    return InternalServerError();
-
-            // todo: reenable check login from correct provider... maybe.
-            //if (externalLogin.LoginProvider != provider)
-            //{
-            //    Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-            //    return new ChallengeResult(provider, this);
-            //}
-
-            //IdentityUser user = await _repo.FindAsync(new UserLoginInfo(externalLogin.LoginProvider, externalLogin.ProviderKey));
-
-            //bool hasRegistered = user != null;
-
-            //redirectUri = string.Format("{0}#external_access_token={1}&provider={2}&haslocalaccount={3}&external_user_name={4}",
-            //                                redirectUri,
-            //                                externalLogin.ExternalAccessToken,
-            //                                externalLogin.LoginProvider,
-            //                                hasRegistered.ToString(),
-            //                                externalLogin.UserName);
-            
-        //private string ValidateClientAndRedirectUri(HttpRequestMessage request, ref string redirectUriOutput)
-        //{
-
-        //    Uri redirectUri;
-        //    var redirectUriString = GetQueryString(Request, "redirect_uri");
-
-        //    if (string.IsNullOrWhiteSpace(redirectUriString))
-        //        return "redirect_uri is required";
-
-        //    bool validUri = Uri.TryCreate(redirectUriString, UriKind.Absolute, out redirectUri);
-
-        //    if (!validUri)
-        //        return "redirect_uri is invalid";
-
-        //    var clientId = GetQueryString(Request, "client_id");
-
-        //    if (string.IsNullOrWhiteSpace(clientId))
-        //        return "client_Id is required";
-
-        //    //var client = _repo.FindClient(clientId);
-
-        //    //if (client == null)
-        //    //    return string.Format("Client_id '{0}' is not registered in the system.", clientId);
-
-        //    //if (!string.Equals(client.AllowedOrigin, redirectUri.GetLeftPart(UriPartial.Authority), StringComparison.OrdinalIgnoreCase))
-        //    //    return string.Format("The given URL is not allowed by Client_id '{0}' configuration.", clientId);
-
-        //    redirectUriOutput = redirectUri.AbsoluteUri;
-
-        //    return string.Empty;
-        //}
-
-        //private string GetQueryString(HttpRequestMessage request, string key)
-        //{
-        //    var queryStrings = request.GetQueryNameValuePairs();
-
-        //    if (queryStrings == null)
-        //        return null;
-
-        //    var match = queryStrings.FirstOrDefault(keyValue => string.Compare(keyValue.Key, key, true) == 0);
-
-        //    if (string.IsNullOrEmpty(match.Value))
-        //        return null;
-
-        //    return match.Value;
-        //}
-
-
     }
 }
