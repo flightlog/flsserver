@@ -42,9 +42,15 @@ namespace FLS.Server.WebApi.Controllers
 
             var claimsIdentity = (ClaimsIdentity)User.Identity;
 
-            // TODO: auflösen zum app user
-            var username = "testclubuser";
-            var user = userManager.FindByName(username);
+            var emailClaim = claimsIdentity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email);
+
+            if (emailClaim == default(Claim))
+                throw new InvalidOperationException("no email claim available!");
+
+            var user = userManager.FindByEmail(emailClaim.Value);
+
+            if (user == default(Data.DbEntities.User))
+                throw new InvalidOperationException("no matching user found!");
             
             // create oauth taken manually.
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
@@ -56,7 +62,7 @@ namespace FLS.Server.WebApi.Controllers
 
             string accessToken = Startup.OAuthOptions.AccessTokenFormat.Protect(ticket);
 
-            return Ok(new { access_token = accessToken, userName = username });
+            return Ok(new { access_token = accessToken, userName = user.UserName });
         }
 
         /// <summary>
