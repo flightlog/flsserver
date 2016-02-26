@@ -221,19 +221,22 @@
     <Compile Include="Infrastructure\WebApi\TestStartup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\..\database\FLSTest\3 insert\3 Insert Static Data.sql">
+    <EmbeddedResource Include="..\..\database\FLSTest\3 insert\10 insert internationalisation values.sql">
+      <Link>Resources\10 insert internationalisation values.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\database\FLSTest\3 insert\3 Insert Static Data.sql">
       <Link>Resources\3 Insert Static Data.sql</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\database\FLSTest\3 insert\4 or 5 Insert Test Data.sql">
+    <EmbeddedResource Include="..\..\database\FLSTest\3 insert\4 or 5 Insert Test Data.sql">
       <Link>Resources\4 or 5 Insert Test Data.sql</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\database\FLSTest\3 insert\6 Insert Test Flights.sql">
+    <EmbeddedResource Include="..\..\database\FLSTest\3 insert\6 Insert Test Flights.sql">
       <Link>Resources\6 Insert Test Flights.sql</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\database\FLSTest\3 insert\99 Insert SystemData.sql">
+    <EmbeddedResource Include="..\..\database\FLSTest\3 insert\99 Insert SystemData.sql">
       <Link>Resources\99 Insert SystemData.sql</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\database\FLSTest\3 insert\90 Insert EmailTemplates.sql">
+    <EmbeddedResource Include="..\..\database\FLSTest\3 insert\90 Insert EmailTemplates.sql">
       <Link>Resources\90 Insert EmailTemplates.sql</Link>
     </EmbeddedResource>
     <Content Include="App.config">
