@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{0B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLS.Workflow.Activator", "FLS.Workflow.Activator\FLS.Workflow.Activator.csproj", "{028919AB-BBF9-4888-9624-86DE754DBF39}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "FLS.DB", "FLS.DB\FLS.DB.sqlproj", "{15ACED7C-3B0F-4AC2-B8AE-EF015A77BE4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,14 @@ Global
 		{028919AB-BBF9-4888-9624-86DE754DBF39}.Release|Any CPU.Build.0 = Release|Any CPU
 		{028919AB-BBF9-4888-9624-86DE754DBF39}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{028919AB-BBF9-4888-9624-86DE754DBF39}.Test|Any CPU.Build.0 = Release|Any CPU
+		{15ACED7C-3B0F-4AC2-B8AE-EF015A77BE4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15ACED7C-3B0F-4AC2-B8AE-EF015A77BE4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15ACED7C-3B0F-4AC2-B8AE-EF015A77BE4B}.Demo|Any CPU.ActiveCfg = Debug|Any CPU
+		{15ACED7C-3B0F-4AC2-B8AE-EF015A77BE4B}.Demo|Any CPU.Build.0 = Debug|Any CPU
+		{15ACED7C-3B0F-4AC2-B8AE-EF015A77BE4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15ACED7C-3B0F-4AC2-B8AE-EF015A77BE4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15ACED7C-3B0F-4AC2-B8AE-EF015A77BE4B}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{15ACED7C-3B0F-4AC2-B8AE-EF015A77BE4B}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

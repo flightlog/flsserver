@@ -1,0 +1,26 @@
+﻿CREATE TABLE [dbo].[AircraftOperatingCounters] (
+    [AircraftOperatingCounterId]                       UNIQUEIDENTIFIER NOT NULL,
+    [AircraftId]                                       UNIQUEIDENTIFIER NOT NULL,
+    [AtDateTime]                                       DATETIME2 (7)    NOT NULL,
+    [TotalTowedGliderStarts]                           INT              NULL,
+    [TotalWinchLaunchStarts]                           INT              NULL,
+    [TotalSelfStarts]                                  INT              NULL,
+    [FlightOperatingCounterInMinutes]                  NUMERIC (18, 3)  NULL,
+    [EngineOperatingCounterInMinutes]                  NUMERIC (18, 3)  NULL,
+    [NextMaintenanceAtFlightOperatingCounterInMinutes] NUMERIC (18, 3)  NULL,
+    [NextMaintenanceAtEngineOperatingCounterInMinutes] NUMERIC (18, 3)  NULL,
+    [CreatedOn]                                        DATETIME2 (7)    NOT NULL,
+    [CreatedByUserId]                                  UNIQUEIDENTIFIER NOT NULL,
+    [ModifiedOn]                                       DATETIME2 (7)    NULL,
+    [ModifiedByUserId]                                 UNIQUEIDENTIFIER NULL,
+    [DeletedOn]                                        DATETIME2 (7)    NULL,
+    [DeletedByUserId]                                  UNIQUEIDENTIFIER NULL,
+    [RecordState]                                      INT              NULL,
+    [OwnerId]                                          UNIQUEIDENTIFIER NOT NULL,
+    [OwnershipType]                                    INT              NOT NULL,
+    [IsDeleted]                                        BIT              NOT NULL,
+    CONSTRAINT [PK_AircraftOperatingCounters] PRIMARY KEY CLUSTERED ([AircraftOperatingCounterId] ASC),
+    CONSTRAINT [FK_AircraftOperatingCounters_Aircraft] FOREIGN KEY ([AircraftId]) REFERENCES [dbo].[Aircrafts] ([AircraftId]) ON DELETE CASCADE,
+    CONSTRAINT [UNIQUE_Aircrafts_SameTime_OpsCounters] UNIQUE NONCLUSTERED ([AircraftId] ASC, [AtDateTime] ASC, [DeletedOn] ASC)
+);
+
