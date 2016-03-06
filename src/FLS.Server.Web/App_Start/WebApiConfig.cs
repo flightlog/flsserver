@@ -32,7 +32,7 @@ namespace FLS.Server.WebApi
 
             var defaultprovider = providers.Single(i => i is ActionDescriptorFilterProvider);
             config.Services.Remove(typeof(IFilterProvider), defaultprovider);
-            var unityFilterProvider = config.DependencyResolver.GetService(typeof (UnityFilterProvider));
+            var unityFilterProvider = config.DependencyResolver.GetService(typeof(UnityFilterProvider));
             //var unityFilterProvider = new UnityFilterProvider(UnityConfig.GetConfiguredContainer());
             config.Services.Add(typeof(IFilterProvider), unityFilterProvider);
 
@@ -42,18 +42,19 @@ namespace FLS.Server.WebApi
             // see also: http://blogs.msdn.com/b/webdev/archive/2013/09/20/understanding-security-features-in-spa-template.aspx
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType)); //OAuthDefaults.AuthenticationType = "Bearer"
-            
+
 
             //additional filters for FLS
             config.Filters.Add((IFilter)config.DependencyResolver.GetService(typeof(UnhandledExceptionFilterAttribute))); //new UnhandledExceptionFilterAttribute());
             config.Filters.Add((IFilter)config.DependencyResolver.GetService(typeof(UserInitActionFilter)));
             config.Filters.Add((IFilter)config.DependencyResolver.GetService(typeof(ValidateModelStateAttribute))); //new ValidateModelStateAttribute());
-            
+            config.Filters.Add((IFilter)config.DependencyResolver.GetService(typeof(NoCacheActionFilter)));
+
             //CheckModelForNullAttribute does not work with Unity
             //var filter = config.DependencyResolver.GetService(typeof (CheckModelForNullAttribute));
             config.Filters.Add(new CheckModelForNullAttribute());
 
-           
+
             //set Json format as default, but if i want to use the XML format. I'll just append the xml=true.
             //http://stackoverflow.com/questions/9847564/how-do-i-get-asp-net-web-api-to-return-json-instead-of-xml-using-chrome
             config.Formatters.XmlFormatter.MediaTypeMappings.Add(new QueryStringMapping("xml", "true", "application/xml"));
