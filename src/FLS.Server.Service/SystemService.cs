@@ -213,7 +213,7 @@ namespace FLS.Server.Service
                 }
             }
 
-            var assemblyBuildInfo = AssemblyUtil.GetAssemblyVersion("FLS.Server.Web");
+            var assemblyBuildInfo = AssemblyUtil.GetAssemblyVersion("FLS.Server.WebApi");
             systemVersionInfo.AssembliesInfo.Add(assemblyBuildInfo.ToAssemblyInfo());
 
             assemblyBuildInfo = AssemblyUtil.GetAssemblyVersion("FLS.Server.Service");

@@ -14,7 +14,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var assemblyVersion = AssemblyUtil.GetAssemblyVersion("FLS.Common");
             Assert.IsNotNull(assemblyVersion);
 
-            assemblyVersion = AssemblyUtil.GetAssemblyVersion("FLS.Server.Web");
+            assemblyVersion = AssemblyUtil.GetAssemblyVersion("FLS.Server.WebApi");
             Assert.IsNotNull(assemblyVersion);
         }
     }
