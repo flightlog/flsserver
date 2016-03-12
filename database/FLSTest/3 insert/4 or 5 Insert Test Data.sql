@@ -71,7 +71,7 @@ INSERT INTO Clubs
            ,[DeletedOn]
            ,[DeletedByUserId]
            ,[RecordState]
-           ,[OwnerId], [OwnershipType], [ClubStateId])
+           ,[OwnerId], [OwnershipType], [ClubStateId], [SendInvoiceReportsTo])
      VALUES
            (@insertClubId
            ,'Test-Club'
@@ -92,7 +92,8 @@ INSERT INTO Clubs
            ,null
            ,null
            ,1
-           ,@systemClubId, @OwnershipType, 1)
+           ,@systemClubId, @OwnershipType, 1
+		   ,'test@glider-fls.ch')
 
 
 
