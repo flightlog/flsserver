@@ -248,15 +248,7 @@ namespace FLS.Server.Service
         #endregion PlanningDay
 
         #region PlanningDayAssignmentType
-        internal PlanningDayAssignmentType GetPlanningDayAssignmentType(Guid planningDayAssignmentTypeId)
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var planningDayAssignmentType = context.PlanningDayAssignmentTypes.FirstOrDefault(p => p.PlanningDayAssignmentTypeId == planningDayAssignmentTypeId);
-                return planningDayAssignmentType;
-            }
-        }
-
+        
         /// <summary>
         /// Gets the planning days assignment types from the current users club.
         /// </summary>
@@ -271,81 +263,8 @@ namespace FLS.Server.Service
                 return entities;
             }
         }
-
-        internal void InsertPlanningDayAssignmentType(PlanningDayAssignmentType planningDayAssignmentType)
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                context.PlanningDayAssignmentTypes.Add(planningDayAssignmentType);
-                context.SaveChanges();
-            }
-        }
-
-
-        public void DeletePlanningDayAssignmentTypeDetails(Guid planningDayId)
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var original = context.PlanningDays.FirstOrDefault(l => l.PlanningDayId == planningDayId);
-                original.EntityNotNull("PlanningDay", planningDayId);
-
-                context.PlanningDays.Remove(original);
-                context.SaveChanges();
-            }
-        }
         #endregion PlanningDayAssignmentType
-
-        #region PlanningDayAssignmentAssignment
-        /// <summary>
-        /// Gets the planning days from the current date to the future and for the current users club only.
-        /// </summary>
-        /// <returns></returns>
-
-        internal PlanningDayAssignment GetPlanningDayAssignment(Guid planningDayId)
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var planningDay = context.PlanningDayAssignments.FirstOrDefault(p => p.PlanningDayAssignmentId == planningDayId);
-                return planningDay;
-            }
-        }
-
-        internal List<PlanningDayAssignment> GetPlanningDayAssignments()
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                List<PlanningDayAssignment> entities = null;
-                //TODO: handle future assignments
-                var today = DateTime.Now.Date;
-                entities = context.PlanningDayAssignments.Include("Location")
-                    .Where(r => r.AssignmentType.ClubId == CurrentAuthenticatedFLSUserClubId)
-                    .OrderBy(pe => pe.AssignedPlanningDay.Day)
-                    .ToList();
-
-                return entities;
-            }
-        }
-
-        internal void InsertPlanningDayAssignments(List<PlanningDayAssignment> planningDays)
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                context.PlanningDayAssignments.AddRange(planningDays);
-                context.SaveChanges();
-            }
-        }
-
-        internal void InsertPlanningDayAssignment(PlanningDayAssignment planningDay)
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                context.PlanningDayAssignments.Add(planningDay);
-                context.SaveChanges();
-            }
-        }
         
-        #endregion PlanningDayAssignment
-
         #region Security
         private void SetPlanningDayOverviewSecurity(IEnumerable<PlanningDayOverview> list)
         {
