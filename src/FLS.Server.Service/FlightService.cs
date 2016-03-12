@@ -448,7 +448,6 @@ namespace FLS.Server.Service
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                //TODO: Check and make some more tests for related entity loading and converting if include is realy nessesary.
                 var query = context.Flights
                     .Include(Constants.Aircraft)
                     .Include(Constants.FlightType)

@@ -89,14 +89,7 @@ namespace FLS.Server.Tests.ServiceTests
         {
             _workflowService.ExecutePlanningDayMailJob();
         }
-
-        [TestMethod]
-        [TestCategory("Service")]
-        public void ExecuteInvoiceReportJobTest()
-        {
-            _workflowService.ExecuteInvoiceReportJob();
-        }
-
+        
         [TestMethod]
         [TestCategory("Service")]
         public void ExecuteLicenceNotificationJob()

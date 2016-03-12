@@ -1,4 +1,8 @@
-﻿using FLS.Server.Tests.Infrastructure.WebApi;
+﻿using FLS.Server.Service;
+using FLS.Server.TestInfrastructure;
+using FLS.Server.Tests.Helpers;
+using FLS.Server.Tests.Infrastructure.WebApi;
+using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FLS.Server.Tests.WebApiControllerTests
@@ -6,6 +10,24 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class WorkflowsControllerTest : BaseAuthenticatedTests
     {
+        private UserService _userService;
+        private FlightHelper _flightHelper;
+        private IdentityService _identityService;
+
+        [TestInitialize()]
+        public void TestInit()
+        {
+            _flightHelper = UnityContainer.Resolve<FlightHelper>();
+            _userService = UnityContainer.Resolve<UserService>();
+
+            var user = _userService.GetUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
+            Assert.IsNotNull(user);
+            _identityService = UnityContainer.Resolve<IdentityService>();
+            _identityService.SetUser(user);
+
+            _flightHelper.CreateFlightsForInvoicingTests(user.ClubId);
+        }
+
         [TestMethod]
         [TestCategory("WebApi-Workflow-Jobs")]
         public void ExecuteWorkflowsWebApiTest()

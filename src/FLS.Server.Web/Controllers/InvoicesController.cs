@@ -36,7 +36,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(List<FlightInvoiceDetails>))]
         public IHttpActionResult GetFlightInvoiceDetails()
         {
-            var invoices = InvoiceService.GetFlightInvoiceDetails(DateTime.MinValue, DateTime.MaxValue);
+            var invoices = InvoiceService.GetFlightInvoiceDetails(DateTime.MinValue, DateTime.MaxValue, InvoiceService.IdentityService.CurrentAuthenticatedFLSUser.ClubId);
             return Ok(invoices);
         }
 
@@ -52,7 +52,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(List<FlightInvoiceDetails>))]
         public IHttpActionResult GetFlightInvoiceDetails(DateTime fromDate, DateTime toDate)
         {
-            var invoices = InvoiceService.GetFlightInvoiceDetails(fromDate, toDate);
+            var invoices = InvoiceService.GetFlightInvoiceDetails(fromDate, toDate, InvoiceService.IdentityService.CurrentAuthenticatedFLSUser.ClubId);
             return Ok(invoices);
         }
 

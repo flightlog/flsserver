@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using FLS.Data.WebApi.Invoicing;
+using FLS.Server.Service.Email;
 using FLS.Server.Service.Exporting;
 using NLog;
 using Quartz;
@@ -15,6 +17,8 @@ namespace FLS.Server.Service.Jobs
         private readonly InvoiceService _invoiceService;
         private readonly UserService _userService;
         private readonly IdentityService _identityService;
+        private readonly ClubService _clubService;
+        private readonly InvoiceEmailBuildService _emailBuildService;
         private Logger _logger = LogManager.GetCurrentClassLogger();
 
         protected Logger Logger
@@ -23,11 +27,14 @@ namespace FLS.Server.Service.Jobs
             set { _logger = value; }
         }
 
-        public InvoiceReportJob(InvoiceService invoiceService, UserService userService, IdentityService identityService)
+        public InvoiceReportJob(InvoiceService invoiceService, UserService userService, IdentityService identityService, 
+            ClubService clubService, InvoiceEmailBuildService emailBuildService)
         {
             _invoiceService = invoiceService;
             _userService = userService;
             _identityService = identityService;
+            _clubService = clubService;
+            _emailBuildService = emailBuildService;
         }
 
         /// <summary>
@@ -57,28 +64,47 @@ namespace FLS.Server.Service.Jobs
                 //as the Job runs on 3rd each month, we have to catch the correct year by add some minus days (for january)
                 var fromDate = new DateTime(DateTime.Now.AddDays(-10).Year, 1, 1);
                 var toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                var clubs = _clubService.GetClubs(false);
 
-                //TODO: remove user logic. 
-                var user = _userService.GetUser("workflow");
-
-                _identityService.SetUser(user);
-                var invoices = _invoiceService.GetFlightInvoiceDetails(fromDate, toDate);
-                ExcelExporter.ExportInvoicesToExcel(invoices, @"c:\temp\invoices\");
-
-                foreach (var invoice in invoices)
+                foreach (var club in clubs.Where(c => string.IsNullOrWhiteSpace(c.SendInvoiceReportsTo) == false))
                 {
-                    var flightInvoiceBooking = new FlightInvoiceBooking
+                    try
+                    {
+                        var invoices = _invoiceService.GetFlightInvoiceDetails(fromDate, toDate, club.ClubId);
+
+                        if (invoices.Any() == false)
                         {
-                            FlightId = invoice.FlightId,
-                            IncludesTowFlightId = invoice.IncludesTowFlightId,
-                            InvoiceDate = DateTime.Now.Date,
-                            InvoiceNumber = $"Workflow {DateTime.Now.ToShortTimeString()}"
-                    };
+                            var noInvoiceMessage = _emailBuildService.CreateNoInvoiceEmail(club.SendInvoiceReportsTo, fromDate, toDate);
+                            _emailBuildService.SendEmail(noInvoiceMessage);
+                            Logger.Info($"No Flights to invoice. Sent no invoice email message to club: {club.Clubname}");
+                            continue;
+                        }
 
-                    _invoiceService.SetFlightAsInvoiced(flightInvoiceBooking);
+                        var zipBytes = ExcelExporter.ExportInvoicesToExcel(invoices);
+
+                        var message = _emailBuildService.CreateInvoiceEmail(club.SendInvoiceReportsTo, zipBytes, fromDate, toDate);
+                        _emailBuildService.SendEmail(message);
+
+                        foreach (var invoice in invoices)
+                        {
+                            var flightInvoiceBooking = new FlightInvoiceBooking
+                            {
+                                FlightId = invoice.FlightId,
+                                IncludesTowFlightId = invoice.IncludesTowFlightId,
+                                InvoiceDate = DateTime.Now.Date,
+                                InvoiceNumber = $"Workflow {DateTime.Now.ToShortTimeString()}"
+                            };
+
+                            _invoiceService.SetFlightAsInvoiced(flightInvoiceBooking);
+                        }
+
+                        Logger.Info("Flights invoiced and exported to excel.");
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e, $"Error while processing flights for invoicing for club {club.Clubname}. Error: {e.Message}");
+                    }
                 }
-
-                Logger.Info("Flights invoiced and exported to excel.");
             }
             catch (Exception ex)
             {

@@ -33,14 +33,9 @@ namespace FLS.Server.Service
             LocationIdLSZK = _invoiceMappingFactory.GetLocationId("LSZK");
         }
 
-        public List<FlightInvoiceDetails> GetFlightInvoiceDetails(DateTime fromDate, DateTime toDate)
+        public List<FlightInvoiceDetails> GetFlightInvoiceDetails(DateTime fromDate, DateTime toDate, Guid clubId)
         {
-            if (CurrentAuthenticatedFLSUser == null)
-            {
-                Logger.Error("User is not authenticated");
-                throw new AuthenticationException("User is not authenticated!");
-            }
-            else if (CurrentAuthenticatedFLSUser.ClubId.IsValid() == false)
+            if (clubId.IsValid() == false)
             {
                 Logger.Error("No valid ClubId for getting the invoices!");
                 throw new InvalidDataException("No valid ClubId to fetch invoice data!");
@@ -84,7 +79,7 @@ namespace FLS.Server.Service
                                      .OrderBy(c => c.StartDateTime)
                                      .Where(flight => (flight.StartDateTime.Value >= fromDateTime &&
                                                        flight.StartDateTime.Value <= toDateTime)
-                                                      && flight.FlightType.ClubId == CurrentAuthenticatedFLSUser.ClubId
+                                                      && flight.FlightType.ClubId == clubId
                                                       &&
                                                       (flight.FlightAircraftType ==
                                                        (int) FlightAircraftTypeValue.GliderFlight

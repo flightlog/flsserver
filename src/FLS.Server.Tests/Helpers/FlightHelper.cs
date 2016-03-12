@@ -105,7 +105,7 @@ namespace FLS.Server.Tests.Helpers
 
         public void CreateFlightsForInvoicingTests(Guid clubId)
         {
-            var startTime = new DateTime(DateTime.Now.Year, 1, 15, 10, 0, 0);
+            var startTime = DateTime.Today.AddMonths(-1).AddHours(10);
             var flightDetails = new FlightDetails();
             flightDetails.StartType = 1; //Towing GLider flight
             flightDetails.GliderFlightDetailsData = CreateSchoolGliderFlightDetailsData(clubId, "HB-1824", startTime, 45);

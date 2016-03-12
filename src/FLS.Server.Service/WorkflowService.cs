@@ -23,6 +23,7 @@ namespace FLS.Server.Service
         private readonly LicenceExpireEmailBuildService _licenceExpireEmailBuildService;
         private readonly DataAccessService _dataAccessService;
         private readonly IdentityService _identityService;
+        private readonly InvoiceEmailBuildService _invoiceEmailBuildService;
 
         public WorkflowService(FlightService flightService, 
             ClubService clubService, 
@@ -38,7 +39,8 @@ namespace FLS.Server.Service
             FlightInformationEmailBuildService flightInformationEmailService,
             LicenceExpireEmailBuildService licenceExpireEmailBuildService,
             DataAccessService dataAccessService, 
-            IdentityService identityService)
+            IdentityService identityService,
+            InvoiceEmailBuildService invoiceEmailBuildService)
             : base(dataAccessService, identityService)
         {
             _flightService = flightService;
@@ -56,6 +58,7 @@ namespace FLS.Server.Service
             _licenceExpireEmailBuildService = licenceExpireEmailBuildService;
             _dataAccessService = dataAccessService;
             _identityService = identityService;
+            _invoiceEmailBuildService = invoiceEmailBuildService;
             Logger = LogManager.GetCurrentClassLogger();
         }
 
@@ -126,6 +129,12 @@ namespace FLS.Server.Service
                 ExecuteAircraftStatisticReportJob();
             }
 
+            if (DateTime.Now.Day == 3 && DateTime.Now.Hour == 23)
+            {
+                count++;
+                ExecuteInvoiceReportJob();
+            }
+
             Logger.Info(string.Format("Executed {0} workflows.", count));
         }
 
@@ -150,7 +159,7 @@ namespace FLS.Server.Service
         public void ExecuteInvoiceReportJob()
         {
             Logger.Info("Execute invoice report job.");
-            var job = new InvoiceReportJob(_invoiceService, _userService, _identityService);
+            var job = new InvoiceReportJob(_invoiceService, _userService, _identityService, _clubService, _invoiceEmailBuildService);
             job.Execute(null);
         }
     }

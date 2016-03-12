@@ -8,6 +8,7 @@ using FLS.Common.Extensions;
 using FLS.Data.WebApi.Invoicing;
 using FLS.Data.WebApi.Person;
 using FLS.Data.WebApi.Reporting;
+using Ionic.Zip;
 using NLog;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -21,117 +22,125 @@ namespace FLS.Server.Service.Exporting
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static void ExportInvoicesToExcel(List<FlightInvoiceDetails> flightInvoiceDetailList,
-                                                string exportDirectory)
+        public static byte[] ExportInvoicesToExcel(List<FlightInvoiceDetails> flightInvoiceDetailList)
         {
-            if (Directory.Exists(exportDirectory) == false)
-            {
-                Directory.CreateDirectory(exportDirectory);
-            }
-
-            DirectoryInfo outputDir = new DirectoryInfo(exportDirectory);
-
             var list = new List<string>();
             foreach (var flightInvoiceDetails in flightInvoiceDetailList)
             {
+                //check if there are some line items in the invoice, if not, check next invoice
+                if (flightInvoiceDetails.FlightInvoiceLineItems.Any() == false) continue;
+
                 if (list.Contains(flightInvoiceDetails.InvoiceRecipientPersonDisplayName) == false)
                 {
                     list.Add(flightInvoiceDetails.InvoiceRecipientPersonDisplayName);
                 }
             }
 
-            foreach (var recipient in list)
+            using (var memoryStream = new MemoryStream())
             {
-                var filename = "INV" + DateTime.Now.Date.ToString("yyyy-MM-dd") + recipient + ".xlsx";
-                filename = filename.SanitizeFilename();
-
-                FileInfo newFile = new FileInfo(outputDir.FullName + @"\" + filename);
-
-			    if (newFile.Exists)
-			    {
-				    newFile.Delete();  // ensures we create a new workbook
-                    newFile = new FileInfo(outputDir.FullName + @"\" + filename);
-			    }
-
-                using (ExcelPackage package = new ExcelPackage(newFile))
+                using (ZipFile zip = new ZipFile())
                 {
-                    // add a new worksheet to the empty workbook
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Tabelle");
-                    //Add the headers
-                    worksheet.Cells[1, 1].Value = "Flugnr";
-                    worksheet.Cells[1, 2].Value = "Pilot";
-                    worksheet.Cells[1, 3].Value = "Mitgliedernummer";
-                    worksheet.Cells[1, 4].Value = "Flugdatum";
-                    worksheet.Cells[1, 5].Value = "Immatrikulation";
-                    worksheet.Cells[1, 6].Value = "Flugart";
-                    worksheet.Cells[1, 7].Value = "Position";
-                    worksheet.Cells[1, 8].Value = "Produkt";
-                    worksheet.Cells[1, 9].Value = "Produktbezeichnung";
-                    worksheet.Cells[1, 10].Value = "Anzahl";
-                    worksheet.Cells[1, 11].Value = "Einheit";
-                    worksheet.Cells[1, 12].Value = "Schulung";
-
-                    worksheet.Cells[1, 1, 1, 12].Style.Font.Bold = true;
-
-                    int flightNr = 1;
-                    int rowNumber = 2;
-
-                    foreach (var flightInvoiceDetails in flightInvoiceDetailList)
+                    foreach (var recipient in list)
                     {
-                        if (flightInvoiceDetails.InvoiceRecipientPersonDisplayName != recipient)
+                        var filename = $"Rechnung {DateTime.Now.Date.ToString("yyyy-MM-dd")} {recipient}.xlsx";
+                        filename = filename.SanitizeFilename();
+
+
+                        using (ExcelPackage package = new ExcelPackage())
                         {
-                            continue;
-                        }
+                            // add a new worksheet to the empty workbook
+                            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Tabelle");
+                            //Add the headers
+                            worksheet.Cells[1, 1].Value = "Flugnr";
+                            worksheet.Cells[1, 2].Value = "Pilot";
+                            worksheet.Cells[1, 3].Value = "Mitgliedernummer";
+                            worksheet.Cells[1, 4].Value = "Flugdatum";
+                            worksheet.Cells[1, 5].Value = "Immatrikulation";
+                            worksheet.Cells[1, 6].Value = "Flugart";
+                            worksheet.Cells[1, 7].Value = "Position";
+                            worksheet.Cells[1, 8].Value = "Produkt";
+                            worksheet.Cells[1, 9].Value = "Produktbezeichnung";
+                            worksheet.Cells[1, 10].Value = "Anzahl";
+                            worksheet.Cells[1, 11].Value = "Einheit";
+                            worksheet.Cells[1, 12].Value = "Schulung";
 
-                        int flightBeginRowNumber = rowNumber;
+                            worksheet.Cells[1, 1, 1, 12].Style.Font.Bold = true;
 
-                        foreach (var flightInvoiceLineItem in flightInvoiceDetails.FlightInvoiceLineItems)
-                        {
-                            worksheet.Cells[rowNumber, 1].Value = flightNr;
-                            worksheet.Cells[rowNumber, 2].Value = flightInvoiceDetails.InvoiceRecipientPersonDisplayName;
-                            worksheet.Cells[rowNumber, 3].Value = flightInvoiceDetails.InvoiceRecipientPersonClubMemberNumber;
-                            worksheet.Cells[rowNumber, 4].Value = flightInvoiceDetails.FlightDate; //.ToShortDateString();
-                            worksheet.Cells[rowNumber, 5].Value = flightInvoiceDetails.AircraftImmatriculation;
-                            worksheet.Cells[rowNumber, 6].Value = flightInvoiceDetails.FlightInvoiceInfo;
-                            worksheet.Cells[rowNumber, 7].Value = flightInvoiceLineItem.InvoiceLinePosition;
-                            worksheet.Cells[rowNumber, 8].Value = flightInvoiceLineItem.ERPArticleNumber;
-                            worksheet.Cells[rowNumber, 9].Value = flightInvoiceLineItem.InvoiceLineText;
-                            worksheet.Cells[rowNumber, 10].Value = flightInvoiceLineItem.Quantity;
-                            worksheet.Cells[rowNumber, 11].Value = flightInvoiceLineItem.UnitType;
-                            worksheet.Cells[rowNumber, 12].Value = flightInvoiceDetails.AdditionalInfo;
-                            rowNumber++;
-                        }
+                            int flightNr = 1;
+                            int rowNumber = 2;
 
-                        flightNr++;
-
-                        if (flightNr%2 == 0)
-                        {
-                            using (var range = worksheet.Cells[flightBeginRowNumber, 1, rowNumber - 1, 12])
+                            foreach (var flightInvoiceDetails in flightInvoiceDetailList)
                             {
-                                range.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                range.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                                if (flightInvoiceDetails.InvoiceRecipientPersonDisplayName != recipient)
+                                {
+                                    continue;
+                                }
+
+                                int flightBeginRowNumber = rowNumber;
+
+                                foreach (var flightInvoiceLineItem in flightInvoiceDetails.FlightInvoiceLineItems)
+                                {
+                                    worksheet.Cells[rowNumber, 1].Value = flightNr;
+                                    worksheet.Cells[rowNumber, 2].Value =
+                                        flightInvoiceDetails.InvoiceRecipientPersonDisplayName;
+                                    worksheet.Cells[rowNumber, 3].Value =
+                                        flightInvoiceDetails.InvoiceRecipientPersonClubMemberNumber;
+                                    worksheet.Cells[rowNumber, 4].Value = flightInvoiceDetails.FlightDate;
+                                    //.ToShortDateString();
+                                    worksheet.Cells[rowNumber, 5].Value = flightInvoiceDetails.AircraftImmatriculation;
+                                    worksheet.Cells[rowNumber, 6].Value = flightInvoiceDetails.FlightInvoiceInfo;
+                                    worksheet.Cells[rowNumber, 7].Value = flightInvoiceLineItem.InvoiceLinePosition;
+                                    worksheet.Cells[rowNumber, 8].Value = flightInvoiceLineItem.ERPArticleNumber;
+                                    worksheet.Cells[rowNumber, 9].Value = flightInvoiceLineItem.InvoiceLineText;
+                                    worksheet.Cells[rowNumber, 10].Value = flightInvoiceLineItem.Quantity;
+                                    worksheet.Cells[rowNumber, 11].Value = flightInvoiceLineItem.UnitType;
+                                    worksheet.Cells[rowNumber, 12].Value = flightInvoiceDetails.AdditionalInfo;
+                                    rowNumber++;
+                                }
+
+                                flightNr++;
+
+                                if (flightNr%2 == 0 && rowNumber > flightBeginRowNumber)
+                                {
+                                    using (var range = worksheet.Cells[flightBeginRowNumber, 1, rowNumber - 1, 12])
+                                    {
+                                        range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                        range.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                                    }
+                                }
                             }
+
+                            if (rowNumber > 2)
+                            {
+                                worksheet.Cells[2, 1, rowNumber - 1, 12].Style.Numberformat.Format = "@";
+                                    //Format as text
+                                worksheet.Cells[2, 4, rowNumber - 1, 4].Style.Numberformat.Format = "dd.mm.yyyy";
+                                //Format as date
+                                worksheet.Cells[2, 7, rowNumber - 1, 8].Style.Numberformat.Format = "0";
+                                    //Format as number
+                                worksheet.Cells[2, 10, rowNumber - 1, 10].Style.Numberformat.Format = "0";
+                            }
+
+                            //Format as number
+                            worksheet.Cells.AutoFitColumns(0); //Autofit columns for all cells
+
+                            // set some document properties
+                            package.Workbook.Properties.Title = "Rechnung für " + recipient;
+                            package.Workbook.Properties.Author = "FLS Server (P. Schuler)";
+
+                            // set some extended property values
+                            package.Workbook.Properties.Company = "Flight Logging System";
+
+                            // save our new workbook and we are done!
+                            var excelBytes = package.GetAsByteArray();
+                            zip.AddEntry(filename, excelBytes.ToMemoryStream());
                         }
                     }
 
-                    worksheet.Cells[2, 1, rowNumber - 1, 12].Style.Numberformat.Format = "@";   //Format as text
-                    worksheet.Cells[2, 4, rowNumber - 1, 4].Style.Numberformat.Format = "dd.mm.yyyy";   //Format as date
-                    worksheet.Cells[2, 7, rowNumber - 1, 8].Style.Numberformat.Format = "0";   //Format as number
-                    worksheet.Cells[2, 10, rowNumber - 1, 10].Style.Numberformat.Format = "0";   //Format as number
-                    worksheet.Cells.AutoFitColumns(0);  //Autofit columns for all cells
-
-                    // set some document properties
-                    package.Workbook.Properties.Title = "Rechnung für " + recipient;
-                    package.Workbook.Properties.Author = "FLS Server (P. Schuler)";
-
-                    // set some extended property values
-                    package.Workbook.Properties.Company = "Flight Logging System";
-
-                    // save our new workbook and we are done!
-                    package.Save();
-
-                    Logger.Debug(string.Format("Excel file {0} written.", newFile.FullName));
+                    zip.Save(memoryStream);
                 }
+
+                return memoryStream.ToArray();
             }
         }
 
