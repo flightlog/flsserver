@@ -1,4 +1,5 @@
-﻿using FLS.Server.Service;
+﻿using System;
+using FLS.Server.Service;
 using FLS.Server.TestInfrastructure;
 using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
@@ -25,7 +26,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             _identityService = UnityContainer.Resolve<IdentityService>();
             _identityService.SetUser(user);
 
-            _flightHelper.CreateFlightsForInvoicingTests(user.ClubId);
+            _flightHelper.CreateFlightsForProffixInvoicingTests(user.ClubId, DateTime.Today.AddDays(-32));
         }
 
         [TestMethod]

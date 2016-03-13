@@ -165,5 +165,13 @@ namespace FLS.Server.Tests.Helpers
 
             return locationDetails;
         }
+
+        public Location GetLocation(string locationIcaoCode)
+        {
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                return context.Locations.FirstOrDefault(l => l.IcaoCode.ToLower() == locationIcaoCode.ToLower());
+            }
+        }
     }
 }

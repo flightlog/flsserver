@@ -11,6 +11,7 @@ using FLS.Server.Data.Enums;
 using FLS.Server.Data.Resources;
 using FLS.Server.Service.Invoicing;
 using NLog;
+using TrackerEnabledDbContext.Common.Extensions;
 
 namespace FLS.Server.Service
 {
@@ -716,6 +717,7 @@ namespace FLS.Server.Service
                 if (gliderFlight.TowFlight == null) return;
                 double activeFlightTime = gliderFlight.TowFlight.Duration.TotalMinutes;
                 bool hasUpperThresholdRules = false;
+                var lineItems = new SortedList<int, FlightInvoiceLineItem>();
 
                 var activeAircraftMappingRule = FindMatchingAircraftMappingRule(gliderFlight.TowFlight, activeFlightTime, gliderFlight.FlightType.FlightCode);
 
@@ -749,7 +751,7 @@ namespace FLS.Server.Service
                         UnitType = GetCostCenterUnitTypeString(CostCenterUnitType.PerFlightMinute)
                     };
 
-                    flightInvoiceDetails.FlightInvoiceLineItems.Add(invoiceLineItem);
+                    lineItems.Add(activeAircraftMappingRule.SortIndicator, invoiceLineItem);
 
                     if (activeAircraftMappingRule.UseRuleBelowFlightTimeMatchingValue)
                     {
@@ -760,6 +762,11 @@ namespace FLS.Server.Service
                     {
                         activeAircraftMappingRule = null;
                     }
+                }
+
+                foreach (var item in lineItems.OrderBy(x => x.Key))
+                {
+                    flightInvoiceDetails.FlightInvoiceLineItems.Add(item.Value);
                 }
             }
             catch (Exception ex)

@@ -55,12 +55,12 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
             LoginAsSystemAdmin();
             var clubDetails = InsertTestClubDetailsWebApi();
             var clubAdminUserDetails = InsertTestClubAdminUserWebApi(clubDetails.ClubId);
-            var clubUserAdminPassword = "TestClubAdminUserPassword";
+            var testClubAdminUserPassword = "TestClubAdminUserPassword";
             _userHelper.SetUser(TestConfigurationSettings.Instance.TestSystemAdminUsername);
-            _userHelper.SetUsersPassword(clubAdminUserDetails.UserId, clubUserAdminPassword);
+            _userHelper.SetUsersPassword(clubAdminUserDetails.UserId, testClubAdminUserPassword);
 
             //Setup new basic club settings and FlightTypes for TestClub
-            Login(clubAdminUserDetails.UserName, clubUserAdminPassword);
+            Login(clubAdminUserDetails.UserName, testClubAdminUserPassword);
             InsertFlightTypesWebApi();
 
             var homebaseDetails = InsertTestClubHomebase();
