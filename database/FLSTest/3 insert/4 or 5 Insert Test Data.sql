@@ -666,8 +666,8 @@ INSERT INTO [FlightTypes]
      VALUES
            (newid()
            ,@insertClubId
-           ,'Umschulung neues Flugzeug'
-           ,'55'
+           ,'Schulung auf Privatflugzeugg'
+           ,'79'
            ,0
            ,1
            ,0

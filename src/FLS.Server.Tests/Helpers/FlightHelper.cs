@@ -531,6 +531,228 @@ namespace FLS.Server.Tests.Helpers
             SetFlightAsLocked(flightDetails);
             #endregion UC6: create local trainee flight with 2 seat glider and more then 10 min. towing
 
+            #region UC7: create local solo trainee flight with 1 seat glider and less then 10 min. towing
+            //UC7: create local solo trainee flight with 1 seat glider and less then 10 min. towing
+            //HB - 1824 Schulung Grundschulung Solo
+            startTime = flightDate.AddHours(11).AddMinutes(50);
+            flightDetails = new FlightDetails();
+            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
+
+            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
+            {
+                AircraftId = gliderHB1824.AircraftId,
+                FlightComment = "Soloflug i.O.",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(14),
+                PilotPersonId = gliderTrainee.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = flightTypes.First(x => x.FlightCode == "80").FlightTypeId,
+                InstructorPersonId = instructor.PersonId
+            };
+
+            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
+            {
+                AircraftId = kcb.AircraftId,
+                FlightComment = "TowFlight",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(6),
+                PilotPersonId = towPilot.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = towFlightTypeId
+            };
+
+            _flightService.InsertFlightDetails(flightDetails);
+            flightDictionary.Add("UC7", flightDetails.FlightId);
+            SetFlightAsLocked(flightDetails);
+            #endregion UC7: create local solo trainee flight with 1 seat glider and less then 10 min. towing
+
+            #region UC8: create local solo further education flight with 1 seat glider and less then 10 min. towing
+            //UC8: create local solo further education flight with 1 seat glider and less then 10 min. towing
+            //HB - 2464 Weiterbildung Solo
+            startTime = flightDate.AddHours(12);
+            flightDetails = new FlightDetails();
+            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
+
+            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
+            {
+                AircraftId = gliderHB2464.AircraftId,
+                FlightComment = "Umschulung auf Discus 2cT i.O.",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(8),
+                PilotPersonId = gliderTrainee.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = flightTypes.First(x => x.FlightCode == "88").FlightTypeId,
+                InstructorPersonId = instructor.PersonId
+            };
+
+            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
+            {
+                AircraftId = kcb.AircraftId,
+                FlightComment = "TowFlight",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(5),
+                PilotPersonId = towPilot.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = towFlightTypeId
+            };
+
+            _flightService.InsertFlightDetails(flightDetails);
+            flightDictionary.Add("UC8", flightDetails.FlightId);
+            SetFlightAsLocked(flightDetails);
+            #endregion UC8: create local solo further education flight with 1 seat glider and less then 10 min. towing
+
+            #region UC9: create local further education flight with 2 seat glider and less then 10 min. towing
+            //UC9: create local further education flight with 2 seat glider and less then 10 min. towing
+            //HB - 3407 Weiterbildung Solo
+            startTime = flightDate.AddHours(12).AddMinutes(15);
+            flightDetails = new FlightDetails();
+            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
+
+            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
+            {
+                AircraftId = gliderHB3407.AircraftId,
+                FlightComment = "Umschulung auf Duo Discus i.O.",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(23),
+                PilotPersonId = gliderTrainee.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = flightTypes.First(x => x.FlightCode == "77").FlightTypeId,
+                InstructorPersonId = instructor.PersonId
+            };
+
+            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
+            {
+                AircraftId = kcb.AircraftId,
+                FlightComment = "TowFlight",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(8),
+                PilotPersonId = towPilot.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = towFlightTypeId
+            };
+
+            _flightService.InsertFlightDetails(flightDetails);
+            flightDictionary.Add("UC9", flightDetails.FlightId);
+            SetFlightAsLocked(flightDetails);
+            #endregion UC9: create local further education flight with 2 seat glider and less then 10 min. towing
+
+            #region UC10: create local check flight with 2 seat glider and less then 10 min. towing
+            //UC10: create local check flight with 2 seat glider and less then 10 min. towing
+            //HB - 3407 Jahres-Checkflug
+            startTime = flightDate.AddHours(13).AddMinutes(45);
+            flightDetails = new FlightDetails();
+            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
+
+            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
+            {
+                AircraftId = gliderHB3407.AircraftId,
+                FlightComment = "Jahres-Checkflug i.O.",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(18),
+                PilotPersonId = gliderTrainee.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = flightTypes.First(x => x.FlightCode == "78").FlightTypeId,
+                InstructorPersonId = instructor.PersonId
+            };
+
+            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
+            {
+                AircraftId = kcb.AircraftId,
+                FlightComment = "TowFlight",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(9),
+                PilotPersonId = towPilot.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = towFlightTypeId
+            };
+
+            _flightService.InsertFlightDetails(flightDetails);
+            flightDictionary.Add("UC10", flightDetails.FlightId);
+            SetFlightAsLocked(flightDetails);
+            #endregion UC10: create local check flight with 2 seat glider and less then 10 min. towing
+
+            #region UC11: create local check flight with rope cut simulation with 2 seat glider and less then 10 min. towing
+            //UC11: create local check flight with rope cut simulation with 2 seat glider and less then 10 min. towing
+            //HB - 3256 Jahres-Checkflug
+            startTime = flightDate.AddHours(14);
+            flightDetails = new FlightDetails();
+            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
+
+            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
+            {
+                AircraftId = gliderHB3256.AircraftId,
+                FlightComment = "Seilrissübung i.O.",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(3),
+                PilotPersonId = gliderTrainee.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = flightTypes.First(x => x.FlightCode == "78").FlightTypeId,
+                InstructorPersonId = instructor.PersonId
+            };
+
+            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
+            {
+                AircraftId = kcb.AircraftId,
+                FlightComment = "TowFlight",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(5),
+                PilotPersonId = towPilot.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = towFlightTypeId
+            };
+
+            _flightService.InsertFlightDetails(flightDetails);
+            flightDictionary.Add("UC11", flightDetails.FlightId);
+            SetFlightAsLocked(flightDetails);
+            #endregion UC11: create local check flight with rope cut simulation with 2 seat glider and less then 10 min. towing
+
+            #region UC12: create local private further education flight with 1 seat glider and less then 10 min. towing
+            //UC12: create local private further education flight with 1 seat glider and less then 10 min. towing
+            //HB - 3254 Jahres-Checkflug
+            startTime = flightDate.AddHours(14).AddMinutes(15);
+            flightDetails = new FlightDetails();
+            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
+
+            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
+            {
+                AircraftId = gliderHB3254.AircraftId,
+                FlightComment = "Umschulung auf Privatflugzeug i.O.",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(15),
+                PilotPersonId = gliderTrainee.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = flightTypes.First(x => x.FlightCode == "79").FlightTypeId,
+                InstructorPersonId = instructor.PersonId
+            };
+
+            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
+            {
+                AircraftId = kcb.AircraftId,
+                FlightComment = "TowFlight",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(7),
+                PilotPersonId = towPilot.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = towFlightTypeId
+            };
+
+            _flightService.InsertFlightDetails(flightDetails);
+            flightDictionary.Add("UC12", flightDetails.FlightId);
+            SetFlightAsLocked(flightDetails);
+            #endregion UC12: create local private further education flight with 1 seat glider and less then 10 min. towing
+
             //UC6: create local yearly check flight with 2 seat glider and less then 10 min. towing
             //UC7: create local yearly check flight with 2 seat glider and more then 10 min. towing
 
