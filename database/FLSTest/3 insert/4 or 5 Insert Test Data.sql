@@ -126,15 +126,15 @@ VALUES	(@clubFlightOperatorId, @flightOperatorRoleId)
 PRINT 'INSERT Persons'
 SET @personId = NEWID()
 INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
-VALUES (@personId, 'Muster', 'Hans', 'TowPilot', null, 'Köchlistrasse 1', null,  '8004', 'Zürich', null, @countryId, '044 333 88 88', '079 999 88 77', '044 666 55 44', null, 'hans@muster.ch', null, null, 1, 1, 0, 0, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
+VALUES (@personId, 'Rieterman', 'Conny', 'TowPilot', null, 'Köchlistrasse 1', null,  '8004', 'Zürich', null, @countryId, '044 333 88 88', '079 999 88 77', '044 666 55 44', null, 'hans@muster.ch', null, null, 1, 1, 0, 0, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
 INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator) VALUES (@personId, @insertClubId, '103000', 1, 1, 0, 0, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0)
 SET @personId = NEWID()
 INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
-VALUES (@personId, 'Huber', 'Christian', 'GliderPilot', null, 'Köchlistrasse 1', null,  '1234', 'Uster', null, @countryId, '044 333 88 22', '079 999 88 44', '044 666 55 44', null, 'hans2@muster.ch', null, null, 0, 0, 0, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
+VALUES (@personId, 'Stahel', 'Morli', 'GliderPilot', null, 'Köchlistrasse 1', null,  '1234', 'Uster', null, @countryId, '044 333 88 22', '079 999 88 44', '044 666 55 44', null, 'hans2@muster.ch', null, null, 0, 0, 0, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
 INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator) VALUES (@personId, @insertClubId, '222323', 0, 0, 0, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0)
 SET @personId = NEWID()
 INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
-VALUES (@personId, 'Tobler', 'Andreas', 'Teacher', null, 'Köchlistrasse 1', null,  '9544', 'Bichelsee', null, @countryId, '044 333 44 88', '079 999 88 33', '044 666 55 44', null, 'hans3@muster.ch', null, null, 0, 0, 1, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
+VALUES (@personId, 'Kellner', 'Hansli', 'Teacher', null, 'Köchlistrasse 1', null,  '9544', 'Bichelsee', null, @countryId, '044 333 44 88', '079 999 88 33', '044 666 55 44', null, 'hans3@muster.ch', null, null, 0, 0, 1, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
 INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator) VALUES (@personId, @insertClubId, '128321', 0, 0, 1, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0)
 SET @personId = NEWID()
 INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
@@ -177,27 +177,27 @@ PRINT 'INSERT Aircrafts'
 INSERT INTO Aircrafts (AircraftId, ManufacturerName, AircraftModel, AircraftType, Immatriculation, CompetitionSign, NrOfSeats, IsTowingOrWinchRequired, 
 IsTowingstartAllowed, IsWinchstartAllowed, IsTowingAircraft, 
 AircraftOwnerClubId, AircraftOwnerPersonId, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType) 
-VALUES (NEWID(), 'Maule Air', 'Maule MX-7', 8, 'HB-KXX', null, 4, 0, 0, 0, 1, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
+VALUES (NEWID(), 'Maule Air', 'Maule MX-7', 8, 'HB-KCB', null, 4, 0, 0, 0, 1, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
 INSERT INTO Aircrafts (AircraftId, ManufacturerName, AircraftModel, AircraftType, Immatriculation, CompetitionSign, NrOfSeats, IsTowingOrWinchRequired, 
 IsTowingstartAllowed, IsWinchstartAllowed, IsTowingAircraft, 
 AircraftOwnerClubId, AircraftOwnerPersonId, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType) 
-VALUES (NEWID(), 'Schempp-Hirth', 'Duo Discus', 1, 'HB-3400', 'IO', 2, 1, 1, 1, 0, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
+VALUES (NEWID(), 'Schempp-Hirth', 'Duo Discus', 1, 'HB-3407', 'ZO', 2, 1, 1, 1, 0, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
 INSERT INTO Aircrafts (AircraftId, ManufacturerName, AircraftModel, AircraftType, Immatriculation, CompetitionSign, NrOfSeats, IsTowingOrWinchRequired, 
 IsTowingstartAllowed, IsWinchstartAllowed, IsTowingAircraft, 
 AircraftOwnerClubId, AircraftOwnerPersonId, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType) 
-VALUES (NEWID(), 'DG Flugzeugbau', 'DG-505 Orion', 1, 'HB-3277', 'DF', 2, 1, 1, 1, 0, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
+VALUES (NEWID(), 'DG Flugzeugbau', 'DG-505 Orion', 1, 'HB-3256', 'FF', 2, 1, 1, 1, 0, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
 INSERT INTO Aircrafts (AircraftId, ManufacturerName, AircraftModel, AircraftType, Immatriculation, CompetitionSign, NrOfSeats, IsTowingOrWinchRequired, 
 IsTowingstartAllowed, IsWinchstartAllowed, IsTowingAircraft, 
 AircraftOwnerClubId, AircraftOwnerPersonId, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType) 
-VALUES (NEWID(), 'DG Flugzeugbau', 'LS-4', 1, 'HB-1887', 'FZ', 1, 1, 1, 1, 0, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
+VALUES (NEWID(), 'DG Flugzeugbau', 'LS-4', 1, 'HB-1824', 'FG', 1, 1, 1, 1, 0, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
 INSERT INTO Aircrafts (AircraftId, ManufacturerName, AircraftModel, AircraftType, Immatriculation, CompetitionSign, NrOfSeats, IsTowingOrWinchRequired, 
 IsTowingstartAllowed, IsWinchstartAllowed, IsTowingAircraft, 
 AircraftOwnerClubId, AircraftOwnerPersonId, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType) 
-VALUES (NEWID(), 'DG Flugzeugbau', 'DG-300', 1, 'HB-1755', 'HU', 1, 1, 1, 1, 0, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
+VALUES (NEWID(), 'DG Flugzeugbau', 'DG-300', 1, 'HB-1841', 'TU', 1, 1, 1, 1, 0, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
 INSERT INTO Aircrafts (AircraftId, ManufacturerName, AircraftModel, AircraftType, Immatriculation, CompetitionSign, NrOfSeats, IsTowingOrWinchRequired, 
 IsTowingstartAllowed, IsWinchstartAllowed, IsTowingAircraft, 
 AircraftOwnerClubId, AircraftOwnerPersonId, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType) 
-VALUES (NEWID(), 'Schempp-Hirth', 'Discus 2cT', 2, 'HB-2455', 'GH', 1, 1, 1, 1, 0, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
+VALUES (NEWID(), 'Schempp-Hirth', 'Discus 2cT', 2, 'HB-2464', 'GZ', 1, 1, 1, 1, 0, @insertClubId, null, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType)
 
 INSERT INTO Aircrafts (AircraftId, ManufacturerName, AircraftModel, AircraftType, Immatriculation, CompetitionSign, NrOfSeats, IsTowingOrWinchRequired, 
 IsTowingstartAllowed, IsWinchstartAllowed, IsTowingAircraft, 

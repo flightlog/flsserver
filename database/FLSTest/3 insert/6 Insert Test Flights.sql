@@ -46,8 +46,8 @@ SET @insertClubId = (SELECT TOP 1 ClubId FROM Clubs where ClubKey = 'TestClub')
 
 SET @ownerId = @insertClubId 
 
-SET @aircraftId = (SELECT TOP 1 aircraftId FROM Aircrafts where Immatriculation = 'HB-3400')
-SET @towingAircraftId = (SELECT TOP 1 aircraftId FROM Aircrafts where Immatriculation = 'HB-KXX')
+SET @aircraftId = (SELECT TOP 1 aircraftId FROM Aircrafts where Immatriculation = 'HB-3407')
+SET @towingAircraftId = (SELECT TOP 1 aircraftId FROM Aircrafts where Immatriculation = 'HB-KCB')
 SET @locationId = (SELECT TOP 1 LocationId FROM Locations WHERE IcaoCode = 'LSZK')
 SET @flightTypeId = (SELECT TOP 1  FlightTypeId FROM FlightTypes WHERE FlightCode = '63' AND ClubId = @insertClubId)
 SET @towFlightTypeId = (SELECT TOP 1  FlightTypeId FROM FlightTypes WHERE FlightCode = '90' AND ClubId = @insertClubId)
@@ -113,7 +113,7 @@ SET @TowFlightId = NULL
 SET @flightId = NEWID()
 SET @flightState = 20 --landed
 SET @flightCrewType = 1 --Pilot
-SET @aircraftId = (SELECT TOP 1 aircraftId FROM Aircrafts where Immatriculation = 'HB-3277')
+SET @aircraftId = (SELECT TOP 1 aircraftId FROM Aircrafts where Immatriculation = 'HB-3256')
 SET @flightTypeId = (SELECT TOP 1  FlightTypeId FROM FlightTypes WHERE FlightCode = '70' AND ClubId = @insertClubId)
 SET @flightAircraftType = 2
 
@@ -167,7 +167,7 @@ SET @TowFlightId = NULL
 SET @flightId = NEWID()
 SET @flightState = 10 --started
 SET @flightCrewType = 1 --Pilot
-SET @aircraftId = (SELECT TOP 1 aircraftId FROM Aircrafts where Immatriculation = 'HB-2455')
+SET @aircraftId = (SELECT TOP 1 aircraftId FROM Aircrafts where Immatriculation = 'HB-2464')
 SET @flightTypeId = (SELECT TOP 1  FlightTypeId FROM FlightTypes WHERE FlightCode = '60' AND ClubId = @insertClubId)
 SET @startTypeId = 3
 
