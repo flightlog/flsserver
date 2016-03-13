@@ -977,6 +977,12 @@ INSERT INTO [dbo].[PlanningDayAssignmentTypes]
      VALUES
            (@towingPilotAssignmentTypeId, 'Schlepppilot', @insertClubId, 1, SYSDATETIME(),		 @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
 
+INSERT INTO [dbo].[PlanningDayAssignmentTypes]
+           ([PlanningDayAssignmentTypeId],[AssignmentTypeName],[ClubId],[RequiredNrOfPlanningDayAssignments],
+		   [CreatedOn],[CreatedByUserId],[RecordState],[OwnerId],[OwnershipType],[IsDeleted])
+     VALUES
+           (NEWID(), 'Fluglehrer', @insertClubId, 1, SYSDATETIME(),		 @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
+
 
 
 
