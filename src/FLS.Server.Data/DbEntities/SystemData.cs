@@ -32,11 +32,9 @@ namespace FLS.Server.Data.DbEntities
         [Required]
         public bool UseSSLforSmtpConnection { get; set; }
         
-        [Required]
         [StringLength(100)]
         public string SmtpUsername { get; set; }
 
-        [Required]
         [StringLength(100)]
         public string SmtpPassword { get; set; }
 
@@ -45,9 +43,6 @@ namespace FLS.Server.Data.DbEntities
         public string SmtpServer { get; set; }
 
         public int SmtpPort { get; set; }
-
-        //[Column(TypeName = "datetime2")]
-        //public DateTime WorkflowStartsOn { get; set; }
 
         public int MaxUserLoginAttempts { get; set; }
 
@@ -63,7 +58,6 @@ namespace FLS.Server.Data.DbEntities
         [Required]
         public bool SendToBccRecipients { get; set; }
 
-        [Required]
         [StringLength(250)]
         public string BccRecipientEmailAddresses { get; set; }
 
