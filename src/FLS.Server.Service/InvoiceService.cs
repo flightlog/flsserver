@@ -721,6 +721,7 @@ namespace FLS.Server.Service
 
                 while (activeAircraftMappingRule != null)
                 {
+                    flightInvoiceDetails.IncludesTowFlightId = gliderFlight.TowFlightId;
                     if (activeAircraftMappingRule.MinFlightTimeMatchingValue > 0 && activeAircraftMappingRule.UseRuleBelowFlightTimeMatchingValue)
                     {
                         hasUpperThresholdRules = true;
