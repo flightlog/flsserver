@@ -11,5 +11,7 @@ namespace FLS.Data.WebApi.Flight
 
         public List<Guid> PassengerPersonIds { get; set; }
 
+        public int? NrOfPassengers { get; set; }
+
     }
 }

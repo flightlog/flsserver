@@ -50,6 +50,8 @@ namespace FLS.Server.Data.DbEntities
 
         public bool IsCouponNumberRequired { get; set; }
 
+        public int? MinNrOfAircraftSeatsRequired { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 
