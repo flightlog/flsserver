@@ -35,6 +35,8 @@ namespace FLS.Data.WebApi.Club
 
         public bool IsCouponNumberRequired { get; set; }
 
+        public int MinNrOfAircraftSeatsRequired { get; set; }
+
         public override Guid Id
         {
             get { return FlightTypeId; }

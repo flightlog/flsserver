@@ -1801,6 +1801,15 @@ namespace FLS.Server.Data.Mapping
             overview.IsSoloFlight = entity.IsSoloFlight;
             overview.IsCouponNumberRequired = entity.IsCouponNumberRequired;
 
+            if (entity.MinNrOfAircraftSeatsRequired.HasValue == false)
+            {
+                overview.MinNrOfAircraftSeatsRequired = 0;
+            }
+            else
+            {
+                overview.MinNrOfAircraftSeatsRequired = entity.MinNrOfAircraftSeatsRequired.Value;
+            }
+
             return overview;
         }
 
@@ -1828,6 +1837,15 @@ namespace FLS.Server.Data.Mapping
             details.IsSoloFlight = entity.IsSoloFlight;
             details.IsCouponNumberRequired = entity.IsCouponNumberRequired;
 
+            if (entity.MinNrOfAircraftSeatsRequired.HasValue == false)
+            {
+                details.MinNrOfAircraftSeatsRequired = 0;
+            }
+            else
+            {
+                details.MinNrOfAircraftSeatsRequired = entity.MinNrOfAircraftSeatsRequired.Value;
+            }
+
             return details;
         }
 
@@ -1854,6 +1872,7 @@ namespace FLS.Server.Data.Mapping
             entity.IsFlightCostBalanceSelectable = details.IsFlightCostBalanceSelectable;
             entity.IsSoloFlight = details.IsSoloFlight;
             entity.IsCouponNumberRequired = details.IsCouponNumberRequired;
+            entity.MinNrOfAircraftSeatsRequired = details.MinNrOfAircraftSeatsRequired;
 
             return entity;
         }
