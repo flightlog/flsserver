@@ -766,6 +766,7 @@ namespace FLS.Server.Service
 
                 foreach (var item in lineItems.OrderBy(x => x.Key))
                 {
+                    item.Value.InvoiceLinePosition = flightInvoiceDetails.FlightInvoiceLineItems.Count + 1;
                     flightInvoiceDetails.FlightInvoiceLineItems.Add(item.Value);
                 }
             }
