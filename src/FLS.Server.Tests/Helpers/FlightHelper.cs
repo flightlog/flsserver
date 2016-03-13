@@ -295,12 +295,15 @@ namespace FLS.Server.Tests.Helpers
             var gliderHB2464 = _aircraftHelper.GetAircraft("HB-2464");
             var gliderHB3256 = _aircraftHelper.GetAircraft("HB-3256");
             var gliderHB3407 = _aircraftHelper.GetAircraft("HB-3407");
+            var gliderHB3254 = _aircraftHelper.GetAircraft("HB-3254"); //privat, extern
             var kcb = _aircraftHelper.GetAircraft("HB-KCB");
             var kio = _aircraftHelper.GetAircraft("HB-KIO"); //Montricher Schlepp
             var gliderPilot = _personHelper.GetFirstGliderPilotPerson(clubId);
+            var gliderPilot2 = _personHelper.GetLastGliderPilotPerson(clubId);
             var instructor = _personHelper.GetFirstGliderInstructorPerson(clubId);
             var towPilot = _personHelper.GetFirstTowingPilotPerson(clubId);
             var gliderTrainee = _personHelper.GetFirstGliderTraineePerson(clubId);
+            var passenger = _personHelper.GetFirstPassengerPerson(clubId);
             var lszk = _locationHelper.GetLocation("LSZK"); //Speck
             var lszx = _locationHelper.GetLocation("LSZX"); //Schänis
             var lst = _locationHelper.GetLocation("LSTR"); //Montricher
@@ -308,8 +311,9 @@ namespace FLS.Server.Tests.Helpers
             var flightTypes = _clubHelper.GetFlightTypes(clubId);
             var towFlightTypeId = _clubHelper.GetFirstTowingFlightType(clubId).FlightTypeId;
 
+            #region UC1: create local charter flight with 1 seat glider and less then 10 min. towing
             //UC1: create local charter flight with 1 seat glider and less then 10 min. towing
-            //HB-1824 Privat Charter Clubflugzeug
+            //HB-1824 Charter Clubflugzeug
             var startTime = flightDate.AddHours(10);
             var flightDetails = new FlightDetails();
             flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
@@ -341,9 +345,12 @@ namespace FLS.Server.Tests.Helpers
             _flightService.InsertFlightDetails(flightDetails);
             flightDictionary.Add("UC1", flightDetails.FlightId);
             SetFlightAsLocked(flightDetails);
+            #endregion UC1: create local charter flight with 1 seat glider and less then 10 min. towing
 
+            #region UC2: create local charter flight with 1 seat glider and more then 10 min. towing
             //UC2: create local charter flight with 1 seat glider and more then 10 min. towing
-            startTime = flightDate.AddHours(10).AddMinutes(30);
+            //HB-2464 Charter Clubflugzeug
+            startTime = flightDate.AddHours(10).AddMinutes(15);
             flightDetails = new FlightDetails();
             flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
 
@@ -374,22 +381,26 @@ namespace FLS.Server.Tests.Helpers
             _flightService.InsertFlightDetails(flightDetails);
             flightDictionary.Add("UC2", flightDetails.FlightId);
             SetFlightAsLocked(flightDetails);
+            #endregion UC2: create local charter flight with 1 seat glider and more then 10 min. towing
 
-            //UC3: create charter flight from local and landing extern with 1 seat glider and more then 10 min. towing
-            startTime = flightDate.AddHours(10).AddMinutes(30);
+            #region UC3a: create local charter flight with 2 seat glider and more then 10 min. towing, pilot pays
+            //UC3a: create local charter flight with 2 seat glider and more then 10 min. towing, pilot pays
+            //HB-3407 Charter Clubflugzeug
+            startTime = flightDate.AddHours(10).AddMinutes(45);
             flightDetails = new FlightDetails();
             flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
 
             flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
             {
-                AircraftId = gliderHB2464.AircraftId,
-                FlightComment = "Charterflug",
+                AircraftId = gliderHB3407.AircraftId,
+                FlightComment = "Charterflug mit Copilot",
                 StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(355),
+                LdgDateTime = startTime.AddMinutes(65),
                 PilotPersonId = gliderPilot.PersonId,
                 StartLocationId = lszk.LocationId,
                 LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "60").FlightTypeId
+                FlightTypeId = flightTypes.First(x => x.FlightCode == "60").FlightTypeId,
+                CoPilotPersonId = gliderPilot2.PersonId
             };
 
             flightDetails.TowFlightDetailsData = new TowFlightDetailsData
@@ -397,7 +408,7 @@ namespace FLS.Server.Tests.Helpers
                 AircraftId = kcb.AircraftId,
                 FlightComment = "TowFlight",
                 StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(22),
+                LdgDateTime = startTime.AddMinutes(11),
                 PilotPersonId = towPilot.PersonId,
                 StartLocationId = lszk.LocationId,
                 LdgLocationId = lszk.LocationId,
@@ -405,12 +416,51 @@ namespace FLS.Server.Tests.Helpers
             };
 
             _flightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC2", flightDetails.FlightId);
+            flightDictionary.Add("UC3a", flightDetails.FlightId);
             SetFlightAsLocked(flightDetails);
+            #endregion UC3a: create local charter flight with 2 seat glider and more then 10 min. towing, pilot pays
 
-            //UC4: create local trainee flight with 2 seat glider and less then 10 min. towing
-            //HB - 3256 Schulung Grundschulung Doppelsteuer
+            #region UC4: create local private charter flight with 2 seat private glider and 10 min. towing
+            //UC4: create local private charter flight with 2 seat private glider and 10 min. towing
+            //HB-3254 Charter Privatflugzeug
             startTime = flightDate.AddHours(11);
+            flightDetails = new FlightDetails();
+            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
+
+            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
+            {
+                AircraftId = gliderHB3254.AircraftId,
+                FlightComment = "Charterflug Privat",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(355),
+                PilotPersonId = gliderPilot.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = flightTypes.First(x => x.FlightCode == "61").FlightTypeId,
+                CoPilotPersonId = passenger.PersonId
+            };
+
+            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
+            {
+                AircraftId = kcb.AircraftId,
+                FlightComment = "TowFlight",
+                StartDateTime = startTime,
+                LdgDateTime = startTime.AddMinutes(10),
+                PilotPersonId = towPilot.PersonId,
+                StartLocationId = lszk.LocationId,
+                LdgLocationId = lszk.LocationId,
+                FlightTypeId = towFlightTypeId
+            };
+
+            _flightService.InsertFlightDetails(flightDetails);
+            flightDictionary.Add("UC4", flightDetails.FlightId);
+            SetFlightAsLocked(flightDetails);
+            #endregion UC4: create local private charter flight with 2 seat private glider and 10 min. towing
+
+            #region UC5: create local trainee flight with 2 seat glider and less then 10 min. towing
+            //UC5: create local trainee flight with 2 seat glider and less then 10 min. towing
+            //HB - 3256 Schulung Grundschulung Doppelsteuer
+            startTime = flightDate.AddHours(11).AddMinutes(15);
             flightDetails = new FlightDetails();
             flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
 
@@ -440,12 +490,14 @@ namespace FLS.Server.Tests.Helpers
             };
 
             _flightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC4", flightDetails.FlightId);
+            flightDictionary.Add("UC5", flightDetails.FlightId);
             SetFlightAsLocked(flightDetails);
+            #endregion UC5: create local trainee flight with 2 seat glider and less then 10 min. towing
 
-            //UC5: create local trainee flight with 2 seat glider and more then 10 min. towing
+            #region UC6: create local trainee flight with 2 seat glider and more then 10 min. towing
+            //UC6: create local trainee flight with 2 seat glider and more then 10 min. towing
             //HB - 3256 Schulung Grundschulung Doppelsteuer
-            startTime = flightDate.AddHours(12);
+            startTime = flightDate.AddHours(11).AddMinutes(30);
             flightDetails = new FlightDetails();
             flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
 
@@ -475,8 +527,9 @@ namespace FLS.Server.Tests.Helpers
             };
 
             _flightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC5", flightDetails.FlightId);
+            flightDictionary.Add("UC6", flightDetails.FlightId);
             SetFlightAsLocked(flightDetails);
+            #endregion UC6: create local trainee flight with 2 seat glider and more then 10 min. towing
 
             //UC6: create local yearly check flight with 2 seat glider and less then 10 min. towing
             //UC7: create local yearly check flight with 2 seat glider and more then 10 min. towing

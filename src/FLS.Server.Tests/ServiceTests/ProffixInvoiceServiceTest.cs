@@ -79,6 +79,7 @@ namespace FLS.Server.Tests.ServiceTests
 
             foreach (var flightInvoiceDetails in invoices)
             {
+                #region UC1: create local charter flight with 1 seat glider and less then 10 min. towing
                 //UC1: local charter flight with 1 seat glider and less then 10 min. towing
                 //HB-1824 Privat Charter Clubflugzeug
                 if (flightInvoiceDetails.FlightId == flightsDictionary["UC1"])
@@ -126,7 +127,9 @@ namespace FLS.Server.Tests.ServiceTests
                         }
                     }
                 }
+                #endregion UC1: create local charter flight with 1 seat glider and less then 10 min. towing
 
+                #region UC2: create local charter flight with 1 seat glider and more then 10 min. towing
                 //UC2: create local charter flight with 1 seat glider and more then 10 min. towing
                 //HB-2464 Privat Charter Clubflugzeug
                 if (flightInvoiceDetails.FlightId == flightsDictionary["UC2"])
@@ -180,10 +183,112 @@ namespace FLS.Server.Tests.ServiceTests
                         }
                     }
                 }
+                #endregion UC2: create local charter flight with 1 seat glider and more then 10 min. towing
 
-                //UC4: create local trainee flight with 2 seat glider and less then 10 min. towing
-                //HB - 3256 Schulung Grundschulung Doppelsteuer
+                #region UC3a: create local charter flight with 2 seat glider and more then 10 min. towing, pilot pays
+                //UC3a: create local charter flight with 2 seat glider and more then 10 min. towing, pilot pays
+                //HB-3407 Charter Clubflugzeug
+                if (flightInvoiceDetails.FlightId == flightsDictionary["UC3a"])
+                {
+                    Assert.AreEqual(flightInvoiceDetails.FlightInvoiceLineItems.Count, 6);
+                    Assert.AreEqual(flightInvoiceDetails.AircraftImmatriculation, "HB-3407",
+                        "invoiced aircraft is not as expected");
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(flightInvoiceDetails.InvoiceRecipientPersonDisplayName));
+                    Assert.AreEqual(flightInvoiceDetails.FlightInvoiceInfo, "Charter Clubflugzeug");
+                    Assert.AreEqual(flightInvoiceDetails.AdditionalInfo, "0"); //keine Schulung
+
+                    foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
+                    {
+                        Assert.AreEqual(line.AdditionalInfo, null);
+
+                        if (line.InvoiceLinePosition == 1)
+                        {
+                            Assert.AreEqual(line.ERPArticleNumber, "1060"); //HB-3407 Privat Charter Clubflugzeug
+                            Assert.AreEqual(line.Quantity, 65);
+                            Assert.AreEqual(line.UnitType, "Minuten");
+                        }
+                        else if (line.InvoiceLinePosition == 2)
+                        {
+                            Assert.AreEqual(line.ERPArticleNumber, "1066"); //Schlepp Privat HB-KCB 1. bis 10. Min.
+                            Assert.AreEqual(line.Quantity, 10);
+                            Assert.AreEqual(line.UnitType, "Minuten");
+                        }
+                        else if (line.InvoiceLinePosition == 3)
+                        {
+                            Assert.AreEqual(line.ERPArticleNumber, "1067"); //Schlepp Privat HB-KCB ab 10. Min.
+                            Assert.AreEqual(line.Quantity, 1);
+                            Assert.AreEqual(line.UnitType, "Minuten");
+                        }
+                        else if (line.InvoiceLinePosition == 4)
+                        {
+                            Assert.AreEqual(line.ERPArticleNumber, "1086"); //Treibstoffzuschlag HB-KCB
+                            Assert.AreEqual(line.Quantity, 11);
+                            Assert.AreEqual(line.UnitType, "Minuten");
+                        }
+                        else if (line.InvoiceLinePosition == 5)
+                        {
+                            Assert.AreEqual(line.ERPArticleNumber, "1037"); //Landetaxen Speck
+                            Assert.AreEqual(line.Quantity, 1);
+                            Assert.AreEqual(line.UnitType, "Landung");
+                        }
+                        else if (line.InvoiceLinePosition == 6)
+                        {
+                            Assert.AreEqual(line.ERPArticleNumber, "1003"); //VFS-Gebühr
+                            Assert.AreEqual(line.Quantity, 2);
+                            Assert.AreEqual(line.UnitType, "Landung");
+                        }
+                    }
+                }
+                #endregion UC3a: create local charter flight with 2 seat glider and more then 10 min. towing, pilot pays
+
+                #region UC4: create local private charter flight with 2 seat private glider and 10 min. towing
+                //UC4: create local private charter flight with 2 seat private glider and 10 min. towing
+                //HB-3254 Charter Privatflugzeug
                 if (flightInvoiceDetails.FlightId == flightsDictionary["UC4"])
+                {
+                    Assert.AreEqual(flightInvoiceDetails.FlightInvoiceLineItems.Count, 4);
+                    Assert.AreEqual(flightInvoiceDetails.AircraftImmatriculation, "HB-3254",
+                        "invoiced aircraft is not as expected");
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(flightInvoiceDetails.InvoiceRecipientPersonDisplayName));
+                    Assert.AreEqual(flightInvoiceDetails.FlightInvoiceInfo, "Charter Privatflugzeug");
+                    Assert.AreEqual(flightInvoiceDetails.AdditionalInfo, "0"); //keine Schulung
+
+                    foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
+                    {
+                        Assert.AreEqual(line.AdditionalInfo, null);
+
+                        if (line.InvoiceLinePosition == 1)
+                        {
+                            Assert.AreEqual(line.ERPArticleNumber, "1066"); //Schlepp Privat HB-KCB 1. bis 10. Min.
+                            Assert.AreEqual(line.Quantity, 10);
+                            Assert.AreEqual(line.UnitType, "Minuten");
+                        }
+                        else if (line.InvoiceLinePosition == 2)
+                        {
+                            Assert.AreEqual(line.ERPArticleNumber, "1086"); //Treibstoffzuschlag HB-KCB
+                            Assert.AreEqual(line.Quantity, 10);
+                            Assert.AreEqual(line.UnitType, "Minuten");
+                        }
+                        else if (line.InvoiceLinePosition == 3)
+                        {
+                            Assert.AreEqual(line.ERPArticleNumber, "1037"); //Landetaxen Speck
+                            Assert.AreEqual(line.Quantity, 1);
+                            Assert.AreEqual(line.UnitType, "Landung");
+                        }
+                        else if (line.InvoiceLinePosition == 4)
+                        {
+                            Assert.AreEqual(line.ERPArticleNumber, "1003"); //VFS-Gebühr
+                            Assert.AreEqual(line.Quantity, 2);
+                            Assert.AreEqual(line.UnitType, "Landung");
+                        }
+                    }
+                }
+                #endregion UC4: create local private charter flight with 2 seat private glider and 10 min. towing
+
+                #region UC5: create local trainee flight with 2 seat glider and less then 10 min. towing
+                //UC5: create local trainee flight with 2 seat glider and less then 10 min. towing
+                //HB - 3256 Schulung Grundschulung Doppelsteuer
+                if (flightInvoiceDetails.FlightId == flightsDictionary["UC5"])
                 {
                     Assert.AreEqual(flightInvoiceDetails.FlightInvoiceLineItems.Count, 5);
                     Assert.AreEqual(flightInvoiceDetails.AircraftImmatriculation, "HB-3256",
@@ -228,10 +333,12 @@ namespace FLS.Server.Tests.ServiceTests
                         }
                     }
                 }
+                #endregion UC5: create local trainee flight with 2 seat glider and less then 10 min. towing
 
-                //UC5: create local trainee flight with 2 seat glider and more then 10 min. towing
+                #region UC6: create local trainee flight with 2 seat glider and more then 10 min. towing
+                //UC6: create local trainee flight with 2 seat glider and more then 10 min. towing
                 //HB - 3256 Schulung Grundschulung Doppelsteuer
-                if (flightInvoiceDetails.FlightId == flightsDictionary["UC5"])
+                if (flightInvoiceDetails.FlightId == flightsDictionary["UC6"])
                 {
                     Assert.AreEqual(flightInvoiceDetails.FlightInvoiceLineItems.Count, 6);
                     Assert.AreEqual(flightInvoiceDetails.AircraftImmatriculation, "HB-3256",
@@ -253,7 +360,7 @@ namespace FLS.Server.Tests.ServiceTests
                         else if (line.InvoiceLinePosition == 2)
                         {
                             Assert.AreEqual(line.ERPArticleNumber, "19"); //Fluglehrer-Honorar Kellner Hansli
-                            Assert.AreEqual(line.Quantity, 22);
+                            Assert.AreEqual(line.Quantity, 185);
                             Assert.AreEqual(line.UnitType, "Minuten");
                         }
                         else if (line.InvoiceLinePosition == 3)
@@ -282,6 +389,7 @@ namespace FLS.Server.Tests.ServiceTests
                         }
                     }
                 }
+                #endregion UC6: create local trainee flight with 2 seat glider and more then 10 min. towing
             }
         }
         

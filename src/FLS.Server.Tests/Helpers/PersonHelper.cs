@@ -223,11 +223,28 @@ namespace FLS.Server.Tests.Helpers
             }
         }
 
+        public Person GetFirstPassengerPerson(Guid clubId)
+        {
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                return context.Persons.FirstOrDefault(q => q.PersonClubs.Any(pc => pc.ClubId == clubId) && q.HasGliderPilotLicence == false && q.HasGliderTraineeLicence == false);
+            }
+        }
+
         public Person GetFirstGliderPilotPerson(Guid clubId)
         {
             using (var context = DataAccessService.CreateDbContext())
             {
                 return context.Persons.FirstOrDefault(q => q.PersonClubs.Any(pc => pc.ClubId == clubId) && q.HasGliderPilotLicence);
+            }
+        }
+
+        public Person GetLastGliderPilotPerson(Guid clubId)
+        {
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                var persons = context.Persons.Where(q => q.PersonClubs.Any(pc => pc.ClubId == clubId) && q.HasGliderPilotLicence).OrderBy(y => y.Lastname);
+                return persons.FirstOrDefault();
             }
         }
 
