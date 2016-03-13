@@ -1015,6 +1015,8 @@ namespace FLS.Server.Data.Mapping
                 }
             }
 
+            motorFlightDetailsData.NrOfPassengers = flight.NrOfPassengers;
+
             return motorFlightDetailsData;
         }
 
@@ -1293,6 +1295,7 @@ namespace FLS.Server.Data.Mapping
             entity.FlightAircraftType = (int) FlightAircraftTypeValue.MotorFlight;
             entity.BlockStartDateTime = details.BlockStartDateTime;
             entity.BlockEndDateTime = details.BlockEndDateTime;
+            entity.NrOfPassengers = details.NrOfPassengers;
 
             //converts the base flight stuff to the flight entity
             ((FlightDetailsData) details).ToFlight(entity, AircraftStartType.MotorFlightStart, detailsRelatedAircraft, detailsRelatedFlightType);

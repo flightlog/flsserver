@@ -106,6 +106,8 @@ namespace FLS.Server.Data.DbEntities
         [Column(TypeName = "datetime2")]
         public DateTime? InvoicePaidOn { get; set; }
 
+        public int? NrOfPassengers { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 
