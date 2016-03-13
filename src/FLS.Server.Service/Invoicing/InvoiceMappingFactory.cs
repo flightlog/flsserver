@@ -251,6 +251,7 @@ namespace FLS.Server.Service.Invoicing
                 MatchedFlightTypeCodes = new List<string>(invoiceMapping.FlightCodesForInstructorFee),
                 MinFlightTimeMatchingValue = 10,
                 MaxFlightTimeMatchingValue = int.MaxValue,
+                UseRuleBelowFlightTimeMatchingValue = true,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<Guid>()
             };
