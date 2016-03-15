@@ -943,6 +943,11 @@ namespace FLS.Server.Data
                 FlightCrews.Remove(orphan);
             }
 
+            foreach (var orphan in PlanningDayAssignments.Local.Where(a => a.AssignedPlanningDay == null).ToList())
+            {
+                PlanningDayAssignments.Remove(orphan);
+            }
+
             #region Added Entities
             foreach (var entry in ChangeTracker.Entries().Where(p => p.State == EntityState.Added))
             {

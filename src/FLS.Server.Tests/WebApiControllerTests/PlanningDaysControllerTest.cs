@@ -114,6 +114,15 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var putResult = PutAsync(result, "/api/v1/planningdays/" + id).Result;
 
             Assert.IsTrue(putResult.IsSuccessStatusCode);
+
+            var planningDayDetails = ConvertToModel<PlanningDayDetails>(putResult);
+
+            planningDayDetails.TowingPilotPersonId = null;
+            planningDayDetails.FlightOperatorPersonId = null;
+
+            var putResult2 = PutAsync(planningDayDetails, "/api/v1/planningdays/" + id).Result;
+
+            Assert.IsTrue(putResult2.IsSuccessStatusCode);
         }
 
         [TestMethod]
