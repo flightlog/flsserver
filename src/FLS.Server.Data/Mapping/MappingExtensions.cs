@@ -2782,7 +2782,7 @@ namespace FLS.Server.Data.Mapping
             }
             else
             {
-                entity.PlanningDayAssignments.Remove(flightOperatorAssignment);
+                if (flightOperatorAssignment != null) entity.PlanningDayAssignments.Remove(flightOperatorAssignment);
             }
 
             //handle tow pilot assignments
@@ -2805,7 +2805,7 @@ namespace FLS.Server.Data.Mapping
             }
             else
             {
-                entity.PlanningDayAssignments.Remove(towingPilotAssignment);
+                if (towingPilotAssignment != null) entity.PlanningDayAssignments.Remove(towingPilotAssignment);
             }
 
             //handle instructor assignments
@@ -2833,7 +2833,7 @@ namespace FLS.Server.Data.Mapping
                 }
                 else
                 {
-                    entity.PlanningDayAssignments.Remove(instructorAssignment);
+                    if (instructorAssignment != null) entity.PlanningDayAssignments.Remove(instructorAssignment);
                 }
             }
 
