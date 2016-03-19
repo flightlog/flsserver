@@ -15,22 +15,12 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class AircraftOperatingCountersControllerTest : BaseAuthenticatedTests
     {
-        private AircraftHelper _aircraftHelper;
-        private FlightHelper _flightHelper;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _aircraftHelper = UnityContainer.Resolve<AircraftHelper>();
-            _flightHelper = UnityContainer.Resolve<FlightHelper>();
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetAircraftEngineOperatingCounterResultOverviewWebApiTest()
         {
             //create new motor aircraft
-            var aircraftDetails = _aircraftHelper.CreateMotorAircraftDetails();
+            var aircraftDetails = CreateMotorAircraftDetails();
             var response = PostAsync(aircraftDetails, "/api/v1/aircrafts").Result;
 
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
@@ -71,7 +61,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsFalse(result.AircraftHasNoEngine);
             Assert.IsTrue(result.EngineOperatingCounterInMinutes == 1255.5m);
 
-            var flightDetails = _flightHelper.CreateMotorFlightDetails(ClubId);
+            var flightDetails = CreateMotorFlightDetails(ClubId);
             flightDetails.MotorFlightDetailsData.AircraftId = responseAircraftDetails.AircraftId;
             flightDetails.MotorFlightDetailsData.StartDateTime = new DateTime(2015, 1, 10, 10, 0, 0);
             flightDetails.MotorFlightDetailsData.LdgDateTime = new DateTime(2015, 1, 10, 11, 15, 0);
@@ -97,7 +87,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         public void GetAircraftOperatingCounterOverviewWebApiTest()
         {
             //InsertAircraftReservationsWebApiTest();
-            var aircraftId = _aircraftHelper.GetFirstTowingAircraft().AircraftId;
+            var aircraftId = GetFirstTowingAircraft().AircraftId;
             var response = GetAsync<IEnumerable<AircraftOperatingCounterOverview>>(RoutePrefix + "/aircraft/" + aircraftId).Result;
 
             //Assert.IsTrue(response.Any());

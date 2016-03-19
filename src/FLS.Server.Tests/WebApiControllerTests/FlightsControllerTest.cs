@@ -14,24 +14,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class FlightsControllerTest : BaseAuthenticatedTests
     {
-        private FlightHelper _flightHelper;
-        private PersonHelper _personHelper;
-        private ClubHelper _clubHelper;
-        private AircraftHelper _aircraftHelper;
-        private LocationHelper _locationHelper;
-        private DataAccessService _dataAccessService;
-        
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _flightHelper = UnityContainer.Resolve<FlightHelper>();
-            _personHelper = UnityContainer.Resolve<PersonHelper>();
-            _clubHelper = UnityContainer.Resolve<ClubHelper>();
-            _aircraftHelper = UnityContainer.Resolve<AircraftHelper>();
-            _locationHelper = UnityContainer.Resolve<LocationHelper>();
-            _dataAccessService = UnityContainer.Resolve<DataAccessService>();
-        }
-
         #region MotorFlights
 
         [TestMethod]
@@ -42,7 +24,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             Assert.IsTrue(overview.Any());
 
-            var flightDetails = _flightHelper.CreateMotorFlightDetails(ClubId);
+            var flightDetails = CreateMotorFlightDetails(ClubId);
 
             var response = PostAsync(flightDetails, "/api/v1/flights").Result;
 
@@ -103,9 +85,9 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void InsertGliderFlightDetailsWebApiTest()
         {
-            var flightDetails = _flightHelper.CreateGliderFlightDetails(ClubId);
-            flightDetails.GliderFlightDetailsData.CoPilotPersonId = _personHelper.GetDifferentPerson(_personHelper.GetFirstPerson().PersonId).PersonId;
-            flightDetails.GliderFlightDetailsData.PassengerPersonId = _personHelper.GetDifferentPerson(_personHelper.GetFirstPerson().PersonId).PersonId;
+            var flightDetails = CreateGliderFlightDetails(ClubId);
+            flightDetails.GliderFlightDetailsData.CoPilotPersonId = GetDifferentPerson(GetFirstPerson().PersonId).PersonId;
+            flightDetails.GliderFlightDetailsData.PassengerPersonId = GetDifferentPerson(GetFirstPerson().PersonId).PersonId;
 
             var response = PostAsync(flightDetails, "/api/v1/flights").Result;
 
@@ -121,12 +103,12 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void InsertOneSeatGliderFlightDetailsWebApiTest()
         {
-            var flightDetails = _flightHelper.CreateOneSeatGliderFlightDetails(ClubId);
-            flightDetails.GliderFlightDetailsData.FlightTypeId = _clubHelper.GetFirstSoloGliderFlightType(ClubId).FlightTypeId;
+            var flightDetails = CreateOneSeatGliderFlightDetails(ClubId);
+            flightDetails.GliderFlightDetailsData.FlightTypeId = GetFirstSoloGliderFlightType(ClubId).FlightTypeId;
 
             //add some other stuff, which must be removed by server logic as it is only a one seat glider
-            flightDetails.GliderFlightDetailsData.CoPilotPersonId = _personHelper.GetDifferentPerson(_personHelper.GetFirstPerson().PersonId).PersonId;
-            flightDetails.GliderFlightDetailsData.PassengerPersonId = _personHelper.GetDifferentPerson(_personHelper.GetFirstPerson().PersonId).PersonId;
+            flightDetails.GliderFlightDetailsData.CoPilotPersonId = GetDifferentPerson(GetFirstPerson().PersonId).PersonId;
+            flightDetails.GliderFlightDetailsData.PassengerPersonId = GetDifferentPerson(GetFirstPerson().PersonId).PersonId;
 
             var response = PostAsync(flightDetails, "/api/v1/flights").Result;
 
@@ -145,7 +127,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void InsertMinimalGliderFlightDetailsWebApiTest()
         {
-            var flightDetails = _flightHelper.CreateMinimalGliderFlightDetails(ClubId);
+            var flightDetails = CreateMinimalGliderFlightDetails(ClubId);
 
             var response = PostAsync(flightDetails, "/api/v1/flights").Result;
 
@@ -190,8 +172,8 @@ namespace FLS.Server.Tests.WebApiControllerTests
             //create a minimal glider flight (set only aircraft and trainee)
             var flightDetails = new FlightDetails();
             var gliderData = new GliderFlightDetailsData();
-            gliderData.AircraftId = _aircraftHelper.GetFirstDoubleSeatGlider().AircraftId;
-            gliderData.PilotPersonId = _personHelper.GetFirstGliderTraineePerson(ClubId).PersonId;
+            gliderData.AircraftId = GetFirstDoubleSeatGlider().AircraftId;
+            gliderData.PilotPersonId = GetFirstGliderTraineePerson(ClubId).PersonId;
             flightDetails.GliderFlightDetailsData = gliderData;
 
             var response = PostAsync(flightDetails, "/api/v1/flights").Result;
@@ -211,7 +193,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.FlightComment);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.CouponNumber);
             Assert.IsNull(responsedFlightDetails.TowFlightDetailsData);
-            var flight = _flightHelper.GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
+            var flight = GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
             Assert.IsNotNull(flight);
             Assert.IsNull(flight.ModifiedOn);
             Assert.IsNull(flight.ModifiedByUserId);
@@ -223,9 +205,9 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             //update with Flight Type and instructor person
             flightDetails.GliderFlightDetailsData.FlightTypeId =
-                _clubHelper.GetFirstInstructorRequiredGliderFlightType(ClubId).FlightTypeId;
+                GetFirstInstructorRequiredGliderFlightType(ClubId).FlightTypeId;
             flightDetails.GliderFlightDetailsData.InstructorPersonId =
-                _personHelper.GetFirstGliderInstructorPerson(ClubId).PersonId;
+                GetFirstGliderInstructorPerson(ClubId).PersonId;
 
             response = PutAsync(flightDetails, "/api/v1/flights/" + flightDetails.FlightId).Result;
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
@@ -240,7 +222,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.CouponNumber);
             Assert.IsNull(responsedFlightDetails.TowFlightDetailsData);
 
-            flight = _flightHelper.GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
+            flight = GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
             Assert.IsNotNull(flight);
             Assert.IsNotNull(flight.ModifiedOn);
             Assert.IsTrue(flight.ModifiedOn.Value >= utcNow);
@@ -252,9 +234,9 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             //add Towflight data
             var towFlightData = new TowFlightDetailsData();
-            towFlightData.AircraftId = _aircraftHelper.GetFirstTowingAircraft().AircraftId;
-            towFlightData.PilotPersonId = _personHelper.GetFirstTowingPilotPerson(ClubId).PersonId;
-            towFlightData.FlightTypeId = _clubHelper.GetFirstTowingFlightType(ClubId).FlightTypeId;
+            towFlightData.AircraftId = GetFirstTowingAircraft().AircraftId;
+            towFlightData.PilotPersonId = GetFirstTowingPilotPerson(ClubId).PersonId;
+            towFlightData.FlightTypeId = GetFirstTowingFlightType(ClubId).FlightTypeId;
             flightDetails.TowFlightDetailsData = towFlightData;
 
             response = PutAsync(flightDetails, "/api/v1/flights/" + flightDetails.FlightId).Result;
@@ -275,7 +257,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual((int)FlightState.New, responsedFlightDetails.TowFlightDetailsData.FlightState);
             Assert.IsTrue(responsedFlightDetails.TowFlightDetailsData.NrOfLdgs.HasValue == false || responsedFlightDetails.TowFlightDetailsData.NrOfLdgs.Value == 0);
 
-            flight = _flightHelper.GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
+            flight = GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
             Assert.IsNotNull(flight);
             Assert.IsNotNull(flight.ModifiedOn);
             Assert.IsTrue(flight.ModifiedOn.Value >= utcNow);
@@ -283,7 +265,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(flight.CreatedOn >= utcNow);
             Assert.AreEqual(flight.CreatedByUserId, MyUserDetails.UserId);
             
-            var towFlight = _flightHelper.GetFlight(responsedFlightDetails.TowFlightDetailsData.FlightId);
+            var towFlight = GetFlight(responsedFlightDetails.TowFlightDetailsData.FlightId);
             Assert.IsNotNull(towFlight);
             Assert.IsNull(towFlight.ModifiedOn);
             Assert.IsNull(towFlight.ModifiedByUserId);
@@ -295,7 +277,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             //start the flight
             var startTime = DateTime.Now;
             flightDetails.GliderFlightDetailsData.StartDateTime = startTime;
-            flightDetails.GliderFlightDetailsData.StartLocationId = _locationHelper.GetFirstLocation().LocationId;
+            flightDetails.GliderFlightDetailsData.StartLocationId = GetFirstLocation().LocationId;
 
             response = PutAsync(flightDetails, "/api/v1/flights/" + flightDetails.FlightId).Result;
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
@@ -325,7 +307,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(responsedFlightDetails.GliderFlightDetailsData.StartDateTime, responsedFlightDetails.TowFlightDetailsData.StartDateTime);
             Assert.AreEqual(responsedFlightDetails.GliderFlightDetailsData.StartLocationId, responsedFlightDetails.TowFlightDetailsData.StartLocationId);
 
-            flight = _flightHelper.GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
+            flight = GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
             Assert.IsNotNull(flight);
             Assert.IsNotNull(flight.ModifiedOn);
             Assert.IsTrue(flight.ModifiedOn.Value >= utcNow);
@@ -333,7 +315,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(flight.CreatedOn >= utcNow);
             Assert.AreEqual(flight.CreatedByUserId, MyUserDetails.UserId);
 
-            towFlight = _flightHelper.GetFlight(responsedFlightDetails.TowFlightDetailsData.FlightId);
+            towFlight = GetFlight(responsedFlightDetails.TowFlightDetailsData.FlightId);
             Assert.IsNotNull(towFlight);
             Assert.IsNotNull(towFlight.ModifiedOn);
             Assert.IsTrue(towFlight.ModifiedOn.Value >= utcNow);
@@ -378,7 +360,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(responsedFlightDetails.GliderFlightDetailsData.StartDateTime, responsedFlightDetails.TowFlightDetailsData.StartDateTime);
             Assert.AreEqual(responsedFlightDetails.GliderFlightDetailsData.StartLocationId, responsedFlightDetails.TowFlightDetailsData.StartLocationId);
 
-            flight = _flightHelper.GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
+            flight = GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
             Assert.IsNotNull(flight);
             Assert.IsNotNull(flight.ModifiedOn);
             Assert.IsTrue(flight.ModifiedOn.Value >= utcNow);
@@ -386,7 +368,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(flight.CreatedOn >= utcNow);
             Assert.AreEqual(flight.CreatedByUserId, MyUserDetails.UserId);
 
-            towFlight = _flightHelper.GetFlight(responsedFlightDetails.TowFlightDetailsData.FlightId);
+            towFlight = GetFlight(responsedFlightDetails.TowFlightDetailsData.FlightId);
             Assert.IsNotNull(towFlight);
             Assert.IsNotNull(towFlight.ModifiedOn);
             Assert.IsTrue(towFlight.ModifiedOn.Value >= utcNow);
@@ -435,7 +417,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(responsedFlightDetails.GliderFlightDetailsData.StartDateTime, responsedFlightDetails.TowFlightDetailsData.StartDateTime);
             Assert.AreEqual(responsedFlightDetails.GliderFlightDetailsData.StartLocationId, responsedFlightDetails.TowFlightDetailsData.StartLocationId);
 
-            flight = _flightHelper.GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
+            flight = GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
             Assert.IsNotNull(flight);
             Assert.IsNotNull(flight.ModifiedOn);
             Assert.IsTrue(flight.ModifiedOn.Value >= utcNow);
@@ -443,7 +425,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(flight.CreatedOn >= utcNow);
             Assert.AreEqual(flight.CreatedByUserId, MyUserDetails.UserId);
 
-            towFlight = _flightHelper.GetFlight(responsedFlightDetails.TowFlightDetailsData.FlightId);
+            towFlight = GetFlight(responsedFlightDetails.TowFlightDetailsData.FlightId);
             Assert.IsNotNull(towFlight);
             Assert.IsNotNull(towFlight.ModifiedOn);
             Assert.IsTrue(towFlight.ModifiedOn.Value >= utcNow);
@@ -491,7 +473,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(responsedFlightDetails.GliderFlightDetailsData.StartDateTime, responsedFlightDetails.TowFlightDetailsData.StartDateTime);
             Assert.AreEqual(responsedFlightDetails.GliderFlightDetailsData.StartLocationId, responsedFlightDetails.TowFlightDetailsData.StartLocationId);
 
-            flight = _flightHelper.GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
+            flight = GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
             Assert.IsNotNull(flight);
             Assert.IsNotNull(flight.ModifiedOn);
             Assert.IsTrue(flight.ModifiedOn.Value >= utcNow);
@@ -499,7 +481,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(flight.CreatedOn >= utcNow);
             Assert.AreEqual(flight.CreatedByUserId, MyUserDetails.UserId);
 
-            towFlight = _flightHelper.GetFlight(responsedFlightDetails.TowFlightDetailsData.FlightId);
+            towFlight = GetFlight(responsedFlightDetails.TowFlightDetailsData.FlightId);
             Assert.IsNotNull(towFlight);
             Assert.IsNotNull(towFlight.ModifiedOn);
             Assert.IsTrue(towFlight.ModifiedOn.Value >= utcNow);
@@ -517,11 +499,11 @@ namespace FLS.Server.Tests.WebApiControllerTests
             //create a minimal glider flight (set only aircraft and trainee, with additional persons
             var flightDetails = new FlightDetails();
             var gliderData = new GliderFlightDetailsData();
-            gliderData.AircraftId = _aircraftHelper.GetFirstDoubleSeatGlider().AircraftId;
-            gliderData.PilotPersonId = _personHelper.GetFirstGliderTraineePerson(ClubId).PersonId;
-            gliderData.CoPilotPersonId = _personHelper.GetFirstGliderPilotPerson(ClubId).PersonId;
-            gliderData.InstructorPersonId = _personHelper.GetFirstGliderInstructorPerson(ClubId).PersonId;
-            gliderData.PassengerPersonId = _personHelper.GetFirstPerson(ClubId).PersonId;
+            gliderData.AircraftId = GetFirstDoubleSeatGlider().AircraftId;
+            gliderData.PilotPersonId = GetFirstGliderTraineePerson(ClubId).PersonId;
+            gliderData.CoPilotPersonId = GetFirstGliderPilotPerson(ClubId).PersonId;
+            gliderData.InstructorPersonId = GetFirstGliderInstructorPerson(ClubId).PersonId;
+            gliderData.PassengerPersonId = GetFirstPerson(ClubId).PersonId;
             flightDetails.GliderFlightDetailsData = gliderData;
 
             var response = PostAsync(flightDetails, "/api/v1/flights").Result;
@@ -552,12 +534,12 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             //update with Flight Type 
             flightDetails.GliderFlightDetailsData.FlightTypeId =
-                _clubHelper.GetFirstInstructorRequiredGliderFlightType(ClubId).FlightTypeId;
+                GetFirstInstructorRequiredGliderFlightType(ClubId).FlightTypeId;
             flightDetails.GliderFlightDetailsData.InstructorPersonId =
-                _personHelper.GetFirstGliderInstructorPerson(ClubId).PersonId;
-            flightDetails.GliderFlightDetailsData.CoPilotPersonId = _personHelper.GetFirstGliderPilotPerson(ClubId).PersonId;
-            flightDetails.GliderFlightDetailsData.InstructorPersonId = _personHelper.GetFirstGliderInstructorPerson(ClubId).PersonId;
-            flightDetails.GliderFlightDetailsData.PassengerPersonId = _personHelper.GetFirstPerson(ClubId).PersonId;
+                GetFirstGliderInstructorPerson(ClubId).PersonId;
+            flightDetails.GliderFlightDetailsData.CoPilotPersonId = GetFirstGliderPilotPerson(ClubId).PersonId;
+            flightDetails.GliderFlightDetailsData.InstructorPersonId = GetFirstGliderInstructorPerson(ClubId).PersonId;
+            flightDetails.GliderFlightDetailsData.PassengerPersonId = GetFirstPerson(ClubId).PersonId;
 
             response = PutAsync(flightDetails, "/api/v1/flights/" + flightDetails.FlightId).Result;
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
@@ -582,7 +564,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         public void DeleteTowedGliderFlightDetailsWebApiTest()
         {
             //insert a new flight which we can delete later
-            var flightDetails = _flightHelper.CreateTowedGliderFlightDetails(ClubId);
+            var flightDetails = CreateTowedGliderFlightDetails(ClubId);
             var response = PostAsync(flightDetails, "/api/v1/flights").Result;
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
             var responseDetails = ConvertToModel<FlightDetails>(response);
@@ -593,7 +575,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var deleteResponse = DeleteAsync("/api/v1/flights/" + responseDetails.FlightId).Result;
             Assert.IsTrue(deleteResponse.IsSuccessStatusCode, string.Format("Error while delete flight with Status Code: {0}", deleteResponse.StatusCode));
 
-            using (var context = _dataAccessService.CreateDbContext())
+            using (var context = DataAccessService.CreateDbContext())
             {
                 string sql =
                     string.Format(
@@ -610,7 +592,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void TowFlightIsSoloFlightDetailsWebApiTest()
         {
-            var flightDetails = _flightHelper.CreateTowedGliderFlightDetails(ClubId);
+            var flightDetails = CreateTowedGliderFlightDetails(ClubId);
             var response = PostAsync(flightDetails, "/api/v1/flights").Result;
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
             var responseDetails = ConvertToModel<FlightDetails>(response);

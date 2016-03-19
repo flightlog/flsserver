@@ -123,6 +123,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
@@ -163,20 +164,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="BaseTestConfig.cs" />
+    <Compile Include="BaseTest.cs" />
     <Compile Include="Extensions\FLSMetaDataExtensions.cs" />
     <Compile Include="FLSCommonTests\AssemblyUtilTest.cs" />
-    <Compile Include="Helpers\AircraftHelper.cs" />
-    <Compile Include="Helpers\AircraftReservationHelper.cs" />
-    <Compile Include="Helpers\BaseHelper.cs" />
-    <Compile Include="Helpers\ClubHelper.cs" />
     <Compile Include="Helpers\CompetitionSignWrapper.cs" />
-    <Compile Include="Helpers\ReportingHelper.cs" />
-    <Compile Include="Helpers\FlightHelper.cs" />
-    <Compile Include="Helpers\LocationHelper.cs" />
-    <Compile Include="Helpers\PersonHelper.cs" />
-    <Compile Include="Helpers\PlanningDayHelper.cs" />
-    <Compile Include="Helpers\UserHelper.cs" />
     <Compile Include="Infrastructure\DatabasePreparer.cs" />
     <Compile Include="Infrastructure\ResourceExtractor.cs" />
     <Compile Include="Mocks\Services\MockEmailSendService.cs" />
@@ -194,7 +185,6 @@
     <Compile Include="WebApiControllerTests\DashboardsControllerTest.cs" />
     <Compile Include="WebApiControllerTests\AircraftTypesControllerTest.cs" />
     <Compile Include="WebApiControllerTests\AircraftReservationsControllerTest.cs" />
-    <Compile Include="Infrastructure\WebApi\AdditionalTestDataController.cs" />
     <Compile Include="WebApiControllerTests\EmailTemplatesControllerTest.cs" />
     <Compile Include="WebApiControllerTests\PersonCategoriesControllerTest.cs" />
     <Compile Include="WebApiControllerTests\SystemDatasControllerTest.cs" />
@@ -216,7 +206,6 @@
     <Compile Include="WebApiControllerTests\PlanningDaysControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceTests\AircraftServiceTest.cs" />
-    <Compile Include="ServiceTests\BaseServiceTest.cs" />
     <Compile Include="ServiceTests\FlightServiceTest.cs" />
     <Compile Include="ServiceTests\LocationServiceTest.cs" />
     <Compile Include="Infrastructure\WebApi\TestStartup.cs" />
@@ -253,6 +242,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="FlightInvoiceTestdata.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FLS.Common\FLS.Common.csproj">

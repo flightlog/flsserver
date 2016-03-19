@@ -17,24 +17,12 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class AuditLogsControllerTest : BaseAuthenticatedTests
     {
-        private LocationHelper _locationHelper;
-        private DataAccessService _dataAccessService;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _locationHelper = UnityContainer.Resolve<LocationHelper>();
-            _dataAccessService = UnityContainer.Resolve<DataAccessService>();
-            //_locationHelper.SetUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetAuditLogOverviewWebApiTest()
         {
             //insert location to create some audit logs
-            var locationDetails = _locationHelper.CreateLocationDetails(_locationHelper.GetCountry("CH"),
-                _locationHelper.GetFirstLocationType());
+            var locationDetails = CreateLocationDetails(GetCountry("CH"), GetFirstLocationType());
 
             var response = PostAsync(locationDetails, "/api/v1/locations").Result;
 

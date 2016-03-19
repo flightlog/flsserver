@@ -14,17 +14,15 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
     /// <see cref="http://www.aaron-powell.com/posts/2014-01-12-integration-testing-katana-with-auth.html"/>
     /// </summary>
     [TestClass]
-    public abstract class BaseServerTest : BaseTestConfig
+    public abstract class BaseServerTest : BaseTest
     {
         protected TestServer TestServer { get; set; }
-
-        protected static IUnityContainer UnityContainer { get; set; }
 
         protected TimeSpan TimeOut { get; set; }
 
         //TODO: make this method as assemblyInitialize? --> http://shawnmclean.com/integration-test-asp-net-webapi-with-owin-and-authentication/
         [TestInitialize]
-        public void Setup()
+        public void SetupTestServer()
         {
             Console.WriteLine("TestInitialize: BaseServerTest.Setup()");
             TimeOut = new TimeSpan(0, 10, 0); //10 min

@@ -11,11 +11,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class PersonCategoriesControllerTest : BaseAuthenticatedTests
     {
-        [TestInitialize]
-        public void TestInitialize()
-        {
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetPersonCategoryOverviewWebApiTest()

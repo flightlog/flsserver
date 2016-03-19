@@ -49,5 +49,11 @@ namespace FLS.Common.Extensions
             var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
+
+        public static Decimal ToDecimal(this string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return 0.0m;
+            return Convert.ToDecimal(text);
+        }
     }
 }

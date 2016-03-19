@@ -7,11 +7,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class SystemDatasControllerTest : BaseAuthenticatedTests
     {
-        [TestInitialize]
-        public void TestInitialize()
-        {
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetSystemDataDetailsWebApiTest()

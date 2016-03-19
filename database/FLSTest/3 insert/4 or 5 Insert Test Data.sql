@@ -138,7 +138,7 @@ VALUES (@personId, 'Kellner', 'Hansli', 'Teacher', null, 'Köchlistrasse 1', null
 INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, MemberKey, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator) VALUES (@personId, @insertClubId, '536594', '536594', 0, 0, 1, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0)
 SET @personId = NEWID()
 INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
-VALUES (@personId, 'Bünzli', 'Lenni', 'Trainee', null, 'Köchlistrasse 1', null,  '3000', 'Bern', null, @countryId, '044 333 33 33', '+41 79 999 88 22', '044 666 55 44', null, 'hans4@muster.ch', null, null, 0, 0, 0, 0, 1, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
+VALUES (@personId, 'Bonzli', 'Lenni', 'Trainee', null, 'Köchlistrasse 1', null,  '3000', 'Bern', null, @countryId, '044 333 33 33', '+41 79 999 88 22', '044 666 55 44', null, 'hans4@muster.ch', null, null, 0, 0, 0, 0, 1, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
 INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator) VALUES (@personId, @insertClubId, '205207', 0, 0, 0, 0, 1, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0)
 SET @personId = NEWID()
 INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
@@ -666,7 +666,7 @@ INSERT INTO [FlightTypes]
      VALUES
            (newid()
            ,@insertClubId
-           ,'Schulung auf Privatflugzeugg'
+           ,'Schulung auf Privatflugzeug'
            ,'79'
            ,0
            ,1

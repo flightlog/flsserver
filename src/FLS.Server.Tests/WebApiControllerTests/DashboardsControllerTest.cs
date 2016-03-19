@@ -13,36 +13,17 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class DashboardsControllerTest : BaseAuthenticatedTests
     {
-        private FlightHelper _flightHelper;
-        private PersonHelper _personHelper;
-        private ClubHelper _clubHelper;
-        private AircraftHelper _aircraftHelper;
-        private LocationHelper _locationHelper;
-        private DataAccessService _dataAccessService;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _flightHelper = UnityContainer.Resolve<FlightHelper>();
-            _personHelper = UnityContainer.Resolve<PersonHelper>();
-            _clubHelper = UnityContainer.Resolve<ClubHelper>();
-            _aircraftHelper = UnityContainer.Resolve<AircraftHelper>();
-            _locationHelper = UnityContainer.Resolve<LocationHelper>();
-            _dataAccessService = UnityContainer.Resolve<DataAccessService>();
-            _flightHelper.SetUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetDashboardsWebApiTest()
         {
-            var flight = _flightHelper.CreateGliderFlight(ClubId, DateTime.UtcNow.AddMonths(-2));
-            var flight2 = _flightHelper.CreateGliderFlight(ClubId, DateTime.UtcNow.AddDays(-3));
+            var flight = CreateGliderFlight(ClubId, DateTime.UtcNow.AddMonths(-2));
+            var flight2 = CreateGliderFlight(ClubId, DateTime.UtcNow.AddDays(-3));
 
             Assert.IsNotNull(flight);
             Assert.IsNotNull(flight.Pilot);
 
-            using (var context = _dataAccessService.CreateDbContext())
+            using (var context = DataAccessService.CreateDbContext())
             {
                 var user = context.Users.FirstOrDefault(u => u.UserId == MyUserDetails.UserId);
                 Assert.IsNotNull(user);

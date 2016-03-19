@@ -16,18 +16,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class ClubsControllerTest : BaseAuthenticatedTests
     {
-        private ClubHelper _clubHelper;
-        private FlightHelper _flightHelper;
-        private UserHelper _userHelper;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _clubHelper = UnityContainer.Resolve<ClubHelper>();
-            _flightHelper = UnityContainer.Resolve<FlightHelper>();
-            _userHelper = UnityContainer.Resolve<UserHelper>();
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetClubOverviewsWebApiTest()
@@ -80,11 +68,11 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             if (clubDetails.DefaultStartType.HasValue)
             {
-                clubDetails.DefaultStartType = _flightHelper.GetStartTypes().First(a => a.StartTypeId != clubDetails.DefaultStartType).StartTypeId;
+                clubDetails.DefaultStartType = GetStartTypes().First(a => a.StartTypeId != clubDetails.DefaultStartType).StartTypeId;
             }
             else
             {
-                clubDetails.DefaultStartType = _flightHelper.GetStartTypes().First().StartTypeId;
+                clubDetails.DefaultStartType = GetStartTypes().First().StartTypeId;
             }
 
             clubDetails.ContactName = DateTime.Now.ToShortTimeString();
@@ -130,8 +118,8 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var clubDetails = InsertClubDetailsWebApi();
 
             //Create club user
-            _userHelper.SetUser(TestConfigurationSettings.Instance.TestSystemAdminUsername);
-            var user = _userHelper.CreateNewUserInDb(clubDetails.ClubId, "blabla");
+            SetCurrentUser(TestConfigurationSettings.Instance.TestSystemAdminUsername);
+            var user = CreateNewUserInDb(clubDetails.ClubId, "blabla");
 
             //load clubs again to see if club is really created
             var clubs = GetAsync<IEnumerable<ClubOverview>>(Uri).Result;
@@ -163,7 +151,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         #region Private methods
         private ClubDetails InsertClubDetailsWebApi()
         {
-            var clubDetails = _clubHelper.CreateClubDetails();
+            var clubDetails = CreateClubDetails();
 
             var response = PostAsync(clubDetails, Uri).Result;
 

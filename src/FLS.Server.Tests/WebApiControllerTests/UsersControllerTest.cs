@@ -18,16 +18,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class UsersControllerTest : BaseAuthenticatedTests
     {
-        private UserHelper _userHelper;
-        
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            Console.WriteLine("TestInitialize: UsersControllerTest.TestInitialize()");
-            _userHelper = UnityContainer.Resolve<UserHelper>();
-            _userHelper.SetUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetUsersOverviewWebApiTest()
@@ -56,7 +46,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void InsertUserDetailsWebApiTest()
         {
-            var userRegistrationDetails = _userHelper.CreateUserRegistrationDetails(ClubId);
+            var userRegistrationDetails = CreateUserRegistrationDetails(ClubId);
             userRegistrationDetails.UserName = "HalloUser";
             var response = PostAsync(userRegistrationDetails, "/api/v1/users").Result;
 
@@ -72,13 +62,13 @@ namespace FLS.Server.Tests.WebApiControllerTests
         public void UpdateUserDetailsWebApiTest()
         {
             //insert new user with all roles
-            var userRegistrationDetails = _userHelper.CreateUserRegistrationDetails(ClubId);
+            var userRegistrationDetails = CreateUserRegistrationDetails(ClubId);
             userRegistrationDetails.UserRoleIds.Clear();
-            var role = _userHelper.GetRole(RoleApplicationKeyStrings.ClubAdministrator);
+            var role = GetRole(RoleApplicationKeyStrings.ClubAdministrator);
             userRegistrationDetails.UserRoleIds.Add(role.Id);
-            role = _userHelper.GetRole(RoleApplicationKeyStrings.SystemAdministrator);
+            role = GetRole(RoleApplicationKeyStrings.SystemAdministrator);
             userRegistrationDetails.UserRoleIds.Add(role.Id);
-            role = _userHelper.GetRole(RoleApplicationKeyStrings.FlightOperator);
+            role = GetRole(RoleApplicationKeyStrings.FlightOperator);
             userRegistrationDetails.UserRoleIds.Add(role.Id);
             var response = PostAsync(userRegistrationDetails, "/api/v1/users").Result;
 
@@ -105,7 +95,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         public void ChangeUserPasswordWebApiTest()
         {
             var firstPassword = "Test1234";
-            var user = _userHelper.CreateNewUserInDb(ClubId, firstPassword);
+            var user = CreateNewUserInDb(ClubId, firstPassword);
 
             Assert.IsNotNull(user, "User is null");
             var myUserDetails = GetAsync<UserDetails>("/api/v1/users/" + user.Id).Result;
@@ -121,7 +111,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             Assert.IsTrue(putResult.IsSuccessStatusCode);
 
-            var updatedUser = _userHelper.GetUser(user.UserName);
+            var updatedUser = GetUser(user.UserName);
             Assert.AreNotEqual(user.LastPasswordChangeOn, updatedUser.LastPasswordChangeOn, "LastPasswordChange values invalid");
             Assert.AreNotEqual(user.SecurityStamp, updatedUser.SecurityStamp, "SecurityStamp has not been updated");
             Assert.AreNotEqual(user.PasswordHash, updatedUser.PasswordHash, "Password was not updated correctly");
@@ -132,7 +122,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         public void ResetLostUserPasswordWebApiTest()
         {
             var firstPassword = "Test1234";
-            var user = _userHelper.CreateNewUserInDb(ClubId, firstPassword, emailConfirmed:true);
+            var user = CreateNewUserInDb(ClubId, firstPassword, emailConfirmed:true);
 
             Assert.IsNotNull(user, "User is null");
             var newUserDetails = GetAsync<UserDetails>("/api/v1/users/" + user.Id).Result;
@@ -155,7 +145,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void UserLockoutWebApiTest()
         {
-            var userDetails = _userHelper.CreateUserDetails(ClubId);
+            var userDetails = CreateUserDetails(ClubId);
             
             var response = PostAsync(userDetails, "/api/v1/users").Result;
 

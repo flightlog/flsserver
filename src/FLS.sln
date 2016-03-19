@@ -33,6 +33,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{0B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLS.Workflow.Activator", "FLS.Workflow.Activator\FLS.Workflow.Activator.csproj", "{028919AB-BBF9-4888-9624-86DE754DBF39}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9D5C984C-8F20-4105-9E20-5E4699C03FDA}"
+	ProjectSection(SolutionItems) = preProject
+		LocalTestRun.testsettings = LocalTestRun.testsettings
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

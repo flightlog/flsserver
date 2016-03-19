@@ -15,16 +15,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class PlanningDaysControllerTest : BaseAuthenticatedTests
     {
-        private LocationHelper _locationHelper;
-        private PersonHelper _personHelper;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _personHelper = UnityContainer.Resolve<PersonHelper>();
-            _locationHelper = UnityContainer.Resolve<LocationHelper>();
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetPlanningDaysOverviewWebApiTest()
@@ -75,11 +65,11 @@ namespace FLS.Server.Tests.WebApiControllerTests
         {
             var planningDay = new PlanningDayDetails();
             planningDay.Day = DateTime.Now.Date.AddDays(1);
-            planningDay.LocationId = _locationHelper.GetFirstLocation().LocationId;
+            planningDay.LocationId = GetFirstLocation().LocationId;
             planningDay.Remarks = "Test";
-            planningDay.FlightOperatorPersonId = _personHelper.GetFirstPerson().PersonId;
-            planningDay.TowingPilotPersonId = _personHelper.GetFirstPerson().PersonId;
-            planningDay.InstructorPersonId = _personHelper.GetFirstGliderInstructorPerson(ClubId).PersonId;
+            planningDay.FlightOperatorPersonId = GetFirstPerson().PersonId;
+            planningDay.TowingPilotPersonId = GetFirstPerson().PersonId;
+            planningDay.InstructorPersonId = GetFirstGliderInstructorPerson(ClubId).PersonId;
 
             var response = PostAsync(planningDay, "/api/v1/planningdays").Result;
 
@@ -102,11 +92,11 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             Assert.AreEqual(id, result.Id);
 
-            var person = _personHelper.GetDifferentPerson(result.FlightOperatorPersonId);
+            var person = GetDifferentPerson(result.FlightOperatorPersonId);
             Assert.IsNotNull(person);
             result.FlightOperatorPersonId = person.PersonId;
 
-            person = _personHelper.GetDifferentPerson(result.TowingPilotPersonId);
+            person = GetDifferentPerson(result.TowingPilotPersonId);
             Assert.IsNotNull(person);
             result.TowingPilotPersonId = person.PersonId;
             result.Remarks = DateTime.Now.ToShortTimeString();

@@ -17,6 +17,7 @@ using FLS.Server.Data.Enums;
 using NLog;
 using TrackerEnabledDbContext;
 using TrackerEnabledDbContext.Common.Configuration;
+using SqlProviderServices = System.Data.Entity.SqlServer.SqlProviderServices;
 
 namespace FLS.Server.Data
 {

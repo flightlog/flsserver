@@ -17,65 +17,8 @@ using Microsoft.Practices.Unity;
 namespace FLS.Server.Tests.ServiceTests
 {
     [TestClass]
-    public class EmailServiceTest : BaseServiceTest
+    public class EmailServiceTest : BaseTest
     {
-        private UserAccountEmailBuildService _passwordEmailService;
-        private PlanningDayEmailBuildService _planningDayEmailService;
-        private AircraftReservationService _aircraftReservationService;
-        private AircraftReportEmailBuildService _aircraftReportEmailService;
-        private FlightInformationEmailBuildService _flightInformationEmailService;
-        private FlightService _flightService;
-        private PlanningDayHelper _planningDayHelper;
-        private TestContext _testContextInstance;
-        private UserService _userService;
-        private FlightHelper _flightHelper;
-        private AircraftReservationHelper _aircraftReservationHelper;
-        private IdentityService _identityService;
-        private AircraftService _aircraftService;
-        private UserHelper _userHelper;
-        private AircraftHelper _aircraftHelper;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _passwordEmailService = UnityContainer.Resolve<UserAccountEmailBuildService>();
-            _planningDayEmailService = UnityContainer.Resolve<PlanningDayEmailBuildService>();
-            _aircraftReservationService = UnityContainer.Resolve<AircraftReservationService>();
-            _planningDayHelper = UnityContainer.Resolve<PlanningDayHelper>();
-            _flightInformationEmailService = UnityContainer.Resolve<FlightInformationEmailBuildService>();
-            _flightService = UnityContainer.Resolve<FlightService>();
-            _aircraftService = UnityContainer.Resolve<AircraftService>();
-            _aircraftReportEmailService = UnityContainer.Resolve<AircraftReportEmailBuildService>();
-            _flightHelper = UnityContainer.Resolve<FlightHelper>();
-            _aircraftReservationHelper = UnityContainer.Resolve<AircraftReservationHelper>();
-            _userService = UnityContainer.Resolve<UserService>();
-            _userHelper = UnityContainer.Resolve<UserHelper>();
-            _aircraftHelper = UnityContainer.Resolve<AircraftHelper>();
-
-            var user = _userService.GetUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
-            Assert.IsNotNull(user);
-            _identityService = UnityContainer.Resolve<IdentityService>();
-            _identityService.SetUser(user);
-
-            _flightHelper.CreateFlightsForInvoicingTests(user.ClubId);
-        }
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return _testContextInstance;
-            }
-            set
-            {
-                _testContextInstance = value;
-            }
-        }
-        
         [TestMethod]
         [TestCategory("Service")]
         public void EmailAddressFormatTest()
@@ -92,9 +35,9 @@ namespace FLS.Server.Tests.ServiceTests
         public void CreatePlanningDayTakesPlaceEmailTest()
         {
             var recipients = "johnsmith@corporate.com";
-            var planningDay = _planningDayHelper.GetFirstPlanningDayOverview();
-            var reservations = _aircraftReservationService.GetAircraftReservationsByPlanningDayId(planningDay.PlanningDayId);
-            var message = _planningDayEmailService.CreatePlanningDayTakesPlaceEmail(planningDay, reservations, recipients, CurrentIdentityUser.ClubId);
+            var planningDay = GetFirstPlanningDayOverview();
+            var reservations = AircraftReservationService.GetAircraftReservationsByPlanningDayId(planningDay.PlanningDayId);
+            var message = PlanningDayEmailService.CreatePlanningDayTakesPlaceEmail(planningDay, reservations, recipients, CurrentIdentityUser.ClubId);
 
             Assert.IsNotNull(message);
         }
@@ -127,7 +70,7 @@ namespace FLS.Server.Tests.ServiceTests
             reservations.Add(reservation);
 
             var recipients = "johnsmith@corporate.com";
-            var message = _planningDayEmailService.CreatePlanningDayTakesPlaceEmail(planningDay, reservations, recipients, CurrentIdentityUser.ClubId);
+            var message = PlanningDayEmailService.CreatePlanningDayTakesPlaceEmail(planningDay, reservations, recipients, CurrentIdentityUser.ClubId);
 
             Assert.IsNotNull(message);
             Assert.IsTrue(message.Body.Contains("Peter Reichert"));
@@ -141,8 +84,8 @@ namespace FLS.Server.Tests.ServiceTests
         public void CreatePlanningDayNoReservationsEmailTest()
         {
             var recipients = "johnsmith@corporate.com";
-            var planningDay = _planningDayHelper.GetFirstPlanningDayOverview();
-            var message = _planningDayEmailService.CreatePlanningDayNoReservationsEmail(planningDay, recipients, CurrentIdentityUser.ClubId);
+            var planningDay = GetFirstPlanningDayOverview();
+            var message = PlanningDayEmailService.CreatePlanningDayNoReservationsEmail(planningDay, recipients, CurrentIdentityUser.ClubId);
 
             Assert.IsNotNull(message);
             Assert.IsFalse(message.Body.Contains("$"));
@@ -161,7 +104,7 @@ namespace FLS.Server.Tests.ServiceTests
             planningDay.Remarks = "Test-Planningday";
 
             var recipients = "johnsmith@corporate.com";
-            var message = _planningDayEmailService.CreatePlanningDayNoReservationsEmail(planningDay, recipients, CurrentIdentityUser.ClubId);
+            var message = PlanningDayEmailService.CreatePlanningDayNoReservationsEmail(planningDay, recipients, CurrentIdentityUser.ClubId);
 
             Assert.IsNotNull(message);
             Assert.IsTrue(message.Body.Contains("Peter Reichert"));
@@ -183,14 +126,14 @@ namespace FLS.Server.Tests.ServiceTests
             filterCriteria.StatisticStartDateTime = startDate;
             filterCriteria.StatisticEndDateTime = endDate;
 
-            var immatriculation1 = _aircraftHelper.GetFirstOneSeatGlider().Immatriculation;
+            var immatriculation1 = GetFirstOneSeatGlider().Immatriculation;
             immatriculations.Add(immatriculation1);
-            var immatriculation2 = _aircraftHelper.GetFirstDoubleSeatGlider().Immatriculation;
+            var immatriculation2 = GetFirstDoubleSeatGlider().Immatriculation;
             immatriculations.Add(immatriculation2);
 
             foreach (var aircraftImmatriculation in immatriculations)
             {
-                var aircraft = _aircraftService.GetAircraft(aircraftImmatriculation);
+                var aircraft = AircraftService.GetAircraft(aircraftImmatriculation);
 
                 if (aircraft != null)
                 {
@@ -198,13 +141,13 @@ namespace FLS.Server.Tests.ServiceTests
                 }
             }
 
-            var aircraftFlightReport = _flightService.GetAircraftFlightReport(filterCriteria);
+            var aircraftFlightReport = FlightService.GetAircraftFlightReport(filterCriteria);
             Assert.IsNotNull(aircraftFlightReport);
             Assert.IsTrue(aircraftFlightReport.AircraftFlightReportData.Any());
 
             var recipients = "johnsmith@corporate.com";
 
-            var message = _aircraftReportEmailService.CreateAircraftStatisticInformationEmail(aircraftFlightReport, recipients);
+            var message = AircraftReportEmailService.CreateAircraftStatisticInformationEmail(aircraftFlightReport, recipients);
 
             Assert.IsNotNull(message);
             Assert.IsTrue(message.Body.Contains(immatriculation1));

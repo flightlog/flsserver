@@ -8,34 +8,8 @@ using Microsoft.Practices.Unity;
 namespace FLS.Server.Tests.ServiceTests
 {
     [TestClass]
-    public class FlightServiceTest : BaseServiceTest
+    public class FlightServiceTest : BaseTest
     {
-        private FlightService _flightService;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _flightService = UnityContainer.Resolve<FlightService>();
-        }
-        
-        private TestContext testContextInstance;
-
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
 
         #region Additional test attributes
         // 
@@ -68,7 +42,7 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void GetFlightsTest()
         {
-            var entities = _flightService.GetGliderFlightOverviews();
+            var entities = FlightService.GetGliderFlightOverviews();
             Assert.IsNotNull(entities);
 
             foreach (var entity in entities)
@@ -81,12 +55,12 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void GetFlightDetailsTest()
         {
-            var entities = _flightService.GetGliderFlightOverviews();
+            var entities = FlightService.GetGliderFlightOverviews();
             Assert.IsNotNull(entities);
 
             foreach (var entity in entities)
             {
-                var flight = _flightService.GetFlightDetails(entity.Id);
+                var flight = FlightService.GetFlightDetails(entity.Id);
                 Console.WriteLine(flight);
             }
         }

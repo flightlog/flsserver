@@ -15,14 +15,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class LocationsControllerTest : BaseAuthenticatedTests
     {
-        private LocationHelper _locationHelper;
-        
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _locationHelper = UnityContainer.Resolve<LocationHelper>();
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetLocationOverviewWebApiTest()
@@ -53,11 +45,11 @@ namespace FLS.Server.Tests.WebApiControllerTests
         {
             var location = new LocationDetails();
             location.LocationName = "Location @ " + DateTime.Now.ToShortTimeString();
-            var country = _locationHelper.GetCountry("CH");
+            var country = GetCountry("CH");
             Assert.IsNotNull(country);
             location.CountryId = country.CountryId;
 
-            var locationType = _locationHelper.GetFirstLocationType();
+            var locationType = GetFirstLocationType();
             Assert.IsNotNull(locationType);
             location.LocationTypeId = locationType.LocationTypeId;
             Assert.AreEqual(location.Id, Guid.Empty);
@@ -76,10 +68,10 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var response = PostAsync<LocationDetails>(null, "/api/v1/locations").Result;
             Assert.IsTrue(response.StatusCode == HttpStatusCode.BadRequest);
 
-            var country = _locationHelper.GetCountry("CH");
+            var country = GetCountry("CH");
             Assert.IsNotNull(country);
 
-            var locationType = _locationHelper.GetFirstLocationType();
+            var locationType = GetFirstLocationType();
             Assert.IsNotNull(locationType);
 
             var location = new LocationDetails();

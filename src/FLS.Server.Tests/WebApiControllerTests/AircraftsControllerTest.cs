@@ -14,15 +14,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class AircraftsControllerTest : BaseAuthenticatedTests
     {
-        private AircraftHelper _aircraftHelper;
-        
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            Console.WriteLine("TestInitialize: AircraftsControllerTest.TestInitialize()");
-            _aircraftHelper = UnityContainer.Resolve<AircraftHelper>();
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetGliderAircraftsListItemsWebApiTest()
@@ -157,7 +148,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void InsertAircraftWebApiTest()
         {
-            var aircraftDetails = _aircraftHelper.CreateGliderAircraftDetails(1);
+            var aircraftDetails = CreateGliderAircraftDetails(1);
 
             var response = PostAsync(aircraftDetails, "/api/v1/aircrafts").Result;
 
@@ -168,7 +159,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             var firstAircraft = aircraftDetails;
 
-            aircraftDetails = _aircraftHelper.CreateGliderAircraftDetails(2);
+            aircraftDetails = CreateGliderAircraftDetails(2);
 
             if (aircraftDetails.Immatriculation == firstAircraft.Immatriculation)
             {
@@ -208,7 +199,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void InsertAircraftWithAircraftStateWebApiTest()
         {
-            var aircraftDetails = _aircraftHelper.CreateGliderAircraftDetails(1);
+            var aircraftDetails = CreateGliderAircraftDetails(1);
             
             var aircraftStates = GetAsync<IEnumerable<AircraftStateListItem>>("/api/v1/aircraftstates").Result;
             Assert.IsTrue(aircraftStates.Any());

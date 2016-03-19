@@ -6,39 +6,13 @@ using FLS.Server.TestInfrastructure;
 using FLS.Server.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Practices.Unity;
+using NLog;
 
 namespace FLS.Server.Tests.ServiceTests
 {
     [TestClass]
-    public class LocationServiceTest : BaseServiceTest
+    public class LocationServiceTest : BaseTest
     {
-        private LocationService _locationService;
-        private LocationHelper _locationHelper;
-        private TestContext _testContextInstance;
-        
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _locationService = UnityContainer.Resolve<LocationService>();
-            _locationHelper = UnityContainer.Resolve<LocationHelper>();
-        }
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return _testContextInstance;
-            }
-            set
-            {
-                _testContextInstance = value;
-            }
-        }
-
         #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
@@ -69,7 +43,7 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void GetLocationsTest()
         {
-            var locations = _locationService.GetLocations();
+            var locations = LocationService.GetLocations();
             Assert.IsNotNull(locations);
 
             Logger.Debug(string.Format("GetLocationsTest result: Found {0} location records in database",
@@ -85,7 +59,7 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void GetLocationOverviewsTest()
         {
-            var locations = _locationService.GetLocationOverviews();
+            var locations = LocationService.GetLocationOverviews();
             Assert.IsNotNull(locations);
 
             Logger.Debug(string.Format("GetLocationOverviewsTest result: Found {0} location records in database",
@@ -101,14 +75,14 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void InsertLocationTest()
         {
-            var country = _locationHelper.GetFirstCountry();
-            var locationType = _locationHelper.GetLocationType((int)FLS.Data.WebApi.Location.LocationType.AirfieldSolid);
-            var location = _locationHelper.CreateLocation(country, locationType);
+            var country = GetFirstCountry();
+            var locationType = GetLocationType((int)FLS.Data.WebApi.Location.LocationType.AirfieldSolid);
+            var location = CreateLocation(country, locationType);
             
             Assert.AreEqual(location.Id, Guid.Empty);
-            _locationService.InsertLocation(location);
+            LocationService.InsertLocation(location);
 
-            var loadedLocation = _locationService.GetLocation(location.Id);
+            var loadedLocation = LocationService.GetLocation(location.Id);
 
             Assert.IsNotNull(loadedLocation);
             Assert.AreEqual(location.LocationName, loadedLocation.LocationName);
@@ -118,16 +92,16 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void InsertLocationWithElevationAndRunwayLengthTest()
         {
-            var country = _locationHelper.GetFirstCountry();
-            var locationType = _locationHelper.GetLocationType((int)FLS.Data.WebApi.Location.LocationType.AirfieldSolid);
-            var elevationUnitType = _locationHelper.GetFirstElevationUnitType();
-            var lengthUnitType = _locationHelper.GetFirstLengthUnitType();
-            var location = _locationHelper.CreateLocation(country, locationType, elevationUnitType, lengthUnitType);
+            var country = GetFirstCountry();
+            var locationType = GetLocationType((int)FLS.Data.WebApi.Location.LocationType.AirfieldSolid);
+            var elevationUnitType = GetFirstElevationUnitType();
+            var lengthUnitType = GetFirstLengthUnitType();
+            var location = CreateLocation(country, locationType, elevationUnitType, lengthUnitType);
 
             Assert.AreEqual(location.Id, Guid.Empty);
-            _locationService.InsertLocation(location);
+            LocationService.InsertLocation(location);
 
-            var loadedLocation = _locationService.GetLocation(location.Id);
+            var loadedLocation = LocationService.GetLocation(location.Id);
 
             Assert.IsNotNull(loadedLocation);
             Assert.AreEqual(location.LocationName, loadedLocation.LocationName);
@@ -137,19 +111,19 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void UpateLocationDetailsTest()
         {
-            var locations = _locationService.GetLocations(true);
+            var locations = LocationService.GetLocations(true);
             var location = locations.First();
-            var locationDetail = _locationService.GetLocationDetails(location.LocationId);
+            var locationDetail = LocationService.GetLocationDetails(location.LocationId);
 
             Assert.IsNotNull(locationDetail);
 
             locationDetail.LocationName = locationDetail.LocationName;
-            _locationService.UpdateLocationDetails(locationDetail);
+            LocationService.UpdateLocationDetails(locationDetail);
 
             locationDetail.LocationName = locationDetail.LocationShortName + DateTime.Now.ToShortTimeString();
-            _locationService.UpdateLocationDetails(locationDetail);
+            LocationService.UpdateLocationDetails(locationDetail);
 
-            var loadedLocationDetails = _locationService.GetLocationDetails(location.Id);
+            var loadedLocationDetails = LocationService.GetLocationDetails(location.Id);
 
             Assert.IsNotNull(loadedLocationDetails);
             Assert.AreEqual(locationDetail.LocationName, loadedLocationDetails.LocationName);
@@ -159,14 +133,14 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void DeleteLocationTest()
         {
-            var locations = _locationService.GetLocations(true).ToList();
+            var locations = LocationService.GetLocations(true).ToList();
             var location = locations.First();
 
             Assert.IsNotNull(location, "No location available");
 
-            _locationService.DeleteLocation(location.LocationId);
+            LocationService.DeleteLocation(location.LocationId);
 
-            var locationsAfterDelete = _locationService.GetLocations(true).ToList();
+            var locationsAfterDelete = LocationService.GetLocations(true).ToList();
 
             Assert.IsTrue(locationsAfterDelete.Count < locations.Count, string.Format("Location count condition is wrong. Nr of locations after delete: {0}, nr of locations before: {1}", locationsAfterDelete.Count, locations.Count));
         }

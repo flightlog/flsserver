@@ -12,14 +12,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class AircraftReservationsControllerTest : BaseAuthenticatedTests
     {
-        private AircraftReservationHelper _aircraftReservationHelper;
-        
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _aircraftReservationHelper = UnityContainer.Resolve<AircraftReservationHelper>();
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetAircraftReservationsOverviewWebApiTest()
@@ -52,7 +44,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void InsertAircraftReservationsWebApiTest()
         {
-            var reservation = _aircraftReservationHelper.CreateAircraftReservationDetails();
+            var reservation = CreateAircraftReservationDetails();
 
             var response = PostAsync(reservation, RoutePrefix).Result;
 

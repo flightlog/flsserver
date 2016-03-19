@@ -18,16 +18,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class PersonsControllerTest : BaseAuthenticatedTests
     {
-        private PersonHelper _personHelper;
-        private LocationHelper _locationHelper;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _personHelper = UnityContainer.Resolve<PersonHelper>();
-            _locationHelper = UnityContainer.Resolve<LocationHelper>();
-        }
-
         [TestMethod]
         [TestCategory("WebApi")]
         public void GetPersonOverviewWebApiTest()
@@ -56,8 +46,8 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void InsertPersonDetailsWebApiTest()
         {
-            var country = _locationHelper.GetCountry("CH");
-            var personDetails = _personHelper.CreatePersonDetails(country.CountryId);
+            var country = GetCountry("CH");
+            var personDetails = CreatePersonDetails(country.CountryId);
 
             var response = PostAsync(personDetails, "/api/v1/persons").Result;
 
@@ -75,8 +65,8 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
         private PilotPersonFullDetails InsertPersonFullDetailsWebApi()
         {
-            var country = _locationHelper.GetCountry("CH");
-            var personFullDetails = _personHelper.CreatePersonFullDetails(ClubId, country.CountryId);
+            var country = GetCountry("CH");
+            var personFullDetails = CreatePersonFullDetails(ClubId, country.CountryId);
 
             var timeStamp = DateTime.UtcNow;
             personFullDetails.CreatedOn = timeStamp;

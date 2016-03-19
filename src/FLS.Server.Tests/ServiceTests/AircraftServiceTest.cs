@@ -2,71 +2,18 @@
 using System.Linq;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Aircraft;
-using FLS.Server.Service;
-using FLS.Server.Service.Identity;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NLog;
-using Microsoft.Practices.Unity;
 
 namespace FLS.Server.Tests.ServiceTests
 {
     [TestClass]
-    public class AircraftServiceTest : BaseServiceTest
+    public class AircraftServiceTest : BaseTest
     {
-        private AircraftService _aircraftService;
-        private AircraftHelper _aircraftHelper;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _aircraftService = UnityContainer.Resolve<AircraftService>();
-            _aircraftHelper = UnityContainer.Resolve<AircraftHelper>();
-        }
-        
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        [ClassInitialize()]
-        public static void AircraftServiceTestInitialize(TestContext testContext)
-        {
-        }
-        
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
-
         [TestMethod]
         [TestCategory("Service")]
         public void GetAircraftsTest()
         {
-            var entities = _aircraftService.GetAircrafts();
+            var entities = AircraftService.GetAircrafts();
             Assert.IsNotNull(entities);
             Assert.IsTrue(entities.Any());
         }
@@ -75,13 +22,13 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void GetAircraftDetailsTest()
         {
-            var entities = _aircraftService.GetAircrafts();
+            var entities = AircraftService.GetAircrafts();
             Assert.IsNotNull(entities);
             Assert.IsTrue(entities.Any());
 
             foreach (var entity in entities)
             {
-                var aircraft = _aircraftService.GetAircraftDetails(entity.Id);
+                var aircraft = AircraftService.GetAircraftDetails(entity.Id);
                 Assert.IsNotNull(aircraft);
             }
         }
@@ -90,7 +37,7 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void GetAircraftOverviewsTest()
         {
-            var entities = _aircraftService.GetAircraftOverviews();
+            var entities = AircraftService.GetAircraftOverviews();
             Assert.IsNotNull(entities);
             Assert.IsTrue(entities.Any());
         }
@@ -99,13 +46,13 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void InsertGliderAircraftDetailsWithoutAircraftStateTest()
         {
-            var aircraftDetails = _aircraftHelper.CreateGliderAircraftDetails(1);
+            var aircraftDetails = CreateGliderAircraftDetails(1);
 
-            _aircraftService.InsertAircraftDetails(aircraftDetails);
+            AircraftService.InsertAircraftDetails(aircraftDetails);
 
             Assert.IsTrue(aircraftDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", aircraftDetails));
 
-            var loadedAircraft = _aircraftService.GetAircraft(aircraftDetails.AircraftId);
+            var loadedAircraft = AircraftService.GetAircraft(aircraftDetails.AircraftId);
             Assert.IsNotNull(loadedAircraft);
             Assert.IsTrue(aircraftDetails.AircraftId == loadedAircraft.Id);
             Assert.IsTrue(aircraftDetails.Immatriculation == loadedAircraft.Immatriculation);
@@ -115,9 +62,9 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void InsertGliderAircraftDetailsWithAircraftStateTest()
         {
-            var aircraftDetails = _aircraftHelper.CreateGliderAircraftDetails(2);
+            var aircraftDetails = CreateGliderAircraftDetails(2);
 
-            var aircraftStates = _aircraftService.GetAircraftStates();
+            var aircraftStates = AircraftService.GetAircraftStates();
             var aircraftState = aircraftStates.FirstOrDefault();
 
             Assert.IsNotNull(aircraftState);
@@ -132,10 +79,10 @@ namespace FLS.Server.Tests.ServiceTests
 
             aircraftDetails.AircraftStateData = newAircraftState;
 
-            _aircraftService.InsertAircraftDetails(aircraftDetails);
+            AircraftService.InsertAircraftDetails(aircraftDetails);
             Assert.IsTrue(aircraftDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", aircraftDetails));
 
-            var loadedAircraft = _aircraftService.GetAircraft(aircraftDetails.AircraftId);
+            var loadedAircraft = AircraftService.GetAircraft(aircraftDetails.AircraftId);
             Assert.IsNotNull(loadedAircraft); 
             Assert.IsTrue(aircraftDetails.AircraftId == loadedAircraft.Id);
             Assert.IsTrue(aircraftDetails.Immatriculation == loadedAircraft.Immatriculation);
@@ -148,13 +95,13 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void InsertTowingAircraftDetailsWithoutAircraftStateTest()
         {
-            var aircraftDetails = _aircraftHelper.CreateTowingAircraftDetails();
+            var aircraftDetails = CreateTowingAircraftDetails();
 
-            _aircraftService.InsertAircraftDetails(aircraftDetails);
+            AircraftService.InsertAircraftDetails(aircraftDetails);
 
             Assert.IsTrue(aircraftDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", aircraftDetails));
 
-            var loadedAircraft = _aircraftService.GetAircraft(aircraftDetails.AircraftId);
+            var loadedAircraft = AircraftService.GetAircraft(aircraftDetails.AircraftId);
             Assert.IsNotNull(loadedAircraft);
             Assert.IsTrue(aircraftDetails.AircraftId == loadedAircraft.Id);
             Assert.IsTrue(aircraftDetails.Immatriculation == loadedAircraft.Immatriculation);
@@ -164,19 +111,19 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void UpateAircraftDetailsCommentOnlyTest()
         {
-            var aircrafts = _aircraftService.GetAircrafts((int)FLS.Data.WebApi.Aircraft.AircraftType.Glider);
+            var aircrafts = AircraftService.GetAircrafts((int)FLS.Data.WebApi.Aircraft.AircraftType.Glider);
 
             Assert.IsNotNull(aircrafts);
             Assert.IsTrue(aircrafts.Any());
             var aircraft = aircrafts.FirstOrDefault();
 
             Assert.IsNotNull(aircraft);
-            var aircraftDetails = _aircraftService.GetAircraftDetails(aircraft.AircraftId);
-            var original = _aircraftService.GetAircraftDetails(aircraft.AircraftId);
+            var aircraftDetails = AircraftService.GetAircraftDetails(aircraft.AircraftId);
+            var original = AircraftService.GetAircraftDetails(aircraft.AircraftId);
             aircraftDetails.Comment = "Test-Ticks" + DateTime.Now.Ticks;
 
-            _aircraftService.UpdateAircraftDetails(aircraftDetails);
-            aircraftDetails = _aircraftService.GetAircraftDetails(aircraftDetails.AircraftId);
+            AircraftService.UpdateAircraftDetails(aircraftDetails);
+            aircraftDetails = AircraftService.GetAircraftDetails(aircraftDetails.AircraftId);
             Assert.IsTrue(aircraftDetails.AircraftId == original.AircraftId);
             Assert.IsTrue(aircraftDetails.Comment != original.Comment);
             Assert.IsTrue(aircraftDetails.Immatriculation == original.Immatriculation);
@@ -187,17 +134,17 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void UpateAircraftDetailsAircraftStateTest()
         {
-            var aircrafts = _aircraftService.GetAircrafts((int)FLS.Data.WebApi.Aircraft.AircraftType.Glider);
+            var aircrafts = AircraftService.GetAircrafts((int)FLS.Data.WebApi.Aircraft.AircraftType.Glider);
 
             Assert.IsNotNull(aircrafts);
             Assert.IsTrue(aircrafts.Any());
             var aircraft = aircrafts.FirstOrDefault();
 
             Assert.IsNotNull(aircraft);
-            var aircraftDetails = _aircraftService.GetAircraftDetails(aircraft.AircraftId);
-            var original = _aircraftService.GetAircraftDetails(aircraft.AircraftId);
+            var aircraftDetails = AircraftService.GetAircraftDetails(aircraft.AircraftId);
+            var original = AircraftService.GetAircraftDetails(aircraft.AircraftId);
 
-            var aircraftStates = _aircraftService.GetAircraftStates();
+            var aircraftStates = AircraftService.GetAircraftStates();
             var aircraftState = aircraftStates.FirstOrDefault();
             Assert.IsNotNull(aircraftState);
 
@@ -221,8 +168,8 @@ namespace FLS.Server.Tests.ServiceTests
                 aircraftDetails.AircraftStateData = newAircraftState;
             }
 
-            _aircraftService.UpdateAircraftDetails(aircraftDetails);
-            aircraftDetails = _aircraftService.GetAircraftDetails(aircraftDetails.AircraftId);
+            AircraftService.UpdateAircraftDetails(aircraftDetails);
+            aircraftDetails = AircraftService.GetAircraftDetails(aircraftDetails.AircraftId);
             Assert.IsTrue(aircraftDetails.AircraftId == original.AircraftId);
             Assert.IsTrue(aircraftDetails.Comment == original.Comment);
             Assert.IsTrue(aircraftDetails.Immatriculation == original.Immatriculation);
@@ -246,7 +193,7 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void DeleteAircraftTest()
         {
-            var entities = _aircraftService.GetAircrafts();
+            var entities = AircraftService.GetAircrafts();
             Assert.IsNotNull(entities);
             Assert.IsTrue(entities.Any());
         }

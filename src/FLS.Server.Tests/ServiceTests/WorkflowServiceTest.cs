@@ -19,120 +19,79 @@ using Microsoft.Practices.Unity;
 namespace FLS.Server.Tests.ServiceTests
 {
     [TestClass]
-    public class WorkflowServiceTest : BaseServiceTest
+    public class WorkflowServiceTest : BaseTest
     {
-        private TestContext _testContextInstance;
-        private UserService _userService;
-        private FlightHelper _flightHelper;
-        private PersonHelper _personHelper;
-        private LocationHelper _locationHelper;
-        private IdentityService _identityService;
-        private WorkflowService _workflowService;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _flightHelper = UnityContainer.Resolve<FlightHelper>();
-            _personHelper = UnityContainer.Resolve<PersonHelper>();
-            _locationHelper = UnityContainer.Resolve<LocationHelper>();
-            _userService = UnityContainer.Resolve<UserService>();
-            _workflowService = UnityContainer.Resolve<WorkflowService>();
-
-            var user = _userService.GetUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
-            Assert.IsNotNull(user);
-            _identityService = UnityContainer.Resolve<IdentityService>();
-            _identityService.SetUser(user);
-
-            _flightHelper.CreateFlightsForInvoicingTests(user.ClubId);
-        }
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return _testContextInstance;
-            }
-            set
-            {
-                _testContextInstance = value;
-            }
-        }
-
         [TestMethod]
         [TestCategory("Service")]
         public void ExecuteDailyFlightValidationJobTest()
         {
-            _workflowService.ExecuteDailyFlightValidationJob();
+            WorkflowService.ExecuteDailyFlightValidationJob();
         }
 
         [TestMethod]
         [TestCategory("Service")]
         public void ExecuteDailyReportJobTest()
         {
-            _workflowService.ExecuteDailyReportJob();
+            WorkflowService.ExecuteDailyReportJob();
         }
 
         [TestMethod]
         [TestCategory("Service")]
         public void ExecuteAircraftStatisticReportJobTest()
         {
-            _workflowService.ExecuteAircraftStatisticReportJob();
+            WorkflowService.ExecuteAircraftStatisticReportJob();
         }
 
         [TestMethod]
         [TestCategory("Service")]
         public void ExecutePlanningDayMailJobTest()
         {
-            _workflowService.ExecutePlanningDayMailJob();
+            WorkflowService.ExecutePlanningDayMailJob();
         }
         
         [TestMethod]
         [TestCategory("Service")]
         public void ExecuteLicenceNotificationJob()
         {
-            var countryId = _locationHelper.GetCountry("CH").CountryId;
+            var countryId = GetCountry("CH").CountryId;
 
             //insert glider pilot without medical data
-            var personDetails = _personHelper.CreateGliderPilotPersonDetails(countryId);
+            var personDetails = CreateGliderPilotPersonDetails(countryId);
             var person = personDetails.ToPerson(CurrentIdentityUser.ClubId);
             person.MedicalLaplExpireDate = null;
             person.MedicalClass1ExpireDate = null;
             person.MedicalClass2ExpireDate = null;
             person.GliderInstructorLicenceExpireDate = null;
-            _personHelper.InsertPerson(person);
+            InsertPerson(person);
 
             //insert glider pilot with medical data expiring next 60 days
-            personDetails = _personHelper.CreateGliderPilotPersonDetails(countryId);
+            personDetails = CreateGliderPilotPersonDetails(countryId);
             person = personDetails.ToPerson(CurrentIdentityUser.ClubId);
             person.MedicalLaplExpireDate = DateTime.Today.AddDays(60);
             person.MedicalClass1ExpireDate = null;
             person.MedicalClass2ExpireDate = DateTime.Today.AddDays(60); 
             person.GliderInstructorLicenceExpireDate = null;
-            _personHelper.InsertPerson(person);
+            InsertPerson(person);
 
             //insert glider pilot with medical data expiring next 30 days
-            personDetails = _personHelper.CreateGliderPilotPersonDetails(countryId);
+            personDetails = CreateGliderPilotPersonDetails(countryId);
             person = personDetails.ToPerson(CurrentIdentityUser.ClubId);
             person.MedicalLaplExpireDate = DateTime.Today.AddDays(30);
             person.MedicalClass1ExpireDate = null;
             person.MedicalClass2ExpireDate = DateTime.Today.AddDays(30);
             person.GliderInstructorLicenceExpireDate = null;
-            _personHelper.InsertPerson(person);
+            InsertPerson(person);
 
             //insert glider instructor with medical data expiring next 60 days
-            personDetails = _personHelper.CreateGliderInstructorPersonDetails(countryId);
+            personDetails = CreateGliderInstructorPersonDetails(countryId);
             person = personDetails.ToPerson(CurrentIdentityUser.ClubId);
             person.MedicalLaplExpireDate = DateTime.Today.AddDays(60);
             person.MedicalClass1ExpireDate = null;
             person.MedicalClass2ExpireDate = DateTime.Today.AddDays(60);
             person.GliderInstructorLicenceExpireDate = DateTime.Today.AddDays(60);
-            _personHelper.InsertPerson(person);
+            InsertPerson(person);
 
-            _workflowService.ExecuteLicenceNotificationJob();
+            WorkflowService.ExecuteLicenceNotificationJob();
         }
         
     }
