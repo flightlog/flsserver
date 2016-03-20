@@ -912,8 +912,6 @@ namespace FLS.Server.Data
 
         private void PrepareEntitiesForSave()
         {
-            var identityRequired = false;
-
             foreach (var entry in ChangeTracker.Entries().Where(p =>
                 p.State == EntityState.Added || p.State == EntityState.Modified ||
                 p.State == EntityState.Deleted))
