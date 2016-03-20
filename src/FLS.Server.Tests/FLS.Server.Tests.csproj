@@ -242,8 +242,11 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="FlightInvoiceTestdata.csv">
+    <None Include="TestData\FlightInvoiceTestdata.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\schema.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

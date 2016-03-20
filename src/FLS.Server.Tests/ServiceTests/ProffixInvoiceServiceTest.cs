@@ -17,9 +17,28 @@ namespace FLS.Server.Tests.ServiceTests
     [TestClass]
     public class ProffixInvoiceServiceTest : BaseTest
     {
+        private class ExpectedFlightInvoiceLineItem
+        {
+            public int InvoiceLinePosition { get; set; }
+
+            public string ERPArticleNumber { get; set; }
+
+            public string InvoiceLineText { get; set; }
+
+            public string AdditionalInfo { get; set; }
+
+            public decimal Quantity { get; set; }
+
+            public string UnitType { get; set; }
+        }
+
+        //http://stackoverflow.com/questions/24012253/datadriven-mstests-csv-with-semicolon-separator
+        //important: schema.ini must be saved as US-ASCII (in VS)
         [TestMethod]
-        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", "|DataDirectory|\\FlightInvoiceTestdata.csv", "FlightInvoiceTestdata#csv", 
-            DataAccessMethod.Sequential), DeploymentItem("FLS.Server.Tests\\FlightInvoiceTestdata.csv")]
+        [DeploymentItem(@"TestData\schema.ini")]
+        [DeploymentItem(@"TestData\FlightInvoiceTestdata.csv")]
+        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", @"|DataDirectory|\TestData\FlightInvoiceTestdata.csv", "FlightInvoiceTestdata#csv", 
+            DataAccessMethod.Sequential)]
         public void ProffixInvoiceTest()
         {
             var useCase = TestContext.DataRow["UseCase"].ToString();
@@ -31,6 +50,14 @@ namespace FLS.Server.Tests.ServiceTests
             }
 
             var subUseCase = TestContext.DataRow["UC-Variante"].ToString();
+            var includeInTest = TestContext.DataRow["IncludeInTest"].ToString();
+
+            if (includeInTest != "1")
+            {
+                Logger.Debug($"Use case: {useCase}, UC-Variation: {subUseCase} is excluded from Test. Exit ProffixInvoiceTest for this use case.");
+                return;
+            }
+
             Logger.Debug($"ProffixInvoiceTest for Use Case: {useCase}, UC-Variation: {subUseCase}");
 
             #region Flight preparation
@@ -117,24 +144,26 @@ namespace FLS.Server.Tests.ServiceTests
             var expectedInvoiceRecipientPersonDisplayName = TestContext.DataRow["ExpectedInvoiceRecipientPersonDisplayName"].ToString();
             var expectedInvoiceFlightInfo = TestContext.DataRow["ExpectedInvoiceFlightInfo"].ToString();
             var expectedInvoiceAdditionalInfo = TestContext.DataRow["ExpectedInvoiceAdditionalInfo"].ToString();
-            var expectedErpArticleNumberLine1 = TestContext.DataRow["ExpectedErpArticleNumberLine1"].ToString();
-            var expectedQuantityLine1 = TestContext.DataRow["ExpectedQuantityLine1"].ToString().ToDecimal();
-            var expectedUnitTypeLine1 = TestContext.DataRow["ExpectedUnitTypeLine1"].ToString();
-            var expectedErpArticleNumberLine2 = TestContext.DataRow["ExpectedErpArticleNumberLine2"].ToString();
-            var expectedQuantityLine2 = TestContext.DataRow["ExpectedQuantityLine2"].ToString().ToDecimal();
-            var expectedUnitTypeLine2 = TestContext.DataRow["ExpectedUnitTypeLine2"].ToString();
-            var expectedErpArticleNumberLine3 = TestContext.DataRow["ExpectedErpArticleNumberLine3"].ToString();
-            var expectedQuantityLine3 = TestContext.DataRow["ExpectedQuantityLine3"].ToString().ToDecimal();
-            var expectedUnitTypeLine3 = TestContext.DataRow["ExpectedUnitTypeLine3"].ToString();
-            var expectedErpArticleNumberLine4 = TestContext.DataRow["ExpectedErpArticleNumberLine4"].ToString();
-            var expectedQuantityLine4 = TestContext.DataRow["ExpectedQuantityLine4"].ToString().ToDecimal();
-            var expectedUnitTypeLine4 = TestContext.DataRow["ExpectedUnitTypeLine4"].ToString();
-            var expectedErpArticleNumberLine5 = TestContext.DataRow["ExpectedErpArticleNumberLine5"].ToString();
-            var expectedQuantityLine5 = TestContext.DataRow["ExpectedQuantityLine5"].ToString().ToDecimal();
-            var expectedUnitTypeLine5 = TestContext.DataRow["ExpectedUnitTypeLine5"].ToString();
-            var expectedErpArticleNumberLine6 = TestContext.DataRow["ExpectedErpArticleNumberLine6"].ToString();
-            var expectedQuantityLine6 = TestContext.DataRow["ExpectedQuantityLine6"].ToString().ToDecimal();
-            var expectedUnitTypeLine6 = TestContext.DataRow["ExpectedUnitTypeLine6"].ToString();
+
+            var expectedInvoiceLines = new Dictionary<int, ExpectedFlightInvoiceLineItem>();
+
+            for (int i = 1; i < 10; i++)
+            {
+                var erpArticle = TestContext.DataRow[$"ExpectedErpArticleNumberLine{i}"].ToString();
+
+                if (string.IsNullOrWhiteSpace(erpArticle)) continue;
+
+                var expectedInvoiceLine = new ExpectedFlightInvoiceLineItem()
+                {
+                    InvoiceLinePosition = i,
+                    ERPArticleNumber = erpArticle,
+                    Quantity = TestContext.DataRow[$"ExpectedQuantityLine{i}"].ToString().ToDecimal(),
+                    UnitType = TestContext.DataRow[$"ExpectedUnitTypeLine{i}"].ToString()
+                };
+                expectedInvoiceLines.Add(i, expectedInvoiceLine);
+            }
+            
+            Assert.AreEqual(expectedInvoiceLineItemsCount, expectedInvoiceLines.Count, 0, "Value in column ExpectedInvoiceLineItemsCount in test data does not fit with expected line values. Check FlightInvoiceTestdata.csv");
 
             if (expectInvoice == "1")
             {
@@ -155,47 +184,9 @@ namespace FLS.Server.Tests.ServiceTests
 
                 foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
                 {
-                    if (line.InvoiceLinePosition == 1)
-                    {
-                        Assert.AreEqual(line.ERPArticleNumber, expectedErpArticleNumberLine1);
-                        Assert.AreEqual(line.Quantity, expectedQuantityLine1);
-                        Assert.AreEqual(line.UnitType, expectedUnitTypeLine1);
-                    }
-
-                    if (line.InvoiceLinePosition == 2)
-                    {
-                        Assert.AreEqual(line.ERPArticleNumber, expectedErpArticleNumberLine2);
-                        Assert.AreEqual(line.Quantity, expectedQuantityLine2);
-                        Assert.AreEqual(line.UnitType, expectedUnitTypeLine2);
-                    }
-
-                    if (line.InvoiceLinePosition == 3)
-                    {
-                        Assert.AreEqual(line.ERPArticleNumber, expectedErpArticleNumberLine3);
-                        Assert.AreEqual(line.Quantity, expectedQuantityLine3);
-                        Assert.AreEqual(line.UnitType, expectedUnitTypeLine3);
-                    }
-
-                    if (line.InvoiceLinePosition == 4)
-                    {
-                        Assert.AreEqual(line.ERPArticleNumber, expectedErpArticleNumberLine4);
-                        Assert.AreEqual(line.Quantity, expectedQuantityLine4);
-                        Assert.AreEqual(line.UnitType, expectedUnitTypeLine4);
-                    }
-
-                    if (line.InvoiceLinePosition == 5)
-                    {
-                        Assert.AreEqual(line.ERPArticleNumber, expectedErpArticleNumberLine5);
-                        Assert.AreEqual(line.Quantity, expectedQuantityLine5);
-                        Assert.AreEqual(line.UnitType, expectedUnitTypeLine5);
-                    }
-
-                    if (line.InvoiceLinePosition == 6)
-                    {
-                        Assert.AreEqual(line.ERPArticleNumber, expectedErpArticleNumberLine6);
-                        Assert.AreEqual(line.Quantity, expectedQuantityLine6);
-                        Assert.AreEqual(line.UnitType, expectedUnitTypeLine6);
-                    }
+                    Assert.AreEqual(line.ERPArticleNumber, expectedInvoiceLines[line.InvoiceLinePosition].ERPArticleNumber);
+                    Assert.AreEqual(line.Quantity, expectedInvoiceLines[line.InvoiceLinePosition].Quantity);
+                    Assert.AreEqual(line.UnitType, expectedInvoiceLines[line.InvoiceLinePosition].UnitType);
                 }
 
                 var flightInvoiceBooking = new FlightInvoiceBooking

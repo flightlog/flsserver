@@ -42,6 +42,9 @@ using LocationType = FLS.Server.Data.DbEntities.LocationType;
 namespace FLS.Server.Tests
 {
     [DeploymentItem("NLog.config")]
+    [DeploymentItem(@"bin\Debug\NLog.Extended.dll")]
+    [DeploymentItem(@"bin\Debug\NLog.Web.dll")]
+    [DeploymentItem(@"bin\Debug\EntityFramework.SqlServer.dll")]
     [TestClass]
     public abstract class BaseTest
     {

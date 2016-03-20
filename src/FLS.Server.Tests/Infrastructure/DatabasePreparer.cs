@@ -6,8 +6,6 @@ using NLog;
 
 namespace FLS.Server.Tests.Infrastructure
 {
-    [DeploymentItem("NLog.config")]
-    [DeploymentItem("EntityFramework.SqlServer.dll")]
     public class DatabasePreparer
     {
         private Logger _logger = LogManager.GetCurrentClassLogger();
