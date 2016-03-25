@@ -1631,6 +1631,7 @@ namespace FLS.Server.Tests
                     personDetails.CountryId = country.CountryId;
                     person = personDetails.ToPerson(clubId);
                     context.Persons.Add(person);
+                    context.SaveChanges();
                 }
 
                 return person;

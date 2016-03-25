@@ -551,6 +551,49 @@ INSERT INTO [FlightTypes]
            ,null
            ,0
            ,@ownerId, @OwnershipType)     
+
+		   INSERT INTO [FlightTypes]
+           ([FlightTypeId]
+           ,[ClubId]
+           ,[FlightTypeName]
+           ,[FlightCode]
+           ,[InstructorRequired]
+           ,[ObserverPilotOrInstructorRequired]
+           ,[IsCheckFlight]
+           ,[IsPassengerFlight]
+           ,[IsForGliderFlights]
+		   ,[IsForTowFlights]
+		   ,[IsForMotorFlights]
+		   ,[IsFlightCostBalanceSelectable]
+           ,[CreatedOn]
+           ,[CreatedByUserId]
+           ,[ModifiedOn]
+           ,[ModifiedByUserId]
+           ,[DeletedOn]
+           ,[DeletedByUserId]
+           ,[RecordState]
+           ,[OwnerId], [OwnershipType], [IsCouponNumberRequired])
+     VALUES
+           (newid()
+           ,@insertClubId
+           ,'Schnupperflug Gutschein'
+           ,'68'
+           ,1
+           ,0
+           ,0
+           ,0
+           ,1
+           ,0
+		   ,1
+		   ,0
+           ,SYSDATETIME()
+           ,@clubUserId
+           ,null
+           ,null
+           ,null
+           ,null
+           ,0
+           ,@ownerId, @OwnershipType, 1)     
 		    
 INSERT INTO [FlightTypes]
            ([FlightTypeId]
