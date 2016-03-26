@@ -392,6 +392,7 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\PublishProfiles\Productiv-Web-Server-Publishing.pubxml" />
     <None Include="Properties\PublishProfiles\Test-Web-Server-Publishing.pubxml" />
     <None Include="Properties\PublishProfiles\TestPublishing.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
