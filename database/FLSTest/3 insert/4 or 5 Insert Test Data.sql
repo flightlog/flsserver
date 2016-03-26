@@ -491,10 +491,10 @@ INSERT INTO [FlightTypes]
            ,@insertClubId
            ,'Lufttaufe Bar'
            ,'66'
-           ,0
-           ,0
-           ,0
            ,1
+           ,0
+           ,0
+           ,0
            ,1
            ,0
 		   ,1
