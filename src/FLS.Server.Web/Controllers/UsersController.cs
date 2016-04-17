@@ -205,6 +205,12 @@ namespace FLS.Server.WebApi.Controllers
             return Ok(userDetails);
         }
 
+        /// <summary>
+        /// Confirms the users email address and sends password reset token by email.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("ConfirmEmail", Name = "ConfirmEmailRoute")]
@@ -299,6 +305,7 @@ namespace FLS.Server.WebApi.Controllers
                 var addResult = _identityUserManager.AddToRolesAsync(userId, rolesToAdd.ToArray()).Result;
             }
 
+            //TODO: Check if email address has changed, if so set email confirmation flag to false and resend email confirmation
             userDetails.ToUser(original);
             var result = _identityUserManager.UpdateAsync(original).Result;
 
@@ -343,7 +350,6 @@ namespace FLS.Server.WebApi.Controllers
         /// <summary>
         /// Changes the users password.
         /// </summary>
-        /// <param name="userId">The user identifier.</param>
         /// <param name="passwordChangeRequest">The password change request.</param>
         /// <returns></returns>
         [HttpPut]
@@ -398,7 +404,7 @@ namespace FLS.Server.WebApi.Controllers
             //var callbackUrl = new Uri(Url.Link("ChangeUsersPassword", new { userId = user.Id, code = code }));
             var encodedCode = code.ToBase64();
 
-            _logger.Debug($"EmailConfirmation-Token: Code: {code}, Base64: {encodedCode}");
+            _logger.Debug($"Password reset token: Code: {code}, Base64: {encodedCode}");
 
             var callbackUrl =
                     new Uri(
@@ -413,11 +419,16 @@ namespace FLS.Server.WebApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Resets the users password.
+        /// </summary>
+        /// <param name="passwordResetRequest"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("resetpassword")]
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> ResetPassword([FromBody]PasswordResetRequest passwordResetRequest)
+        public IHttpActionResult ResetPassword([FromBody]PasswordResetRequest passwordResetRequest)
         {
             var decodedCode = passwordResetRequest.PasswordResetCode.Base64ToString();
             _logger.Debug($"Password-Reset-Validation: Base64-Code: {passwordResetRequest.PasswordResetCode}, Decoded: {decodedCode}");
@@ -441,6 +452,61 @@ namespace FLS.Server.WebApi.Controllers
             var accessFailedCountResultErrors = string.Join(Environment.NewLine, accessFailedCountResult.Errors);
 
             throw new ApplicationException(accessFailedCountResultErrors);
+        }
+
+        /// <summary>
+        /// Resend email confirmation link
+        /// </summary>
+        /// <param name="emailTokenResendRequest">The user details.</param>
+        /// <returns></returns>
+        [Authorize(Roles = RoleApplicationKeyStrings.ClubAdministrator + "," + RoleApplicationKeyStrings.SystemAdministrator)]
+        [HttpPost]
+        [Route("resendemailtoken")]
+        [ResponseType(typeof(UserDetails))]
+        public IHttpActionResult ResendEmailToken([FromBody] EmailTokenResendRequest emailTokenResendRequest)
+        {
+            emailTokenResendRequest.ArgumentNotNull("emailTokenResendRequest");
+
+            var user = _identityUserManager.FindByNameAsync(emailTokenResendRequest.UserName).Result;
+            
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist or is not confirmed
+                throw new BadRequestException("User not found");
+            }
+
+            if (user.UserId != emailTokenResendRequest.UserId)
+            {
+                throw new BadRequestException("UserId does not match");
+            }
+
+            if (user.EmailConfirmed)
+            {
+                throw new BadRequestException("User has already confirmed email address!");
+            }
+
+            if (_identityUserManager.UserTokenProvider != null)
+            {
+                string code = _identityUserManager.GenerateEmailConfirmationTokenAsync(user.Id).Result;
+
+                //var callbackUrl = new Uri(Url.Link("ConfirmEmailRoute", new {userId = user.Id, code = code}));
+                var encodedCode = code.ToBase64();
+
+                _logger.Debug($"EmailConfirmation-Token: Code: {code}, Base64: {encodedCode}");
+
+                var callbackUrl =
+                    new Uri(
+                        emailTokenResendRequest.EmailConfirmationLink.ToLower()
+                        .Replace("{userid}", user.UserId.ToString())
+                            .Replace("{code}", encodedCode));
+
+                var message = _userAccountEmailBuildService.CreateEmailConfirmationEmail(user, callbackUrl.ToString());
+
+                var sendResult = _identityUserManager.SendEmailAsync(user.Id, message.Subject, message.Body);
+            }
+
+            var userDetails = _userService.GetUserDetails(user.UserId);
+            return Ok(userDetails);
         }
     }
 }

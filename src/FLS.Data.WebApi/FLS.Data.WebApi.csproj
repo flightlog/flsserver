@@ -157,6 +157,7 @@
     <Compile Include="User\RoleOverview.cs" />
     <Compile Include="User\UserAccountState.cs" />
     <Compile Include="User\UserAccountStateListItem.cs" />
+    <Compile Include="User\EmailTokenResendRequest.cs" />
     <Compile Include="User\UserRegistrationDetails.cs" />
     <Compile Include="User\UserDetails.cs" />
     <Compile Include="User\UserOverview.cs" />
