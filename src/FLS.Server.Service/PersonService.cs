@@ -277,17 +277,7 @@ namespace FLS.Server.Service
             SetPersonOverviewSecurity(personOverviewList);
             return personOverviewList.ToList();
         }
-
-        public PilotPersonDetails GetPilotPersonDetails(Guid personId, Guid clubId)
-        {
-            var person = GetPerson(personId);
-
-            var personDetails = person.ToPilotPersonDetails(clubId);
-            SetPersonDetailsSecurity(personDetails, person);
-
-            return personDetails;
-        }
-
+        
         internal PilotPersonDetails GetPilotPersonDetailsInternal(Guid personId, Guid clubId, bool controlAccess = true)
         {
             var person = GetPerson(personId, controlAccess);
@@ -724,6 +714,10 @@ namespace FLS.Server.Service
                 {
                     overview.CanUpdateRecord = false;
                     overview.CanDeleteRecord = false;
+
+                    //reset communication properties to null as the user is not allowed to see these details
+                    overview.MobilePhoneNumber = string.Empty;
+                    overview.PrivateEmail = string.Empty;
                 }
 
                 return;
@@ -733,7 +727,8 @@ namespace FLS.Server.Service
             {
                 foreach (var personOverview in list)
                 {
-                    if (IsCurrentUserInRoleClubAdministrator ||
+                    if (IsCurrentUserInRoleSystemAdministrator ||
+                        IsCurrentUserInRoleClubAdministrator ||
                         IsOwner(context.Persons.First(a => a.PersonId == personOverview.PersonId)))
                     {
                         personOverview.CanUpdateRecord = true;
@@ -743,6 +738,10 @@ namespace FLS.Server.Service
                     {
                         personOverview.CanUpdateRecord = false;
                         personOverview.CanDeleteRecord = false;
+
+                        //reset communication properties to null as the user is not allowed to see these details
+                        personOverview.MobilePhoneNumber = string.Empty;
+                        personOverview.PrivateEmail = string.Empty;
                     }
                 }
             }

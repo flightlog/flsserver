@@ -18,6 +18,10 @@ namespace FLS.Data.WebApi.Person
 
         public string CountryName { get; set; }
 
+        public string PrivateEmail { get; set; }
+
+        public string MobilePhoneNumber { get; set; }
+
         public override Guid Id
         {
             get { return PersonId; }

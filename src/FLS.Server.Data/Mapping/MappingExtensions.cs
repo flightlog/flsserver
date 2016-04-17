@@ -2209,6 +2209,9 @@ namespace FLS.Server.Data.Mapping
             overview.ZipCode = entity.Zip;
             overview.CountryName = entity.Country.CountryName;
 
+            overview.MobilePhoneNumber = entity.MobilePhone;
+            overview.PrivateEmail = entity.EmailPrivate;
+
             return overview;
         }
 
