@@ -2207,7 +2207,14 @@ namespace FLS.Server.Data.Mapping
             overview.AddressLine = entity.AddressLine1;
             overview.City = entity.City;
             overview.ZipCode = entity.Zip;
-            overview.CountryName = entity.Country.CountryName;
+
+            if (entity.Country != null)
+            {
+                overview.CountryName = entity.Country.CountryName;
+            }
+
+            overview.MobilePhoneNumber = entity.MobilePhone;
+            overview.PrivateEmail = entity.EmailPrivate;
 
             return overview;
         }
