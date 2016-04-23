@@ -116,12 +116,7 @@ namespace FLS.Server.Service
 
                             CreateFlightInvoiceLineItems(flight, flightInvoiceDetails);
 
-                            Logger.Info(
-                                string.Format(
-                                    "Created invoice for {0}: Flight-Date: {1} Aircraft: {2} Nr of Lines: {3}",
-                                    flightInvoiceDetails.InvoiceRecipientPersonDisplayName,
-                                    flightInvoiceDetails.FlightDate, flightInvoiceDetails.AircraftImmatriculation,
-                                    flightInvoiceDetails.FlightInvoiceLineItems.Count));
+                            Logger.Info($"Created invoice for {flightInvoiceDetails.InvoiceRecipientPersonDisplayName}: Flight-Date: {flightInvoiceDetails.FlightDate.ToShortDateString()} Aircraft: {flightInvoiceDetails.AircraftImmatriculation} Nr of Lines: {flightInvoiceDetails.FlightInvoiceLineItems.Count}");
 
                             flightInvoiceDetailList.Add(flightInvoiceDetails);
                         }

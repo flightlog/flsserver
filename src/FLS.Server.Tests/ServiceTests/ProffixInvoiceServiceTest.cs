@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using FLS.Data.WebApi.Flight;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
@@ -32,6 +33,34 @@ namespace FLS.Server.Tests.ServiceTests
             public string UnitType { get; set; }
         }
 
+        [TestCleanup]
+        public void ProffixInvoiceTestCleanup()
+        {
+            Logger.Debug($"Run Proffix Invoice Test Cleanup after Use case: {TestContext.DataRow["UseCase"]}");
+
+            //set not invoiced flights to valid flights, so that it will not invoiced during next run in ProffixInvoiceTest test data line
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                var lockedFlights = context.Flights.Where(x => x.FlightStateId == (int) FLS.Data.WebApi.Flight.FlightState.Locked);
+
+                if (lockedFlights.Any())
+                {
+                    foreach (var lockedFlight in lockedFlights)
+                    {
+                        lockedFlight.FlightStateId = (int) FLS.Data.WebApi.Flight.FlightState.Valid;
+                        Logger.Debug($"Set flight state to valid for FlightId: {lockedFlight.FlightId}");
+                    }
+
+                    context.SaveChanges();
+                }
+                else
+                {
+                    Logger.Debug("Nothing cleaned up");
+                }
+
+            }
+        }
+
         //http://stackoverflow.com/questions/24012253/datadriven-mstests-csv-with-semicolon-separator
         //important: schema.ini must be saved as US-ASCII (in VS)
         [TestMethod]
@@ -52,13 +81,13 @@ namespace FLS.Server.Tests.ServiceTests
             var subUseCase = TestContext.DataRow["UC-Variante"].ToString();
             var includeInTest = TestContext.DataRow["IncludeInTest"].ToString();
 
+            Logger.Debug($"ProffixInvoiceTest for Use Case: {useCase}, UC-Variation: {subUseCase}");
+
             if (includeInTest != "1")
             {
-                Logger.Debug($"Use case: {useCase}, UC-Variation: {subUseCase} is excluded from Test. Exit ProffixInvoiceTest for this use case.");
+                Logger.Debug($"Use case {useCase}{subUseCase} is excluded from Test. Exit ProffixInvoiceTest for this use case.");
                 return;
             }
-
-            Logger.Debug($"ProffixInvoiceTest for Use Case: {useCase}, UC-Variation: {subUseCase}");
 
             #region Flight preparation
             var startTime = DateTime.Today.AddDays(-34).AddHours(10);
@@ -117,15 +146,24 @@ namespace FLS.Server.Tests.ServiceTests
                 }
             }
 
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData();
-            flightDetails.TowFlightDetailsData.AircraftId = GetAircraft(TestContext.DataRow["TowingAircraftImmatriculation"].ToString()).AircraftId;
-            flightDetails.TowFlightDetailsData.FlightComment = TestContext.DataRow["TowFlightComment"].ToString();
-            flightDetails.TowFlightDetailsData.StartDateTime = startTime;
-            flightDetails.TowFlightDetailsData.LdgDateTime = startTime.AddMinutes(Convert.ToInt32(TestContext.DataRow["TowFlightDuration"]));
-            flightDetails.TowFlightDetailsData.PilotPersonId = GetPerson(TestContext.DataRow["TowPilotName"].ToString()).PersonId;
-            flightDetails.TowFlightDetailsData.StartLocationId = GetLocation(TestContext.DataRow["StartLocation"].ToString()).LocationId;
-            flightDetails.TowFlightDetailsData.LdgLocationId = GetLocation(TestContext.DataRow["TowLdgLocation"].ToString()).LocationId;
-            flightDetails.TowFlightDetailsData.FlightTypeId = GetFlightType(TestContext.DataRow["TowFlightCode"].ToString()).FlightTypeId;
+            if (Convert.ToInt32(TestContext.DataRow["StartType"]) == (int)AircraftStartType.TowingByAircraft)
+            {
+                flightDetails.TowFlightDetailsData = new TowFlightDetailsData();
+                flightDetails.TowFlightDetailsData.AircraftId =
+                    GetAircraft(TestContext.DataRow["TowingAircraftImmatriculation"].ToString()).AircraftId;
+                flightDetails.TowFlightDetailsData.FlightComment = TestContext.DataRow["TowFlightComment"].ToString();
+                flightDetails.TowFlightDetailsData.StartDateTime = startTime;
+                flightDetails.TowFlightDetailsData.LdgDateTime =
+                    startTime.AddMinutes(Convert.ToInt32(TestContext.DataRow["TowFlightDuration"]));
+                flightDetails.TowFlightDetailsData.PilotPersonId =
+                    GetPerson(TestContext.DataRow["TowPilotName"].ToString()).PersonId;
+                flightDetails.TowFlightDetailsData.StartLocationId =
+                    GetLocation(TestContext.DataRow["StartLocation"].ToString()).LocationId;
+                flightDetails.TowFlightDetailsData.LdgLocationId =
+                    GetLocation(TestContext.DataRow["TowLdgLocation"].ToString()).LocationId;
+                flightDetails.TowFlightDetailsData.FlightTypeId =
+                    GetFlightType(TestContext.DataRow["TowFlightCode"].ToString()).FlightTypeId;
+            }
 
             FlightService.InsertFlightDetails(flightDetails);
             SetFlightAsLocked(flightDetails);
@@ -167,26 +205,26 @@ namespace FLS.Server.Tests.ServiceTests
 
             if (expectInvoice == "1")
             {
-                Assert.AreEqual(invoices.Count, 1);
+                Assert.AreEqual(1, invoices.Count, "Number of expected invoices is not 1");
             }
             else
             {
-                Assert.AreEqual(invoices.Count, 0);
+                Assert.AreEqual(0, invoices.Count, "Number of expected invoices is not 0");
             }
 
             foreach (var flightInvoiceDetails in invoices)
             {
-                Assert.AreEqual(flightInvoiceDetails.FlightInvoiceLineItems.Count, expectedInvoiceLineItemsCount);
-                Assert.AreEqual(flightInvoiceDetails.AircraftImmatriculation, expectedInvoiceAircraftImmatriculation);
-                Assert.AreEqual(flightInvoiceDetails.InvoiceRecipientPersonDisplayName, expectedInvoiceRecipientPersonDisplayName);
-                Assert.AreEqual(flightInvoiceDetails.FlightInvoiceInfo, expectedInvoiceFlightInfo);
-                Assert.AreEqual(flightInvoiceDetails.AdditionalInfo, expectedInvoiceAdditionalInfo);
+                Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.FlightInvoiceLineItems.Count, $"Number of invoice lines is not as expected. Created invoice lines are: {GetInvoiceLinesForLogging(flightInvoiceDetails)}");
+                Assert.AreEqual(expectedInvoiceAircraftImmatriculation, flightInvoiceDetails.AircraftImmatriculation, "Wrong aircraft immatriculation reported in invoice");
+                Assert.AreEqual(expectedInvoiceRecipientPersonDisplayName, flightInvoiceDetails.InvoiceRecipientPersonDisplayName, "Wrong recipient person in invoice");
+                Assert.AreEqual(expectedInvoiceFlightInfo, flightInvoiceDetails.FlightInvoiceInfo, "Wrong invoice information in invoice");
+                Assert.AreEqual(expectedInvoiceAdditionalInfo, flightInvoiceDetails.AdditionalInfo, "Wrong additional information in invoice");
 
                 foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
                 {
-                    Assert.AreEqual(line.ERPArticleNumber, expectedInvoiceLines[line.InvoiceLinePosition].ERPArticleNumber);
-                    Assert.AreEqual(line.Quantity, expectedInvoiceLines[line.InvoiceLinePosition].Quantity);
-                    Assert.AreEqual(line.UnitType, expectedInvoiceLines[line.InvoiceLinePosition].UnitType);
+                    Assert.AreEqual(expectedInvoiceLines[line.InvoiceLinePosition].ERPArticleNumber, line.ERPArticleNumber, $"Article number in invoice line {line.InvoiceLinePosition} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.InvoiceLinePosition].Quantity, line.Quantity, $"Quantity in invoice line {line.InvoiceLinePosition} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.InvoiceLinePosition].UnitType, line.UnitType, $"Unittype in invoice line {line.InvoiceLinePosition} is wrong.");
                 }
 
                 var flightInvoiceBooking = new FlightInvoiceBooking
@@ -198,10 +236,22 @@ namespace FLS.Server.Tests.ServiceTests
                 };
 
                 var isFlightInvoiced = InvoiceService.SetFlightAsInvoiced(flightInvoiceBooking);
-                Assert.IsTrue(isFlightInvoiced);
+                Assert.IsTrue(isFlightInvoiced, $"Flight with Id: {flightInvoiceDetails.FlightId} could not be set as invoiced");
             }
 
             #endregion invoice check
+        }
+
+        private string GetInvoiceLinesForLogging(FlightInvoiceDetails flightInvoiceDetails)
+        {
+            var sb = new StringBuilder();
+            foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
+            {
+                sb.Append($"{line.InvoiceLinePosition} {line.ERPArticleNumber} {line.InvoiceLineText} {line.Quantity} {line.UnitType}");
+                sb.Append(Environment.NewLine);
+            }
+
+            return sb.ToString();
         }
     }
 }
