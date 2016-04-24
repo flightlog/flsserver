@@ -6,9 +6,12 @@ using System.Security.Authentication;
 using FLS.Common.Extensions;
 using FLS.Common.Validators;
 using FLS.Data.WebApi.Invoicing;
+using FLS.Data.WebApi.Person;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
+using FLS.Server.Data.Mapping;
 using FLS.Server.Data.Resources;
+using FLS.Server.Interfaces.Invoicing;
 using FLS.Server.Service.Invoicing;
 using NLog;
 using TrackerEnabledDbContext.Common.Extensions;
@@ -19,16 +22,19 @@ namespace FLS.Server.Service
     {
         private readonly DataAccessService _dataAccessService;
         private readonly InvoiceMappingFactory _invoiceMappingFactory;
-        private readonly string SystemFlightTypeCode = "999";
+        private readonly IInvoiceService _invoiceService;
+        private readonly PersonService _personService;
         private InvoiceMapping InvoiceMapping { get; set; }
         private Guid LocationIdLSZK { get; set; }
 
         public InvoiceService(DataAccessService dataAccessService, InvoiceMappingFactory invoiceMappingFactory, 
-            IdentityService identityService)
+            IdentityService identityService, IInvoiceService invoiceService, PersonService personService)
             : base(dataAccessService, identityService)
         {
             _dataAccessService = dataAccessService;
             _invoiceMappingFactory = invoiceMappingFactory;
+            _invoiceService = invoiceService;
+            _personService = personService;
             Logger = LogManager.GetCurrentClassLogger();
             InvoiceMapping = _invoiceMappingFactory.CreateInvoiceMapping();
             LocationIdLSZK = _invoiceMappingFactory.GetLocationId("LSZK");
@@ -55,7 +61,6 @@ namespace FLS.Server.Service
             }
 
             bool isTodayIncluded = fromDate.Date <= DateTime.Now.Date && toDate.Date >= DateTime.Now.Date;
-            var flightInvoiceDetailList = new List<FlightInvoiceDetails>();
 
             try
             {
@@ -95,48 +100,11 @@ namespace FLS.Server.Service
                         string.Format("Queried Flights for Invoice between {1} and {2} and got {0} flights back.",
                                       flights.Count, fromDateTime, toDateTime));
 
-                    var numberOfExceptions = 0;
-                    Exception lastException = null;
 
-                    foreach (var flight in flights)
-                    {
-                        try
-                        {
-                            //Do not invoice any system flights, so continue
-                            if (flight.FlightType.FlightCode == SystemFlightTypeCode)
-                            {
-                                continue;
-                            }
+                    var flightInvoiceDetails = _invoiceService.CreateFlightInvoiceDetails(flights);
 
-                            var flightInvoiceDetails = CreateFlightInvoiceDetails(flight);
-
-                            Logger.Debug(
-                                string.Format("Created flight invoice details for flight and start creating invoice line items: {0}.",
-                                     flight));
-
-                            CreateFlightInvoiceLineItems(flight, flightInvoiceDetails);
-
-                            Logger.Info($"Created invoice for {flightInvoiceDetails.InvoiceRecipientPersonDisplayName}: Flight-Date: {flightInvoiceDetails.FlightDate.ToShortDateString()} Aircraft: {flightInvoiceDetails.AircraftImmatriculation} Nr of Lines: {flightInvoiceDetails.FlightInvoiceLineItems.Count}");
-
-                            flightInvoiceDetailList.Add(flightInvoiceDetails);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Error(ex, $"Error while trying to create invoice details for flight: {flight}. Message: {ex.Message}");
-                            numberOfExceptions++;
-                            lastException = ex;
-                        }
-                    }
-
-                    //TODO: Handle exceptions correctly
-                    if (numberOfExceptions > 0 && lastException != null)
-                    {
-                        Logger.Error(lastException, $"Total {numberOfExceptions} error(s) while trying to create invoice details for flights. Last exception message: {lastException.Message}");
-                    }
-
-                    Logger.Debug($"Have {flightInvoiceDetailList.Count} flight invoice object(s) in result list for sending back to client.");
-
-                    return flightInvoiceDetailList.ToList();
+                    return flightInvoiceDetails;
+                    
                 }
             }
             catch (Exception ex)
@@ -144,8 +112,6 @@ namespace FLS.Server.Service
                 Logger.Error(ex, $"Error while trying to create invoice for flights. Message: {ex.Message}");
                 throw;
             }
-
-            //return flightInvoiceDetailList.ToList();
         }
 
         public bool SetFlightAsInvoiced(FlightInvoiceBooking flightInvoiceBooking)
@@ -238,6 +204,7 @@ namespace FLS.Server.Service
                 return true;
             }
         }
+        
 
         #region Private Methods
         private void CreateFlightInvoiceLineItems(Flight flight, FlightInvoiceDetails flightInvoiceDetails)
@@ -795,158 +762,158 @@ namespace FLS.Server.Service
             return unitTypeString;
         }
 
-        private FlightInvoiceDetails CreateFlightInvoiceDetails(Flight flight)
-        {
-            flight.ArgumentNotNull("flight");
+        //private FlightInvoiceDetails CreateFlightInvoiceDetails(Flight flight)
+        //{
+        //    flight.ArgumentNotNull("flight");
 
-            if (flight.FlightDate == null
-                || string.IsNullOrEmpty(flight.AircraftImmatriculation)
-                || string.IsNullOrEmpty(flight.PilotDisplayName))
-            {
-                throw new InvalidDataException("Flight is not valid for invoice");
-            }
+        //    if (flight.FlightDate == null
+        //        || string.IsNullOrEmpty(flight.AircraftImmatriculation)
+        //        || string.IsNullOrEmpty(flight.PilotDisplayName))
+        //    {
+        //        throw new InvalidDataException("Flight is not valid for invoice");
+        //    }
 
-            var flightInvoiceDetails = new FlightInvoiceDetails
-            {
-                FlightId = flight.FlightId,
-                FlightDate = flight.FlightDate.Value,
-                AircraftImmatriculation = flight.AircraftImmatriculation,
-                FlightInvoiceLineItems = new List<FlightInvoiceLineItem>(),
-                FlightInvoiceInfo = flight.FlightType.FlightTypeName
-            };
+        //    var flightInvoiceDetails = new FlightInvoiceDetails
+        //    {
+        //        FlightId = flight.FlightId,
+        //        FlightDate = flight.FlightDate.Value,
+        //        AircraftImmatriculation = flight.AircraftImmatriculation,
+        //        FlightInvoiceLineItems = new List<FlightInvoiceLineItem>(),
+        //        FlightInvoiceInfo = flight.FlightType.FlightTypeName
+        //    };
 
-            try
-            {
-                //Check if we have an invoice recipient remapping (Passenger-, Schnupper-, Marketing-Flights)
-                //which will be invoiced to club internal instead to the pilots
-                if (InvoiceMapping.FlightTypeToInvoiceRecipientMapping.ContainsKey(flight.FlightType.FlightCode))
-                {
-                    var invoiceRecipientTarget =
-                        InvoiceMapping.FlightTypeToInvoiceRecipientMapping[flight.FlightType.FlightCode];
+        //    //try
+        //    //{
+        //    //    //Check if we have an invoice recipient remapping (Passenger-, Schnupper-, Marketing-Flights)
+        //    //    //which will be invoiced to club internal instead to the pilots
+        //    //    if (InvoiceMapping.FlightTypeToInvoiceRecipientMapping.ContainsKey(flight.FlightType.FlightCode))
+        //    //    {
+        //    //        var invoiceRecipientTarget =
+        //    //            InvoiceMapping.FlightTypeToInvoiceRecipientMapping[flight.FlightType.FlightCode];
 
-                    if (invoiceRecipientTarget != null)
-                    {
-                        flightInvoiceDetails.InvoiceRecipientPersonDisplayName = invoiceRecipientTarget.DisplayName;
-                        flightInvoiceDetails.InvoiceRecipientPersonClubMemberNumber = invoiceRecipientTarget.MemberNumber;
-                        flightInvoiceDetails.InvoiceRecipientPersonClubMemberKey = invoiceRecipientTarget.MemberKey;
+        //    //        if (invoiceRecipientTarget != null)
+        //    //        {
+        //    //            flightInvoiceDetails.RecipientDetails.RecipientName = invoiceRecipientTarget.DisplayName;
+        //    //            flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber = invoiceRecipientTarget.MemberNumber;
+        //    //            flightInvoiceDetails.RecipientDetails.PersonClubMemberKey = invoiceRecipientTarget.MemberKey;
 
-                        if (flight.FlightType.IsPassengerFlight)
-                        {
-                            flightInvoiceDetails.FlightInvoiceInfo += " " + flight.PilotDisplayName + " mit PAX: " + flight.PassengerDisplayName;
-                        }
-                        else
-                        {
-                            flightInvoiceDetails.FlightInvoiceInfo += " " + flight.PilotDisplayName + " mit FL: " + flight.InstructorDisplayName;                        
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception(string.Format("Invoice recipient target is null. Can not create invoice for flight with Id: {0}",
-                                                      flight.FlightId));
-                    }
-                }
-                else
-                {
-                    //Invoice the flight to the pilot or to a person which is the invoice recipient
+        //    //            if (flight.FlightType.IsPassengerFlight)
+        //    //            {
+        //    //                flightInvoiceDetails.FlightInvoiceInfo += " " + flight.PilotDisplayName + " mit PAX: " + flight.PassengerDisplayName;
+        //    //            }
+        //    //            else
+        //    //            {
+        //    //                flightInvoiceDetails.FlightInvoiceInfo += " " + flight.PilotDisplayName + " mit FL: " + flight.InstructorDisplayName;                        
+        //    //            }
+        //    //        }
+        //    //        else
+        //    //        {
+        //    //            throw new Exception(string.Format("Invoice recipient target is null. Can not create invoice for flight with Id: {0}",
+        //    //                                          flight.FlightId));
+        //    //        }
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        //Invoice the flight to the pilot or to a person which is the invoice recipient
 
-                    //Check if we have to send the invoice to a 3rd party person
-                    if (flight.FlightCostBalanceTypeId == (int) FLS.Data.WebApi.Flight.FlightCostBalanceType.CostsPaidByPerson)
-                    {
-                        var invoiceRecipient =
-                            flight.FlightCrews.FirstOrDefault(
-                                fc => fc.FlightCrewTypeId == (int) FLS.Data.WebApi.Flight.FlightCrewType.FlightCostInvoiceRecipient);
+        //    //        //Check if we have to send the invoice to a 3rd party person
+        //    //        if (flight.FlightCostBalanceTypeId == (int) FLS.Data.WebApi.Flight.FlightCostBalanceType.CostsPaidByPerson)
+        //    //        {
+        //    //            var invoiceRecipient =
+        //    //                flight.FlightCrews.FirstOrDefault(
+        //    //                    fc => fc.FlightCrewTypeId == (int) FLS.Data.WebApi.Flight.FlightCrewType.FlightCostInvoiceRecipient);
 
-                        if (invoiceRecipient != null && invoiceRecipient.Person != null)
-                        {
-                            SetInvoiceRecipient(flightInvoiceDetails, flight, invoiceRecipient.Person.DisplayName, invoiceRecipient.PersonId);
-                        }
-                    }
-                    else
-                    {
-                        //invoice the pilot
-                        SetInvoiceRecipient(flightInvoiceDetails, flight, flight.PilotDisplayName, flight.Pilot.PersonId);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"Error while trying to find invoice recipient target for flight {flight}");
-                throw;
-            }
+        //    //            if (invoiceRecipient != null && invoiceRecipient.Person != null)
+        //    //            {
+        //    //                SetInvoiceRecipient(flightInvoiceDetails, flight, invoiceRecipient.Person.DisplayName, invoiceRecipient.PersonId);
+        //    //            }
+        //    //        }
+        //    //        else
+        //    //        {
+        //    //            //invoice the pilot
+        //    //            SetInvoiceRecipient(flightInvoiceDetails, flight, flight.PilotDisplayName, flight.Pilot.PersonId);
+        //    //        }
+        //    //    }
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    Logger.Error(ex, $"Error while trying to find invoice recipient target for flight {flight}");
+        //    //    throw;
+        //    //}
 
-            try
-            {
-                //Set additional flight invoice info text
+        //    //try
+        //    //{
+        //    //    //Set additional flight invoice info text
 
-                if (flight.FlightType.IsPassengerFlight && flightInvoiceDetails.FlightInvoiceInfo.Contains(flight.PassengerDisplayName) == false)
-                {
-                    flightInvoiceDetails.FlightInvoiceInfo += " mit PAX: " + flight.PassengerDisplayName;
-                }
-                else if (flight.FlightType.IsCheckFlight && flightInvoiceDetails.FlightInvoiceInfo.Contains(flight.InstructorDisplayName) == false)
-                {
-                    flightInvoiceDetails.FlightInvoiceInfo += " mit FL: " + flight.InstructorDisplayName;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"Error while trying to set additional invoice info text for flight {flight}");
-                throw;
-            }
+        //    //    if (flight.FlightType.IsPassengerFlight && flightInvoiceDetails.FlightInvoiceInfo.Contains(flight.PassengerDisplayName) == false)
+        //    //    {
+        //    //        flightInvoiceDetails.FlightInvoiceInfo += " mit PAX: " + flight.PassengerDisplayName;
+        //    //    }
+        //    //    else if (flight.FlightType.IsCheckFlight && flightInvoiceDetails.FlightInvoiceInfo.Contains(flight.InstructorDisplayName) == false)
+        //    //    {
+        //    //        flightInvoiceDetails.FlightInvoiceInfo += " mit FL: " + flight.InstructorDisplayName;
+        //    //    }
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    Logger.Error(ex, $"Error while trying to set additional invoice info text for flight {flight}");
+        //    //    throw;
+        //    //}
 
-            try
-            {
-                //Set flag "Additional Info" to 1 if we have a teaching flight or 0
-                //is not used somewhere
-                if (InvoiceMapping.FlightCodesForInstructorFee.Contains(flight.FlightType.FlightCode))
-                {
-                    //Schulungsflug
-                    flightInvoiceDetails.AdditionalInfo = "1";
-                }
-                else
-                {
-                    //kein Schulungsflug
-                    flightInvoiceDetails.AdditionalInfo = "0";
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"Error while trying to set additional info for flight {flight}");
-                throw;
-            }
+        //    //try
+        //    //{
+        //    //    //Set flag "Additional Info" to 1 if we have a teaching flight or 0
+        //    //    //is not used somewhere
+        //    //    if (InvoiceMapping.FlightCodesForInstructorFee.Contains(flight.FlightType.FlightCode))
+        //    //    {
+        //    //        //Schulungsflug
+        //    //        flightInvoiceDetails.AdditionalInfo = "1";
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        //kein Schulungsflug
+        //    //        flightInvoiceDetails.AdditionalInfo = "0";
+        //    //    }
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    Logger.Error(ex, $"Error while trying to set additional info for flight {flight}");
+        //    //    throw;
+        //    //}
 
-            return flightInvoiceDetails;
-        }
+        //    return flightInvoiceDetails;
+        //}
 
-        private void SetInvoiceRecipient(FlightInvoiceDetails flightInvoiceDetails, Flight flight, string recipientDisplayName,
-                                         Guid personId)
-        {
-            try
-            {
-                flightInvoiceDetails.InvoiceRecipientPersonDisplayName = recipientDisplayName;
+        //private void SetInvoiceRecipient(FlightInvoiceDetails flightInvoiceDetails, Flight flight, string recipientDisplayName,
+        //                                 Guid personId)
+        //{
+        //    try
+        //    {
+        //        flightInvoiceDetails.RecipientDetails.RecipientName = recipientDisplayName;
 
-                using (var context = _dataAccessService.CreateDbContext())
-                {
-                    var personClub =
-                        context.PersonClubs.FirstOrDefault(
-                            pc => pc.ClubId == flight.FlightType.ClubId && pc.PersonId == personId);
+        //        using (var context = _dataAccessService.CreateDbContext())
+        //        {
+        //            var personClub =
+        //                context.PersonClubs.FirstOrDefault(
+        //                    pc => pc.ClubId == flight.FlightType.ClubId && pc.PersonId == personId);
 
-                    if (personClub != null)
-                    {
-                        flightInvoiceDetails.InvoiceRecipientPersonClubMemberNumber = personClub.MemberNumber;
-                        flightInvoiceDetails.InvoiceRecipientPersonClubMemberKey = personClub.MemberKey;
-                    }
-                    else
-                    {
-                        throw new Exception($"PersonClub was not found. Can not create invoice for flight with Id: {flight.FlightId}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"Error while trying to set invoice recipient {recipientDisplayName} for flight {flight}");
-                throw;
-            }
-        }
+        //            if (personClub != null)
+        //            {
+        //                flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber = personClub.MemberNumber;
+        //                flightInvoiceDetails.RecipientDetails.PersonClubMemberKey = personClub.MemberKey;
+        //            }
+        //            else
+        //            {
+        //                throw new Exception($"PersonClub was not found. Can not create invoice for flight with Id: {flight.FlightId}");
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.Error(ex, $"Error while trying to set invoice recipient {recipientDisplayName} for flight {flight}");
+        //        throw;
+        //    }
+        //}
 
         #endregion Private Methods
     }

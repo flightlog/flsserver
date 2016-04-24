@@ -115,11 +115,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.3.1\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog.Extended, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -397,9 +397,9 @@
     <None Include="Properties\PublishProfiles\TestPublishing.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <None Include="Scripts\jquery-2.2.0.intellisense.js" />
-    <Content Include="Scripts\jquery-2.2.0.js" />
-    <Content Include="Scripts\jquery-2.2.0.min.js" />
+    <None Include="Scripts\jquery-2.2.3.intellisense.js" />
+    <Content Include="Scripts\jquery-2.2.3.js" />
+    <Content Include="Scripts\jquery-2.2.3.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
@@ -421,7 +421,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Scripts\jquery-2.2.0.min.map" />
+    <Content Include="Scripts\jquery-2.2.3.min.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FLS.Common\FLS.Common.csproj">
@@ -435,6 +435,14 @@
     <ProjectReference Include="..\FLS.Server.Data\FLS.Server.Data.csproj">
       <Project>{C0E82ADD-CC87-4E9C-99C8-FA041522D51C}</Project>
       <Name>FLS.Server.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FLS.Server.Interfaces\FLS.Server.Interfaces.csproj">
+      <Project>{7b834855-a8dc-4dba-9e86-b6d38b8f9e13}</Project>
+      <Name>FLS.Server.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FLS.Server.ProffixInvoiceService\FLS.Server.ProffixInvoiceService.csproj">
+      <Project>{d67e152d-61b9-420d-aae0-13f52f0fdd38}</Project>
+      <Name>FLS.Server.ProffixInvoiceService</Name>
     </ProjectReference>
     <ProjectReference Include="..\FLS.Server.Service\FLS.Server.Service.csproj">
       <Project>{abaf4760-2558-4fc0-8d42-2f4d1b1aa8bd}</Project>

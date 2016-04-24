@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace FLS.Data.WebApi.Invoicing
 {
     public class FlightInvoiceDetails
     {
+        public FlightInvoiceDetails()
+        {
+            RecipientDetails = new RecipientDetails();
+            FlightInvoiceLineItems = new List<FlightInvoiceLineItem>();
+        }
 
         public Guid FlightId { get; set; }
 
@@ -12,11 +18,7 @@ namespace FLS.Data.WebApi.Invoicing
 
         public string AircraftImmatriculation { get; set; }
 
-        public string InvoiceRecipientPersonClubMemberKey { get; set; }
-
-        public string InvoiceRecipientPersonClubMemberNumber { get; set; }
-
-        public string InvoiceRecipientPersonDisplayName { get; set; }
+        public RecipientDetails RecipientDetails { get; set; }
 
         public string FlightInvoiceInfo { get; set; }
 

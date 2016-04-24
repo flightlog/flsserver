@@ -179,7 +179,7 @@ namespace FLS.Server.Tests.ServiceTests
             var expectInvoice = TestContext.DataRow["ExpectInvoice"].ToString();
             var expectedInvoiceLineItemsCount = Convert.ToInt32(TestContext.DataRow["ExpectedInvoiceLineItemsCount"].ToString());
             var expectedInvoiceAircraftImmatriculation = TestContext.DataRow["ExpectedInvoiceAircraftImmatriculation"].ToString();
-            var expectedInvoiceRecipientPersonDisplayName = TestContext.DataRow["ExpectedInvoiceRecipientPersonDisplayName"].ToString();
+            var expectedInvoiceRecipientName = TestContext.DataRow["ExpectedInvoiceRecipientName"].ToString();
             var expectedInvoiceFlightInfo = TestContext.DataRow["ExpectedInvoiceFlightInfo"].ToString();
             var expectedInvoiceAdditionalInfo = TestContext.DataRow["ExpectedInvoiceAdditionalInfo"].ToString();
 
@@ -216,7 +216,7 @@ namespace FLS.Server.Tests.ServiceTests
             {
                 Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.FlightInvoiceLineItems.Count, $"Number of invoice lines is not as expected. Created invoice lines are: {GetInvoiceLinesForLogging(flightInvoiceDetails)}");
                 Assert.AreEqual(expectedInvoiceAircraftImmatriculation, flightInvoiceDetails.AircraftImmatriculation, "Wrong aircraft immatriculation reported in invoice");
-                Assert.AreEqual(expectedInvoiceRecipientPersonDisplayName, flightInvoiceDetails.InvoiceRecipientPersonDisplayName, "Wrong recipient person in invoice");
+                Assert.AreEqual(expectedInvoiceRecipientName, flightInvoiceDetails.RecipientDetails.RecipientName, "Wrong recipient person in invoice");
                 Assert.AreEqual(expectedInvoiceFlightInfo, flightInvoiceDetails.FlightInvoiceInfo, "Wrong invoice information in invoice");
                 Assert.AreEqual(expectedInvoiceAdditionalInfo, flightInvoiceDetails.AdditionalInfo, "Wrong additional information in invoice");
 

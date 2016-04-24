@@ -1,5 +1,4 @@
 ﻿using System.Net.Mail;
-using AutoMapper.QueryableExtensions.Impl;
 using FLS.Common.Extensions;
 using FLS.Common.Validators;
 using FLS.Server.Data.DbEntities;

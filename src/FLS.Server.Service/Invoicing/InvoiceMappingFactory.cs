@@ -26,7 +26,7 @@ namespace FLS.Server.Service.Invoicing
             invoiceMapping.IsErrorWhenNoAdditionalFuelFeeRuleMatches = false;
             invoiceMapping.IsErrorWhenNoLandingTaxRuleMatches = false;
             invoiceMapping.IsErrorWhenNoVFSFeeRuleMatches = false;
-            invoiceMapping.VFSMappingRule = new VFSMappingRule
+            invoiceMapping.VFSMappingRule = new VSFMappingRule
             {
                 AddVFSFeePerLanding = true,
                 ERPArticleNumber = "1003",

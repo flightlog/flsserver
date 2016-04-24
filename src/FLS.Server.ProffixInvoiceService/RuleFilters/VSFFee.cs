@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FLS.Server.Service.Invoicing
+namespace FLS.Server.ProffixInvoiceService.RuleFilters
 {
-    public class VFSMappingRule
+    public class VSFMappingRule
     {
         public bool AddVFSFeePerLanding { get; set; }
         public string ERPArticleNumber { get; set; }
@@ -11,7 +11,7 @@ namespace FLS.Server.Service.Invoicing
         public bool UseRuleForAllLdgLocationsExceptListed { get; set; }
         public List<Guid> MatchedLdgLocations { get; set; }
 
-        public VFSMappingRule()
+        public VSFMappingRule()
         {
         }
     }

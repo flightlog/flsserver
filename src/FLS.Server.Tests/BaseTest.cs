@@ -15,6 +15,8 @@ using FLS.Server.Data;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
 using FLS.Server.Data.Mapping;
+using FLS.Server.Interfaces;
+using FLS.Server.Interfaces.Invoicing;
 using FLS.Server.Service;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Identity;
@@ -129,7 +131,11 @@ namespace FLS.Server.Tests
             container.RegisterType<PlanningDayService>();
             container.RegisterType<UserService>();
             container.RegisterType<WorkflowService>();
-            
+            container.RegisterType<ILocationService, LocationService>();
+            container.RegisterType<IAircraftService, AircraftService>();
+            container.RegisterType<IPersonService, PersonService>();
+            container.RegisterType<IInvoiceService, ProffixInvoiceService.ProffixInvoiceService>();
+
             //container.RegisterType<IUserStore<ApplicationUser>, UserStore<ApplicationUser>>(
             //    new InjectionConstructor(typeof(ApplicationDbContext)));
         }

@@ -20,7 +20,7 @@ namespace FLS.Server.Service.Invoicing
         public bool IsErrorWhenNoLandingTaxRuleMatches { get; set; }
         public bool IsErrorWhenNoVFSFeeRuleMatches { get; set; }
         public List<LandingTaxRule> LandingTaxRules { get; set; }
-        public VFSMappingRule VFSMappingRule { get; set; }
+        public VSFMappingRule VFSMappingRule { get; set; }
 
         public InvoiceMapping()
         {
