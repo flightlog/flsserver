@@ -17,5 +17,12 @@ namespace FLS.Server.ProffixInvoiceService
 
         [JsonIgnore]
         public double ActiveFlightTime { get; set; }
+
+        [JsonIgnore]
+        public bool NoLandingTaxForTowFlight { get; set; }
+
+
+        [JsonIgnore]
+        public bool NoLandingTaxForGliderFlight { get; set; }
     }
 }

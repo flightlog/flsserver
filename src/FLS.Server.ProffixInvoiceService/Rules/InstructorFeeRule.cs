@@ -79,6 +79,8 @@ namespace FLS.Server.ProffixInvoiceService.Rules
 
             flightInvoiceDetails.FlightInvoiceLineItems.Add(line);
 
+            Logger.Debug($"Added new invoice item line to invoice. Line: {line}");
+
             return base.Apply(flightInvoiceDetails);
         }
     }

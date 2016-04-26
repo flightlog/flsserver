@@ -12,9 +12,9 @@ namespace FLS.Server.ProffixInvoiceService.RuleFilters
         public string InvoiceLineText { get; set; }
         public bool UseRuleForAllFlightTypesExceptListed { get; set; }
         public List<string> MatchedFlightTypeCodes { get; set; }
+        public bool ExtendMatchingFlightTypeCodesToGliderAndTowFlight { get; set; }
         public int MinFlightTimeMatchingValue { get; set; }
         public int MaxFlightTimeMatchingValue { get; set; }
-        public bool UseRuleBelowFlightTimeMatchingValue { get; set; }
         public bool UseRuleForAllStartLocationsExceptListed { get; set; }
         public List<Guid> MatchedStartLocations { get; set; }
 

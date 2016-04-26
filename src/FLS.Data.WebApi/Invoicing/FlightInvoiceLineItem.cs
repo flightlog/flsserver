@@ -17,5 +17,10 @@ namespace FLS.Data.WebApi.Invoicing
         public decimal Quantity { get; set; }
 
         public string UnitType { get; set; }
+
+        public override string ToString()
+        {
+            return $"{InvoiceLinePosition} {ERPArticleNumber} {InvoiceLineText} {Quantity} {UnitType} {AdditionalInfo}";
+        }
     }
 }

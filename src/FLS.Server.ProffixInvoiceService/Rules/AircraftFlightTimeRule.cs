@@ -27,21 +27,87 @@ namespace FLS.Server.ProffixInvoiceService.Rules
         public override void Initialize(ProffixFlightInvoiceDetails flightInvoiceDetails)
         {
             Conditions.Add(new Equals<Guid>(_flight.AircraftId, _aircraftMapping.AircraftId));
-            Conditions.Add(new Between<double>(flightInvoiceDetails.ActiveFlightTime, _aircraftMapping.MinFlightTimeMatchingValue, _aircraftMapping.MaxFlightTimeMatchingValue));
+            Conditions.Add(new Between<double>(flightInvoiceDetails.ActiveFlightTime, _aircraftMapping.MinFlightTimeMatchingValue, _aircraftMapping.MaxFlightTimeMatchingValue, includeMinValue:false, includeMaxValue:true));
 
             if (_aircraftMapping.UseRuleForAllFlightTypesExceptListed)
             {
                 if (_aircraftMapping.MatchedFlightTypeCodes.Any())
                 {
-                    Conditions.Add(new Inverter(new Contains<string>(_aircraftMapping.MatchedFlightTypeCodes, _flight.FlightType.FlightCode)));
+                    ICondition condition = null;
+
+                    if (_aircraftMapping.ExtendMatchingFlightTypeCodesToGliderAndTowFlight)
+                    {
+                        foreach (var towedFlight in _flight.TowedFlights)
+                        {
+                            condition = new Or(condition,
+                                new Contains<string>(_aircraftMapping.MatchedFlightTypeCodes,
+                                    towedFlight.FlightType.FlightCode));
+                        }
+
+                        if (_flight.TowFlight != null)
+                        {
+                            condition = new Or(condition,
+                                new Contains<string>(_aircraftMapping.MatchedFlightTypeCodes,
+                                    _flight.TowFlight.FlightType.FlightCode));
+                        }
+                    }
+
+                    Conditions.Add(new Inverter(new Or(condition, new Contains<string>(_aircraftMapping.MatchedFlightTypeCodes, _flight.FlightType.FlightCode))));
                 }
             }
             else
             {
-                Conditions.Add(new Contains<string>(_aircraftMapping.MatchedFlightTypeCodes, _flight.FlightType.FlightCode));
-            }    
+                ICondition condition = null;
 
-            //TODO: add further conditions for locations, etc.
+                if (_aircraftMapping.ExtendMatchingFlightTypeCodesToGliderAndTowFlight)
+                {
+                    foreach (var towedFlight in _flight.TowedFlights)
+                    {
+                        condition = new Or(condition,
+                            new Contains<string>(_aircraftMapping.MatchedFlightTypeCodes,
+                                towedFlight.FlightType.FlightCode));
+                    }
+
+                    if (_flight.TowFlight != null)
+                    {
+                        condition = new Or(condition,
+                            new Contains<string>(_aircraftMapping.MatchedFlightTypeCodes,
+                                _flight.TowFlight.FlightType.FlightCode));
+                    }
+                }
+
+                Conditions.Add(new Or(condition, new Contains<string>(_aircraftMapping.MatchedFlightTypeCodes, _flight.FlightType.FlightCode)));
+            }
+
+            if (_aircraftMapping.UseRuleForAllStartLocationsExceptListed)
+            {
+                if (_aircraftMapping.MatchedStartLocations.Any())
+                {
+                    if (_flight.StartLocationId.HasValue == false)
+                    {
+                        Logger.Warn($"Flight has no start location set. May we invoice something wrong!");
+                    }
+                    else
+                    {
+                        Conditions.Add(
+                            new Inverter(new Contains<Guid>(_aircraftMapping.MatchedStartLocations,
+                                _flight.StartLocationId.Value)));
+                    }
+                }
+            }
+            else
+            {
+                if (_flight.StartLocationId.HasValue == false)
+                {
+                    Logger.Warn($"Flight has no start location set. May we invoice something wrong!");
+                }
+                else
+                {
+                    Conditions.Add(new Contains<Guid>(_aircraftMapping.MatchedStartLocations,
+                        _flight.StartLocationId.Value));
+                }
+            }
+
         }
 
         public override ProffixFlightInvoiceDetails Apply(ProffixFlightInvoiceDetails flightInvoiceDetails)
@@ -55,16 +121,17 @@ namespace FLS.Server.ProffixInvoiceService.Rules
             }
             else
             {
-                flightInvoiceDetails.ActiveFlightTime -= _aircraftMapping.MinFlightTimeMatchingValue;
-                lineQuantity = Convert.ToDecimal(flightInvoiceDetails.ActiveFlightTime);
+                lineQuantity = Convert.ToDecimal(flightInvoiceDetails.ActiveFlightTime - _aircraftMapping.MinFlightTimeMatchingValue);
+                flightInvoiceDetails.ActiveFlightTime = _aircraftMapping.MinFlightTimeMatchingValue;
             }
 
             if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ERPArticleNumber == _aircraftMapping.ERPArticleNumber))
             {
                 //this case should never happened. It happens when multiple rules matches
-                Logger.Warn($"Invoice line already exists. Add quantity to the existing line!");
                 var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == _aircraftMapping.ERPArticleNumber);
                 line.Quantity += lineQuantity;
+
+                Logger.Warn($"Invoice line already exists. Added quantity to the existing line! New line values: {line}");
             }
             else
             {
@@ -101,6 +168,8 @@ namespace FLS.Server.ProffixInvoiceService.Rules
                 }
 
                 flightInvoiceDetails.FlightInvoiceLineItems.Add(line);
+
+                Logger.Debug($"Added new invoice item line to invoice. Line: {line}");
             }
             
             return base.Apply(flightInvoiceDetails);

@@ -53,11 +53,11 @@ namespace FLS.Server.ProffixInvoiceService.Rules
             }
             else if (string.IsNullOrWhiteSpace(_flight.InstructorDisplayName) == false)
             {
-                flightInvoiceDetails.FlightInvoiceInfo = $"{_flight.FlightType.FlightTypeName} mit FL: {_flight.InstructorDisplayName}";
+                flightInvoiceDetails.FlightInvoiceInfo = $"{_flight.FlightType.FlightTypeName}";
             }
             else if (string.IsNullOrWhiteSpace(_flight.CoPilotDisplayName) == false)
             {
-                flightInvoiceDetails.FlightInvoiceInfo = $"{_flight.FlightType.FlightTypeName} mit {_flight.CoPilotDisplayName}";
+                flightInvoiceDetails.FlightInvoiceInfo = $"{_flight.FlightType.FlightTypeName}";
             }
             else
             {

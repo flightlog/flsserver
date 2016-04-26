@@ -30,22 +30,35 @@ namespace FLS.Server.ProffixInvoiceService.RuleEngines
 
         public ProffixFlightInvoiceDetails Run()
         {
-            var aircraftMappingRules = new List<IRule<ProffixFlightInvoiceDetails>>();
+            var rules = new List<IRule<ProffixFlightInvoiceDetails>>();
+
+            //No landing tax rule must be one of the first rule
+            #region NO Landing taxes
+            rules.Clear();
+
+            foreach (var filter in _invoiceMapping.NoLandingTaxRules)
+            {
+                var rule = new NoLandingTaxRule(_flight, filter);
+                rules.Add(rule);
+            }
+
+            _flightInvoiceDetails.ApplyRules(rules);
+            #endregion NO Landing taxes
 
             #region Aircraft in MasterFlight (Glider- or Motor-Flight)
             foreach (var aircraftMapping in _invoiceMapping.AircraftERPArticleMapping)
             {
                 var rule = new AircraftFlightTimeRule(_flight, aircraftMapping);
-                aircraftMappingRules.Add(rule);
+                rules.Add(rule);
             }
 
             _flightInvoiceDetails.ActiveFlightTime = _flight.Duration.TotalMinutes;
 
             while (_flightInvoiceDetails.ActiveFlightTime > 0)
             {
-                _flightInvoiceDetails.ApplyRules(aircraftMappingRules);
+                _flightInvoiceDetails.ApplyRules(rules);
 
-                if (aircraftMappingRules.Any(x => x.RuleApplied) == false)
+                if (rules.Any(x => x.RuleApplied) == false)
                 {
                     Logger.Warn($"No aircraft mapping rule found for flight: {_flight}.");
                     break;
@@ -61,39 +74,41 @@ namespace FLS.Server.ProffixInvoiceService.RuleEngines
             #endregion Instructor fee
 
             #region Aircraft in TowFlight
-            aircraftMappingRules.Clear();
-
+            //run rule engine again for towflight, before other rules were applied (because of order of invoice lines)
             if (_flight.TowFlight != null)
             {
-                foreach (var aircraftMapping in _invoiceMapping.AircraftERPArticleMapping)
-                {
-                    var rule = new AircraftFlightTimeRule(_flight.TowFlight, aircraftMapping);
-                    aircraftMappingRules.Add(rule);
-                }
-
-                _flightInvoiceDetails.ActiveFlightTime = _flight.TowFlight.Duration.TotalMinutes;
-
-                while (_flightInvoiceDetails.ActiveFlightTime > 0)
-                {
-                    _flightInvoiceDetails.ApplyRules(aircraftMappingRules);
-
-                    if (aircraftMappingRules.Any(x => x.RuleApplied) == false)
-                    {
-                        Logger.Warn($"No aircraft mapping rule found for flight: {_flight.TowFlight}.");
-                        break;
-                    }
-                }
+                var invoiceLineRulesEngine = new InvoiceLineRulesEngine(_flightInvoiceDetails, _flight.TowFlight,
+                    _invoiceMapping, _personService);
+                invoiceLineRulesEngine.Run();
             }
             #endregion Aircraft in TowFlight
 
             #region Additional Fuel Fee
+            rules.Clear();
+
+            foreach (var filter in _invoiceMapping.AdditionalFuelFeeRules)
+            {
+                var rule = new AdditionalFuelFeeRule(_flight, filter);
+                rules.Add(rule);
+            }
+
+            _flightInvoiceDetails.ApplyRules(rules);
             #endregion Additional Fuel Fee
 
             #region Landing taxes
+            rules.Clear();
+
+            foreach (var filter in _invoiceMapping.LandingTaxRules)
+            {
+                var rule = new LandingTaxRule(_flight, filter);
+                rules.Add(rule);
+            }
+
+            _flightInvoiceDetails.ApplyRules(rules);
             #endregion Landing taxes
 
             #region VSF fee
-
+            _flightInvoiceDetails.ApplyRule(new VsfFeeRule(_flight, _invoiceMapping.VsfFee));
             #endregion VSF fee
 
             return _flightInvoiceDetails;

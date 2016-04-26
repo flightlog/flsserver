@@ -33,6 +33,11 @@ namespace FLS.Server.Tests.ServiceTests
             public string UnitType { get; set; }
         }
 
+        [TestInitialize]
+        public void ProffixInvoiceTestInitialize()
+        {
+        }
+
         [TestCleanup]
         public void ProffixInvoiceTestCleanup()
         {

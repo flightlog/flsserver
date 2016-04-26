@@ -22,8 +22,9 @@ namespace FLS.Server.ProffixInvoiceService.RuleFilters
         //public bool IsErrorWhenNoLandingTaxRuleMatches { get; set; }
         //public bool IsErrorWhenNoVFSFeeRuleMatches { get; set; }
 
+        public List<NoLandingTax> NoLandingTaxRules { get; set; }
         public List<LandingTax> LandingTaxRules { get; set; }
-        //public VFSMappingRule VFSMappingRule { get; set; }
+        public VsfFee VsfFee { get; set; }
 
         public InvoiceMapping()
         {
@@ -32,6 +33,7 @@ namespace FLS.Server.ProffixInvoiceService.RuleFilters
             InstructorToERPArticleMapping = new Dictionary<string, string>();
             AdditionalFuelFeeRules = new List<AdditionalFuelFee>();
             LandingTaxRules = new List<LandingTax>();
+            NoLandingTaxRules = new List<NoLandingTax>();
         }
 
     }
