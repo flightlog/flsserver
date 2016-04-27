@@ -157,17 +157,10 @@
     <Compile Include="InvoiceService.cs" />
     <Compile Include="FlightService.cs" />
     <Compile Include="PersonService.cs" />
-    <Compile Include="Invoicing\AdditionalFuelFeeRule.cs" />
-    <Compile Include="Invoicing\AircraftMappingRule.cs" />
-    <Compile Include="Invoicing\InvoiceMapping.cs" />
-    <Compile Include="Invoicing\InvoiceRecipientTarget.cs" />
-    <Compile Include="Invoicing\LandingTaxRule.cs" />
-    <Compile Include="Invoicing\VSFMappingRule.cs" />
     <Compile Include="PlanningDayService.cs" />
     <Compile Include="Email\Model\FlightInfoModel.cs" />
     <Compile Include="Email\Model\FlightInfoRow.cs" />
     <Compile Include="Exporting\ExcelExporter.cs" />
-    <Compile Include="Invoicing\InvoiceMappingFactory.cs" />
     <Compile Include="ResourceService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="LocationService.cs" />

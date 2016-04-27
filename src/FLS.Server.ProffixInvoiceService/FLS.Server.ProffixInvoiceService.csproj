@@ -49,7 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Conditions\IConditionExtensions.cs" />
     <Compile Include="Conditions\Or.cs" />
     <Compile Include="Conditions\And.cs" />
     <Compile Include="RuleFilters\AdditionalFuelFee.cs" />
