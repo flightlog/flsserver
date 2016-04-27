@@ -439,8 +439,7 @@ namespace FLS.Server.Service
                 GetFlights(
                     flight => flight.FlightStateId == (int)FLS.Data.WebApi.Flight.FlightState.Valid
                                 && flight.OwnerId == clubId  
-                               && (DbFunctions.TruncateTime(flight.LdgDateTime.Value) <= lockingDate.Date
-                                   && DbFunctions.TruncateTime(flight.CreatedOn) <= lockingDate.Date));
+                               && DbFunctions.TruncateTime(flight.CreatedOn) <= lockingDate.Date);
             return flights;
         }
         
