@@ -46,6 +46,8 @@ namespace FLS.Server.ProffixInvoiceService.RuleEngines
             #endregion NO Landing taxes
 
             #region Aircraft in MasterFlight (Glider- or Motor-Flight)
+            rules.Clear();
+
             foreach (var aircraftMapping in _invoiceMapping.AircraftERPArticleMapping)
             {
                 var rule = new AircraftFlightTimeRule(_flight, aircraftMapping);
