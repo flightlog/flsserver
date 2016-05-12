@@ -25,15 +25,25 @@ namespace FLS.Server.ProffixInvoiceService
             var lszkId = GetLocationId("LSZK");
             var saanenId = GetLocationId("LSGK");
             var montricherId = GetLocationId("LSTR");
-            var teachingFlightTypeCodes = new List<string>();
-            teachingFlightTypeCodes.Add("70"); //Grundschulung Doppelsteuer
-            teachingFlightTypeCodes.Add("77"); //Weiterbildung Doppelsteuer
-            teachingFlightTypeCodes.Add("80"); //Grundschulung Solo
-            teachingFlightTypeCodes.Add("88"); //Weiterbildung Solo
-            teachingFlightTypeCodes.Add("78"); //Jahres-Checkflug
-            teachingFlightTypeCodes.Add("66"); //Lufttaufe bar
-            teachingFlightTypeCodes.Add("68"); //Schnupperflug Gutschein
-            teachingFlightTypeCodes.Add("69"); //Schnupperflug bar
+            var baseTeachingFlightTypeCodes = new List<string>();
+            baseTeachingFlightTypeCodes.Add("70"); //Grundschulung Doppelsteuer
+            baseTeachingFlightTypeCodes.Add("80"); //Grundschulung Solo
+            baseTeachingFlightTypeCodes.Add("66"); //Lufttaufe bar
+            baseTeachingFlightTypeCodes.Add("68"); //Schnupperflug Gutschein
+            baseTeachingFlightTypeCodes.Add("69"); //Schnupperflug bar
+
+            var furtherTrainingFlightTypeCodes = new List<string>();
+            furtherTrainingFlightTypeCodes.Add("77"); //Weiterbildung Doppelsteuer
+            furtherTrainingFlightTypeCodes.Add("88"); //Weiterbildung Solo
+            furtherTrainingFlightTypeCodes.Add("78"); //Jahres-Checkflug
+
+            var noFlatRateClubMemberNumbers = new List<string>();
+            noFlatRateClubMemberNumbers.Add("363289"); //Marc
+            noFlatRateClubMemberNumbers.Add("897764"); //Hermann
+            noFlatRateClubMemberNumbers.Add("155264"); //Heiri
+            noFlatRateClubMemberNumbers.Add("463161"); //Fredi
+            noFlatRateClubMemberNumbers.Add("622976"); //Rolf
+            noFlatRateClubMemberNumbers.Add("686001"); //Gian
 
             //invoiceMapping.IsErrorWhenNoAdditionalFuelFeeRuleMatches = false;
             //invoiceMapping.IsErrorWhenNoLandingTaxRuleMatches = false;
@@ -95,8 +105,9 @@ namespace FLS.Server.ProffixInvoiceService
                 InvoiceLineText = "Schulung",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
-                UseRuleForAllStartLocationsExceptListed = true
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -110,8 +121,9 @@ namespace FLS.Server.ProffixInvoiceService
                 InvoiceLineText = "Schulung",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
-                UseRuleForAllStartLocationsExceptListed = true
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -125,8 +137,9 @@ namespace FLS.Server.ProffixInvoiceService
                 InvoiceLineText = "Schulung",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
-                UseRuleForAllStartLocationsExceptListed = true
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -140,8 +153,9 @@ namespace FLS.Server.ProffixInvoiceService
                 InvoiceLineText = "Schulung",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
-                UseRuleForAllStartLocationsExceptListed = true
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -155,10 +169,185 @@ namespace FLS.Server.ProffixInvoiceService
                 InvoiceLineText = "Schulung",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
-                UseRuleForAllStartLocationsExceptListed = true
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
+            sortIndicator++;
+            aircraftId = GetAircraftId("HB-3256");
+            aircraftMappingRule = new AircraftMapping
+            {
+                AircraftId = aircraftId,
+                SortIndicator = sortIndicator,
+                ERPArticleNumber = "1059",
+                InvoiceLineText = "Weiterbildung ohne Pauschale",
+                IncludeFlightTypeName = true,
+                UseRuleForAllFlightTypesExceptListed = false,
+                MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = false,
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+            };
+            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
+            sortIndicator++;
+            aircraftId = GetAircraftId("HB-3407");
+            aircraftMappingRule = new AircraftMapping
+            {
+                AircraftId = aircraftId,
+                SortIndicator = sortIndicator,
+                ERPArticleNumber = "1061",
+                InvoiceLineText = "Weiterbildung ohne Pauschale",
+                IncludeFlightTypeName = true,
+                UseRuleForAllFlightTypesExceptListed = false,
+                MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = false,
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+            };
+            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
+            sortIndicator++;
+            aircraftId = GetAircraftId("HB-1841");
+            aircraftMappingRule = new AircraftMapping
+            {
+                AircraftId = aircraftId,
+                SortIndicator = sortIndicator,
+                ERPArticleNumber = "1063",
+                InvoiceLineText = "Weiterbildung ohne Pauschale",
+                IncludeFlightTypeName = true,
+                UseRuleForAllFlightTypesExceptListed = false,
+                MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = false,
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+            };
+            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
+            sortIndicator++;
+            aircraftId = GetAircraftId("HB-1824");
+            aircraftMappingRule = new AircraftMapping
+            {
+                AircraftId = aircraftId,
+                SortIndicator = sortIndicator,
+                ERPArticleNumber = "1065",
+                InvoiceLineText = "Weiterbildung ohne Pauschale",
+                IncludeFlightTypeName = true,
+                UseRuleForAllFlightTypesExceptListed = false,
+                MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = false,
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+            };
+            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
+            sortIndicator++;
+            aircraftId = GetAircraftId("HB-2464");
+            aircraftMappingRule = new AircraftMapping
+            {
+                AircraftId = aircraftId,
+                SortIndicator = sortIndicator,
+                ERPArticleNumber = "1072",
+                InvoiceLineText = "Weiterbildung ohne Pauschale",
+                IncludeFlightTypeName = true,
+                UseRuleForAllFlightTypesExceptListed = false,
+                MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = false,
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+            };
+            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
+
+
+
+            sortIndicator++;
+            aircraftId = GetAircraftId("HB-3256");
+            aircraftMappingRule = new AircraftMapping
+            {
+                AircraftId = aircraftId,
+                SortIndicator = sortIndicator,
+                ERPArticleNumber = "1187",
+                InvoiceLineText = "Weiterbildung mit Pauschale",
+                IncludeFlightTypeName = true,
+                UseRuleForAllFlightTypesExceptListed = false,
+                MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+            };
+            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
+            sortIndicator++;
+            aircraftId = GetAircraftId("HB-3407");
+            aircraftMappingRule = new AircraftMapping
+            {
+                AircraftId = aircraftId,
+                SortIndicator = sortIndicator,
+                ERPArticleNumber = "1186",
+                InvoiceLineText = "Weiterbildung mit Pauschale",
+                IncludeFlightTypeName = true,
+                UseRuleForAllFlightTypesExceptListed = false,
+                MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+            };
+            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
+            sortIndicator++;
+            aircraftId = GetAircraftId("HB-1841");
+            aircraftMappingRule = new AircraftMapping
+            {
+                AircraftId = aircraftId,
+                SortIndicator = sortIndicator,
+                ERPArticleNumber = "1189",
+                InvoiceLineText = "Weiterbildung mit Pauschale",
+                IncludeFlightTypeName = true,
+                UseRuleForAllFlightTypesExceptListed = false,
+                MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+            };
+            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
+            sortIndicator++;
+            aircraftId = GetAircraftId("HB-1824");
+            aircraftMappingRule = new AircraftMapping
+            {
+                AircraftId = aircraftId,
+                SortIndicator = sortIndicator,
+                ERPArticleNumber = "1188",
+                InvoiceLineText = "Weiterbildung mit Pauschale",
+                IncludeFlightTypeName = true,
+                UseRuleForAllFlightTypesExceptListed = false,
+                MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+            };
+            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
+            sortIndicator++;
+            aircraftId = GetAircraftId("HB-2464");
+            aircraftMappingRule = new AircraftMapping
+            {
+                AircraftId = aircraftId,
+                SortIndicator = sortIndicator,
+                ERPArticleNumber = "1190",
+                InvoiceLineText = "Weiterbildung mit Pauschale",
+                IncludeFlightTypeName = true,
+                UseRuleForAllFlightTypesExceptListed = false,
+                MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+            };
+            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+
 
             sortIndicator = 1;
             aircraftId = GetAircraftId("HB-3256");
@@ -170,9 +359,11 @@ namespace FLS.Server.ProffixInvoiceService
                 InvoiceLineText = "Privat",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = true,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
-                UseRuleForAllStartLocationsExceptListed = true
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
+            aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
             sortIndicator++;
@@ -185,9 +376,11 @@ namespace FLS.Server.ProffixInvoiceService
                 InvoiceLineText = "Privat",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = true,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
-                UseRuleForAllStartLocationsExceptListed = true
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
+            aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
             sortIndicator++;
@@ -200,9 +393,11 @@ namespace FLS.Server.ProffixInvoiceService
                 InvoiceLineText = "Privat",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = true,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
-                UseRuleForAllStartLocationsExceptListed = true
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
+            aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
             sortIndicator++;
@@ -215,9 +410,11 @@ namespace FLS.Server.ProffixInvoiceService
                 InvoiceLineText = "Privat",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = true,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
-                UseRuleForAllStartLocationsExceptListed = true
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
+            aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
             sortIndicator++;
@@ -230,9 +427,11 @@ namespace FLS.Server.ProffixInvoiceService
                 InvoiceLineText = "Privat",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = true,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
-                UseRuleForAllStartLocationsExceptListed = true
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                UseRuleForAllStartLocationsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
+            aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
             //Towing Aircrafts
@@ -248,13 +447,15 @@ namespace FLS.Server.ProffixInvoiceService
                 ThresholdText = "1. bis 10. Min.",
                 IncludeFlightTypeName = false,
                 UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = 10,
                 UseRuleForAllStartLocationsExceptListed = false,
-                MatchedStartLocations = new List<Guid>()
+                MatchedStartLocations = new List<Guid>(),
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
+            aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             aircraftMappingRule.MatchedStartLocations.Add(lszkId);
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -269,13 +470,15 @@ namespace FLS.Server.ProffixInvoiceService
                 ThresholdText = "ab 11. Min.",
                 IncludeFlightTypeName = false,
                 UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
                 MinFlightTimeMatchingValue = 10,
                 MaxFlightTimeMatchingValue = int.MaxValue,
                 UseRuleForAllStartLocationsExceptListed = false,
-                MatchedStartLocations = new List<Guid>()
+                MatchedStartLocations = new List<Guid>(),
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
+            aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             aircraftMappingRule.MatchedStartLocations.Add(lszkId);
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -290,13 +493,15 @@ namespace FLS.Server.ProffixInvoiceService
                 ThresholdText = "1. bis 10. Min.",
                 IncludeFlightTypeName = false,
                 UseRuleForAllFlightTypesExceptListed = true,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = 10,
                 UseRuleForAllStartLocationsExceptListed = false,
-                MatchedStartLocations = new List<Guid>()
+                MatchedStartLocations = new List<Guid>(),
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
+            aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             aircraftMappingRule.MatchedStartLocations.Add(lszkId);
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -311,13 +516,15 @@ namespace FLS.Server.ProffixInvoiceService
                 ThresholdText = "ab 11. Min.",
                 IncludeFlightTypeName = false,
                 UseRuleForAllFlightTypesExceptListed = true,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
                 MinFlightTimeMatchingValue = 10,
                 MaxFlightTimeMatchingValue = int.MaxValue,
                 UseRuleForAllStartLocationsExceptListed = false,
-                MatchedStartLocations = new List<Guid>()
+                MatchedStartLocations = new List<Guid>(),
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
+            aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             aircraftMappingRule.MatchedStartLocations.Add(lszkId);
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -333,6 +540,7 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -348,6 +556,7 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -363,6 +572,7 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -378,6 +588,7 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -393,6 +604,7 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -408,6 +620,7 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -423,6 +636,7 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -438,6 +652,7 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
 
@@ -454,7 +669,8 @@ namespace FLS.Server.ProffixInvoiceService
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
                 UseRuleForAllStartLocationsExceptListed = false,
-                MatchedStartLocations = new List<Guid>()
+                MatchedStartLocations = new List<Guid>(),
+                UseRuleForAllClubMemberNumbersExceptListed = true
             };
             aircraftMappingRule.MatchedStartLocations.Add(saanenId);
             invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
@@ -484,12 +700,13 @@ namespace FLS.Server.ProffixInvoiceService
                 AircraftIds = new List<Guid>(),
                 SortIndicator = 1,
                 UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllLdgLocationsExceptListed = false,
                 MatchedLdgLocations = new List<Guid> { lszkId },
                 NoLandingTaxForGlider = true,
                 NoLandingTaxForTowingAircraft = true,
             };
+            noLandingTax.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             invoiceMapping.NoLandingTaxRules.Add(noLandingTax);
 
             noLandingTax = new NoLandingTax()
@@ -501,13 +718,14 @@ namespace FLS.Server.ProffixInvoiceService
                 AircraftIds = new List<Guid>(),
                 SortIndicator = 1,
                 UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
                 UseRuleForAllLdgLocationsExceptListed = false,
                 MatchedLdgLocations = new List<Guid> { lszkId },
                 NoLandingTaxForGlider = true,
                 NoLandingTaxForTowingAircraft = true,
             };
+            noLandingTax.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             invoiceMapping.NoLandingTaxRules.Add(noLandingTax);
 
             var landingTaxRule = new LandingTax
@@ -518,7 +736,7 @@ namespace FLS.Server.ProffixInvoiceService
                 ERPArticleNumber = "",
                 InvoiceLineText = "Keine Landetaxen Speck für Schulung",
                 UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllLdgLocationsExceptListed = false,
                 MatchedLdgLocations = new List<Guid> { lszkId },
                 IsRuleForSelfstartedGliderFlights = true,
@@ -526,6 +744,7 @@ namespace FLS.Server.ProffixInvoiceService
                 IsRuleForTowingFlights = true,
                 IsRuleForMotorFlights = true
             };
+            landingTaxRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             invoiceMapping.LandingTaxRules.Add(landingTaxRule);
 
             landingTaxRule = new LandingTax
@@ -536,13 +755,14 @@ namespace FLS.Server.ProffixInvoiceService
                 ERPArticleNumber = "1037",
                 InvoiceLineText = "Landetaxen Speck",
                 UseRuleForAllFlightTypesExceptListed = true,
-                MatchedFlightTypeCodes = new List<string>(teachingFlightTypeCodes),
+                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllLdgLocationsExceptListed = false,
                 MatchedLdgLocations = new List<Guid> { lszkId },
                 IsRuleForSelfstartedGliderFlights = true,   //TODO: create start tax for self starting gliders
                 IsRuleForGliderFlights = false,
                 IsRuleForTowingFlights = true
             };
+            landingTaxRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             invoiceMapping.LandingTaxRules.Add(landingTaxRule);
 
             landingTaxRule = new LandingTax

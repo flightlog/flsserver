@@ -52,14 +52,14 @@ Bei Schulung: Keine Landetaxen verrechnen";;;1;HB-1824;Bonzli Lenni;Kellner Hans
 3. Schleppflugzeit (Schulungspreis)
 4. Benzinzuschlag
 5. VSF-Gebühr (2x)
-Bei Schulung: Keine Landetaxen verrechnen";;;1;HB-2464;Stahel Morli;Kellner Hansli;;;88;Weiterbildung Solo;LSZK;LSZK;8;Umschulung auf Discus 2cT i.O.;HB-KCB;Rieterman Conny;90;LSZK;5;;1;5;HB-2464;Stahel Morli;Weiterbildung Solo;1;1072;8;Minuten;19;8;Minuten;1068;5;Minuten;1086;5;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
+Bei Schulung: Keine Landetaxen verrechnen";;;1;HB-2464;Stahel Morli;Kellner Hansli;;;88;Weiterbildung Solo;LSZK;LSZK;8;Umschulung auf Discus 2cT i.O.;HB-KCB;Rieterman Conny;90;LSZK;5;;1;5;HB-2464;Stahel Morli;Weiterbildung Solo;1;1190;8;Minuten;19;8;Minuten;1068;5;Minuten;1086;5;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
 7;1;Lokaler Weiterbildungs-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Solo-Weiterbildungsflug im Doppelsitzer mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 5 Positionen an Piloten: 
 1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
 2. Fluglehrer-Honorar (=Segelflugzeit)
 3. Schleppflugzeit (Schulungspreis)
 4. Benzinzuschlag
 5. VSF-Gebühr (2x)
-Bei Schulung: Keine Landetaxen verrechnen";1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?;Mittels Liste ob Schüler, Pilot oder Privatflugzeughalter;1;HB-3407;Stahel Morli;Kellner Hansli;;;77;Weiterbildung Doppelsteuer;LSZK;LSZK;23;Umschulung auf Duo Discus i.O.;HB-KCB;Rieterman Conny;90;LSZK;8;;1;5;HB-3407;Stahel Morli;Weiterbildung Doppelsteuer;1;1061;23;Minuten;19;23;Minuten;1068;8;Minuten;1086;8;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
+Bei Schulung: Keine Landetaxen verrechnen";1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?;Mittels Liste ob Schüler, Pilot oder Privatflugzeughalter;1;HB-3407;Stahel Morli;Kellner Hansli;;;77;Weiterbildung Doppelsteuer;LSZK;LSZK;23;Umschulung auf Duo Discus i.O.;HB-KCB;Rieterman Conny;90;LSZK;8;;1;5;HB-3407;Stahel Morli;Weiterbildung Doppelsteuer;1;1186;23;Minuten;19;23;Minuten;1068;8;Minuten;1086;8;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
 8;1;Lokaler Jahres-Checkflug-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Jahres-Checkflug im Doppelsitzer mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 5 Positionen an Piloten: 
 1. Segelflugzeug mit Flugzeit (Schulungspreis)
 2. Fluglehrer-Honorar (=Segelflugzeit)
@@ -73,7 +73,7 @@ Bei Schulung: Keine Landetaxen verrechnen";"1. Wie wird das Segelflugzeug verrec
 Schleppflugzeug wird jeweils als Schulung verbucht.
 Landetaxen:müssen bei Schulung nicht verrechnet werden.
 Artikel für 3407 ist 1186 mit Preis 0.-
-Artikel für 3256 ist 1187 mit Preis 0.-";1;HB-3256;Stahel Morli;Kellner Hansli;;;78;Jahres-Checkflug;LSZK;LSZK;3;Seilrissuebung i.O.;HB-KCB;Rieterman Conny;90;LSZK;5;;1;5;HB-3256;Stahel Morli;Jahres-Checkflug;1;1059;3;Minuten;19;3;Minuten;1068;5;Minuten;1086;5;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
+Artikel für 3256 ist 1187 mit Preis 0.-";1;HB-3256;Stahel Morli;Kellner Hansli;;;78;Jahres-Checkflug;LSZK;LSZK;3;Seilrissuebung i.O.;HB-KCB;Rieterman Conny;90;LSZK;5;;1;5;HB-3256;Stahel Morli;Jahres-Checkflug;1;1187;3;Minuten;19;3;Minuten;1068;5;Minuten;1086;5;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
 8;1;Lokaler Jahres-Checkflug-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;b;mehr als 10min Schlepp;Jahres-Checkflug im Doppelsitzer mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Piloten: 
 1. Segelflugzeug mit Flugzeit (Schulungspreis)
 2. Fluglehrer-Honorar (=Segelflugzeit)
@@ -84,7 +84,7 @@ Artikel für 3256 ist 1187 mit Preis 0.-";1;HB-3256;Stahel Morli;Kellner Hansli;;
 Bei Schulung: Keine Landetaxen verrechnen";"1. Wie wird das Segelflugzeug verrechnet, wenn der Pilot die Jahres-Pauschale bezahlt?
 2. Und wie, wenn er keine Pauschale hat?
 3. Wie weiss das Sekretariat, ob der Pilot eine Pauschale hat oder nicht?
-4. Wird die Landetaxe auch nicht verrechnet, wenn der Pilot eine Pauschale bezahlt oder nicht?";"Weiterbildungsflüge und checkflüge müssen je nach Pauschale entweder Artikel mit ""Weiterbildung Pauschale"" nehmen oder ""Schulung"" mit Preis";1;HB-3407;Stahel Morli;Kellner Hansli;;;78;Jahres-Checkflug;LSZK;LSZK;18;Jahres-Checkflug i.O.;HB-KCB;Rieterman Conny;90;LSZK;11;;1;6;HB-3407;Stahel Morli;Jahres-Checkflug;1;1061;18;Minuten;19;18;Minuten;1069;1;Minuten;1068;10;Minuten;1086;11;Minuten;1003;2;Landung;;;;;;;;;;;;
+4. Wird die Landetaxe auch nicht verrechnet, wenn der Pilot eine Pauschale bezahlt oder nicht?";"Weiterbildungsflüge und checkflüge müssen je nach Pauschale entweder Artikel mit ""Weiterbildung Pauschale"" nehmen oder ""Schulung"" mit Preis";1;HB-3407;Stahel Morli;Kellner Hansli;;;78;Jahres-Checkflug;LSZK;LSZK;18;Jahres-Checkflug i.O.;HB-KCB;Rieterman Conny;90;LSZK;11;;1;6;HB-3407;Stahel Morli;Jahres-Checkflug;1;1186;18;Minuten;19;18;Minuten;1069;1;Minuten;1068;10;Minuten;1086;11;Minuten;1003;2;Landung;;;;;;;;;;;;
 9;1;Lokaler Privat-Solo-Weiterbildungs-Segelflug mit 1-Sitzer Privat-Segelflugzeug Schleppstart unter Aufsicht eines Club-Fluglehrers;a;weniger als 10min Schlepp;Solo-Weiterbildungsflug mit Start und Landung mit Privat-Segelflugzeug auf Homebase mit Club-Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 4 Positionen an Piloten: 
 1. Schleppflugzeit (Schulungspreis)
 2. Benzinzuschlag

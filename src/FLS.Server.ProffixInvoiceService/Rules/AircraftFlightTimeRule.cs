@@ -108,6 +108,36 @@ namespace FLS.Server.ProffixInvoiceService.Rules
                 }
             }
 
+            if (_aircraftMapping.UseRuleForAllClubMemberNumbersExceptListed)
+            {
+                if (_aircraftMapping.MatchedClubMemberNumbers.Any())
+                {
+                    if (string.IsNullOrWhiteSpace(flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber))
+                    {
+                        Logger.Info($"Invoice has no recipient with club member number! Condition for club member number will not be added.");
+                    }
+                    else
+                    {
+
+                        Conditions.Add(new Inverter(new Contains<string>(_aircraftMapping.MatchedClubMemberNumbers,
+                            flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber)));
+                    }
+                }
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber))
+                {
+                    Logger.Info($"Invoice has no recipient with club member number! Condition for club member number will not be added.");
+                }
+                else
+                {
+
+                    Conditions.Add(new Contains<string>(_aircraftMapping.MatchedClubMemberNumbers,
+                        flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber));
+                }
+            }
+
         }
 
         public override ProffixFlightInvoiceDetails Apply(ProffixFlightInvoiceDetails flightInvoiceDetails)
