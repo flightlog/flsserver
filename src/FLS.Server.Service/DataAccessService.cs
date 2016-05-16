@@ -16,6 +16,11 @@ namespace FLS.Server.Service
             return new FLSDataEntities(_identityService);
         }
 
+        public FLSDataEntities CreateDeletedDbContext()
+        {
+            return new DeletedFLSDataEntities(_identityService);
+        }
+
         public IIdentityService IdentityService
         {
             get { return _identityService; }

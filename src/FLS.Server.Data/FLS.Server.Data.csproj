@@ -103,6 +103,7 @@
     <Compile Include="DbEntities\FlightState.cs" />
     <Compile Include="DbEntities\FlightType.cs" />
     <Compile Include="DbEntities\PlanningDay.cs" />
+    <Compile Include="DeletedFLSDataEntities.cs" />
     <Compile Include="Exceptions\DeleteEntityException.cs" />
     <Compile Include="Extensions\EntityTrackerExtensions.cs" />
     <Compile Include="Extensions\CostCenterUnitTypeExtensions.cs" />

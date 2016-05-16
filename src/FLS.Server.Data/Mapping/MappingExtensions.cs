@@ -971,6 +971,8 @@ namespace FLS.Server.Data.Mapping
 
             if (flight.Passenger != null) gliderFlightDetailsData.PassengerPersonId = flight.Passenger.PersonId;
 
+            gliderFlightDetailsData.CouponNumber = flight.CouponNumber;
+
             return gliderFlightDetailsData;
         }
 
