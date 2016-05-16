@@ -200,7 +200,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
         }
 
         //TODO: Check logic of test and server side
-        [Ignore]
         [TestMethod]
         [TestCategory("WebApi")]
         public void DeletedSincePersonFullDetailsWebApiTest()

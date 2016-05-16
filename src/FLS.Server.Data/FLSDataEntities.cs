@@ -514,88 +514,7 @@ namespace FLS.Server.Data
                 .HasForeignKey(e => e.AccountState)
                 .WillCascadeOnDelete(false);
 
-            #region Soft-Delete settings
-            //Soft-Delete
-            modelBuilder.Entity<Aircraft>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<AircraftOperatingCounter>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<AircraftReservation>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<Club>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<ClubExtension>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<Country>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<EmailTemplate>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<Extension>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<ExtensionParameter>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<ExtensionParameterValue>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<Flight>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<FlightCrew>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<FlightType>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<InOutboundPoint>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<LanguageTranslation>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<Location>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<LocationType>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<MemberState>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<PlanningDay>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<PlanningDayAssignment>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<PlanningDayAssignmentType>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<Person>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<PersonCategory>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<PersonClub>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<Role>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<User>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(false))
-                        .Ignore(m => m.IsDeleted);
-
-            #endregion Soft-Delete settings
+            SetIsDeletedMapping(modelBuilder, false);
 
             #region Audit Tracking Settings
             //For more details, see: https://github.com/bilal-fazlani/tracker-enabled-dbcontext/wiki
@@ -816,6 +735,97 @@ namespace FLS.Server.Data
             #endregion Audit Tracking Settings
         }
 
+        /// <summary>
+        /// Sets the deleted filter to not return deleted objects to the object mapper.
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        /// <param name="isDeleted"></param>
+        protected virtual void SetIsDeletedMapping(DbModelBuilder modelBuilder, bool isDeleted)
+        {
+            #region Soft-Delete settings
+            //Soft-Delete
+            modelBuilder.Entity<Aircraft>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<AircraftOperatingCounter>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<AircraftReservation>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<Club>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<ClubExtension>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<Country>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<EmailTemplate>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<Extension>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<ExtensionParameter>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<ExtensionParameterValue>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<Flight>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<FlightCrew>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<FlightType>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<InOutboundPoint>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<LanguageTranslation>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<Location>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<LocationType>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<MemberState>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<PlanningDay>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<PlanningDayAssignment>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<PlanningDayAssignmentType>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<Person>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<PersonCategory>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<PersonClub>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<Role>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<User>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+
+            #endregion Soft-Delete settings
+        }
+
         public override Task<int> SaveChangesAsync()
         {
             try
@@ -944,6 +954,11 @@ namespace FLS.Server.Data
             foreach (var orphan in PlanningDayAssignments.Local.Where(a => a.AssignedPlanningDay == null).ToList())
             {
                 PlanningDayAssignments.Remove(orphan);
+            }
+
+            foreach (var orphan in PersonClubs.Local.Where(a => a.Person == null).ToList())
+            {
+                PersonClubs.Remove(orphan);
             }
 
             #region Added Entities

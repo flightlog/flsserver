@@ -490,7 +490,7 @@ namespace FLS.Server.Service
 
         internal List<Person> GetDeletedPersons(bool onlyClubPersons, DateTime deletedSince)
         {
-            using (var context = _dataAccessService.CreateDbContext())
+            using (var context = _dataAccessService.CreateDeletedDbContext())
             {
                 List<Person> persons = null;
 
@@ -676,7 +676,7 @@ namespace FLS.Server.Service
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var original = context.Persons.FirstOrDefault(l => l.PersonId == personId);
+                var original = context.Persons.Include(Constants.PersonClubs).FirstOrDefault(l => l.PersonId == personId);
                 original.EntityNotNull("Person", personId);
 
                 context.Persons.Remove(original);
@@ -688,7 +688,7 @@ namespace FLS.Server.Service
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var original = context.Persons.ToList().FirstOrDefault(l => l.PersonId == personId);
+                var original = context.Persons.Include(Constants.PersonClubs).ToList().FirstOrDefault(l => l.PersonId == personId);
                 original.EntityNotNull("Person", personId);
 
                 if (original.CreatedOn.SetAsUtc() > deletedOn.SetAsUtc())
