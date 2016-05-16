@@ -39,7 +39,7 @@ namespace FLS.Server.Service
                 }
 
                 var to = DateTime.UtcNow;
-                var from = to.AddMonths(-12);
+                var from = to.AddMonths(-24);
 
                 var gliderFlights = _flightService.GetFlights(flight => (flight.StartDateTime.Value >= from
                                                                          && flight.LdgDateTime.Value <= to
