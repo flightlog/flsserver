@@ -1,4 +1,4 @@
-﻿namespace FLS.Server.TestInfrastructure
+﻿namespace FLS.Server.Tests
 {
     public class TestConfigurationSettings
     {
