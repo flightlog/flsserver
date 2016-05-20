@@ -82,6 +82,7 @@
     <Compile Include="Club\PersonCategoryOverview.cs" />
     <Compile Include="Dashboard\DashboardDetails.cs" />
     <Compile Include="Dashboard\FlightStatisticDashboardDetails.cs" />
+    <Compile Include="Dashboard\GliderLicenceStateDetails.cs" />
     <Compile Include="Dashboard\SafetyDashboardDetails.cs" />
     <Compile Include="Dashboard\PersonDashboardDetails.cs" />
     <Compile Include="Emails\EmailTemplateOverview.cs" />

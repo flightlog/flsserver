@@ -15,7 +15,15 @@ namespace FLS.Data.WebApi.Dashboard
             MonthlyLandings = new Dictionary<DateTime, int>();
         }
 
+        public DateTime StatisticStartDateTime { get; set; }
+
+        public DateTime StatisticEndDateTime { get; set; }
+
         public string FlightStatisticName { get; set; }
+
+        public int TotalLandings { get; set; }
+
+        public double TotalFlightHours { get; set; }
 
         public Dictionary<DateTime, int> MonthlyLandings { get; set; }
 

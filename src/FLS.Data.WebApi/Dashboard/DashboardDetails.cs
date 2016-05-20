@@ -13,5 +13,7 @@ namespace FLS.Data.WebApi.Dashboard
         //public FlightStatisticDashboardDetails GliderInstructorFlightStatisticDashboardDetails { get; set; }
 
         public FlightStatisticDashboardDetails MotorPilotFlightStatisticDashboardDetails { get; set; }
+
+        public GliderLicenceStateDetails GliderLicenceStateDetails { get; set; }
     }
 }
