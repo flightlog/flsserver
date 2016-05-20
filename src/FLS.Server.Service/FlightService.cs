@@ -673,12 +673,6 @@ namespace FLS.Server.Service
                                                     || (filterCriteria.TakeMotorFlightStarts && (flight.StartTypeId == (int)AircraftStartType.MotorFlightStart))
                                                     || (filterCriteria.TakeExternalStarts && (flight.StartTypeId == (int)AircraftStartType.ExternalStart)))
                                                     &&
-                                                    (flight.FlightAircraftType ==
-                                                     (int)FlightAircraftTypeValue.GliderFlight
-                                                     ||
-                                                     flight.FlightAircraftType ==
-                                                     (int)FlightAircraftTypeValue.MotorFlight)
-                                                    &&
                                                     flight.FlightStateId >= (int)FLS.Data.WebApi.Flight.FlightState.Landed);
                 
                 if (filterCriteria.AircraftIds != null && filterCriteria.AircraftIds.Count > 0)
