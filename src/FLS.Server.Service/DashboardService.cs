@@ -128,14 +128,20 @@ namespace FLS.Server.Service
                     gliderLicenceStateDetails.LicenceStateInformation = "EASA Segelflug-Lizenz nicht gültig (Fluglehrer kontaktieren)";
                     gliderLicenceStateDetails.LicenceStateKey = "NotOK";
                 }
-                else if (gliderLicenceStateForecast.FlightTimeInHours < gliderLicenceStateForecast.FlightTimeInHoursRequired
-                    || gliderLicenceStateForecast.Landings < gliderLicenceStateForecast.LandingsRequired
-                    ||
-                    gliderLicenceStateForecast.NumberOfCheckFlights <
-                    gliderLicenceStateForecast.NumberOfCheckFlightsRequired)
+                else if (gliderLicenceStateForecast.FlightTimeInHours <
+                         gliderLicenceStateForecast.FlightTimeInHoursRequired
+                         || gliderLicenceStateForecast.Landings < gliderLicenceStateForecast.LandingsRequired
+                         ||
+                         gliderLicenceStateForecast.NumberOfCheckFlights <
+                         gliderLicenceStateForecast.NumberOfCheckFlightsRequired)
                 {
                     gliderLicenceStateDetails.LicenceStateInformation = "EASA Segelflug-Lizenz-Status ist gefährdet";
                     gliderLicenceStateDetails.LicenceStateKey = "Warning";
+                }
+                else
+                {
+                    gliderLicenceStateDetails.LicenceStateInformation = "EASA Segelflug-Lizenz-Status ist OK";
+                    gliderLicenceStateDetails.LicenceStateKey = "OK";
                 }
 
                 dashboardDetails.GliderLicenceStateDetails = gliderLicenceStateDetails;
