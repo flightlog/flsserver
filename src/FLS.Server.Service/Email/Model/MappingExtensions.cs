@@ -50,8 +50,8 @@ namespace FLS.Server.Service.Email.Model
                     }
                     else
                     {
-                        infoRow.ReservationPeriod = string.Format("{0} - {1}", reservation.Start.ToShortTimeString(),
-                                                                  reservation.End.ToShortTimeString());
+                        infoRow.ReservationPeriod = string.Format("{0} - {1}", reservation.Start.ToLocalTime().ToShortTimeString(),
+                                                                  reservation.End.ToLocalTime().ToShortTimeString());
                     }
 
                     reservationInfoRows.Add(infoRow);
