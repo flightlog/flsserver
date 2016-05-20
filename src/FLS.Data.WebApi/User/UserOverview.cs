@@ -19,7 +19,7 @@ namespace FLS.Data.WebApi.User
 
         public string ClubName { get; set; }
 
-        public int AccountState { get; set; }
+        public string AccountState { get; set; }
 
         public override Guid Id
         {

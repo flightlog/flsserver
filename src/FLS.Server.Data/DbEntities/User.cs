@@ -159,5 +159,28 @@ namespace FLS.Server.Data.DbEntities
 
             return sb.ToString();
         }
+
+        public string GetUserAccountStateString()
+        {
+            var state = string.Empty;
+
+            switch (AccountState)
+            {
+                case 1:
+                    state = "Aktiv";
+                    break;
+                case 2:
+                    state = "Gesperrt";
+                    break;
+                case 10:
+                    state = "Deaktiviert";
+                    break;
+                default:
+                    state = "";
+                    break;
+            }
+
+            return state;
+        }
     }
 }

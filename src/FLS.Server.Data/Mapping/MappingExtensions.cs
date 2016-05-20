@@ -3082,7 +3082,7 @@ namespace FLS.Server.Data.Mapping
                 LogManager.GetCurrentClassLogger().Error($"User: {entity.UserName} has no relation to club or club might be set as deleted!");
             }
 
-            overview.AccountState = entity.AccountState;
+            overview.AccountState = entity.GetUserAccountStateString();
 
             if (entity.Person != null)
             {
