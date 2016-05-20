@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FLS.Server.Service.Invoicing
+namespace FLS.Server.ProffixInvoiceService.RuleFilters
 {
-    public class AircraftMappingRule
+    public class AircraftMapping
     {
         public Guid AircraftId { get; set; }
         //public string AircraftImmatriculation { get; set; }
@@ -12,17 +12,27 @@ namespace FLS.Server.Service.Invoicing
         public string InvoiceLineText { get; set; }
         public bool UseRuleForAllFlightTypesExceptListed { get; set; }
         public List<string> MatchedFlightTypeCodes { get; set; }
+        public bool ExtendMatchingFlightTypeCodesToGliderAndTowFlight { get; set; }
         public int MinFlightTimeMatchingValue { get; set; }
         public int MaxFlightTimeMatchingValue { get; set; }
-        public bool UseRuleBelowFlightTimeMatchingValue { get; set; }
         public bool UseRuleForAllStartLocationsExceptListed { get; set; }
         public List<Guid> MatchedStartLocations { get; set; }
 
-        public AircraftMappingRule()
+        public bool UseRuleForAllClubMemberNumbersExceptListed { get; set; }
+        public List<string> MatchedClubMemberNumbers { get; set; }
+
+        public bool IncludeThresholdText { get; set; }
+
+        public string ThresholdText { get; set; }
+
+        public bool IncludeFlightTypeName { get; set; }
+
+        public AircraftMapping()
         {
             MatchedFlightTypeCodes = new List<string>();
+            MatchedClubMemberNumbers = new List<string>();
             MatchedStartLocations = new List<Guid>();
-            MinFlightTimeMatchingValue = 1;
+            MinFlightTimeMatchingValue = 0;
             MaxFlightTimeMatchingValue = int.MaxValue;
             UseRuleForAllStartLocationsExceptListed = true;
         }

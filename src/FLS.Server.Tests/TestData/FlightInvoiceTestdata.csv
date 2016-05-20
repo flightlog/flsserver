@@ -1,35 +1,232 @@
-UseCase;IncludeInTest;UC-Beschreibung;UC-Variante;Beschreibung UC-Variante;StartType;GliderImmatriculation;GliderPilotName;GliderInstructorName;CopilotName;PassengerName;GliderFlightCode;StartLocation;GliderLdgLocation;GliderFlightDuration;GliderFlightComment;TowingAircraftImmatriculation;TowPilotName;TowFlightCode;TowLdgLocation;TowFlightDuration;TowFlightComment;ExpectInvoice;ExpectedInvoiceLineItemsCount;ExpectedInvoiceAircraftImmatriculation;ExpectedInvoiceRecipientPersonDisplayName;ExpectedInvoiceFlightInfo;ExpectedInvoiceAdditionalInfo;ExpectedErpArticleNumberLine1;ExpectedQuantityLine1;ExpectedUnitTypeLine1;ExpectedErpArticleNumberLine2;ExpectedQuantityLine2;ExpectedUnitTypeLine2;ExpectedErpArticleNumberLine3;ExpectedQuantityLine3;ExpectedUnitTypeLine3;ExpectedErpArticleNumberLine4;ExpectedQuantityLine4;ExpectedUnitTypeLine4;ExpectedErpArticleNumberLine5;ExpectedQuantityLine5;ExpectedUnitTypeLine5;ExpectedErpArticleNumberLine6;ExpectedQuantityLine6;ExpectedUnitTypeLine6;ExpectedErpArticleNumberLine7;ExpectedQuantityLine7;ExpectedUnitTypeLine7;ExpectedErpArticleNumberLine8;ExpectedQuantityLine8;ExpectedUnitTypeLine8;ExpectedErpArticleNumberLine9;ExpectedQuantityLine9;ExpectedUnitTypeLine9;ExpectedErpArticleNumberLine10;ExpectedQuantityLine10;ExpectedUnitTypeLine10
-1;1;Lokaler Charter-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;Charterflug;HB-KCB;Rieterman Conny;90;LSZK;8;;1;5;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;42;Minuten;1066;8;Minuten;1086;8;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;;;;
-1;1;Lokaler Charter-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;b;mehr als 10min Schlepp;1;HB-2464;Stahel Morli;;;;60;LSZK;LSZK;355;Charterflug;HB-KCB;Rieterman Conny;90;LSZK;22;;1;6;HB-2464;Stahel Morli;Charter Clubflugzeug;0;1071;355;Minuten;1066;10;Minuten;1067;12;Minuten;1086;22;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;
-2;1;Lokaler Charter-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;1;HB-3407;Stahel Morli;;Bonzli Lenni;;60;LSZK;LSZK;65;Charterflug mit Copilot;HB-KCB;Rieterman Conny;90;LSZK;11;;1;6;HB-3407;Stahel Morli;Charter Clubflugzeug;0;1060;65;Minuten;1066;10;Minuten;1067;1;Minuten;1086;11;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;
-3;1;Lokaler Privatcharter-Segelflug mit 2-Sitzer Privat-Segelflugzeug Schleppstart;a;10min Schlepp;1;HB-3254;Stahel Morli;;;;61;LSZK;LSZK;180;Charterflug Privat;HB-KCB;Rieterman Conny;90;LSZK;10;;1;4;HB-3254;Stahel Morli;Charter Privatflugzeug;0;1066;10;Minuten;1086;10;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;;;;;;;
-4;1;Lokaler Grundschulung-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;1;HB-3256;Bonzli Lenni;Kellner Hansli;;;70;LSZK;LSZK;18;Kurvenflug i.O. / Anfluggeschwindigkeit zu tief;HB-KCB;Rieterman Conny;90;LSZK;8;;1;5;HB-3256;Bonzli Lenni;Grundschulung Doppelsteuer;1;1059;18;Minuten;19;18;Minuten;1068;8;Minuten;1086;8;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
-4;1;Lokaler Grundschulung-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;b;mehr als 10min Schlepp;1;HB-3256;Bonzli Lenni;Kellner Hansli;;;70;LSZK;LSZK;185;Streckenflug i.O.;HB-KCB;Rieterman Conny;90;LSZK;14;;1;6;HB-3256;Bonzli Lenni;Grundschulung Doppelsteuer;1;1059;185;Minuten;19;185;Minuten;1068;10;Minuten;1069;4;Minuten;1086;14;Minuten;1003;2;Landung;;;;;;;;;;;;
-5;1;Lokaler Solo-Grundschulung-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;1;HB-1824;Bonzli Lenni;Kellner Hansli;;;80;LSZK;LSZK;14;Soloflug i.O.;HB-KCB;Rieterman Conny;90;LSZK;6;;1;5;HB-1824;Bonzli Lenni;Grundschulung Solo;1;1065;14;Minuten;19;14;Minuten;1068;6;Minuten;1086;6;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
-6;1;Lokaler Solo-Weiterbildungs-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;1;HB-2464;Stahel Morli;Kellner Hansli;;;88;LSZK;LSZK;8;Umschulung auf Discus 2cT i.O.;HB-KCB;Rieterman Conny;90;LSZK;5;;1;5;HB-2464;Stahel Morli;Weiterbildung Solo;1;1072;8;Minuten;19;8;Minuten;1068;5;Minuten;1086;5;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
-7;1;Lokaler Weiterbildungs-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;1;HB-3407;Stahel Morli;Kellner Hansli;;;77;LSZK;LSZK;23;Umschulung auf Duo Discus i.O.;HB-KCB;Rieterman Conny;90;LSZK;8;;1;5;HB-3407;Stahel Morli;Weiterbildung Doppelsteuer;1;1061;23;Minuten;19;23;Minuten;1068;8;Minuten;1086;8;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
-8;1;Lokaler Jahres-Checkflug-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;1;HB-3256;Stahel Morli;Kellner Hansli;;;78;LSZK;LSZK;3;Seilrissübung i.O.;HB-KCB;Rieterman Conny;90;LSZK;5;;1;5;HB-3256;Stahel Morli;Jahres-Checkflug mit FL: Kellner Hansli;1;1059;3;Minuten;19;3;Minuten;1068;5;Minuten;1086;5;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
-8;1;Lokaler Jahres-Checkflug-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;b;mehr als 10min Schlepp;1;HB-3407;Stahel Morli;Kellner Hansli;;;78;LSZK;LSZK;18;Jahres-Checkflug i.O.;HB-KCB;Rieterman Conny;90;LSZK;11;;1;6;HB-3407;Stahel Morli;Jahres-Checkflug mit FL: Kellner Hansli;1;1061;18;Minuten;19;18;Minuten;1068;10;Minuten;1069;1;Minuten;1086;11;Minuten;1003;2;Landung;;;;;;;;;;;;
-9;0;Lokaler Privat-Solo-Weiterbildungs-Segelflug mit 1-Sitzer Privat-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;1;HB-3254;Stahel Morli;Kellner Hansli;;;79;LSZK;LSZK;15;Umschulung auf Privatflugzeug i.O.;HB-KCB;Rieterman Conny;90;LSZK;7;;1;4;HB-3254;Stahel Morli;Schulung auf Privatflugzeug;0;19;15;Minuten;1068;7;Minuten;1086;7;Minuten;1003;2;Landung;;;;;;;;;;;;;;;;;;
-;;Lokaler Passagier-Segelflug mit Gutschein mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Lokaler Passagier-Segelflug bar mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Lokaler Passagier-Segelflug privat mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Lokaler Schnupper-Segelflug bar mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Lokaler Schnupper-Segelflug mit Gutschein mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Lokaler Marketing-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Lokaler Lufttaufe-Segelflug bar mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Charter-Segelflug ab Homebase; aber externer Landung mit 1-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Rückflug Charter-Segelflug ab extern; Landung Homebase mit 1-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Grundschulung-Segelflug ab Homebase; aber externer Landung mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Rückflug Grundschulung-Segelflug ab extern; Landung Homebase mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Montricher Charter-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Montricher Charter-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Montricher Charter-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Montricher Privatcharter-Segelflug mit 1-Sitzer Privat-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Montricher Grundschulung-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Montricher Grundschulung-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Montricher Solo-Grundschulung-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Charter-Segelflug ab Montricher; aber externer Landung (Yverdon) mit 1-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Rückflug Charter-Segelflug ab Yverdon; Landung Montricher mit 1-Sitzer Club-Segelflugzeug Schleppstart;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Charter-Segelflug ab Schänis nach Schänis mit 1-Sitzer Club-Segelflugzeug mit mehr als 10 Minuten externem Schlepp;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Charter-Segelflug ab Schänis nach Homebase mit 1-Sitzer Club-Segelflugzeug mit mehr als 10 Minuten externem Schlepp;;;1;HB-1824;Stahel Morli;;;;60;LSZK;LSZK;42;;HB-KCB;Rieterman Conny;90;LSZK;8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+UseCase;IncludeInTest;UC-Beschreibung;UC-Variante;Beschreibung UC-Variante;Detailsbeschreibung;Verrechnung FGZO;Fragen;Antworten;StartType;GliderImmatriculation;GliderPilotName;GliderInstructorName;CopilotName;PassengerName;GliderFlightCode;GliderFlightTypeName;StartLocation;GliderLdgLocation;GliderFlightDuration;GliderFlightComment;TowingAircraftImmatriculation;TowPilotName;TowFlightCode;TowLdgLocation;TowFlightDuration;TowFlightComment;ExpectInvoice;ExpectedInvoiceLineItemsCount;ExpectedInvoiceAircraftImmatriculation;ExpectedInvoiceRecipientName;ExpectedInvoiceFlightInfo;ExpectedInvoiceAdditionalInfo;ExpectedErpArticleNumberLine1;ExpectedQuantityLine1;ExpectedUnitTypeLine1;ExpectedErpArticleNumberLine2;ExpectedQuantityLine2;ExpectedUnitTypeLine2;ExpectedErpArticleNumberLine3;ExpectedQuantityLine3;ExpectedUnitTypeLine3;ExpectedErpArticleNumberLine4;ExpectedQuantityLine4;ExpectedUnitTypeLine4;ExpectedErpArticleNumberLine5;ExpectedQuantityLine5;ExpectedUnitTypeLine5;ExpectedErpArticleNumberLine6;ExpectedQuantityLine6;ExpectedUnitTypeLine6;ExpectedErpArticleNumberLine7;ExpectedQuantityLine7;ExpectedUnitTypeLine7;ExpectedErpArticleNumberLine8;ExpectedQuantityLine8;ExpectedUnitTypeLine8;ExpectedErpArticleNumberLine9;ExpectedQuantityLine9;ExpectedUnitTypeLine9;ExpectedErpArticleNumberLine10;ExpectedQuantityLine10;ExpectedUnitTypeLine10
+1;1;Lokaler Charter-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Start und Landung Einsitzer Club-Segelflugzeug auf Homebase / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 5 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit
+3. Benzinzuschlag
+4. Landetaxen für Schleppflugzeug (1x)
+5. VSF-Gebühr (2x)";;;1;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSZK;LSZK;42;Charterflug;HB-KCB;Rieterman Conny;90;LSZK;8;;1;5;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;42;Minuten;1066;8;Minuten;1086;8;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;;;;
+1;1;Lokaler Charter-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;b;mehr als 10min Schlepp;Start und Landung Einsitzer Club-Segelflugzeug auf Homebase / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit bis 10. Minute
+3. Schleppflugzeit ab 10. Minute
+4. Benzinzuschlag
+5. Landetaxen für Schleppflugzeug (1x)
+6. VSF-Gebühr (2x)";;;1;HB-2464;Stahel Morli;;;;60;Charter Clubflugzeug;LSZK;LSZK;355;Charterflug;HB-KCB;Rieterman Conny;90;LSZK;22;;1;6;HB-2464;Stahel Morli;Charter Clubflugzeug;0;1071;355;Minuten;1067;12;Minuten;1066;10;Minuten;1086;22;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;
+2;1;Lokaler Charter-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Start und Landung Doppelsitzer Club-Segelflugzeug auf Homebase mit einem zweiten Piloten / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit bis 10. Minute
+3. Schleppflugzeit ab 10. Minute
+4. Benzinzuschlag
+5. Landetaxen für Schleppflugzeug (1x)
+6. VSF-Gebühr (2x)";;;1;HB-3407;Stahel Morli;;Bonzli Lenni;;60;Charter Clubflugzeug;LSZK;LSZK;65;Charterflug mit Copilot;HB-KCB;Rieterman Conny;90;LSZK;11;;1;6;HB-3407;Stahel Morli;Charter Clubflugzeug;0;1060;65;Minuten;1067;1;Minuten;1066;10;Minuten;1086;11;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;
+3;1;Lokaler Privatcharter-Segelflug mit 2-Sitzer Privat-Segelflugzeug Schleppstart;a;10min Schlepp;Start und Landung Doppelsitzer Privat-Segelflugzeug auf Homebase mit einem zweiten Piloten oder Passagier / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 4 Positionen an Piloten: 
+1. Schleppflugzeit
+2. Benzinzuschlag
+3. Landetaxen für Schleppflugzeug (1x)
+4. VSF-Gebühr (2x)";;;1;HB-3254;Stahel Morli;;;;61;Charter Privatflugzeug;LSZK;LSZK;180;Charterflug Privat;HB-KCB;Rieterman Conny;90;LSZK;10;;1;4;HB-3254;Stahel Morli;Charter Privatflugzeug;0;1066;10;Minuten;1086;10;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;;;;;;;
+4;1;Lokaler Grundschulung-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Doppelsitzer-Grundschulung mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 5 Positionen an Piloten/Schüler: 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit (Schulungspreis)
+4. Benzinzuschlag
+5. VSF-Gebühr (2x)
+Bei Schulung: Keine Landetaxen verrechnen";;;1;HB-3256;Bonzli Lenni;Kellner Hansli;;;70;Grundschulung Doppelsteuer;LSZK;LSZK;18;Kurvenflug i.O. / Anfluggeschwindigkeit zu tief;HB-KCB;Rieterman Conny;90;LSZK;8;;1;5;HB-3256;Bonzli Lenni;Grundschulung Doppelsteuer;1;1059;18;Minuten;19;18;Minuten;1068;8;Minuten;1086;8;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
+4;1;Lokaler Grundschulung-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;b;mehr als 10min Schlepp;Doppelsitzer-Grundschulung mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Piloten/Schüler: 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit bis 10. Minute (Schulungspreis)
+4. Schleppflugzeit ab 10. Minute (Schulungspreis)
+5. Benzinzuschlag
+6. VSF-Gebühr (2x)
+Bei Schulung: Keine Landetaxen verrechnen";;;1;HB-3256;Bonzli Lenni;Kellner Hansli;;;70;Grundschulung Doppelsteuer;LSZK;LSZK;185;Streckenflug i.O.;HB-KCB;Rieterman Conny;90;LSZK;14;;1;6;HB-3256;Bonzli Lenni;Grundschulung Doppelsteuer;1;1059;185;Minuten;19;185;Minuten;1069;4;Minuten;1068;10;Minuten;1086;14;Minuten;1003;2;Landung;;;;;;;;;;;;
+5;1;Lokaler Solo-Grundschulung-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Solo-Grundschulung mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 5 Positionen an Piloten/Schüler: 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit (Schulungspreis)
+4. Benzinzuschlag
+5. VSF-Gebühr (2x)
+Bei Schulung: Keine Landetaxen verrechnen";;;1;HB-1824;Bonzli Lenni;Kellner Hansli;;;80;Grundschulung Solo;LSZK;LSZK;14;Soloflug i.O.;HB-KCB;Rieterman Conny;90;LSZK;6;;1;5;HB-1824;Bonzli Lenni;Grundschulung Solo;1;1065;14;Minuten;19;14;Minuten;1068;6;Minuten;1086;6;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
+6;1;Lokaler Solo-Weiterbildungs-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Solo-Weiterbildungsflug mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 5 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit (Schulungspreis)
+4. Benzinzuschlag
+5. VSF-Gebühr (2x)
+Bei Schulung: Keine Landetaxen verrechnen";;;1;HB-2464;Stahel Morli;Kellner Hansli;;;88;Weiterbildung Solo;LSZK;LSZK;8;Umschulung auf Discus 2cT i.O.;HB-KCB;Rieterman Conny;90;LSZK;5;;1;5;HB-2464;Stahel Morli;Weiterbildung Solo;1;1190;8;Minuten;19;8;Minuten;1068;5;Minuten;1086;5;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
+7;1;Lokaler Weiterbildungs-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Solo-Weiterbildungsflug im Doppelsitzer mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 5 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit (Schulungspreis)
+4. Benzinzuschlag
+5. VSF-Gebühr (2x)
+Bei Schulung: Keine Landetaxen verrechnen";1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?;Mittels Liste ob Schüler, Pilot oder Privatflugzeughalter;1;HB-3407;Stahel Morli;Kellner Hansli;;;77;Weiterbildung Doppelsteuer;LSZK;LSZK;23;Umschulung auf Duo Discus i.O.;HB-KCB;Rieterman Conny;90;LSZK;8;;1;5;HB-3407;Stahel Morli;Weiterbildung Doppelsteuer;1;1186;23;Minuten;19;23;Minuten;1068;8;Minuten;1086;8;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
+8;1;Lokaler Jahres-Checkflug-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Jahres-Checkflug im Doppelsitzer mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 5 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit (Schulungspreis)
+4. Benzinzuschlag
+5. VSF-Gebühr (2x)
+Bei Schulung: Keine Landetaxen verrechnen";"1. Wie wird das Segelflugzeug verrechnet, wenn der Pilot die Jahres-Pauschale bezahlt?
+2. Und wie, wenn er keine Pauschale hat?
+3. Wie weiss das Sekretariat, ob der Pilot eine Pauschale hat oder nicht?
+4. Wird die Landetaxe auch nicht verrechnet, wenn der Pilot eine Pauschale bezahlt oder nicht?";"Es werden weitere Artikel erfasst für 3256 und 3407 für Checkflug für Privatpiloten und Clubmitglieder mit Pauschale. Mitgliedstatus mit Pauschale oder nicht, sollen im Artikelstamm erfasst werden.
+Schleppflugzeug wird jeweils als Schulung verbucht.
+Landetaxen:müssen bei Schulung nicht verrechnet werden.
+Artikel für 3407 ist 1186 mit Preis 0.-
+Artikel für 3256 ist 1187 mit Preis 0.-";1;HB-3256;Stahel Morli;Kellner Hansli;;;78;Jahres-Checkflug;LSZK;LSZK;3;Seilrissuebung i.O.;HB-KCB;Rieterman Conny;90;LSZK;5;;1;5;HB-3256;Stahel Morli;Jahres-Checkflug;1;1187;3;Minuten;19;3;Minuten;1068;5;Minuten;1086;5;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
+8;1;Lokaler Jahres-Checkflug-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;b;mehr als 10min Schlepp;Jahres-Checkflug im Doppelsitzer mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit bis 10. Minute (Schulungspreis)
+4. Schleppflugzeit ab 10. Minute (Schulungspreis)
+5. Benzinzuschlag
+6. VSF-Gebühr (2x)
+Bei Schulung: Keine Landetaxen verrechnen";"1. Wie wird das Segelflugzeug verrechnet, wenn der Pilot die Jahres-Pauschale bezahlt?
+2. Und wie, wenn er keine Pauschale hat?
+3. Wie weiss das Sekretariat, ob der Pilot eine Pauschale hat oder nicht?
+4. Wird die Landetaxe auch nicht verrechnet, wenn der Pilot eine Pauschale bezahlt oder nicht?";"Weiterbildungsflüge und checkflüge müssen je nach Pauschale entweder Artikel mit ""Weiterbildung Pauschale"" nehmen oder ""Schulung"" mit Preis";1;HB-3407;Stahel Morli;Kellner Hansli;;;78;Jahres-Checkflug;LSZK;LSZK;18;Jahres-Checkflug i.O.;HB-KCB;Rieterman Conny;90;LSZK;11;;1;6;HB-3407;Stahel Morli;Jahres-Checkflug;1;1186;18;Minuten;19;18;Minuten;1069;1;Minuten;1068;10;Minuten;1086;11;Minuten;1003;2;Landung;;;;;;;;;;;;
+9;1;Lokaler Privat-Solo-Weiterbildungs-Segelflug mit 1-Sitzer Privat-Segelflugzeug Schleppstart unter Aufsicht eines Club-Fluglehrers;a;weniger als 10min Schlepp;Solo-Weiterbildungsflug mit Start und Landung mit Privat-Segelflugzeug auf Homebase mit Club-Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 4 Positionen an Piloten: 
+1. Schleppflugzeit (Schulungspreis)
+2. Benzinzuschlag
+3. Landetaxen für Schleppflugzeug (1x)
+4. VSF-Gebühr (2x)";Wird verrechnet wie normaler Charter-Privatflugzeugflug ;;1;HB-3254;Stahel Morli;Kellner Hansli;;;79;Schulung auf Privatflugzeug;LSZK;LSZK;15;Umschulung auf Privatflugzeug i.O.;HB-KCB;Rieterman Conny;90;LSZK;7;;1;4;HB-3254;Stahel Morli;Schulung auf Privatflugzeug;0;1066;7;Minuten;1086;7;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;;;;;;;
+9;1;Lokaler Privat-Solo-Weiterbildungs-Segelflug mit 1-Sitzer Privat-Segelflugzeug Schleppstart unter Aufsicht eines Piloten;b;weniger als 10min Schlepp;Solo-Weiterbildungsflug mit Start und Landung mit Privat-Segelflugzeug auf Homebase mit Piloten vom Club oder extern / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 4 Positionen an Piloten: 
+1. Schleppflugzeit (Schulungspreis)
+2. Benzinzuschlag
+3. Landetaxen für Schleppflugzeug (1x)
+4. VSF-Gebühr (2x)";Wird verrechnet wie normaler Charter-Privatflugzeugflug ;;1;HB-3254;Stahel Morli;Kellner Hansli;;;79;Schulung auf Privatflugzeug;LSZK;LSZK;15;Umschulung auf Privatflugzeug i.O.;HB-KCB;Rieterman Conny;90;LSZK;7;;1;4;HB-3254;Stahel Morli;Schulung auf Privatflugzeug;0;1066;7;Minuten;1086;7;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;;;;;;;
+10;1;Lokaler Passagier-Segelflug mit Gutschein mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Passagierflug mit Gutschein mit Club-Segelflugzeug mit Start und Landung auf Homebase / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Club (intern abbuchen): 
+1. Segelflugzeug mit Flugzeit
+2. Schleppflugzeit bis 10. Minute
+3. Schleppflugzeit ab 10. Minute
+4. Benzinzuschlag
+5. Landetaxen für Schleppflugzeug (1x)
+6. VSF-Gebühr (2x)";;;1;HB-3407;Stahel Morli;;;Hirscher Martina;62;Passagierflug mit Gutschein;LSZK;LSZK;53;PAX Hirscher Martina;HB-KCB;Rieterman Conny;90;LSZK;12;;1;6;HB-3407;FGZO Passagierflug Gutschein;Passagierflug mit Gutschein Stahel Morli mit PAX: Hirscher Martina;0;1060;53;Minuten;1067;2;Minuten;1066;10;Minuten;1086;12;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;
+11;1;Lokaler Passagier-Segelflug bar mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Passagierflug bar bezahlt vor Ort (Geld geht ans Sekretariat) mit Club-Segelflugzeug mit Start und Landung auf Homebase / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Club (intern abbuchen): 
+1. Segelflugzeug mit Flugzeit
+2. Schleppflugzeit bis 10. Minute
+3. Schleppflugzeit ab 10. Minute
+4. Benzinzuschlag
+5. Landetaxen für Schleppflugzeug (1x)
+6. VSF-Gebühr (2x)";;;1;HB-3407;Stahel Morli;;;Hirscher Martina;63;Passagierflug Bar;LSZK;LSZK;53;PAX Hirscher Martina;HB-KCB;Rieterman Conny;90;LSZK;12;;1;6;HB-3407;FGZO Passagierflug bar;Passagierflug Bar Stahel Morli mit PAX: Hirscher Martina;0;1060;53;Minuten;1067;2;Minuten;1066;10;Minuten;1086;12;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;
+12;1;Lokaler Passagier-Segelflug privat mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Privater Passagierflug mit Club-Segelflugzeug mit Start und Landung auf Homebase / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit bis 10. Minute
+3. Schleppflugzeit ab 10. Minute
+4. Benzinzuschlag
+5. Landetaxen für Schleppflugzeug (1x)
+6. VSF-Gebühr (2x)";;;1;HB-3407;Stahel Morli;;;Hirscher Martina;65;Passagierflug Privat;LSZK;LSZK;53;PAX Hirscher Martina;HB-KCB;Rieterman Conny;90;LSZK;12;;1;6;HB-3407;Stahel Morli;Passagierflug Privat mit PAX: Hirscher Martina;0;1060;53;Minuten;1067;2;Minuten;1066;10;Minuten;1086;12;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;
+13;1;Lokaler Schnupper-Segelflug bar mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Doppelsitzer-Schnupperflug bar bezahlt (Geld geht an Sekretariat) mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Club (intern abbuchen): 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit bis 10. Minute (Schulungspreis)
+4. Schleppflugzeit ab 10. Minute (Schulungspreis)
+5. Benzinzuschlag
+6. VSF-Gebühr (2x)
+Bei Schulung: Keine Landetaxen verrechnen";;;1;HB-3256;Grob Fritz;Kellner Hansli;;;69;Schnupperflug Bar;LSZK;LSZK;25;Schnupperflug Grob Fritz;HB-KCB;Rieterman Conny;90;LSZK;11;;1;6;HB-3256;FGZO Schnupperflug und Lufttaufe bar;Schnupperflug Bar Grob Fritz mit FL: Kellner Hansli;1;1059;25;Minuten;19;25;Minuten;1069;1;Minuten;1068;10;Minuten;1086;11;Minuten;1003;2;Landung;;;;;;;;;;;;
+14;1;Lokaler Schnupper-Segelflug mit Gutschein mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Doppelsitzer-Schnupperflug mit Gutschein mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Club (intern abbuchen): 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit bis 10. Minute (Schulungspreis)
+4. Schleppflugzeit ab 10. Minute (Schulungspreis)
+5. Benzinzuschlag
+6. VSF-Gebühr (2x)
+Bei Schulung: Keine Landetaxen verrechnen";;;1;HB-3256;Grob Fritz;Kellner Hansli;;;68;Schnupperflug Gutschein;LSZK;LSZK;25;Schnupperflug Grob Fritz;HB-KCB;Rieterman Conny;90;LSZK;11;;1;6;HB-3256;FGZO Schnupperflug Gutschein;Schnupperflug Gutschein Grob Fritz mit FL: Kellner Hansli;1;1059;25;Minuten;19;25;Minuten;1069;1;Minuten;1068;10;Minuten;1086;11;Minuten;1003;2;Landung;;;;;;;;;;;;
+15;1;Lokaler Marketing-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Werbe-Passagierflug / Marketingflug mit Club-Segelflugzeug mit Start und Landung auf Homebase / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Club (intern abbuchen): 
+1. Segelflugzeug mit Flugzeit
+2. Schleppflugzeit bis 10. Minute
+3. Schleppflugzeit ab 10. Minute
+4. Benzinzuschlag
+5. Landetaxen für Schleppflugzeug (1x)
+6. VSF-Gebühr (2x)";;;1;HB-3407;Stahel Morli;;;Moser Reto;100;Marketingflug;LSZK;LSZK;19;Marketing-Flug;HB-KCB;Rieterman Conny;90;LSZK;11;;1;6;HB-3407;FGZO Marketingflug;Marketingflug Stahel Morli mit PAX: Moser Reto;0;1060;19;Minuten;1067;1;Minuten;1066;10;Minuten;1086;11;Minuten;1037;1;Landung;1003;2;Landung;;;;;;;;;;;;
+16;1;Lokaler Lufttaufe-Segelflug bar mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Doppelsitzer-Kurz-Schnupperflug (Lufttaufe) bar bezahlt (Geld geht an Sekretariat) mit Start und Landung mit Club-Segelflugzeug auf Homebase mit Fluglehrer / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 5 Positionen an Club (intern abbuchen): 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit (Schulungspreis)
+4. Benzinzuschlag
+5. VSF-Gebühr (2x)
+Bei Schulung: Keine Landetaxen verrechnen";;;1;HB-3256;Grob Fritz;Kellner Hansli;;;66;Lufttaufe Bar;LSZK;LSZK;12;Lufttaufe Grob Fritz;HB-KCB;Rieterman Conny;90;LSZK;6;;1;5;HB-3256;FGZO Schnupperflug und Lufttaufe bar;Lufttaufe Bar Grob Fritz mit FL: Kellner Hansli;1;1059;12;Minuten;19;12;Minuten;1068;6;Minuten;1086;6;Minuten;1003;2;Landung;;;;;;;;;;;;;;;
+17;1;Charter-Segelflug ab Homebase aber externer Landung mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Start Einsitzer Club-Segelflugzeug auf Homebase / Schlepp mit Club-eigenem Schleppflugzeug / Landung in Schänis;"Rechnung mit 6 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit bis 10. Minute
+3. Schleppflugzeit ab 10. Minute
+4. Benzinzuschlag
+5. Landetaxen für Schleppflugzeug (1x)
+6. VSF-Gebühr (1x)";"1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?
+2. Muss die VSF-Gebühr 2x oder nur 1x verrechnet werden (siehe auch nächster Use Case mit Rückschlepp)?";;1;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSZK;LSZX;158;Absaufen in Schaenis;HB-KCB;Rieterman Conny;90;LSZK;13;;1;6;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;158;Minuten;1067;3;Minuten;1066;10;Minuten;1086;13;Minuten;1037;1;Landung;1003;1;Landung;;;;;;;;;;;;
+18;1;Rückflug Charter-Segelflug ab extern / Landung Homebase mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;Externer Start;Start Einsitzer Club-Segelflugzeug auf externem Flugplatz / Schlepp mit Fremd-Schleppflugzeug / Landung auf Homebase;"Rechnung mit 2 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. VSF-Gebühr (1x)";"1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?
+2. Muss die VSF-Gebühr 2x oder nur 1x verrechnet werden?";Rechnung wird aktuell noch mit Landetaxen erstellt;4;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSZX;LSZK;40;Rueckschlepp ab Schaenis;;;;;;;1;2;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;40;Minuten;1003;1;Landung;;;;;;;;;;;;;;;;;;;;;;;;
+19;1;Charter-Segelflug ab Homebase aber externer Landung mit 1-Sitzer Club-Segelflugzeug Schleppstart (kein Start ab Landeplatz);a;mehr als 10min Schlepp;Start Einsitzer Club-Segelflugzeug auf Homebase / Schlepp mit Club-eigenem Schleppflugzeug / Landung in Schänis ohne wieder zu starten;"Rechnung mit 6 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit bis 10. Minute
+3. Schleppflugzeit ab 10. Minute
+4. Benzinzuschlag
+5. Landetaxen für Schleppflugzeug (1x)
+6. VSF-Gebühr (1x)";"1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?
+2. Muss die VSF-Gebühr 2x oder nur 1x verrechnet werden?";;1;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSZK;LSZX;158;Absaufen in Schaenis ohne Start;HB-KCB;Rieterman Conny;90;LSZK;13;;1;6;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;158;Minuten;1067;3;Minuten;1066;10;Minuten;1086;13;Minuten;1037;1;Landung;1003;1;Landung;;;;;;;;;;;;
+20;1;Charter-Segelflug ab Homebase aber Aussenlandung im Acker mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Start Einsitzer Club-Segelflugzeug auf Homebase / Schlepp mit Club-eigenem Schleppflugzeug / Aussenlandung im Acker;"Rechnung mit 6 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit bis 10. Minute
+3. Schleppflugzeit ab 10. Minute
+4. Benzinzuschlag
+5. Landetaxen für Schleppflugzeug (1x)
+6. VSF-Gebühr (1x)";"1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?
+2. Muss die VSF-Gebühr 2x oder nur 1x verrechnet werden?";;1;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSZK;Hinwil;158;Aussenlandung in Hinwil;HB-KCB;Rieterman Conny;90;LSZK;13;;1;6;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;158;Minuten;1067;3;Minuten;1066;10;Minuten;1086;13;Minuten;1037;1;Landung;1003;1;Landung;;;;;;;;;;;;
+21;1;Grundschulung-Segelflug ab Homebase aber externer Landung mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Doppelsitzer-Grundschulung mit Club-Segelflugzeug mit Fluglehrer / Start auf Homebase / Landung extern / Schlepp mit Club-eigenem Schleppflugzeug;"Rechnung mit 6 Positionen an Piloten/Schüler: 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit bis 10. Minute (Schulungspreis)
+4. Schleppflugzeit ab 10. Minute (Schulungspreis)
+5. Benzinzuschlag
+6. VSF-Gebühr (1x)
+Bei Schulung: Keine Landetaxen verrechnen";1. Muss die VSF-Gebühr 2x oder nur 1x verrechnet werden?;1x;1;HB-3256;Bonzli Lenni;Kellner Hansli;;;70;Grundschulung Doppelsteuer;LSZK;LSZX;185;Streckenflug i.O. mit Landung in Schaenis;HB-KCB;Rieterman Conny;90;LSZK;14;;1;6;HB-3256;Bonzli Lenni;Grundschulung Doppelsteuer;1;1059;185;Minuten;19;185;Minuten;1069;4;Minuten;1068;10;Minuten;1086;14;Minuten;1003;1;Landung;;;;;;;;;;;;
+22;1;Rückflug Grundschulung-Segelflug ab extern Landung Homebase mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;Externer Start;Doppelsitzer-Grundschulung mit Club-Segelflugzeug mit Fluglehrer / Externer Start / Landung auf Homebase / Fremdschlepp;"Rechnung mit 3 Positionen an Piloten/Schüler: 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. VSF-Gebühr (1x)
+Bei Schulung: Keine Landetaxen verrechnen";1. Muss die VSF-Gebühr 2x oder nur 1x verrechnet werden?;;4;HB-3256;Bonzli Lenni;Kellner Hansli;;;70;Grundschulung Doppelsteuer;LSZX;LSZK;40;Rückflug ab Schänis;;;;;;;1;3;HB-3256;Bonzli Lenni;Grundschulung Doppelsteuer;1;1059;40;Minuten;19;40;Minuten;1003;1;Landung;;;;;;;;;;;;;;;;;;;;;
+23;1;Montricher Charter-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Start und Landung Einsitzer Club-Segelflugzeug in Montricher-Lager / Schlepp mit Fremd-Schleppflugzeug;"Rechnung mit 3 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit gemäss Minutenpreis von Montricher
+3. Landetaxen Montricher (inkl. allenfalls VSF-Gebühr)";1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?;;1;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSTR;LSTR;42;Charterflug Montricher;HB-PFW;Weber Didier;90;LSTR;8;;1;3;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;42;Minuten;1153;8;Minuten;1106;1;Landung;;;;;;;;;;;;;;;;;;;;;
+24;1;Montricher Charter-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;b;mehr als 10min Schlepp;Start und Landung Einsitzer Club-Segelflugzeug in Montricher-Lager / Schlepp mit Fremd-Schleppflugzeug;"Rechnung mit 3 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit gemäss Minutenpreis von Montricher
+3. Landetaxen Montricher (inkl. allenfalls VSF-Gebühr)";1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?;;1;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSTR;LSTR;165;Charterflug Montricher;HB-PFW;Weber Didier;90;LSTR;15;;1;3;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;165;Minuten;1153;15;Minuten;1106;1;Landung;;;;;;;;;;;;;;;;;;;;;
+25;1;Montricher Charter-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;mehr als 10min Schlepp;Start und Landung Einsitzer Club-Segelflugzeug in Montricher-Lager / Schlepp mit Fremd-Schleppflugzeug;"Rechnung mit 3 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit gemäss Minutenpreis von Montricher
+3. Landetaxen Montricher (inkl. allenfalls VSF-Gebühr)";1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?;;1;HB-3407;Stahel Morli;;Bonzli Lenni;;60;Charter Clubflugzeug;LSTR;LSTR;184;Charterflug Montricher;HB-KIO;Weber Didier;90;LSTR;12;;1;3;HB-3407;Stahel Morli;Charter Clubflugzeug;0;1060;184;Minuten;1154;12;Minuten;1106;1;Landung;;;;;;;;;;;;;;;;;;;;;
+26;1;Montricher Privatcharter-Segelflug mit 1-Sitzer Privat-Segelflugzeug Schleppstart;a;10min Schlepp;Start und Landung Einsitzer Privat-Segelflugzeug in Montricher / Schlepp mit Fremd-Schleppflugzeug;"Rechnung mit 2 Positionen an Piloten: 
+1. Schleppflugzeit gemäss Minutenpreis von Montricher
+2. Landetaxen Montricher (inkl. allenfalls VSF-Gebühr)";;;1;HB-1080;Stahel Morli;;;;61;Charter Privatflugzeug;LSTR;LSTR;120;Charterflug Privat;HB-KIO;Weber Didier;90;LSTR;10;;1;2;HB-1080;Stahel Morli;Charter Privatflugzeug;0;1154;10;Minuten;1106;1;Landung;;;;;;;;;;;;;;;;;;;;;;;;
+27;1;Montricher Grundschulung-Segelflug mit 2-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Doppelsitzer-Grundschulung mit Start und Landung mit Club-Segelflugzeug in Montricher mit Fluglehrer / Schlepp mit Fremd-Schleppflugzeug;"Rechnung mit 4 Positionen an Piloten/Schüler: 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit gemäss Minutenpreis von Montricher
+4. Landetaxen Montricher (inkl. allenfalls VSF-Gebühr)";;;1;HB-3256;Bonzli Lenni;Kellner Hansli;;;70;Grundschulung Doppelsteuer;LSTR;LSTR;18;Kurvenflug i.O. / Anfluggeschwindigkeit zu tief;HB-KIO;Weber Didier;90;LSTR;6;;1;4;HB-3256;Bonzli Lenni;Grundschulung Doppelsteuer;1;1059;18;Minuten;19;18;Minuten;1154;6;Minuten;1106;1;Landung;;;;;;;;;;;;;;;;;;
+29;1;Montricher Solo-Grundschulung-Segelflug mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Einsitzer-Grundschulung mit Start und Landung mit Club-Segelflugzeug in Montricher mit Fluglehrer / Schlepp mit Fremd-Schleppflugzeug;"Rechnung mit 4 Positionen an Piloten/Schüler: 
+1. Segelflugzeug mit Flugzeit (Schulungspreis)
+2. Fluglehrer-Honorar (=Segelflugzeit)
+3. Schleppflugzeit gemäss Minutenpreis von Montricher
+4. Landetaxen Montricher (inkl. allenfalls VSF-Gebühr)";;;1;HB-1824;Bonzli Lenni;Kellner Hansli;;;80;Grundschulung Solo;LSTR;LSTR;15;Flug i.O.;HB-KIO;Weber Didier;90;LSTR;6;;1;4;HB-1824;Bonzli Lenni;Grundschulung Solo;1;1065;15;Minuten;19;15;Minuten;1154;6;Minuten;1106;1;Landung;;;;;;;;;;;;;;;;;;
+30;1;Charter-Segelflug ab Montricher aber externer Landung (Yverdon) mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;weniger als 10min Schlepp;Einsitzer Club-Segelflugzeug Start ab Montricher und Landung in Yverdon / Schlepp mit Fremd-Schleppflugzeug;"Rechnung mit 3 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit gemäss Minutenpreis von Montricher
+3. Landetaxen Montricher (inkl. allenfalls VSF-Gebühr)";1. Wie weiss das Sekretariat/System, ob der Pilot eine Pauschale hat oder nicht?;;1;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSTR;LSGY;42;Landung in Yverdon;HB-PFW;Weber Didier;90;LSTR;8;;1;3;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;42;Minuten;1153;8;Minuten;1106;1;Landung;;;;;;;;;;;;;;;;;;;;;
+31;1;Rückflug Charter-Segelflug ab Yverdon Landung Montricher mit 1-Sitzer Club-Segelflugzeug Schleppstart;a;Schlepp inkl. Überflug;Einsitzer Club-Segelflugzeug Start ab Yverdon und Landung in Montricher / Schlepp mit Fremd-Schleppflugzeug;"Rechnung mit 3 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. Schleppflugzeit gemäss Minutenpreis von Montricher
+3. Landetaxen Montricher (inkl. allenfalls VSF-Gebühr)";Landetaxen für Schlepp und allenfalls Segelflugzeug in Yverdon müssen direkt bar in Yverdon bezahlt werden (oder würden von Yverdon in Rechnung gestellt werden);;1;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSGY;LSTR;50;Rückflug ab Yverdon;HB-PFW;Weber Didier;90;LSTR;20;;1;3;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;50;Minuten;1153;20;Minuten;1106;1;Landung;;;;;;;;;;;;;;;;;;;;;
+32;1;Charter-Segelflug ab Schänis nach Schänis mit 1-Sitzer Club-Segelflugzeug mit mehr als 10 Minuten externem Schlepp;a;weniger als 10min Schlepp;Start und Landung Einsitzer Club-Segelflugzeug in Schänis / Schlepp mit Fremd-Schleppflugzeug;"Rechnung mit 1 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)";Schleppkosten und Landetaxen/Startgebühren werden direkt von Schänis verrechnet;;4;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSZX;LSZX;120;Charterflug Schänis;;;;;;;1;1;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;120;Minuten;;;;;;;;;;;;;;;;;;;;;;;;;;;
+33;1;Charter-Segelflug ab Schänis nach Homebase mit 1-Sitzer Club-Segelflugzeug mit mehr als 10 Minuten externem Schlepp;a;mehr als 10min Schlepp;Einsitzer Club-Segelflugzeug, Start ab Schänis und Landung  in der Speck / Schlepp mit Fremd-Schleppflugzeug;"Rechnung mit 2 Positionen an Piloten: 
+1. Segelflugzeug mit Flugzeit (aber 0.-- da Pauschale)
+2. VSF-Gebühr (1x)";"Schleppkosten und Landetaxen/Startgebühren werden direkt von Schänis verrechnet.
+VSF-Gebühr für Landung Segelflugzeug in der Speck fällt an";;4;HB-1824;Stahel Morli;;;;60;Charter Clubflugzeug;LSZX;LSZK;100;Charterflug Schänis;;;;;;;1;2;HB-1824;Stahel Morli;Charter Clubflugzeug;0;1064;100;Minuten;1003;1;Landung;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FLS.Server.Service.Invoicing
+namespace FLS.Server.ProffixInvoiceService.RuleFilters
 {
-    public class LandingTaxRule
+    public class NoLandingTax
     {
+        public bool IsRuleForSelfstartedGliderFlights { get; set; }
+        public bool IsRuleForGliderFlights { get; set; }
+        public bool IsRuleForTowingFlights { get; set; }
+
         public bool UseRuleForAllAircraftsExceptListed { get; set; }
         public List<Guid> AircraftIds { get; set; }
         public int SortIndicator { get; set; }
-        public string ERPArticleNumber { get; set; }
-        public string InvoiceLineText { get; set; }
         public bool UseRuleForAllFlightTypesExceptListed { get; set; }
         public List<string> MatchedFlightTypeCodes { get; set; }
+        public bool ExtendMatchingFlightTypeCodesToGliderAndTowFlight { get; set; }
         public bool UseRuleForAllLdgLocationsExceptListed { get; set; }
         public List<Guid> MatchedLdgLocations { get; set; }
-        public bool IsRuleForSelfstartedGliderFlights { get; set; }
-        public bool IncludesTowingLandingTaxes { get; set; }
 
-        public LandingTaxRule()
+        public bool NoLandingTaxForGlider { get; set; }
+        public bool NoLandingTaxForTowingAircraft { get; set; }
+
+        public NoLandingTax()
         {
             AircraftIds = new List<Guid>();
             MatchedFlightTypeCodes = new List<string>();

@@ -48,6 +48,13 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
             {
                 Console.WriteLine("TestCleanup: BaseServerTest.Teardown(): TestServer.Dispose()");
                 TestServer.Dispose();
+                TestServer = null;
+            }
+
+            if (UnityContainer != null)
+            {
+                UnityContainer.Dispose();
+                UnityContainer = null;
             }
         }
 

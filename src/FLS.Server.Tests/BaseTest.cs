@@ -15,6 +15,8 @@ using FLS.Server.Data;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
 using FLS.Server.Data.Mapping;
+using FLS.Server.Interfaces;
+using FLS.Server.Interfaces.Invoicing;
 using FLS.Server.Service;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Identity;
@@ -129,7 +131,11 @@ namespace FLS.Server.Tests
             container.RegisterType<PlanningDayService>();
             container.RegisterType<UserService>();
             container.RegisterType<WorkflowService>();
-            
+            container.RegisterType<ILocationService, LocationService>();
+            container.RegisterType<IAircraftService, AircraftService>();
+            container.RegisterType<IPersonService, PersonService>();
+            container.RegisterType<IInvoiceService, ProffixInvoiceService.ProffixInvoiceService>();
+
             //container.RegisterType<IUserStore<ApplicationUser>, UserStore<ApplicationUser>>(
             //    new InjectionConstructor(typeof(ApplicationDbContext)));
         }
@@ -141,6 +147,9 @@ namespace FLS.Server.Tests
             _userStoreService = UnityContainer.Resolve<IUserStore<User, Guid>>();
             IdentityService = UnityContainer.Resolve<IIdentityService>();
             DataAccessService = UnityContainer.Resolve<DataAccessService>();
+            UserService = UnityContainer.Resolve<UserService>();
+            SetCurrentUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
+
             AircraftService = UnityContainer.Resolve<AircraftService>();
             InvoiceService = UnityContainer.Resolve<InvoiceService>();
             SystemService = UnityContainer.Resolve<SystemService>();
@@ -153,8 +162,6 @@ namespace FLS.Server.Tests
             LocationService = UnityContainer.Resolve<LocationService>();
             WorkflowService = UnityContainer.Resolve<WorkflowService>();
             AircraftReportEmailService = UnityContainer.Resolve<AircraftReportEmailBuildService>();
-            UserService = UnityContainer.Resolve<UserService>();
-            SetCurrentUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
         }
 
         protected void SetCurrentUser(string userName)
@@ -196,6 +203,21 @@ namespace FLS.Server.Tests
                     .Include("AircraftOwnerClub")
                     .Include("AircraftType")
                     .FirstOrDefault(a => a.Immatriculation.Replace("-", "").ToUpper() == immatriculation.Replace("-", "").ToUpper());
+
+                if (aircraft == null)
+                {
+                    var aircraftDetails = CreateGliderAircraftDetails(2);
+                    aircraftDetails.Immatriculation = immatriculation;
+                    AircraftService.InsertAircraftDetails(aircraftDetails);
+
+                    aircraft = context.Aircrafts
+                    .Include(Data.Resources.Constants.AircraftAircraftStates)
+                    .Include(Constants.AircraftAircraftStatesAircraftStateRelation)
+                    .Include("AircraftOwnerPerson")
+                    .Include("AircraftOwnerClub")
+                    .Include("AircraftType")
+                    .FirstOrDefault(a => a.Immatriculation.Replace("-", "").ToUpper() == immatriculation.Replace("-", "").ToUpper());
+                }
 
                 return aircraft;
             }
@@ -1602,7 +1624,34 @@ namespace FLS.Server.Tests
         {
             using (var context = DataAccessService.CreateDbContext())
             {
-                return context.Locations.FirstOrDefault(l => l.IcaoCode.ToLower() == locationIcaoCode.ToLower());
+                var location = context.Locations.FirstOrDefault(l => l.IcaoCode.ToLower() == locationIcaoCode.ToLower());
+
+                if (location == null)
+                {
+                    var country = GetCountry("CH");
+                    location = new Location()
+                    {
+                        CountryId = country.CountryId,
+                        LocationName = locationIcaoCode,
+                        IcaoCode = locationIcaoCode
+                    };
+
+                    if (locationIcaoCode.Length == 4)
+                    {
+                        location.LocationTypeId =
+                            GetLocationType((int) FLS.Data.WebApi.Location.LocationType.AirfieldSolid).LocationTypeId;
+                    }
+                    else
+                    {
+                        location.LocationTypeId =
+                            GetLocationType((int) FLS.Data.WebApi.Location.LocationType.Outlanding).LocationTypeId;
+                    }
+
+                    context.Locations.Add(location);
+                    context.SaveChanges();
+                }
+
+                return location;
             }
         }
         #endregion Location
@@ -1631,6 +1680,7 @@ namespace FLS.Server.Tests
                     personDetails.CountryId = country.CountryId;
                     person = personDetails.ToPerson(clubId);
                     context.Persons.Add(person);
+                    context.SaveChanges();
                 }
 
                 return person;

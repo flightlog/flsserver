@@ -7,11 +7,12 @@ using FLS.Data.WebApi.Aircraft;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
 using FLS.Server.Data.Resources;
+using FLS.Server.Interfaces;
 using NLog;
 
 namespace FLS.Server.Service
 {
-    public class AircraftService : BaseService
+    public class AircraftService : BaseService, IAircraftService
     {
         private readonly DataAccessService _dataAccessService;
 

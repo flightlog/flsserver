@@ -6,11 +6,12 @@ using FLS.Data.WebApi.Location;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
 using FLS.Server.Data.Resources;
+using FLS.Server.Interfaces;
 using NLog;
 
 namespace FLS.Server.Service
 {
-    public class LocationService : BaseService
+    public class LocationService : BaseService, ILocationService
     {
         private readonly DataAccessService _dataAccessService;
 
@@ -196,6 +197,19 @@ namespace FLS.Server.Service
                                  .FirstOrDefault(l => l.LocationId == locationId);
 
                 return location;
+            }
+        }
+
+        public LocationDetails GetLocationDetailsByIcaoCode(string icaoCode)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var location =
+                    context.Locations.Include(Constants.Country)
+                                 .Include(Constants.LocationType)
+                                 .FirstOrDefault(l => l.IcaoCode.ToLower() == icaoCode.ToLower());
+
+                return location.ToLocationDetails();
             }
         }
 

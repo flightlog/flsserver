@@ -1,4 +1,4 @@
-﻿namespace FLS.Server.Service.Invoicing
+﻿namespace FLS.Server.ProffixInvoiceService.RuleFilters
 {
     internal class InvoiceRecipientTarget
     {

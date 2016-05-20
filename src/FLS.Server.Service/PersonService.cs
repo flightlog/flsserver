@@ -11,13 +11,14 @@ using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Exceptions;
 using FLS.Server.Data.Mapping;
 using FLS.Server.Data.Resources;
+using FLS.Server.Interfaces;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Exporting;
 using NLog;
 
 namespace FLS.Server.Service
 {
-    public class PersonService : BaseService
+    public class PersonService : BaseService, IPersonService
     {
         private readonly AddressListEmailBuildService _addressListEmailBuildService;
         private readonly DataAccessService _dataAccessService;
@@ -293,6 +294,16 @@ namespace FLS.Server.Service
             var person = GetPerson(personId);
 
             var personDetails = person.ToPilotPersonDetails(CurrentAuthenticatedFLSUserClubId);
+            SetPersonDetailsSecurity(personDetails, person);
+
+            return personDetails;
+        }
+
+        public PilotPersonDetails GetPilotPersonDetails(Guid personId, Guid clubId)
+        {
+            var person = GetPerson(personId, false);
+
+            var personDetails = person.ToPilotPersonDetails(clubId);
             SetPersonDetailsSecurity(personDetails, person);
 
             return personDetails;

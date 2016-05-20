@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FLS.Server.Service.Invoicing
+namespace FLS.Server.ProffixInvoiceService.RuleFilters
 {
-    public class AdditionalFuelFeeRule
+    public class AdditionalFuelFee
     {
         public bool UseRuleForAllAircraftsExceptListed { get; set; }
         public List<Guid> AircraftIds { get; set; }
@@ -13,7 +13,7 @@ namespace FLS.Server.Service.Invoicing
         public bool UseRuleForAllStartLocationsExceptListed { get; set; }
         public List<Guid> MatchedStartLocations { get; set; }
 
-        public AdditionalFuelFeeRule()
+        public AdditionalFuelFee()
         {
             MatchedStartLocations = new List<Guid>();
         }

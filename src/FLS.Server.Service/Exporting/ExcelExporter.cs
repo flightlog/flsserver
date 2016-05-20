@@ -30,9 +30,9 @@ namespace FLS.Server.Service.Exporting
                 //check if there are some line items in the invoice, if not, check next invoice
                 if (flightInvoiceDetails.FlightInvoiceLineItems.Any() == false) continue;
 
-                if (list.Contains(flightInvoiceDetails.InvoiceRecipientPersonDisplayName) == false)
+                if (list.Contains(flightInvoiceDetails.RecipientDetails.RecipientName) == false)
                 {
-                    list.Add(flightInvoiceDetails.InvoiceRecipientPersonDisplayName);
+                    list.Add(flightInvoiceDetails.RecipientDetails.RecipientName);
                 }
             }
 
@@ -71,7 +71,7 @@ namespace FLS.Server.Service.Exporting
 
                             foreach (var flightInvoiceDetails in flightInvoiceDetailList)
                             {
-                                if (flightInvoiceDetails.InvoiceRecipientPersonDisplayName != recipient)
+                                if (flightInvoiceDetails.RecipientDetails.RecipientName != recipient)
                                 {
                                     continue;
                                 }
@@ -82,9 +82,9 @@ namespace FLS.Server.Service.Exporting
                                 {
                                     worksheet.Cells[rowNumber, 1].Value = flightNr;
                                     worksheet.Cells[rowNumber, 2].Value =
-                                        flightInvoiceDetails.InvoiceRecipientPersonDisplayName;
+                                        flightInvoiceDetails.RecipientDetails.RecipientName;
                                     worksheet.Cells[rowNumber, 3].Value =
-                                        flightInvoiceDetails.InvoiceRecipientPersonClubMemberNumber;
+                                        flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber;
                                     worksheet.Cells[rowNumber, 4].Value = flightInvoiceDetails.FlightDate;
                                     //.ToShortDateString();
                                     worksheet.Cells[rowNumber, 5].Value = flightInvoiceDetails.AircraftImmatriculation;

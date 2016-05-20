@@ -127,14 +127,11 @@ namespace FLS.Server.Service
             {
                 count++;
                 ExecuteAircraftStatisticReportJob();
-            }
 
-            if (DateTime.Now.Day == 3 && DateTime.Now.Hour == 23)
-            {
                 count++;
                 ExecuteInvoiceReportJob();
             }
-
+            
             Logger.Info(string.Format("Executed {0} workflows.", count));
         }
 

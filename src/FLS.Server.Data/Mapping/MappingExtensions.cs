@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using AutoMapper;
 using FLS.Common.Extensions;
 using FLS.Common.Utils;
 using FLS.Common.Validators;
@@ -17,7 +15,6 @@ using FLS.Data.WebApi.Dashboard;
 using FLS.Data.WebApi.Emails;
 using FLS.Data.WebApi.Flight;
 using FLS.Data.WebApi.Globalization;
-using FLS.Data.WebApi.Licensing;
 using FLS.Data.WebApi.Location;
 using FLS.Data.WebApi.Person;
 using FLS.Data.WebApi.PlanningDay;
