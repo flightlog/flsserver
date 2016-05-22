@@ -821,6 +821,9 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'NO_MEDICAL_INFO', 'Hier würde das Ablaufdatum des Medicals angezeigt werden. Das Datum kann unter folgendem Link ganz einfach in der Rubrik "Lizenz" erfasst werden:', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
+     VALUES (NEWID(), 'RESET', 'Reset', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
 GO
 
 
