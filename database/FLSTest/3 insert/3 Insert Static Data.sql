@@ -44,6 +44,7 @@ DefaultStartType = null,
 DefaultTowFlightTypeId = null,
 HomebaseId = null
 
+DELETE FROM Articles
 DELETE FROM EmailTemplates
 
 DELETE FROM AircraftReservations

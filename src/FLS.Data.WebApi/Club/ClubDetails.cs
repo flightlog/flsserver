@@ -46,7 +46,9 @@ namespace FLS.Data.WebApi.Club
         public Nullable<DateTime> LastInvoiceExportOn { get; set; }
 
         public Nullable<DateTime> LastPersonSynchronisationOn { get; set; }
-        
+
+        public Nullable<DateTime> LastArticleSynchronisationOn { get; set; }
+
         [StringLength(30)]
         public string PhoneNumber { get; set; }
 

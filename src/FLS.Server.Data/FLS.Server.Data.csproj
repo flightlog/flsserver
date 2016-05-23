@@ -83,6 +83,7 @@
     <Compile Include="DbEntities\AircraftReservation.cs" />
     <Compile Include="DbEntities\AircraftReservationType.cs" />
     <Compile Include="DbEntities\ClubState.cs" />
+    <Compile Include="DbEntities\Article.cs" />
     <Compile Include="DbEntities\LanguageTranslation.cs" />
     <Compile Include="DbEntities\Language.cs" />
     <Compile Include="DbEntities\PlanningDayAssignment.cs" />

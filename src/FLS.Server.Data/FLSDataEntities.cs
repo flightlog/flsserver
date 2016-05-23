@@ -48,6 +48,7 @@ namespace FLS.Server.Data
         public virtual DbSet<AircraftReservationType> AircraftReservationTypes { get; set; }
         public virtual DbSet<AircraftState> AircraftStates { get; set; }
         public virtual DbSet<AircraftType> AircraftTypes { get; set; }
+        public virtual DbSet<Article> Articles { get; set; }
         public virtual DbSet<ClubExtension> ClubExtensions { get; set; }
         public virtual DbSet<Club> Clubs { get; set; }
         public virtual DbSet<ClubState> ClubStates { get; set; }
@@ -100,6 +101,7 @@ namespace FLS.Server.Data
             modelBuilder.Entity<AircraftReservation>().Ignore(t => t.Id);
             modelBuilder.Entity<AircraftOperatingCounter>().Ignore(t => t.Id);
             modelBuilder.Entity<AircraftState>().Ignore(t => t.Id);
+            modelBuilder.Entity<Article>().Ignore(t => t.Id);
             modelBuilder.Entity<Club>().Ignore(t => t.Id);
             modelBuilder.Entity<Club>().Ignore(t => t.HomebaseName);
             modelBuilder.Entity<Country>().Ignore(t => t.Id);
@@ -257,6 +259,12 @@ namespace FLS.Server.Data
 
             modelBuilder.Entity<Club>()
                 .HasMany(e => e.FlightTypes)
+                .WithRequired(e => e.Club)
+                .HasForeignKey(e => e.ClubId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Club>()
+                .HasMany(e => e.Articles)
                 .WithRequired(e => e.Club)
                 .HasForeignKey(e => e.ClubId)
                 .WillCascadeOnDelete(false);
@@ -559,6 +567,16 @@ namespace FLS.Server.Data
                 .And(x => x.OwnerId)
                 .And(x => x.OwnershipType)
                 .And(x => x.RecordState);
+            EntityTracker.TrackAllProperties<Article>().Except(x => x.Id)
+                .And(x => x.CreatedByUserId)
+                .And(x => x.CreatedOn)
+                .And(x => x.ModifiedByUserId)
+                .And(x => x.ModifiedOn)
+                .And(x => x.DeletedByUserId)
+                .And(x => x.DeletedOn)
+                .And(x => x.OwnerId)
+                .And(x => x.OwnershipType)
+                .And(x => x.RecordState);
             EntityTracker.TrackAllProperties<Club>().Except(x => x.Id)
                 .And(x => x.CreatedByUserId)
                 .And(x => x.CreatedOn)
@@ -751,6 +769,9 @@ namespace FLS.Server.Data
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<AircraftReservation>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<Article>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Club>()
@@ -1019,7 +1040,9 @@ namespace FLS.Server.Data
                         if ((entry.Entity.GetType() == typeof(Flight)
                              && ((Flight)entry.Entity).DoNotUpdateMetaData)
                             || (entry.Entity.GetType() == typeof(User)
-                            && ((User)entry.Entity).DoNotUpdateMetaData))
+                            && ((User)entry.Entity).DoNotUpdateMetaData)
+                            || (entry.Entity.GetType() == typeof(Club)
+                            && ((Club)entry.Entity).DoNotUpdateMetaData))
                         {
                             //don't update metadata when workflow process set flag "DoNotUpdateMetaData" on flight
                             //or when user resets passwords

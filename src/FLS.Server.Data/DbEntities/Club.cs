@@ -23,6 +23,7 @@ namespace FLS.Server.Data.DbEntities
             Users = new HashSet<User>();
             AircraftReservations = new HashSet<AircraftReservation>();
             EmailTemplates = new HashSet<EmailTemplate>();
+            Articles = new HashSet<Article>();
         }
 
         public Guid ClubId { get; set; }
@@ -83,6 +84,9 @@ namespace FLS.Server.Data.DbEntities
 
         [Column(TypeName = "datetime2")]
         public DateTime? LastInvoiceExportOn { get; set; }
+
+        [Column(TypeName = "datetime2")]
+        public DateTime? LastArticleSynchronisationOn { get; set; }
 
         public int ClubStateId { get; set; }
 
@@ -145,7 +149,19 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual ICollection<EmailTemplate> EmailTemplates { get; set; }
 
+        public virtual ICollection<Article> Articles { get; set; }
+
         public virtual ClubState ClubState { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [do not update meta data].
+        /// Used for workflow processes to not create a modified user error when trying to save records.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [do not update meta data]; otherwise, <c>false</c>.
+        /// </value>
+        [NotMapped]
+        public bool DoNotUpdateMetaData { get; set; }
 
         public Guid Id
         {

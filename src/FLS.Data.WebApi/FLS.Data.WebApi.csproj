@@ -69,6 +69,8 @@
     <Compile Include="Aircraft\AircraftType.cs" />
     <Compile Include="Aircraft\AircraftTypeListItem.cs" />
     <Compile Include="Aircraft\AircraftEngineOperatingCounterRequest.cs" />
+    <Compile Include="Articles\ArticleDetails.cs" />
+    <Compile Include="Articles\ArticleOverview.cs" />
     <Compile Include="Audit\PropertyChangeLogDetails.cs" />
     <Compile Include="Audit\AuditLogOverview.cs" />
     <Compile Include="Club\ClubDetails.cs" />

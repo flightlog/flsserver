@@ -9,6 +9,7 @@ using FLS.Common.Validators;
 using FLS.Data.WebApi;
 using FLS.Data.WebApi.Aircraft;
 using FLS.Data.WebApi.AircraftReservation;
+using FLS.Data.WebApi.Articles;
 using FLS.Data.WebApi.Audit;
 using FLS.Data.WebApi.Club;
 using FLS.Data.WebApi.Dashboard;
@@ -432,6 +433,51 @@ namespace FLS.Server.Data.Mapping
         }
         #endregion AircraftType
 
+
+        #region Article
+        
+        public static ArticleDetails ToArticleDetails(this Article entity, ArticleDetails details = null)
+        {
+            entity.ArgumentNotNull("entity");
+
+            if (details == null)
+            {
+                details = new ArticleDetails();
+            }
+
+            details.ArticleId = entity.ArticleId;
+            details.ArticleNumber = entity.ArticleNumber;
+            details.ArticleName = entity.ArticleName;
+            details.ArticleInfo = entity.ArticleInfo;
+            details.Description = entity.Description;
+            details.IsActive = entity.IsActive;
+
+            return details;
+        }
+
+        public static Article ToArticle(this ArticleDetails details, Guid clubId, Article entity = null, bool overwriteArticleId = false)
+        {
+            details.ArgumentNotNull("details");
+
+            if (entity == null)
+            {
+                entity = new Article();
+            }
+
+            entity.ClubId = clubId;
+
+            if (overwriteArticleId) entity.ArticleId = details.ArticleId;
+            entity.ArticleNumber = details.ArticleNumber;
+            entity.ArticleName = details.ArticleName;
+            entity.ArticleInfo = details.ArticleInfo;
+            entity.Description = details.Description;
+            entity.IsActive = details.IsActive;
+
+            return entity;
+        }
+
+        #endregion Article
+
         #region AssemblyInfo
         public static AssemblyInfo ToAssemblyInfo(this AssemblyBuildInfo assemblyBuildInfo, AssemblyInfo assemblyInfo = null)
         {
@@ -579,6 +625,10 @@ namespace FLS.Server.Data.Mapping
             details.SendAircraftStatisticReportTo = entity.SendAircraftStatisticReportTo;
             details.SendPlanningDayInfoMailTo = entity.SendPlanningDayInfoMailTo;
             details.SendInvoiceReportsTo = entity.SendInvoiceReportsTo;
+
+            details.LastArticleSynchronisationOn = entity.LastArticleSynchronisationOn;
+            details.LastInvoiceExportOn = entity.LastInvoiceExportOn;
+            details.LastPersonSynchronisationOn = entity.LastPersonSynchronisationOn;
 
             return details;
         }
