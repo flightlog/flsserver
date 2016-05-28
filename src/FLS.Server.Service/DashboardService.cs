@@ -100,7 +100,9 @@ namespace FLS.Server.Service
                         safetyDetails.FlightTimeInHours += gliderFlight.Duration.TotalHours;
                     }
 
-                    if (gliderFlight.FlightType != null && gliderFlight.FlightType.IsCheckFlight)
+                    if (gliderFlight.FlightType != null && gliderFlight.FlightType.IsCheckFlight 
+                        && gliderFlight.FlightCrews.Any(x => x.PersonId == CurrentAuthenticatedFLSUser.PersonId.Value 
+                            && (x.FlightCrewTypeId == (int)FlightCrewType.PilotOrStudent)))
                     {
                         gliderLicenceStateDetails.NumberOfCheckFlights++;
                     }
@@ -109,6 +111,13 @@ namespace FLS.Server.Service
                     {
                         gliderLicenceStateForecast.Landings += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
                         gliderLicenceStateForecast.FlightTimeInHours += gliderFlight.Duration.TotalHours;
+
+                        if (gliderFlight.FlightType != null && gliderFlight.FlightType.IsCheckFlight
+                        && gliderFlight.FlightCrews.Any(x => x.PersonId == CurrentAuthenticatedFLSUser.PersonId.Value
+                            && (x.FlightCrewTypeId == (int)FlightCrewType.PilotOrStudent)))
+                        {
+                            gliderLicenceStateForecast.NumberOfCheckFlights++;
+                        }
                     }
                 }
 
@@ -142,6 +151,23 @@ namespace FLS.Server.Service
                 {
                     gliderLicenceStateDetails.LicenceStateInformation = "EASA Segelflug-Lizenz-Status ist OK";
                     gliderLicenceStateDetails.LicenceStateKey = "OK";
+                }
+
+                if (dashboardDetails.PersonDashboardDetails.MedicalLaplExpireDate.HasValue == false
+                    && dashboardDetails.PersonDashboardDetails.MedicalClass2ExpireDate.HasValue == false)
+                {
+                    //no medical data
+                    gliderLicenceStateDetails.LicenceStateInformation = $"{gliderLicenceStateDetails.LicenceStateInformation}, aber es sind keine Medical-Daten vorhanden!";
+                    gliderLicenceStateDetails.LicenceStateKey = "Warning";
+                }
+                else if ((dashboardDetails.PersonDashboardDetails.MedicalLaplExpireDate.HasValue &&
+                         dashboardDetails.PersonDashboardDetails.MedicalLaplExpireDate.Value <= now)
+                         || (dashboardDetails.PersonDashboardDetails.MedicalClass2ExpireDate.HasValue &&
+                         dashboardDetails.PersonDashboardDetails.MedicalClass2ExpireDate.Value <= now))
+                {
+                    //minimum one medical has been expired
+                    gliderLicenceStateDetails.LicenceStateInformation = $"{gliderLicenceStateDetails.LicenceStateInformation}. Medical abgelaufen!";
+                    gliderLicenceStateDetails.LicenceStateKey = "NotOK";
                 }
 
                 dashboardDetails.GliderLicenceStateDetails = gliderLicenceStateDetails;
