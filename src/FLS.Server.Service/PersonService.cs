@@ -99,7 +99,7 @@ namespace FLS.Server.Service
         /// <returns></returns>
         public List<PilotPersonListItem> GetMotorPilotPersonListItems(bool onlyClubRelatedPilots)
         {
-            return GetPilotPersonListItemInternal(onlyClubRelatedPilots, person => person.HasMotorPilotLicence);
+            return GetPilotPersonListItemInternal(onlyClubRelatedPilots, person => person.HasMotorPilotLicence || person.HasTMGLicence);
         }
 
         /// <summary>
