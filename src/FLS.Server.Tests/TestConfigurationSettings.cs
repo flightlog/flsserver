@@ -15,6 +15,9 @@
         public string TestClubUserUsername { get; set; }
         public string TestClubUserPassword { get; set; }
 
+        public string TestWorkflowUsername { get; set; }
+        public string TestWorkflowPassword { get; set; }
+
         private TestConfigurationSettings()
         {
             TestEmailAddress = "test@glider-fls.ch";
@@ -24,6 +27,8 @@
             TestClubAdminPassword = "s";
             TestClubUserUsername = "testclubuser";
             TestClubUserPassword = "f";
+            TestWorkflowUsername = "workflow";
+            TestWorkflowPassword = "w";
         }
 
         public static TestConfigurationSettings Instance

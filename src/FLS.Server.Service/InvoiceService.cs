@@ -90,7 +90,7 @@ namespace FLS.Server.Service
                                       flights.Count, fromDateTime, toDateTime));
 
 
-                    var flightInvoiceDetails = _invoiceService.CreateFlightInvoiceDetails(flights);
+                    var flightInvoiceDetails = _invoiceService.CreateFlightInvoiceDetails(flights, clubId);
 
                     return flightInvoiceDetails;
                     

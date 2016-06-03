@@ -47,6 +47,12 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
             Login(TestConfigurationSettings.Instance.TestClubAdminUsername, TestConfigurationSettings.Instance.TestClubAdminPassword);
         }
 
+        protected void LoginAsWorkflow()
+        {
+            Logout();
+            Login(TestConfigurationSettings.Instance.TestWorkflowUsername, TestConfigurationSettings.Instance.TestWorkflowPassword);
+        }
+
         protected void LoginAsSystemAdmin()
         {
             Logout();

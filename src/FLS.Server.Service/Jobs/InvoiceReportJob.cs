@@ -98,7 +98,7 @@ namespace FLS.Server.Service.Jobs
                             _invoiceService.SetFlightAsInvoiced(flightInvoiceBooking);
                         }
 
-                        Logger.Info("Flights invoiced and exported to excel.");
+                        Logger.Info($"{invoices.Count} Flights invoiced and exported to excel.");
                     }
                     catch (Exception e)
                     {

@@ -34,7 +34,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules
 
             if (invoiceRecipient != null)
             {
-                var personDetails = _personService.GetPilotPersonDetails(invoiceRecipient.PersonId);
+                var personDetails = _personService.GetPilotPersonDetails(invoiceRecipient.PersonId, flightInvoiceDetails.ClubId);
 
                 if (personDetails != null)
                 {

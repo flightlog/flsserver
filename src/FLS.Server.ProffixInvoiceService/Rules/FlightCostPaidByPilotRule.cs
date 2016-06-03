@@ -28,7 +28,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules
 
         public override ProffixFlightInvoiceDetails Apply(ProffixFlightInvoiceDetails flightInvoiceDetails)
         {
-            var personDetails = _personService.GetPilotPersonDetails(_flight.Pilot.PersonId);
+            var personDetails = _personService.GetPilotPersonDetails(_flight.Pilot.PersonId, flightInvoiceDetails.ClubId);
 
             if (personDetails != null)
             {

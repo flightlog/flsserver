@@ -28,7 +28,7 @@ namespace FLS.Server.ProffixInvoiceService
             InvoiceMapping = invoiceMappingFactory.CreateInvoiceMapping();
         }
 
-        public List<FlightInvoiceDetails> CreateFlightInvoiceDetails(List<Flight> flightsToInvoice)
+        public List<FlightInvoiceDetails> CreateFlightInvoiceDetails(List<Flight> flightsToInvoice, Guid clubId)
         {
             var flightInvoiceDetailList = new List<FlightInvoiceDetails>();
 
@@ -45,7 +45,8 @@ namespace FLS.Server.ProffixInvoiceService
                         FlightId = flight.FlightId,
                         FlightDate = flight.FlightDate.Value,
                         AircraftImmatriculation = flight.AircraftImmatriculation,
-                        FlightInvoiceInfo = flight.FlightType.FlightTypeName
+                        FlightInvoiceInfo = flight.FlightType.FlightTypeName,
+                        ClubId = clubId
                     };
 
                     var recipientRulesEngine = new RecipientRulesEngine(flightInvoiceDetails, InvoiceMapping, flight, _personService);

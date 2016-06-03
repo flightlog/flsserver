@@ -32,7 +32,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules
         {
             if (_flight.Instructor != null && _flight.Instructor.PersonId.IsValid())
             {
-                var person = _personService.GetPilotPersonDetails(_flight.Instructor.PersonId);
+                var person = _personService.GetPilotPersonDetails(_flight.Instructor.PersonId, flightInvoiceDetails.ClubId);
 
                 if (person != null && person.ClubRelatedPersonDetails != null)
                 {

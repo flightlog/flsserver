@@ -12,6 +12,6 @@ namespace FLS.Server.Interfaces.Invoicing
 {
     public interface IInvoiceService
     {
-        List<FlightInvoiceDetails> CreateFlightInvoiceDetails(List<Flight> flightsToInvoice);
+        List<FlightInvoiceDetails> CreateFlightInvoiceDetails(List<Flight> flightsToInvoice, Guid clubId);
     }
 }

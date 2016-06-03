@@ -3,6 +3,7 @@ using FLS.Server.Service;
 using FLS.Server.TestInfrastructure;
 using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
+using Microsoft.Owin.Testing;
 using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -11,6 +12,11 @@ namespace FLS.Server.Tests.WebApiControllerTests
     [TestClass]
     public class WorkflowsControllerTest : BaseAuthenticatedTests
     {
+        protected override void PostSetup(TestServer server)
+        {
+            LoginAsWorkflow();
+        }
+        
         [TestMethod]
         [TestCategory("WebApi-Workflow-Jobs")]
         public void ExecuteWorkflowsWebApiTest()

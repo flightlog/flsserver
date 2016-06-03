@@ -359,10 +359,10 @@ PRINT 'INSERT System users'
 INSERT INTO Users (UserId, ClubId, Username, FriendlyName, PasswordHash, EmailConfirmed, SecurityStamp, PersonId, NotificationEmail, AccountState, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType)
 VALUES	(@insertUserId, @insertClubId, 's', 'Default System User', 'AG3i8UWZYzlQMoA7jS58oJCWKJUhe+MR6nInBRAHfFc2YtoL+eiOuTYZd46urgf+ZA==', 1, NEWID(), null, 'test@glider-fls.ch', 1,  SYSDATETIME(),		 @insertUserId, @recordState, @insertUserId, @ownershipType)
 
--- Password for User s is "Workflow@2015$$"
+-- Password for User workflow is "w"
 SET @workflowUserId = NEWID()
 INSERT INTO Users (UserId, ClubId, Username, FriendlyName, PasswordHash, EmailConfirmed, SecurityStamp, PersonId, NotificationEmail, AccountState, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType)
-VALUES	(@workflowUserId, @insertClubId, 'workflow', 'Workflow User', 'ADNpUPPVvaI8GpQIMN4QNa9QrOJr+Zk/P5zNFGkp0Vnviw9297cslKAoLrJaB+sDgw==', 1, NEWID(), null, 'test@glider-fls.ch', 1,  SYSDATETIME(),		 @insertUserId, @recordState, @insertUserId, @ownershipType)
+VALUES	(@workflowUserId, @insertClubId, 'workflow', 'Workflow User', 'APa6nEYE2Cd4IaqSyrVMJK4uEiuT8wf9QBubmgWGRs6myd2aPkrwLRyHSZfTM+OS0A==', 1, NEWID(), null, 'test@glider-fls.ch', 1,  SYSDATETIME(),		 @insertUserId, @recordState, @insertUserId, @ownershipType)
 
 
 
