@@ -1319,7 +1319,14 @@ namespace FLS.Server.Data.Mapping
 
             if (overwriteFlightId) entity.FlightId = details.FlightId;
             entity.FlightAircraftType = (int) FlightAircraftTypeValue.GliderFlight;
-            entity.CouponNumber = details.CouponNumber;
+
+            if (detailsRelatedFlightType == null ||
+                (detailsRelatedFlightType != null && detailsRelatedFlightType.IsCouponNumberRequired))
+            {
+                //only set coupon number when flight type requires coupon number
+                entity.CouponNumber = details.CouponNumber;
+            }
+
             entity.StartPosition = details.StartPosition;
 
             //converts the base flight stuff to the flight entity
