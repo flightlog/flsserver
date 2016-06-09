@@ -31,6 +31,8 @@ namespace FLS.Server.Data.DbEntities
 
         public int? NrOfLdgs { get; set; }
 
+        public int? NrOfStarts { get; set; }
+
 
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }

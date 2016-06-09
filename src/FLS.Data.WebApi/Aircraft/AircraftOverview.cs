@@ -35,6 +35,8 @@ namespace FLS.Data.WebApi.Aircraft
 
         public string AircraftOwnerName { get; set; }
 
+        public int EngineOperatorCounterPrecision { get; set; }
+
         public override Guid Id
         {
             get { return AircraftId; }

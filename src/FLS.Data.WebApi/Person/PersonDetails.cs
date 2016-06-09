@@ -62,6 +62,8 @@ namespace FLS.Data.WebApi.Person
 
         public bool ReceiveOwnedAircraftStatisticReports { get; set; }
 
+        public bool EnableAddress { get; set; }
+
         public ClubRelatedPersonDetails ClubRelatedPersonDetails { get; set; }
         
         public override Guid Id

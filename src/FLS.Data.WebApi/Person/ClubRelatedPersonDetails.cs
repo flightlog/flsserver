@@ -34,6 +34,8 @@ namespace FLS.Data.WebApi.Person
 
         public bool IsWinchOperator { get; set; }
 
+        public bool IsMotorInstructor { get; set; }
+
         public bool ReceiveFlightReports { get; set; }
 
         public bool ReceiveAircraftReservationNotifications { get; set; }

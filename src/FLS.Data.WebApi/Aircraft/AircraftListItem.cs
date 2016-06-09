@@ -26,5 +26,7 @@ namespace FLS.Data.WebApi.Aircraft
         public Nullable<int> NrOfSeats { get; set; }
 
         public int CurrentAircraftState { get; set; }
+
+        public int EngineOperatorCounterPrecision { get; set; }
     }
 }

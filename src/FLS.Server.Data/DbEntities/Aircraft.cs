@@ -77,6 +77,8 @@ namespace FLS.Server.Data.DbEntities
 
         public int FlightDurationPrecision { get; set; }
 
+        public int EngineOperatorCounterPrecision { get; set; }
+
         [StringLength(250)]
         public string SpotLink { get; set; }
 

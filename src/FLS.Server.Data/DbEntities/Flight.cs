@@ -76,6 +76,12 @@ namespace FLS.Server.Data.DbEntities
 
         public int? NrOfLdgs { get; set; }
 
+        public int? NrOfLdgsOnStartLocation { get; set; }
+
+        public bool NoStartTimeInformation { get; set; }
+
+        public bool NoLdgTimeInformation { get; set; }
+
         [Column("FlightState")]
         public int FlightStateId { get; set; }
 

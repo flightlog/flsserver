@@ -21,6 +21,8 @@ namespace FLS.Data.WebApi.Person
 
         public bool HasWinchOperatorLicence { get; set; }
 
+        public bool HasMotorInstructorLicence { get; set; }
+
         [StringLength(20)]
         public string LicenceNumber { get; set; }
         

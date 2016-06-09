@@ -97,6 +97,8 @@ namespace FLS.Server.Data.DbEntities
 
         public bool HasWinchOperatorLicence { get; set; }
 
+        public bool HasMotorInstructorLicence { get; set; }
+
         [StringLength(20)]
         public string LicenceNumber { get; set; }
         
@@ -118,6 +120,8 @@ namespace FLS.Server.Data.DbEntities
         public string SpotLink { get; set; }
 
         public bool ReceiveOwnedAircraftStatisticReports { get; set; }
+
+        public bool EnableAddress { get; set; }
 
         public bool IsFastEntryRecord { get; set; }
 

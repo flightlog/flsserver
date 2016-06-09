@@ -492,7 +492,10 @@ namespace FLS.Server.Service
                 }
                 else
                 {
-                    persons = context.Persons.Include(Constants.Country).Where(personTypeFilter).OrderBy(pe => pe.Lastname).ToList();
+                    persons = context.Persons.Include(Constants.Country)
+                        .Where(personTypeFilter)
+                        .Where(p => p.EnableAddress)
+                        .OrderBy(pe => pe.Lastname).ToList();
                 }
 
                 return persons;

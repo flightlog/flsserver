@@ -107,6 +107,7 @@ namespace FLS.Server.Data.Mapping
             listItem.IsWinchstartAllowed = entity.IsWinchstartAllowed;
             listItem.NrOfSeats = entity.NrOfSeats;
             listItem.HasEngine = entity.HasEngine;
+            listItem.EngineOperatorCounterPrecision = entity.EngineOperatorCounterPrecision;
 
             if (entity.CurrentAircraftAircraftState == null)
             {
@@ -140,6 +141,7 @@ namespace FLS.Server.Data.Mapping
             overview.ManufacturerName = entity.ManufacturerName;
             overview.NrOfSeats = entity.NrOfSeats;
             overview.HasEngine = entity.HasEngine;
+            overview.EngineOperatorCounterPrecision = entity.EngineOperatorCounterPrecision;
 
             if (entity.CurrentAircraftAircraftState == null)
             {
@@ -199,6 +201,7 @@ namespace FLS.Server.Data.Mapping
             details.AircraftOwnerClubId = entity.AircraftOwnerClubId;
             details.AircraftOwnerPersonId = entity.AircraftOwnerPersonId;
             details.FlightDurationPrecision = entity.FlightDurationPrecision;
+            details.EngineOperatorCounterPrecision = entity.EngineOperatorCounterPrecision;
             details.SpotLink = entity.SpotLink;
 
             if (entity.CurrentAircraftAircraftState != null)
@@ -254,6 +257,7 @@ namespace FLS.Server.Data.Mapping
             entity.AircraftOwnerClubId = details.AircraftOwnerClubId;
             entity.AircraftOwnerPersonId = details.AircraftOwnerPersonId;
             entity.FlightDurationPrecision = details.FlightDurationPrecision;
+            entity.EngineOperatorCounterPrecision = details.EngineOperatorCounterPrecision;
             entity.SpotLink = details.SpotLink;
 
             //Check if aircraft state has changes and update it if required
@@ -1051,6 +1055,8 @@ namespace FLS.Server.Data.Mapping
 
             motorFlightDetailsData.BlockStartDateTime = flight.BlockStartDateTime;
             motorFlightDetailsData.BlockEndDateTime = flight.BlockEndDateTime;
+            motorFlightDetailsData.NrOfLdgsOnStartLocation = flight.NrOfLdgsOnStartLocation;
+            motorFlightDetailsData.CouponNumber = flight.CouponNumber;
 
             flight.ToFlightDetailsData(motorFlightDetailsData);
 
@@ -1094,6 +1100,8 @@ namespace FLS.Server.Data.Mapping
             flightDetailsData.IsSoloFlight = flight.IsSoloFlight;
             flightDetailsData.OutboundRoute = flight.OutboundRoute;
             flightDetailsData.InboundRoute = flight.InboundRoute;
+            flightDetailsData.NoStartTimeInformation = flight.NoStartTimeInformation;
+            flightDetailsData.NoLdgTimeInformation = flight.NoLdgTimeInformation;
 
             flightDetailsData.FlightComment = flight.Comment;
 
@@ -1274,6 +1282,8 @@ namespace FLS.Server.Data.Mapping
             entity.StartLocationId = details.StartLocationId.GetNullableGuid();
             entity.NrOfLdgs = details.NrOfLdgs;
             entity.FlightCostBalanceTypeId = details.FlightCostBalanceType;
+            entity.NoStartTimeInformation = details.NoStartTimeInformation;
+            entity.NoLdgTimeInformation = details.NoLdgTimeInformation;
 
             entity.IsSoloFlight = details.IsSoloFlight;
 
@@ -1352,6 +1362,8 @@ namespace FLS.Server.Data.Mapping
             entity.BlockStartDateTime = details.BlockStartDateTime;
             entity.BlockEndDateTime = details.BlockEndDateTime;
             entity.NrOfPassengers = details.NrOfPassengers;
+            entity.CouponNumber = details.CouponNumber;
+            entity.NrOfLdgsOnStartLocation = details.NrOfLdgsOnStartLocation;
 
             //converts the base flight stuff to the flight entity
             ((FlightDetailsData) details).ToFlight(entity, AircraftStartType.MotorFlightStart, detailsRelatedAircraft, detailsRelatedFlightType);
@@ -2342,6 +2354,7 @@ namespace FLS.Server.Data.Mapping
             details.Region = entity.Region;
             details.ZipCode = entity.Zip;
             details.ReceiveOwnedAircraftStatisticReports = entity.ReceiveOwnedAircraftStatisticReports;
+            details.EnableAddress = entity.EnableAddress;
 
             var personClub = entity.PersonClubs.FirstOrDefault(e => e.ClubId == clubId);
 
@@ -2362,6 +2375,7 @@ namespace FLS.Server.Data.Mapping
                 details.ClubRelatedPersonDetails.IsPassenger = personClub.IsPassenger;
                 details.ClubRelatedPersonDetails.IsTowPilot = personClub.IsTowPilot;
                 details.ClubRelatedPersonDetails.IsWinchOperator = personClub.IsWinchOperator;
+                details.ClubRelatedPersonDetails.IsMotorInstructor = personClub.IsMotorInstructor;
                 details.ClubRelatedPersonDetails.ReceiveFlightReports = personClub.ReceiveFlightReports;
                 details.ClubRelatedPersonDetails.ReceiveAircraftReservationNotifications = personClub.ReceiveAircraftReservationNotifications;
                 details.ClubRelatedPersonDetails.ReceivePlanningDayRoleReminder = personClub.ReceivePlanningDayRoleReminder;
@@ -2394,6 +2408,7 @@ namespace FLS.Server.Data.Mapping
             details.HasGliderPassengerLicence = entity.HasGliderPAXLicence;
             details.HasTMGLicence = entity.HasTMGLicence;
             details.HasWinchOperatorLicence = entity.HasWinchOperatorLicence;
+            details.HasMotorInstructorLicence = entity.HasMotorInstructorLicence;
             details.LicenceNumber = entity.LicenceNumber;
             details.GliderInstructorLicenceExpireDate = entity.GliderInstructorLicenceExpireDate;
             details.MedicalClass1ExpireDate = entity.MedicalClass1ExpireDate;
@@ -2453,6 +2468,7 @@ namespace FLS.Server.Data.Mapping
             entity.Birthday = details.Birthday;
             entity.FaxNumber = details.FaxNumber;
             entity.ReceiveOwnedAircraftStatisticReports = details.ReceiveOwnedAircraftStatisticReports;
+            entity.EnableAddress = details.EnableAddress;
 
             if (details.ClubRelatedPersonDetails != null)
             {
@@ -2474,6 +2490,7 @@ namespace FLS.Server.Data.Mapping
                 personClub.IsPassenger = details.ClubRelatedPersonDetails.IsPassenger;
                 personClub.IsTowPilot = details.ClubRelatedPersonDetails.IsTowPilot;
                 personClub.IsWinchOperator = details.ClubRelatedPersonDetails.IsWinchOperator;
+                personClub.IsMotorInstructor = details.ClubRelatedPersonDetails.IsMotorInstructor;
                 personClub.ReceiveFlightReports = details.ClubRelatedPersonDetails.ReceiveFlightReports;
                 personClub.ReceiveAircraftReservationNotifications = details.ClubRelatedPersonDetails.ReceiveAircraftReservationNotifications;
                 personClub.ReceivePlanningDayRoleReminder = details.ClubRelatedPersonDetails.ReceivePlanningDayRoleReminder;
@@ -2554,6 +2571,7 @@ namespace FLS.Server.Data.Mapping
             entity.HasGliderTowingStartPermission = details.HasGliderTowingStartPermission;
             entity.HasGliderSelfStartPermission = details.HasGliderSelfStartPermission;
             entity.HasGliderWinchStartPermission = details.HasGliderWinchStartPermission;
+            entity.HasMotorInstructorLicence = details.HasMotorInstructorLicence;
 
             entity.SpotLink = details.SpotLink;
             entity.ReceiveOwnedAircraftStatisticReports = details.ReceiveOwnedAircraftStatisticReports;

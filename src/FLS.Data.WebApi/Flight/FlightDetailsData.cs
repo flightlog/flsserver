@@ -63,6 +63,10 @@ namespace FLS.Data.WebApi.Flight
 
         public string InboundRoute { get; set; }
 
+        public bool NoStartTimeInformation { get; set; }
+
+        public bool NoLdgTimeInformation { get; set; }
+
         public override Guid Id
         {
             get { return FlightId; }
