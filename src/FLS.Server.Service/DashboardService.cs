@@ -89,15 +89,26 @@ namespace FLS.Server.Service
                     }
 
                     //TODO: splitted flight time calculation
-                    statistic.MonthlyFlightHours[keyDate] += gliderFlight.Duration.TotalHours;
-                    statistic.MonthlyLandings[keyDate] += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
-                    statistic.TotalFlightHours += gliderFlight.Duration.TotalHours;
-                    statistic.TotalLandings += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
 
-                    if (gliderFlight.StartDateTime.Value >= now.AddMonths(-safetyDetails.StatisticBasedOnLastMonths))
+                    if (gliderFlight.IsSoloFlight &&
+                        gliderFlight.FlightCrews.Any(x => x.PersonId == CurrentAuthenticatedFLSUser.PersonId.Value
+                                                          &&
+                                                          (x.FlightCrewTypeId == (int) FlightCrewType.FlightInstructor)))
                     {
-                        safetyDetails.Starts += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
-                        safetyDetails.FlightTimeInHours += gliderFlight.Duration.TotalHours;
+                        //do not count solo flights of trainee or pilots in role of instructor
+                    }
+                    else
+                    { 
+                        statistic.MonthlyFlightHours[keyDate] += gliderFlight.Duration.TotalHours;
+                        statistic.MonthlyLandings[keyDate] += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
+                        statistic.TotalFlightHours += gliderFlight.Duration.TotalHours;
+                        statistic.TotalLandings += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
+
+                        if (gliderFlight.StartDateTime.Value >= now.AddMonths(-safetyDetails.StatisticBasedOnLastMonths))
+                        {
+                            safetyDetails.Starts += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
+                            safetyDetails.FlightTimeInHours += gliderFlight.Duration.TotalHours;
+                        }
                     }
 
                     if (gliderFlight.FlightType != null && gliderFlight.FlightType.IsCheckFlight 
@@ -109,8 +120,19 @@ namespace FLS.Server.Service
 
                     if (gliderFlight.StartDateTime.Value >= now.AddMonths(-gliderLicenceStateForecast.LastMonthsCount))
                     {
-                        gliderLicenceStateForecast.Landings += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
-                        gliderLicenceStateForecast.FlightTimeInHours += gliderFlight.Duration.TotalHours;
+                        if (gliderFlight.IsSoloFlight &&
+                            gliderFlight.FlightCrews.Any(x => x.PersonId == CurrentAuthenticatedFLSUser.PersonId.Value
+                                                              &&
+                                                              (x.FlightCrewTypeId ==
+                                                               (int) FlightCrewType.FlightInstructor)))
+                        {
+                            //do not count solo flights of trainee or pilots in role of instructor
+                        }
+                        else
+                        {
+                            gliderLicenceStateForecast.Landings += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
+                            gliderLicenceStateForecast.FlightTimeInHours += gliderFlight.Duration.TotalHours;
+                        }
 
                         if (gliderFlight.FlightType != null && gliderFlight.FlightType.IsCheckFlight
                         && gliderFlight.FlightCrews.Any(x => x.PersonId == CurrentAuthenticatedFLSUser.PersonId.Value
