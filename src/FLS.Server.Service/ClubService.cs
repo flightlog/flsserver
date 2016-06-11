@@ -126,6 +126,31 @@ namespace FLS.Server.Service
             using (var context = _dataAccessService.CreateDbContext())
             {
                 context.Clubs.Add(club);
+
+                var planningDayAssignmentType = new PlanningDayAssignmentType()
+                {
+                    AssignmentTypeName = "Segelflugleiter",
+                    Club = club,
+                    RequiredNrOfPlanningDayAssignments = 1
+                };
+                context.PlanningDayAssignmentTypes.Add(planningDayAssignmentType);
+
+                planningDayAssignmentType = new PlanningDayAssignmentType()
+                {
+                    AssignmentTypeName = "Schlepppilot",
+                    Club = club,
+                    RequiredNrOfPlanningDayAssignments = 1
+                };
+                context.PlanningDayAssignmentTypes.Add(planningDayAssignmentType);
+
+                planningDayAssignmentType = new PlanningDayAssignmentType()
+                {
+                    AssignmentTypeName = "Fluglehrer",
+                    Club = club,
+                    RequiredNrOfPlanningDayAssignments = 1
+                };
+                context.PlanningDayAssignmentTypes.Add(planningDayAssignmentType);
+
                 context.SaveChanges();
             }
         }
