@@ -20,9 +20,18 @@ namespace FLS.Server.Tests.WebApiControllerTests
     {
         [TestMethod]
         [TestCategory("WebApi")]
-        public void GetPersonOverviewWebApiTest()
+        public void GetPersonListItemsWebApiTest()
         {
             var response = GetAsync<IEnumerable<PilotPersonListItem>>("/api/v1/persons").Result;
+
+            Assert.IsTrue(response.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("WebApi")]
+        public void GetPersonOverviewWebApiTest()
+        {
+            var response = GetAsync<IEnumerable<PilotPersonOverview>>("/api/v1/persons/overview/true").Result;
 
             Assert.IsTrue(response.Any());
         }

@@ -22,6 +22,8 @@ namespace FLS.Data.WebApi.Person
 
         public string MobilePhoneNumber { get; set; }
 
+        public string MemberStateName { get; set; }
+
         public override Guid Id
         {
             get { return PersonId; }

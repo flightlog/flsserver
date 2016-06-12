@@ -132,8 +132,7 @@ namespace FLS.Server.Service
         /// <returns></returns>
         public List<PassengerListItem> GetPassengerListItems(bool onlyClubRelatedPassengers)
         {
-            return GetPassengerListItemInternal(onlyClubRelatedPassengers, 
-                person => person.HasGliderInstructorLicence == false
+            var persons = GetPersons(onlyClubRelatedPassengers, person => person.HasGliderInstructorLicence == false
                 && person.HasGliderPAXLicence == false
                 && person.HasGliderPilotLicence == false
                 && person.HasGliderTraineeLicence == false
@@ -141,6 +140,7 @@ namespace FLS.Server.Service
                 && person.HasTMGLicence == false
                 && person.HasTowPilotLicence == false
                 && person.HasWinchOperatorLicence == false);
+            return persons.Select(p => p.ToPassengerListItem()).ToList();
         }
 
         /// <summary>
@@ -216,8 +216,7 @@ namespace FLS.Server.Service
 
         public List<PassengerOverview> GetPassengerOverviews(bool onlyClubRelatedPassengers)
         {
-            return GetPassengerOverviewsInternal(onlyClubRelatedPassengers,
-                person => person.HasGliderInstructorLicence == false
+            var persons = GetPersons(onlyClubRelatedPassengers, person => person.HasGliderInstructorLicence == false
                 && person.HasGliderPAXLicence == false
                 && person.HasGliderPilotLicence == false
                 && person.HasGliderTraineeLicence == false
@@ -225,6 +224,10 @@ namespace FLS.Server.Service
                 && person.HasTMGLicence == false
                 && person.HasTowPilotLicence == false
                 && person.HasWinchOperatorLicence == false);
+
+            var personOverviewList = persons.Select(p => p.ToPassengerOverview(CurrentAuthenticatedFLSUserClubId)).ToList();
+            SetPersonOverviewSecurity(personOverviewList);
+            return personOverviewList.ToList();
         }
 
         private List<PilotPersonListItem> GetPilotPersonListItemInternal(bool onlyClubPersons,
@@ -233,50 +236,19 @@ namespace FLS.Server.Service
             var persons = GetPersons(onlyClubPersons, personTypeFilter);
             return PreparePersonListItems(persons);
         }
-
-        private List<PassengerListItem> GetPassengerListItemInternal(bool onlyClubPersons,
-                                                                      Expression<Func<Person, bool>> personTypeFilter)
-        {
-            var persons = GetPersons(onlyClubPersons, personTypeFilter);
-            return PreparePassengerListItems(persons);
-        }
-
+        
         private List<PilotPersonOverview> GetPersonOverviewsInternal(bool onlyClubPersons,
                                                                       Expression<Func<Person, bool>> personTypeFilter)
         {
             var persons = GetPersons(onlyClubPersons, personTypeFilter);
-            return PreparePersonOverviews(persons);
+            var personOverviewList = persons.Select(p => p.ToPilotPersonOverview(CurrentAuthenticatedFLSUserClubId)).ToList();
+            SetPersonOverviewSecurity(personOverviewList);
+            return personOverviewList.ToList();
         }
-
-        private List<PassengerOverview> GetPassengerOverviewsInternal(bool onlyClubPersons,
-                                                                      Expression<Func<Person, bool>> personTypeFilter)
-        {
-            var persons = GetPersons(onlyClubPersons, personTypeFilter);
-            return PreparePassengerOverviews(persons);
-        }
-
+        
         private List<PilotPersonListItem> PreparePersonListItems(List<Person> persons)
         {
             return persons.Select(p => p.ToPilotPersonListItem()).ToList();
-        }
-
-        private List<PassengerListItem> PreparePassengerListItems(List<Person> persons)
-        {
-            return persons.Select(p => p.ToPassengerListItem()).ToList(); 
-        }
-
-        private List<PilotPersonOverview> PreparePersonOverviews(List<Person> persons)
-        {
-            var personOverviewList = persons.Select(p => p.ToPilotPersonOverview()).ToList(); 
-            SetPersonOverviewSecurity(personOverviewList);
-            return personOverviewList.ToList();
-        }
-
-        private List<PassengerOverview> PreparePassengerOverviews(List<Person> persons)
-        {
-            var personOverviewList = persons.Select(p => p.ToPassengerOverview()).ToList(); 
-            SetPersonOverviewSecurity(personOverviewList);
-            return personOverviewList.ToList();
         }
         
         internal PilotPersonDetails GetPilotPersonDetailsInternal(Guid personId, Guid clubId, bool controlAccess = true)
@@ -485,6 +457,7 @@ namespace FLS.Server.Service
                 if (onlyClubPersons)
                 {
                     persons = context.Persons.Include(Constants.Country).Include(Constants.PersonClubs)
+                        .Include($"{Constants.PersonClubs}.MemberState")
                         .Where(p => p.PersonClubs.Any(ppc => ppc.ClubId == CurrentAuthenticatedFLSUser.ClubId))
                         .Where(personTypeFilter)
                         .OrderBy(pe => pe.Lastname)

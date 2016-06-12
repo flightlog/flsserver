@@ -122,47 +122,47 @@ VALUES	(@clubFlightOperatorId, @flightOperatorRoleId)
 
 
 
--- Persons
-PRINT 'INSERT Persons'
-SET @personId = NEWID()
-INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
-VALUES (@personId, 'Rieterman', 'Conny', 'TowPilot', null, 'Köchlistrasse 1', null,  '8004', 'Zürich', null, @countryId, '044 333 88 88', '079 999 88 77', '044 666 55 44', null, 'hans@muster.ch', null, null, 1, 1, 0, 0, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
-INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator) VALUES (@personId, @insertClubId, '103000', 1, 1, 0, 0, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0)
-SET @personId = NEWID()
-INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
-VALUES (@personId, 'Stahel', 'Morli', 'GliderPilot', null, 'Köchlistrasse 1', null,  '1234', 'Uster', null, @countryId, '044 333 88 22', '079 999 88 44', '044 666 55 44', null, 'hans2@muster.ch', null, null, 0, 0, 0, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
-INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator) VALUES (@personId, @insertClubId, '222323', 0, 0, 0, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0)
-SET @personId = NEWID()
-INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
-VALUES (@personId, 'Kellner', 'Hansli', 'Teacher', null, 'Köchlistrasse 1', null,  '9544', 'Bichelsee', null, @countryId, '044 333 44 88', '079 999 88 33', '044 666 55 44', null, 'hans3@muster.ch', null, null, 0, 0, 1, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
-INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, MemberKey, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator) VALUES (@personId, @insertClubId, '536594', '536594', 0, 0, 1, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0)
-SET @personId = NEWID()
-INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
-VALUES (@personId, 'Bonzli', 'Lenni', 'Trainee', null, 'Köchlistrasse 1', null,  '3000', 'Bern', null, @countryId, '044 333 33 33', '+41 79 999 88 22', '044 666 55 44', null, 'hans4@muster.ch', null, null, 0, 0, 0, 0, 1, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
-INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator) VALUES (@personId, @insertClubId, '205207', 0, 0, 0, 0, 1, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0)
-SET @personId = NEWID()
-INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
-VALUES (@personId, 'Egli', 'Elias', 'extern', null, 'Köchlistrasse 1', null,  '2333', 'Locarno', null, @countryId, '044 333 33 44', '079 999 88 11', '044 666 55 44', null, 'hans5@muster.ch', null, null, 1, 1, 1, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
-
-
 PRINT 'INSERT MemberStates'
 SET @memberStateId = NEWID()
 INSERT INTO MemberStates (MemberStateId, ClubId, MemberStateName, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType)
-VALUES	(@memberStateId, @insertClubId, 'Aktiv',	 SYSDATETIME(),		 @insertUserId, @recordState, @ownerId, @OwnershipType)
-SET @memberStateId = NEWID()
-INSERT INTO MemberStates (MemberStateId, ClubId, MemberStateName, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType)
 VALUES	(@memberStateId, @insertClubId, 'Passiv',	 SYSDATETIME(),		 @insertUserId, @recordState, @ownerId, @OwnershipType)
-SET @memberStateId = NEWID()
+DECLARE @traineeMemberStateId as uniqueidentifier
+SET @traineeMemberStateId = NEWID()
 INSERT INTO MemberStates (MemberStateId, ClubId, MemberStateName, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType)
-VALUES	(@memberStateId, @insertClubId, 'Schüler',	 SYSDATETIME(),		 @insertUserId, @recordState, @ownerId, @OwnershipType)
+VALUES	(@traineeMemberStateId, @insertClubId, 'Schüler',	 SYSDATETIME(),		 @insertUserId, @recordState, @ownerId, @OwnershipType)
 SET @memberStateId = NEWID()
 INSERT INTO MemberStates (MemberStateId, ClubId, MemberStateName, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType)
 VALUES	(@memberStateId, @insertClubId, 'Prov. Aktiv',	 SYSDATETIME(),		 @insertUserId, @recordState, @ownerId, @OwnershipType)
 SET @memberStateId = NEWID()
 INSERT INTO MemberStates (MemberStateId, ClubId, MemberStateName, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType)
 VALUES	(@memberStateId, @insertClubId, 'Ausgetreten',	 SYSDATETIME(),		 @insertUserId, @recordState, @ownerId, @OwnershipType)
+SET @memberStateId = NEWID()
+INSERT INTO MemberStates (MemberStateId, ClubId, MemberStateName, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType)
+VALUES	(@memberStateId, @insertClubId, 'Aktiv',	 SYSDATETIME(),		 @insertUserId, @recordState, @ownerId, @OwnershipType)
 
 
+
+-- Persons
+PRINT 'INSERT Persons'
+SET @personId = NEWID()
+INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
+VALUES (@personId, 'Rieterman', 'Conny', 'TowPilot', null, 'Köchlistrasse 1', null,  '8004', 'Zürich', null, @countryId, '044 333 88 88', '079 999 88 77', '044 666 55 44', null, 'hans@muster.ch', null, null, 1, 1, 0, 0, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
+INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator, MemberStateId) VALUES (@personId, @insertClubId, '103000', 1, 1, 0, 0, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0, @memberStateId)
+SET @personId = NEWID()
+INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
+VALUES (@personId, 'Stahel', 'Morli', 'GliderPilot', null, 'Köchlistrasse 1', null,  '1234', 'Uster', null, @countryId, '044 333 88 22', '079 999 88 44', '044 666 55 44', null, 'hans2@muster.ch', null, null, 0, 0, 0, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
+INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator, MemberStateId) VALUES (@personId, @insertClubId, '222323', 0, 0, 0, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0, @memberStateId)
+SET @personId = NEWID()
+INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
+VALUES (@personId, 'Kellner', 'Hansli', 'Teacher', null, 'Köchlistrasse 1', null,  '9544', 'Bichelsee', null, @countryId, '044 333 44 88', '079 999 88 33', '044 666 55 44', null, 'hans3@muster.ch', null, null, 0, 0, 1, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
+INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, MemberKey, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator, MemberStateId) VALUES (@personId, @insertClubId, '536594', '536594', 0, 0, 1, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0, @memberStateId)
+SET @personId = NEWID()
+INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
+VALUES (@personId, 'Bonzli', 'Lenni', 'Trainee', null, 'Köchlistrasse 1', null,  '3000', 'Bern', null, @countryId, '044 333 33 33', '+41 79 999 88 22', '044 666 55 44', null, 'hans4@muster.ch', null, null, 0, 0, 0, 0, 1, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
+INSERT INTO PersonClub (PersonId, ClubId, MemberNumber, IsMotorPilot, IsTowPilot, IsGliderInstructor, IsGliderPilot, IsGliderTrainee, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsPassenger, IsWinchOperator, MemberStateId) VALUES (@personId, @insertClubId, '205207', 0, 0, 0, 0, 1, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0, 0, @traineeMemberStateId)
+SET @personId = NEWID()
+INSERT INTO Persons (PersonId, Lastname, Firstname, Midname, CompanyName, AddressLine1, AddressLine2, Zip, City, Region, CountryId, PrivatePhone, MobilePhone, BusinessPhone, FaxNumber, EmailPrivate, EmailBusiness, Birthday, HasMotorPilotLicence, HasTowPilotLicence, HasGliderInstructorLicence, HasGliderPilotLicence, HasGliderTraineeLicence, CreatedOn, CreatedByUserId, RecordState, OwnerId, OwnershipType, IsFastEntryRecord) 
+VALUES (@personId, 'Egli', 'Elias', 'extern', null, 'Köchlistrasse 1', null,  '2333', 'Locarno', null, @countryId, '044 333 33 44', '079 999 88 11', '044 666 55 44', null, 'hans5@muster.ch', null, null, 1, 1, 1, 1, 0, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
 
 
 

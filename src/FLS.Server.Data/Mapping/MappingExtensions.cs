@@ -2259,7 +2259,7 @@ namespace FLS.Server.Data.Mapping
             return listItem;
         }
 
-        public static PersonOverview ToPersonOverview(this Person entity, PersonOverview overview = null)
+        public static PersonOverview ToPersonOverview(this Person entity, Guid clubId, PersonOverview overview = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -2284,10 +2284,20 @@ namespace FLS.Server.Data.Mapping
             overview.MobilePhoneNumber = entity.MobilePhone;
             overview.PrivateEmail = entity.EmailPrivate;
 
+            var personClub = entity.PersonClubs.FirstOrDefault(e => e.ClubId == clubId);
+
+            if (personClub != null)
+            {
+                if (personClub.MemberState != null)
+                {
+                    overview.MemberStateName = personClub.MemberState.MemberStateName;
+                }
+            }
+
             return overview;
         }
 
-        public static PilotPersonOverview ToPilotPersonOverview(this Person entity, PilotPersonOverview overview = null)
+        public static PilotPersonOverview ToPilotPersonOverview(this Person entity, Guid clubId, PilotPersonOverview overview = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -2296,7 +2306,7 @@ namespace FLS.Server.Data.Mapping
                 overview = new PilotPersonOverview();
             }
 
-            entity.ToPersonOverview(overview);
+            entity.ToPersonOverview(clubId, overview);
 
             overview.HasGliderInstructorLicence = entity.HasGliderInstructorLicence;
             overview.HasGliderPassengerLicence = entity.HasGliderPAXLicence;
@@ -2311,7 +2321,7 @@ namespace FLS.Server.Data.Mapping
             return overview;
         }
 
-        public static PassengerOverview ToPassengerOverview(this Person entity, PassengerOverview overview = null)
+        public static PassengerOverview ToPassengerOverview(this Person entity, Guid clubId, PassengerOverview overview = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -2320,7 +2330,7 @@ namespace FLS.Server.Data.Mapping
                 overview = new PassengerOverview();
             }
 
-            entity.ToPersonOverview(overview);
+            entity.ToPersonOverview(clubId, overview);
 
             return overview;
         }
