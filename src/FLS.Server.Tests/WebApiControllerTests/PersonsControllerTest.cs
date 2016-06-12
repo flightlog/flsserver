@@ -67,6 +67,23 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
         [TestMethod]
         [TestCategory("WebApi")]
+        public void GetPilotPersonFullDetailsWebApiTest()
+        {
+            InsertPersonFullDetailsWebApi();
+
+            var response = GetAsync<IEnumerable<PilotPersonListItem>>("/api/v1/persons").Result;
+
+            Assert.IsTrue(response.Any());
+
+            var id = response.First().PersonId;
+
+            var result = GetAsync<PilotPersonFullDetails>("/api/v1/persons/fulldetails/" + id).Result;
+
+            Assert.AreEqual(id, result.Id);
+        }
+
+        [TestMethod]
+        [TestCategory("WebApi")]
         public void InsertPersonFullDetailsWebApiTest()
         {
             InsertPersonFullDetailsWebApi();

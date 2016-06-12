@@ -11,6 +11,25 @@ namespace FLS.Data.WebApi.Person
         {
             PersonCategoryIds = new List<Guid>();    
         }
+
+        public ClubRelatedPersonDetails(ClubRelatedPersonDetails clubRelatedPersonDetails)
+        {
+            PersonCategoryIds = clubRelatedPersonDetails.PersonCategoryIds;
+            MemberKey = clubRelatedPersonDetails.MemberKey;
+            MemberStateId = clubRelatedPersonDetails.MemberStateId;
+            MemberNumber = clubRelatedPersonDetails.MemberNumber;
+            IsGliderTrainee = clubRelatedPersonDetails.IsGliderTrainee;
+            IsGliderInstructor = clubRelatedPersonDetails.IsGliderInstructor;
+            IsMotorInstructor = clubRelatedPersonDetails.IsMotorInstructor;
+            IsGliderPilot = clubRelatedPersonDetails.IsGliderPilot;
+            IsPassenger = clubRelatedPersonDetails.IsPassenger;
+            IsMotorPilot = clubRelatedPersonDetails.IsMotorPilot;
+            IsTowPilot = clubRelatedPersonDetails.IsTowPilot;
+            IsWinchOperator = clubRelatedPersonDetails.IsWinchOperator;
+            ReceiveAircraftReservationNotifications = clubRelatedPersonDetails.ReceiveAircraftReservationNotifications;
+            ReceiveFlightReports = clubRelatedPersonDetails.ReceiveFlightReports;
+            ReceivePlanningDayRoleReminder = clubRelatedPersonDetails.ReceivePlanningDayRoleReminder;
+        }
         
         public List<Guid> PersonCategoryIds { get; set; }
 

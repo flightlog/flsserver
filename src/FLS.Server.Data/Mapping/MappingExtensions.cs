@@ -2645,6 +2645,30 @@ namespace FLS.Server.Data.Mapping
 
             entity.MapMetaData(details);
 
+            //handle metadata for club related person details
+            if (details.ClubRelatedPersonDetails != null)
+            {
+                var personClub = entity.PersonClubs.FirstOrDefault(e => e.ClubId == clubId);
+
+                if (personClub != null)
+                {
+                    //create metadata based club related person full details
+                    var fullDetails = new ClubRelatedPersonFullDetails(details.ClubRelatedPersonDetails);
+
+                    fullDetails.CreatedOn = personClub.CreatedOn.SetAsUtc();
+                    fullDetails.CreatedByUserId = personClub.CreatedByUserId;
+                    fullDetails.DeletedOn = personClub.DeletedOn.SetAsUtc();
+                    fullDetails.DeletedByUserId = personClub.DeletedByUserId;
+                    fullDetails.ModifiedOn = personClub.ModifiedOn.SetAsUtc();
+                    fullDetails.ModifiedByUserId = personClub.ModifiedByUserId;
+                    fullDetails.OwnerId = personClub.OwnerId;
+                    fullDetails.OwnershipType = personClub.OwnershipType;
+                    fullDetails.RecordState = personClub.RecordState;
+
+                    details.ClubRelatedPersonDetails = fullDetails;
+                }
+            }
+
             return details;
         }
 

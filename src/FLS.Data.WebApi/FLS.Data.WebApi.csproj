@@ -129,6 +129,7 @@
     <Compile Include="Location\LocationOverview.cs" />
     <Compile Include="Location\LocationType.cs" />
     <Compile Include="Location\LocationTypeListItem.cs" />
+    <Compile Include="Person\ClubRelatedPersonFullDetails.cs" />
     <Compile Include="Person\ClubRelatedPersonDetails.cs" />
     <Compile Include="Person\PersonDetails.cs" />
     <Compile Include="Person\PersonOverview.cs" />
