@@ -23,13 +23,17 @@ namespace FLS.Server.Data.DbEntities
 
         public int? TotalSelfStarts { get; set; }
 
-        public Decimal? FlightOperatingCounterInMinutes { get; set; }
+        public long? FlightOperatingCounter { get; set; }
 
-        public Decimal? EngineOperatingCounterInMinutes { get; set; }
+        public long? EngineOperatingCounter { get; set; }
 
-        public Decimal? NextMaintenanceAtFlightOperatingCounterInMinutes { get; set; }
+        public long? NextMaintenanceAtFlightOperatingCounter { get; set; }
 
-        public Decimal? NextMaintenanceAtEngineOperatingCounterInMinutes { get; set; }
+        public long? NextMaintenanceAtEngineOperatingCounter { get; set; }
+
+        public int? FlightOperatingCounterUnitTypeId { get; set; }
+
+        public int? EngineOperatingCounterUnitTypeId { get; set; }
 
 
         [Column(TypeName = "datetime2")]
@@ -62,6 +66,10 @@ namespace FLS.Server.Data.DbEntities
         public bool IsDeleted { get; set; }
 
         public virtual Aircraft Aircraft { get; set; }
+
+        public virtual CounterUnitType FlightOperatingCounterUnitType { get; set; }
+
+        public virtual CounterUnitType EngineOperatingCounterUnitType { get; set; }
 
         public override string ToString()
         {

@@ -61,9 +61,9 @@ namespace FLS.Data.WebApi.Aircraft
 
         public Nullable<int> MTOM { get; set; }
 
-        public int FlightDurationPrecision { get; set; }
+        public int? FlightOperatingCounterUnitTypeId { get; set; }
 
-        public int EngineOperatorCounterPrecision { get; set; }
+        public int? EngineOperatingCounterUnitTypeId { get; set; }
 
         [StringLength(250)]
         public string SpotLink { get; set; }

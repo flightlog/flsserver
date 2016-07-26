@@ -19,13 +19,17 @@ namespace FLS.Data.WebApi.Aircraft
 
         public int? TotalSelfStarts { get; set; }
 
-        public Decimal? FlightOperatingCounterInMinutes { get; set; }
+        public long? FlightOperatingCounter { get; set; }
 
-        public Decimal? EngineOperatingCounterInMinutes { get; set; }
+        public long? EngineOperatingCounter { get; set; }
 
-        public Decimal? NextMaintenanceAtFlightOperatingCounterInMinutes { get; set; }
+        public long? NextMaintenanceAtFlightOperatingCounter { get; set; }
 
-        public Decimal? NextMaintenanceAtEngineOperatingCounterInMinutes { get; set; }
+        public long? NextMaintenanceAtEngineOperatingCounter { get; set; }
+
+        public int? FlightOperatingCounterUnitTypeId { get; set; }
+
+        public int? EngineOperatingCounterUnitTypeId { get; set; }
 
         public override Guid Id
         {

@@ -75,9 +75,9 @@ namespace FLS.Server.Data.DbEntities
 
         public int? MTOM { get; set; }
 
-        public int FlightDurationPrecision { get; set; }
+        public int? FlightOperatingCounterUnitTypeId { get; set; }
 
-        public int EngineOperatorCounterPrecision { get; set; }
+        public int? EngineOperatingCounterUnitTypeId { get; set; }
 
         [StringLength(250)]
         public string SpotLink { get; set; }
@@ -120,6 +120,10 @@ namespace FLS.Server.Data.DbEntities
         public virtual ICollection<AircraftReservation> AircraftReservations { get; set; }
 
         public virtual ICollection<AircraftOperatingCounter> AircraftOperatingCounters { get; set; }
+
+        public virtual CounterUnitType FlightOperatingCounterUnitType { get; set; }
+
+        public virtual CounterUnitType EngineOperatingCounterUnitType { get; set; }
 
         /// <summary>
         /// actual status is newest status.

@@ -283,10 +283,10 @@ namespace FLS.Server.Service.Exporting
 
                     worksheet.Cells[rowNumber, 12].Value = flightDetails.AdditionalFlightCrewMembers;
 
-                    if (flightDetails.EngineTime.HasValue)
-                    {
-                        worksheet.Cells[rowNumber, 13].Value = flightDetails.EngineTime.Value.TimeOfDay;
-                    }
+                    //if (flightDetails.EngineTime.HasValue)
+                    //{
+                    //    worksheet.Cells[rowNumber, 13].Value = flightDetails.EngineTime.Value.TimeOfDay;
+                    //}
 
                     rowNumber++;
 

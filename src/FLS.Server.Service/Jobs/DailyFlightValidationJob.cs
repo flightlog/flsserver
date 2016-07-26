@@ -46,72 +46,13 @@ namespace FLS.Server.Service.Jobs
 
                 foreach (var club in clubs)
                 {
-                    ProcessFlightValidation(club.ClubId);
-                    ProcessFlightsForLocking(club.ClubId);
+                    _flightService.ValidateFlights(club.ClubId);
+                    _flightService.LockFlights(club.ClubId);
                 }
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, $"Error while executing daily workflow job. Error: {ex.Message}");
-            }
-        }
-        
-        private void ProcessFlightValidation(Guid clubId)
-        {
-            try
-            {
-                var todaysFlights = _flightService.GetFlightsForValidating(clubId);
-                
-                using (var context = _dataAccessService.CreateDbContext())
-                {
-                    foreach (var flight in todaysFlights)
-                    {
-                        context.Flights.Attach(flight);
-
-                        flight.ValidateFlight();
-                        flight.DoNotUpdateMetaData = true;
-
-                        Logger.Info(
-                            string.Format(
-                                "The currently validated flight {0} has now the following Flight-State: {1} ({2})",
-                                flight,
-                                flight.FlightState, ((FLS.Data.WebApi.Flight.FlightState)flight.FlightStateId).ToFlightStateName()));
-                    }
-
-                    context.SaveChanges();
-                }
-
-                Logger.Info(string.Format("Saved the validated flights of today to database."));
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"Error while processing today flights for validating. Error: {ex.Message}");
-            }
-        }
-
-        private void ProcessFlightsForLocking(Guid clubId)
-        {
-            try
-            {
-                var flights = _flightService.GetValidFlightsForLocking(clubId);
-
-                using (var context = _dataAccessService.CreateDbContext())
-                {
-                    foreach (var flight in flights)
-                    {
-                        context.Flights.Attach(flight);
-
-                        flight.FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Locked;
-
-                        Logger.Info(string.Format("The valid flight {0} has now been locked.", flight));
-                    }
-
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"Error while processing flights for locking. Error: {ex.Message}");
             }
         }
     }

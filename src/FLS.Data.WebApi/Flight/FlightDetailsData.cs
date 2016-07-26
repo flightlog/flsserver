@@ -24,18 +24,18 @@ namespace FLS.Data.WebApi.Flight
         public Nullable<Guid> ObserverPersonId { get; set; }
 
         public Nullable<Guid> InvoiceRecipientPersonId { get; set; }
-
-        public Nullable<DateTime> EngineTime { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the engine operating counter before start engine (units see EngineOperatingCounterUnitTypeId)
+        /// </summary>
+        public Nullable<long> EngineStartOperatingCounter { get; set; }
 
         /// <summary>
-        /// Gets or sets the engine operating counter before start engine in minutes and decimal in seconds as divide of 60
+        /// Gets or sets the engine operating counter after engine shutdown (units see EngineOperatingCounterUnitTypeId)
         /// </summary>
-        public Nullable<Decimal> EngineStartOperatingCounterInMinutes { get; set; }
+        public Nullable<long> EngineEndOperatingCounter { get; set; }
 
-        /// <summary>
-        /// Gets or sets the engine operating counter after engine shutdown in minutes and decimal in seconds as divide of 60
-        /// </summary>
-        public Nullable<Decimal> EngineEndOperatingCounterInMinutes { get; set; }
+        public Nullable<int> EngineOperatingCounterUnitTypeId { get; set; }
 
         public string FlightComment { get; set; }
 

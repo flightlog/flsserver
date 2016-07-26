@@ -29,19 +29,17 @@ namespace FLS.Server.Data.DbEntities
         [Column(TypeName = "datetime2")]
         public DateTime? LdgDateTime { get; set; }
 
-        [Column(TypeName = "datetime2")]
-        public DateTime? EngineTime { get; set; }
+        /// <summary>
+        /// Gets or sets the engine operating counter before start engine (units see EngineOperatingCounterUnitTypeId)
+        /// </summary>
+        public Nullable<long> EngineStartOperatingCounter { get; set; }
 
         /// <summary>
-        /// Gets or sets the engine operating counter before start engine in minutes and decimal in seconds as divide of 60
+        /// Gets or sets the engine operating counter after engine shutdown (units see EngineOperatingCounterUnitTypeId)
         /// </summary>
-        public Nullable<Decimal> EngineStartOperatingCounterInMinutes { get; set; }
+        public Nullable<long> EngineEndOperatingCounter { get; set; }
 
-        /// <summary>
-        /// Gets or sets the engine operating counter after engine shutdown in minutes and decimal in seconds as divide of 60
-        /// </summary>
-        public Nullable<Decimal> EngineEndOperatingCounterInMinutes { get; set; }
-
+        public Nullable<int> EngineOperatingCounterUnitTypeId { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime? BlockStartDateTime { get; set; }
@@ -785,17 +783,11 @@ namespace FLS.Server.Data.DbEntities
             }
             else if (StartTypeId.Value == (int)AircraftStartType.SelfStart)
             {
-                //if (EngineTime.HasValue == false)
-                //{
-                //    return false;
-                //}
+                
             }
             else if (StartTypeId.Value == (int)AircraftStartType.MotorFlightStart)
             {
-                //if (EngineTime.HasValue == false)
-                //{
-                //    FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Invalid;
-                //}
+                
             }
 
             FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Valid;

@@ -11,9 +11,11 @@ namespace FLS.Data.WebApi.Aircraft
         public DateTime? AtDateTime { get; set; }
 
         /// <summary>
-        /// Gets the engine operating counter after engine shutdown in minutes and decimal in seconds as divide of 60
+        /// Gets or sets the engine operating counter after engine shutdown (units see EngineOperatingCounterUnitTypeId)
         /// </summary>
-        public Decimal? EngineOperatingCounterInMinutes { get; set; }
+        public long? EngineOperatingCounter { get; set; }
+
+        public int? EngineOperatingCounterUnitTypeId { get; set; }
 
         public bool AircraftHasNoEngine { get; set; }
     }

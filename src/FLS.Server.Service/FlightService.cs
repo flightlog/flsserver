@@ -52,6 +52,7 @@ namespace FLS.Server.Service
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var aircraft = context.Aircrafts.FirstOrDefault(a => a.AircraftId == request.AircraftId);
+                var counterUnitTypes = context.CounterUnitTypes.ToList();
 
                 if (aircraft == null)
                 {
@@ -62,6 +63,20 @@ namespace FLS.Server.Service
                 {
                     result.AircraftHasNoEngine = true;
                     return result;
+                }
+
+                if (aircraft.EngineOperatingCounterUnitTypeId.HasValue)
+                {
+                    result.EngineOperatingCounterUnitTypeId = aircraft.EngineOperatingCounterUnitTypeId;
+                }
+                else
+                {
+                    var counterUnitType =
+                        counterUnitTypes.FirstOrDefault(c => c.CounterUnitTypeKeyName.ToLower() == "min");
+
+                    counterUnitType.NotNull("CounterUnitType");
+
+                    result.EngineOperatingCounterUnitTypeId = counterUnitType.CounterUnitTypeId;
                 }
 
                 var aircraftOperatingCounter = context.AircraftOperatingCounters
@@ -77,8 +92,8 @@ namespace FLS.Server.Service
                     {
                         AtDateTime = DateTime.MinValue,
                         AircraftId = request.AircraftId,
-                        EngineOperatingCounterInMinutes = 0,
-                        FlightOperatingCounterInMinutes = 0
+                        EngineOperatingCounter = 0,
+                        FlightOperatingCounter = 0
                     };
                 }
                 else
@@ -92,37 +107,35 @@ namespace FLS.Server.Service
                                 && f.StartDateTime >= aircraftOperatingCounter.AtDateTime
                                 && (f.LdgDateTime.HasValue == false || f.LdgDateTime <= until)).ToList();
 
-                decimal operatingCounterValue = aircraftOperatingCounter.EngineOperatingCounterInMinutes.GetValueOrDefault(0);
+                long operatingCounterValue = aircraftOperatingCounter.EngineOperatingCounter.GetValueOrDefault(0);
 
                 foreach (var flight in flights.OrderBy(o => o.LdgDateTime))
                 {
-                    if (flight.EngineEndOperatingCounterInMinutes.HasValue)
+                    if (flight.EngineEndOperatingCounter.HasValue)
                     {
-                        operatingCounterValue = flight.EngineEndOperatingCounterInMinutes.Value;
+                        operatingCounterValue = flight.EngineEndOperatingCounter.Value;
                         foundAnyOperatingCounterValue = true;
                         continue;
                     }
 
-                    if (flight.EngineStartOperatingCounterInMinutes.HasValue)
+                    if (flight.EngineStartOperatingCounter.HasValue)
                     {
-                        operatingCounterValue = flight.EngineStartOperatingCounterInMinutes.Value;
+                        operatingCounterValue = flight.EngineStartOperatingCounter.Value;
                         foundAnyOperatingCounterValue = true;
                     }
 
-                    if (flight.EngineTime.HasValue)
-                    {
-                        operatingCounterValue +=
-                            Convert.ToDecimal(TimeSpan.FromTicks(flight.EngineTime.Value.Ticks).TotalMinutes);
-                    }
-                    else
-                    {
-                        operatingCounterValue += Convert.ToDecimal(flight.Duration.TotalMinutes);
-                    }
+                    var counterUnitType =
+                        counterUnitTypes.FirstOrDefault(
+                            q => q.CounterUnitTypeId == result.EngineOperatingCounterUnitTypeId.Value);
+
+                    counterUnitType.NotNull("CounterUnitType");
+
+                    operatingCounterValue += flight.Duration.ToCounterValue(counterUnitType);
                 }
 
                 if (foundAnyOperatingCounterValue)
                 {
-                    result.EngineOperatingCounterInMinutes = operatingCounterValue;
+                    result.EngineOperatingCounter = operatingCounterValue;
                 }
 
                 return result;
@@ -412,35 +425,82 @@ namespace FLS.Server.Service
 
             return flights;
         }
-        
-        /// <summary>
-        /// Gets the flights which needs to be validated.
-        /// </summary>
-        /// <returns>All flights which have a flight state of invalid or less (started, landed, new).</returns>
-        internal List<Flight> GetFlightsForValidating(Guid clubId)
-        {
-            var flights = GetFlights(
-                flight => flight.OwnerId == clubId  
-                            && flight.FlightStateId < (int)FLS.Data.WebApi.Flight.FlightState.Valid);
 
-            return flights;
+        public void ValidateFlights()
+        {
+            ValidateFlights(CurrentAuthenticatedFLSUserClubId);
         }
 
-        /// <summary>
-        /// Gets the valid flights which the landing time and the created date is more than 2 days ago,
-        /// so that these flights can be locked (no longer editable).
-        /// </summary>
-        /// <returns>List of flights which have a landing date and created date of 2 days ago and is in valid flight state.</returns>
-        internal List<Flight> GetValidFlightsForLocking(Guid clubId)
+        public void ValidateFlights(Guid clubId)
         {
-            DateTime lockingDate = DateTime.Today.AddDays(-2).AddTicks(-1);
+            try
+            {
+                //All flights which have a flight state of invalid or less (started, landed, new)
+                var todaysFlights = GetFlights(flight => flight.OwnerId == clubId && flight.FlightStateId < (int)FLS.Data.WebApi.Flight.FlightState.Valid);
 
-            var flights =
-                GetFlights(
-                    flight => flight.FlightStateId == (int)FLS.Data.WebApi.Flight.FlightState.Valid
-                                && flight.OwnerId == clubId  
-                               && DbFunctions.TruncateTime(flight.CreatedOn) <= lockingDate.Date);
-            return flights;
+                using (var context = _dataAccessService.CreateDbContext())
+                {
+                    foreach (var flight in todaysFlights)
+                    {
+                        context.Flights.Attach(flight);
+
+                        flight.ValidateFlight();
+                        flight.DoNotUpdateMetaData = true;
+
+                        Logger.Info(
+                            string.Format(
+                                "The currently validated flight {0} has now the following Flight-State: {1} ({2})",
+                                flight,
+                                flight.FlightState, ((FLS.Data.WebApi.Flight.FlightState)flight.FlightStateId).ToFlightStateName()));
+                    }
+
+                    context.SaveChanges();
+                }
+
+                Logger.Info(string.Format("Saved the validated flights of today to database."));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, $"Error while processing today flights for validating. Error: {ex.Message}");
+            }
+        }
+
+        public void LockFlights(bool forceLockNow = false)
+        {
+            LockFlights(CurrentAuthenticatedFLSUserClubId, forceLockNow);
+        }
+
+
+        public void LockFlights(Guid clubId, bool forceLockNow = false)
+        {
+            try
+            {
+                DateTime lockingDate = DateTime.Today.AddDays(-2).AddTicks(-1);
+
+                var flights =
+                    GetFlights(
+                        flight => flight.FlightStateId == (int)FLS.Data.WebApi.Flight.FlightState.Valid
+                                    && flight.OwnerId == clubId
+                                   && (forceLockNow || DbFunctions.TruncateTime(flight.CreatedOn) <= lockingDate.Date));
+
+                using (var context = _dataAccessService.CreateDbContext())
+                {
+                    foreach (var flight in flights)
+                    {
+                        context.Flights.Attach(flight);
+
+                        flight.FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Locked;
+
+                        Logger.Info(string.Format("The valid flight {0} has now been locked.", flight));
+                    }
+
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, $"Error while processing flights for locking. Error: {ex.Message}");
+            }
         }
         
         internal List<Flight> GetFlights(Expression<Func<Flight, bool>> flightFilter, bool includeTowFlight = true)

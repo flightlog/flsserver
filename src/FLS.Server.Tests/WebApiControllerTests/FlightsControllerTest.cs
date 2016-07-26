@@ -660,6 +660,31 @@ namespace FLS.Server.Tests.WebApiControllerTests
         }
         #endregion GliderFlights
 
+        [TestMethod]
+        [TestCategory("WebApi")]
+        public void FlightValidationAndLockDetailsWebApiTest()
+        {
+            InsertAndUpdateSchoolFlightDetailsWebApiTest();
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                var notValidatedFlights = context.Flights.Where(q => q.ValidatedOn == null);
+                Assert.IsTrue(notValidatedFlights.Any());
+
+                var validateFlights = GetAsync("/api/v1/flights/validate").Result;
+
+                var notValidatedFlights2 = context.Flights.Where(q => q.ValidatedOn == null);
+                Assert.IsFalse(notValidatedFlights2.Any());
+
+                var lockedFlights = context.Flights.Where(q => q.FlightStateId == (int)FLS.Data.WebApi.Flight.FlightState.Locked);
+                Assert.IsFalse(lockedFlights.Any());
+
+                var lockFlights = GetAsync("/api/v1/flights/lock/force").Result;
+
+                var lockedFlights2 = context.Flights.Where(q => q.FlightStateId == (int)FLS.Data.WebApi.Flight.FlightState.Locked);
+                Assert.IsTrue(lockedFlights2.Any());
+            }
+        }
+
         protected override string Uri
         {
             get { return RoutePrefix; }

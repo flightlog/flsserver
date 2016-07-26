@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Description;
 using FLS.Data.WebApi.Flight;
+using FLS.Data.WebApi.Resources;
 using FLS.Server.Service;
 using FLS.Server.WebApi.ActionFilters;
 
@@ -216,6 +217,47 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult Delete(Guid flightId)
         {
             _flightService.DeleteFlight(flightId);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Validates the flights which are not already validated.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("validate")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult ValidateFlights()
+        {
+            _flightService.ValidateFlights();
+            return Ok();
+        }
+
+        /// <summary>
+        /// Lock the flights which are not already locked.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("lock")]
+        [ResponseType(typeof(void))]
+        [Authorize(Roles = RoleApplicationKeyStrings.ClubAdministrator + "," + RoleApplicationKeyStrings.SystemAdministrator)]
+        public IHttpActionResult LockFlights()
+        {
+            _flightService.LockFlights();
+            return Ok();
+        }
+
+        /// <summary>
+        /// Forces to lock the flights which are not already locked.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("lock/force")]
+        [ResponseType(typeof(void))]
+        [Authorize(Roles = RoleApplicationKeyStrings.ClubAdministrator + "," + RoleApplicationKeyStrings.SystemAdministrator)]
+        public IHttpActionResult ForceLockFlights()
+        {
+            _flightService.LockFlights(true);
             return Ok();
         }
     }

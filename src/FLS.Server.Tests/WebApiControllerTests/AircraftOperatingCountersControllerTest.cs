@@ -27,17 +27,17 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var responseAircraftDetails = ConvertToModel<AircraftDetails>(response);
             Assert.IsNotNull(responseAircraftDetails);
             Assert.IsTrue(responseAircraftDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", responseAircraftDetails));
-
+            
             //create new aircraft operating counter details for aircraft
             var newCounter = new AircraftOperatingCounterDetails()
             {
                 AircraftId = responseAircraftDetails.AircraftId,
                 AtDateTime = new DateTime(2015, 1, 1),
-                EngineOperatingCounterInMinutes = 1255.5m,
-                FlightOperatingCounterInMinutes = 1255.5m,
+                EngineOperatingCounter = 1255,
+                FlightOperatingCounter = 1255,
                 TotalSelfStarts = 150,
-                NextMaintenanceAtFlightOperatingCounterInMinutes = 1300,
-                NextMaintenanceAtEngineOperatingCounterInMinutes = 2000
+                NextMaintenanceAtFlightOperatingCounter = 1300,
+                NextMaintenanceAtEngineOperatingCounter = 2000
             };
 
             var newCounterResponse = PostAsync(newCounter, "/api/v1/aircraftoperatingcounters").Result;
@@ -59,7 +59,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var result = ConvertToModel<AircraftEngineOperatingCounterResult>(requestResponse);
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AircraftHasNoEngine);
-            Assert.IsTrue(result.EngineOperatingCounterInMinutes == 1255.5m);
+            Assert.IsTrue(result.EngineOperatingCounter == 1255);
 
             var flightDetails = CreateMotorFlightDetails(ClubId);
             flightDetails.MotorFlightDetailsData.AircraftId = responseAircraftDetails.AircraftId;
@@ -78,7 +78,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var result2 = ConvertToModel<AircraftEngineOperatingCounterResult>(requestResponse2);
             Assert.IsNotNull(result2);
             Assert.IsFalse(result2.AircraftHasNoEngine);
-            Assert.IsTrue(result2.EngineOperatingCounterInMinutes == 1330.5m);
+            Assert.IsTrue(result2.EngineOperatingCounter == 1330);
         }
 
 

@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbEntities\AircraftOperatingCounter.cs" />
+    <Compile Include="DbEntities\CounterUnitType.cs" />
     <Compile Include="DbEntities\EmailTemplate.cs" />
     <Compile Include="DbEntities\Aircraft.cs" />
     <Compile Include="DbEntities\AircraftAircraftState.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Exceptions\DeleteEntityException.cs" />
     <Compile Include="Extensions\EntityTrackerExtensions.cs" />
     <Compile Include="Extensions\CostCenterUnitTypeExtensions.cs" />
+    <Compile Include="Mapping\CounterUnitExtensions.cs" />
     <Compile Include="Mapping\AircraftOperatingCounterMappingExtensions.cs" />
     <Compile Include="Mapping\MappingExtensions.cs" />
     <Compile Include="Enums\AircraftStartType.cs" />

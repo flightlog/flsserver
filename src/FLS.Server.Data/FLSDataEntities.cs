@@ -53,6 +53,7 @@ namespace FLS.Server.Data
         public virtual DbSet<Club> Clubs { get; set; }
         public virtual DbSet<ClubState> ClubStates { get; set; }
         public virtual DbSet<Country> Countries { get; set; }
+        public virtual DbSet<CounterUnitType> CounterUnitTypes { get; set; }
         public virtual DbSet<ElevationUnitType> ElevationUnitTypes { get; set; }
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
         public virtual DbSet<ExtensionParameter> ExtensionParameters { get; set; }
@@ -189,23 +190,7 @@ namespace FLS.Server.Data
                .HasMany(e => e.AircraftOperatingCounters)
                .WithRequired(e => e.Aircraft)
                .WillCascadeOnDelete();
-
-            modelBuilder.Entity<AircraftOperatingCounter>()
-               .Property(e => e.FlightOperatingCounterInMinutes)
-               .HasPrecision(18, 3);
-
-            modelBuilder.Entity<AircraftOperatingCounter>()
-               .Property(e => e.EngineOperatingCounterInMinutes)
-               .HasPrecision(18, 3);
-
-            modelBuilder.Entity<AircraftOperatingCounter>()
-               .Property(e => e.NextMaintenanceAtFlightOperatingCounterInMinutes)
-               .HasPrecision(18, 3);
-
-            modelBuilder.Entity<AircraftOperatingCounter>()
-               .Property(e => e.NextMaintenanceAtEngineOperatingCounterInMinutes)
-               .HasPrecision(18, 3);
-
+            
             modelBuilder.Entity<AircraftReservationType>()
                .HasMany(e => e.AircraftReservations)
                .WithRequired(e => e.ReservationType)
@@ -309,6 +294,26 @@ namespace FLS.Server.Data
                 .WithRequired(e => e.Country)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<CounterUnitType>()
+                .HasMany(e => e.AircraftFlightOperatingCounters)
+                .WithOptional(e => e.FlightOperatingCounterUnitType)
+                .HasForeignKey(e => e.FlightOperatingCounterUnitTypeId);
+
+            modelBuilder.Entity<CounterUnitType>()
+                .HasMany(e => e.AircraftEngineOperatingCounters)
+                .WithOptional(e => e.EngineOperatingCounterUnitType)
+                .HasForeignKey(e => e.EngineOperatingCounterUnitTypeId);
+
+            modelBuilder.Entity<CounterUnitType>()
+                .HasMany(e => e.AircraftOperatingCounterFlightOperatingCounters)
+                .WithOptional(e => e.FlightOperatingCounterUnitType)
+                .HasForeignKey(e => e.FlightOperatingCounterUnitTypeId);
+
+            modelBuilder.Entity<CounterUnitType>()
+                .HasMany(e => e.AircraftOperatingCounterEngineOperatingCounters)
+                .WithOptional(e => e.EngineOperatingCounterUnitType)
+                .HasForeignKey(e => e.EngineOperatingCounterUnitTypeId);
+
             modelBuilder.Entity<ElevationUnitType>()
                 .HasMany(e => e.Locations)
                 .WithOptional(e => e.ElevationUnitType)
@@ -356,15 +361,7 @@ namespace FLS.Server.Data
                 .WithRequired(e => e.Flight)
                 .HasForeignKey(e => e.FlightId)
                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Flight>()
-                .Property(e => e.EngineStartOperatingCounterInMinutes)
-                .HasPrecision(18, 3);
-
-            modelBuilder.Entity<Flight>()
-                .Property(e => e.EngineEndOperatingCounterInMinutes)
-                .HasPrecision(18, 3);
-
+            
             modelBuilder.Entity<FlightCrew>()
                 .HasRequired(e => e.Flight);
             

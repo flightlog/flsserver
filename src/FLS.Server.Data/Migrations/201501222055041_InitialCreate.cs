@@ -352,7 +352,6 @@ namespace FLS.Server.Data.Migrations
                         StartPosition = c.Int(),
                         StartDateTime = c.DateTime(precision: 7, storeType: "datetime2"),
                         LdgDateTime = c.DateTime(precision: 7, storeType: "datetime2"),
-                        EngineTime = c.DateTime(precision: 7, storeType: "datetime2"),
                         BlockStartDateTime = c.DateTime(precision: 7, storeType: "datetime2"),
                         BlockEndDateTime = c.DateTime(precision: 7, storeType: "datetime2"),
                         StartLocationId = c.Guid(),

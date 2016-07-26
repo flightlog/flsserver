@@ -107,7 +107,7 @@ namespace FLS.Server.Data.Mapping
             listItem.IsWinchstartAllowed = entity.IsWinchstartAllowed;
             listItem.NrOfSeats = entity.NrOfSeats;
             listItem.HasEngine = entity.HasEngine;
-            listItem.EngineOperatorCounterPrecision = entity.EngineOperatorCounterPrecision;
+            //listItem.EngineOperatorCounterPrecision = entity.EngineOperatorCounterPrecision;
 
             if (entity.CurrentAircraftAircraftState == null)
             {
@@ -141,7 +141,7 @@ namespace FLS.Server.Data.Mapping
             overview.ManufacturerName = entity.ManufacturerName;
             overview.NrOfSeats = entity.NrOfSeats;
             overview.HasEngine = entity.HasEngine;
-            overview.EngineOperatorCounterPrecision = entity.EngineOperatorCounterPrecision;
+            //overview.EngineOperatorCounterPrecision = entity.EngineOperatorCounterPrecision;
 
             if (entity.CurrentAircraftAircraftState == null)
             {
@@ -200,8 +200,8 @@ namespace FLS.Server.Data.Mapping
             details.MTOM = entity.MTOM;
             details.AircraftOwnerClubId = entity.AircraftOwnerClubId;
             details.AircraftOwnerPersonId = entity.AircraftOwnerPersonId;
-            details.FlightDurationPrecision = entity.FlightDurationPrecision;
-            details.EngineOperatorCounterPrecision = entity.EngineOperatorCounterPrecision;
+            details.FlightOperatingCounterUnitTypeId = entity.FlightOperatingCounterUnitTypeId;
+            details.EngineOperatingCounterUnitTypeId = entity.EngineOperatingCounterUnitTypeId;
             details.SpotLink = entity.SpotLink;
 
             if (entity.CurrentAircraftAircraftState != null)
@@ -256,8 +256,8 @@ namespace FLS.Server.Data.Mapping
             entity.MTOM = details.MTOM;
             entity.AircraftOwnerClubId = details.AircraftOwnerClubId;
             entity.AircraftOwnerPersonId = details.AircraftOwnerPersonId;
-            entity.FlightDurationPrecision = details.FlightDurationPrecision;
-            entity.EngineOperatorCounterPrecision = details.EngineOperatorCounterPrecision;
+            entity.FlightOperatingCounterUnitTypeId = details.FlightOperatingCounterUnitTypeId;
+            entity.EngineOperatingCounterUnitTypeId = details.EngineOperatingCounterUnitTypeId;
             entity.SpotLink = details.SpotLink;
 
             //Check if aircraft state has changes and update it if required
@@ -1087,10 +1087,9 @@ namespace FLS.Server.Data.Mapping
             flightDetailsData.FlightId = flight.FlightId;
             flightDetailsData.AircraftId = flight.AircraftId;
 
-            flightDetailsData.EngineTime = flight.EngineTime;
-
-            flightDetailsData.EngineStartOperatingCounterInMinutes = flight.EngineStartOperatingCounterInMinutes;
-            flightDetailsData.EngineEndOperatingCounterInMinutes = flight.EngineEndOperatingCounterInMinutes;
+            flightDetailsData.EngineStartOperatingCounter = flight.EngineStartOperatingCounter;
+            flightDetailsData.EngineEndOperatingCounter = flight.EngineEndOperatingCounter;
+            flightDetailsData.EngineOperatingCounterUnitTypeId = flight.EngineOperatingCounterUnitTypeId;
 
             flightDetailsData.FlightState = flight.FlightStateId;
             flightDetailsData.FlightTypeId = flight.FlightTypeId;
@@ -1260,18 +1259,10 @@ namespace FLS.Server.Data.Mapping
             if (startType.HasValue) entity.StartTypeId = (int) startType;
 
             entity.AircraftId = details.AircraftId;
-
-            if (details.EngineTime.HasValue == false && Equals(entity.EngineTime, details.EngineTime) == false)
-            {
-                entity.EngineTime = null;
-            }
-            else if (details.EngineTime.HasValue && Equals(entity.EngineTime, details.EngineTime) == false)
-            {
-                entity.EngineTime = new DateTime(details.EngineTime.Value.TimeOfDay.Ticks);
-            }
-
-            entity.EngineStartOperatingCounterInMinutes = details.EngineStartOperatingCounterInMinutes;
-            entity.EngineEndOperatingCounterInMinutes = details.EngineEndOperatingCounterInMinutes;
+            
+            entity.EngineStartOperatingCounter = details.EngineStartOperatingCounter;
+            entity.EngineEndOperatingCounter = details.EngineEndOperatingCounter;
+            entity.EngineOperatingCounterUnitTypeId = details.EngineOperatingCounterUnitTypeId;
 
             entity.Comment = details.FlightComment;
             entity.FlightStateId = details.FlightState;
@@ -1446,6 +1437,7 @@ namespace FLS.Server.Data.Mapping
                     entity.Pilot.BeginFlightDateTime = entity.StartDateTime;
                     entity.Pilot.EndFlightDateTime = entity.LdgDateTime;
                     entity.Pilot.NrOfLdgs = entity.NrOfLdgs;
+                    //entity.Pilot.NrOfStarts = entity.N
                 }
             }
             else if (entity.Pilot != null)
