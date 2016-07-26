@@ -79,6 +79,9 @@ namespace FLS.Server.ProffixInvoiceService.RuleEngines
             //run rule engine again for towflight, before other rules were applied (because of order of invoice lines)
             if (_flight.TowFlight != null)
             {
+                //set IncludesTowFlightId otherwise the flight state of towflight will not be set correctly during invoicing
+                _flightInvoiceDetails.IncludesTowFlightId = _flight.TowFlightId;
+
                 var invoiceLineRulesEngine = new InvoiceLineRulesEngine(_flightInvoiceDetails, _flight.TowFlight,
                     _invoiceMapping, _personService);
                 invoiceLineRulesEngine.Run();

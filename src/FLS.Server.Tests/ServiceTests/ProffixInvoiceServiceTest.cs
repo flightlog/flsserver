@@ -242,6 +242,28 @@ namespace FLS.Server.Tests.ServiceTests
 
                 var isFlightInvoiced = InvoiceService.SetFlightAsInvoiced(flightInvoiceBooking);
                 Assert.IsTrue(isFlightInvoiced, $"Flight with Id: {flightInvoiceDetails.FlightId} could not be set as invoiced");
+
+                //check flight state
+                var invoicedFlight = FlightService.GetFlight(flightInvoiceDetails.FlightId);
+                Assert.AreEqual((int)FLS.Data.WebApi.Flight.FlightState.Invoiced, invoicedFlight.FlightStateId, $"Flight state of master flight {invoicedFlight} was not set correctly after invoicing");
+
+                if (flightInvoiceDetails.IncludesTowFlightId.HasValue)
+                {
+                    Assert.IsTrue(invoicedFlight.TowFlightId.HasValue,
+                        "The invoiced flight has no tow flight. Something happend wrong in invoicing process");
+                    Assert.IsNotNull(invoicedFlight.TowFlight, "The invoiced flight has no loaded tow flight reference.");
+                    Assert.AreEqual(flightInvoiceDetails.IncludesTowFlightId, invoicedFlight.TowFlightId,
+                        "TowFlightId between invoice details and invoiced glider flight is not equals.");
+                    Assert.AreEqual((int) FLS.Data.WebApi.Flight.FlightState.Invoiced,
+                        invoicedFlight.TowFlight.FlightStateId,
+                        $"Flight state of tow flight {invoicedFlight.TowFlight} was not set correctly after invoicing");
+                }
+                else
+                {
+                    Assert.IsFalse(invoicedFlight.TowFlightId.HasValue,
+                        "The invoiced flight has a tow flight, but the invoice engine means not. Something happend wrong in invoicing process");
+                }
+
             }
 
             #endregion invoice check
