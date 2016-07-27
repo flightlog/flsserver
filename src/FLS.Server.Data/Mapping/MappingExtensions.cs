@@ -194,7 +194,7 @@ namespace FLS.Server.Data.Mapping
             details.DaecIndex = entity.DaecIndex;
             details.FLARMId = entity.FLARMId;
             details.AircraftSerialNumber = entity.AircraftSerialNumber;
-            details.YearOfManufacture = entity.YearOfManufacture;
+            details.YearOfManufacture = entity.YearOfManufacture.SetAsUtc();
             details.NoiseClass = entity.NoiseClass;
             details.NoiseLevel = entity.NoiseLevel;
             details.MTOM = entity.MTOM;
@@ -217,8 +217,8 @@ namespace FLS.Server.Data.Mapping
                 detailState.AircraftId = entity.AircraftId;
                 detailState.AircraftState = currentState.AircraftStateId;
                 detailState.NoticedByPersonId = currentState.NoticedByPersonId;
-                detailState.ValidFrom = currentState.ValidFrom;
-                detailState.ValidTo = currentState.ValidTo;
+                detailState.ValidFrom = currentState.ValidFrom.SetAsUtc();
+                detailState.ValidTo = currentState.ValidTo.SetAsUtc();
                 detailState.Remarks = currentState.Remarks;
             }
       
@@ -297,8 +297,8 @@ namespace FLS.Server.Data.Mapping
 
             overview.AircraftReservationId = entity.AircraftReservationId;
 
-            overview.Start = entity.Start;
-            overview.End = entity.End;
+            overview.Start = entity.Start.SetAsUtc();
+            overview.End = entity.End.SetAsUtc();
             overview.IsAllDayReservation = entity.IsAllDayReservation;
             overview.Remarks = entity.Remarks;
 
@@ -341,8 +341,8 @@ namespace FLS.Server.Data.Mapping
 
             details.AircraftReservationId = entity.AircraftReservationId;
 
-            details.Start = entity.Start;
-            details.End = entity.End;
+            details.Start = entity.Start.SetAsUtc();
+            details.End = entity.End.SetAsUtc();
             details.IsAllDayReservation = entity.IsAllDayReservation;
             details.AircraftId = entity.AircraftId;
             details.PilotPersonId = entity.PilotPersonId;
@@ -365,8 +365,8 @@ namespace FLS.Server.Data.Mapping
 
             if (overwriteAircraftReservationId) entity.AircraftReservationId = details.AircraftReservationId;
 
-            entity.Start = details.Start;
-            entity.End = details.End;
+            entity.Start = details.Start.SetAsUtc();
+            entity.End = details.End.SetAsUtc();
             entity.IsAllDayReservation = details.IsAllDayReservation;
             entity.AircraftId = details.AircraftId;
             entity.PilotPersonId = details.PilotPersonId;
@@ -630,9 +630,9 @@ namespace FLS.Server.Data.Mapping
             details.SendPlanningDayInfoMailTo = entity.SendPlanningDayInfoMailTo;
             details.SendInvoiceReportsTo = entity.SendInvoiceReportsTo;
 
-            details.LastArticleSynchronisationOn = entity.LastArticleSynchronisationOn;
-            details.LastInvoiceExportOn = entity.LastInvoiceExportOn;
-            details.LastPersonSynchronisationOn = entity.LastPersonSynchronisationOn;
+            details.LastArticleSynchronisationOn = entity.LastArticleSynchronisationOn.SetAsUtc();
+            details.LastInvoiceExportOn = entity.LastInvoiceExportOn.SetAsUtc();
+            details.LastPersonSynchronisationOn = entity.LastPersonSynchronisationOn.SetAsUtc();
 
             return details;
         }
@@ -1053,8 +1053,8 @@ namespace FLS.Server.Data.Mapping
                 motorFlightDetailsData = new MotorFlightDetailsData();
             }
 
-            motorFlightDetailsData.BlockStartDateTime = flight.BlockStartDateTime;
-            motorFlightDetailsData.BlockEndDateTime = flight.BlockEndDateTime;
+            motorFlightDetailsData.BlockStartDateTime = flight.BlockStartDateTime.SetAsUtc();
+            motorFlightDetailsData.BlockEndDateTime = flight.BlockEndDateTime.SetAsUtc();
             motorFlightDetailsData.NrOfLdgsOnStartLocation = flight.NrOfLdgsOnStartLocation;
             motorFlightDetailsData.CouponNumber = flight.CouponNumber;
 
@@ -2340,7 +2340,7 @@ namespace FLS.Server.Data.Mapping
 
             details.AddressLine1 = entity.AddressLine1;
             details.AddressLine2 = entity.AddressLine2;
-            details.Birthday = entity.Birthday;
+            details.Birthday = entity.Birthday.SetAsUtc();
             details.BusinessPhoneNumber = entity.BusinessPhone;
             details.City = entity.City;
             details.CompanyName = entity.CompanyName;
@@ -2412,10 +2412,10 @@ namespace FLS.Server.Data.Mapping
             details.HasWinchOperatorLicence = entity.HasWinchOperatorLicence;
             details.HasMotorInstructorLicence = entity.HasMotorInstructorLicence;
             details.LicenceNumber = entity.LicenceNumber;
-            details.GliderInstructorLicenceExpireDate = entity.GliderInstructorLicenceExpireDate;
-            details.MedicalClass1ExpireDate = entity.MedicalClass1ExpireDate;
-            details.MedicalClass2ExpireDate = entity.MedicalClass2ExpireDate;
-            details.MedicalLaplExpireDate = entity.MedicalLaplExpireDate;
+            details.GliderInstructorLicenceExpireDate = entity.GliderInstructorLicenceExpireDate.SetAsUtc();
+            details.MedicalClass1ExpireDate = entity.MedicalClass1ExpireDate.SetAsUtc();
+            details.MedicalClass2ExpireDate = entity.MedicalClass2ExpireDate.SetAsUtc();
+            details.MedicalLaplExpireDate = entity.MedicalLaplExpireDate.SetAsUtc();
             details.HasGliderTowingStartPermission = entity.HasGliderTowingStartPermission;
             details.HasGliderSelfStartPermission = entity.HasGliderSelfStartPermission;
             details.HasGliderWinchStartPermission = entity.HasGliderWinchStartPermission;
@@ -2674,10 +2674,10 @@ namespace FLS.Server.Data.Mapping
             }
 
             details.LicenceNumber = entity.LicenceNumber;
-            details.MedicalClass1ExpireDate = entity.MedicalClass1ExpireDate;
-            details.MedicalClass2ExpireDate = entity.MedicalClass2ExpireDate;
-            details.MedicalLaplExpireDate = entity.MedicalLaplExpireDate;
-            details.GliderInstructorLicenceExpireDate = entity.GliderInstructorLicenceExpireDate;
+            details.MedicalClass1ExpireDate = entity.MedicalClass1ExpireDate.SetAsUtc();
+            details.MedicalClass2ExpireDate = entity.MedicalClass2ExpireDate.SetAsUtc();
+            details.MedicalLaplExpireDate = entity.MedicalLaplExpireDate.SetAsUtc();
+            details.GliderInstructorLicenceExpireDate = entity.GliderInstructorLicenceExpireDate.SetAsUtc();
             details.HasGliderTowingStartPermission = entity.HasGliderTowingStartPermission;
             details.HasGliderSelfStartPermission = entity.HasGliderSelfStartPermission;
             details.HasGliderWinchStartPermission = entity.HasGliderWinchStartPermission;
@@ -2764,7 +2764,7 @@ namespace FLS.Server.Data.Mapping
 
             overview.PlanningDayId = entity.PlanningDayId;
 
-            overview.Day = entity.Day;
+            overview.Day = entity.Day.SetAsUtc();
             overview.Remarks = entity.Remarks;
 
             if (entity.Location != null)
@@ -2816,7 +2816,7 @@ namespace FLS.Server.Data.Mapping
             }
 
             details.PlanningDayId = entity.PlanningDayId;
-            details.Day = entity.Day;
+            details.Day = entity.Day.SetAsUtc();
             details.LocationId = entity.LocationId;
             details.Remarks = entity.Remarks;
 
@@ -3089,7 +3089,7 @@ namespace FLS.Server.Data.Mapping
 
             overview.LogId = entity.LogId;
 
-            overview.EventDateTime = entity.EventDateTime;
+            overview.EventDateTime = entity.EventDateTime.SetAsUtc();
             overview.LogLevel = entity.LogLevel;
             overview.EventType = entity.EventType;
             overview.Logger = entity.Logger;
@@ -3110,7 +3110,7 @@ namespace FLS.Server.Data.Mapping
 
             details.LogId = entity.LogId;
 
-            details.EventDateTime = entity.EventDateTime;
+            details.EventDateTime = entity.EventDateTime.SetAsUtc();
             details.LogLevel = entity.LogLevel;
             details.EventType = entity.EventType;
             details.Logger = entity.Logger;
