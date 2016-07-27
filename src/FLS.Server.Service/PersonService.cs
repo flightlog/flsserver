@@ -102,6 +102,11 @@ namespace FLS.Server.Service
             return GetPilotPersonListItemInternal(onlyClubRelatedPilots, person => person.HasMotorPilotLicence || person.HasTMGLicence);
         }
 
+        public List<PilotPersonListItem> GetMotorInstructorPersonListItems(bool onlyClubRelatedInstuctors)
+        {
+            return GetPilotPersonListItemInternal(onlyClubRelatedInstuctors, person => person.HasMotorInstructorLicence);
+        }
+
         /// <summary>
         /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
         /// only the main data of each person is be returned (no email, no phone numbers, etc.) 

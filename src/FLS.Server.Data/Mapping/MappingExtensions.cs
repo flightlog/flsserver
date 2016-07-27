@@ -2307,6 +2307,7 @@ namespace FLS.Server.Data.Mapping
             overview.HasMotorPilotLicence = entity.HasMotorPilotLicence;
             overview.HasTowPilotLicence = entity.HasTowPilotLicence;
             overview.HasWinchOperatorLicence = entity.HasWinchOperatorLicence;
+            overview.HasMotorInstructorLicence = entity.HasMotorInstructorLicence;
             overview.HasTMGLicence = entity.HasTMGLicence;
             overview.LicenceNumber = entity.LicenceNumber;
 

@@ -128,6 +128,22 @@ namespace FLS.Server.WebApi.Controllers
         /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
         /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
         /// </summary>
+        /// <param name="onlyClubRelatedInstuctors">if set to <c>true</c> only club related instructors will be returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("motorinstructors/{onlyClubRelatedInstuctors:bool}")]
+        [Route("motorinstructors/listitems/{onlyClubRelatedInstuctors:bool}")]
+        [ResponseType(typeof(List<PilotPersonListItem>))]
+        public IHttpActionResult GetMotorInstructorPersonListItems(bool onlyClubRelatedInstuctors)
+        {
+            var persons = _personService.GetMotorInstructorPersonListItems(onlyClubRelatedInstuctors);
+            return Ok(persons);
+        }
+
+        /// <summary>
+        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
+        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
+        /// </summary>
         /// <param name="onlyClubRelatedTrainees">if set to <c>true</c> only club related trainees will be returned.</param>
         /// <returns></returns>
         [HttpGet]
