@@ -51,7 +51,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules
                 }
             }
 
-            //make Rule invalid, if no instructor with memberkey found
+            //make Rule invalid, if no instructor with membernumber found
             Conditions.Add(new Equals<bool>(true, false));
         }
 

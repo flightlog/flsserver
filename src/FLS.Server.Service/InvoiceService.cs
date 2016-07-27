@@ -82,7 +82,7 @@ namespace FLS.Server.Service
                                                        flight.FlightAircraftType ==
                                                        (int) FlightAircraftTypeValue.MotorFlight)
                                                       &&
-                                                      (flight.FlightStateId == (int) FLS.Data.WebApi.Flight.FlightState.Locked))
+                                                      (flight.ProcessStateId == (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked))
                                                       .ToList();
 
                     Logger.Debug(
@@ -113,7 +113,7 @@ namespace FLS.Server.Service
 
                 if (flight == null) return false;
 
-                flight.FlightStateId = (int) FLS.Data.WebApi.Flight.FlightState.Invoiced;
+                flight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.Invoiced;
                 flight.DoNotUpdateMetaData = true;
                 flight.InvoicedOn = flightInvoiceBooking.InvoiceDate;
                 flight.InvoiceNumber = flightInvoiceBooking.InvoiceNumber;
@@ -127,7 +127,7 @@ namespace FLS.Server.Service
 
                     if (towFlight == null) return false;
 
-                    towFlight.FlightStateId = (int) FLS.Data.WebApi.Flight.FlightState.Invoiced;
+                    towFlight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.Invoiced;
                     towFlight.DoNotUpdateMetaData = true;
                     towFlight.InvoicedOn = flightInvoiceBooking.InvoiceDate;
                     towFlight.InvoiceNumber = flightInvoiceBooking.InvoiceNumber;

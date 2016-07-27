@@ -15,7 +15,6 @@ namespace FLS.Data.WebApi.Person
         public ClubRelatedPersonDetails(ClubRelatedPersonDetails clubRelatedPersonDetails)
         {
             PersonCategoryIds = clubRelatedPersonDetails.PersonCategoryIds;
-            MemberKey = clubRelatedPersonDetails.MemberKey;
             MemberStateId = clubRelatedPersonDetails.MemberStateId;
             MemberNumber = clubRelatedPersonDetails.MemberNumber;
             IsGliderTrainee = clubRelatedPersonDetails.IsGliderTrainee;
@@ -36,8 +35,6 @@ namespace FLS.Data.WebApi.Person
         public Guid? MemberStateId { get; set; }
 
         public string MemberNumber { get; set; }
-
-        public string MemberKey { get; set; }
 
         public bool IsGliderInstructor { get; set; }
 

@@ -91,6 +91,9 @@
     <Compile Include="Emails\EmailTemplateDetails.cs" />
     <Compile Include="Exceptions\FLSServerException.cs" />
     <Compile Include="Flight\FlightOverview.cs" />
+    <Compile Include="Flight\FlightAirState.cs" />
+    <Compile Include="Flight\FlightProcessState.cs" />
+    <Compile Include="Flight\FlightValidationState.cs" />
     <Compile Include="FLSBaseData.cs" />
     <Compile Include="Flight\FlightCostBalanceType.cs" />
     <Compile Include="Flight\FlightCostBalanceTypeListItem.cs" />
@@ -99,7 +102,6 @@
     <Compile Include="Flight\FlightDetailsData.cs" />
     <Compile Include="Flight\FlightFilterSettings.cs" />
     <Compile Include="Flight\GliderFlightOverview.cs" />
-    <Compile Include="Flight\FlightState.cs" />
     <Compile Include="Flight\FlightStateListItem.cs" />
     <Compile Include="Flight\GliderFlightDetailsData.cs" />
     <Compile Include="Flight\MotorFlightDetailsData.cs" />

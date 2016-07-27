@@ -673,7 +673,6 @@ namespace FLS.Server.Data.Migrations
                         PersonId = c.Guid(nullable: false),
                         ClubId = c.Guid(nullable: false),
                         MemberNumber = c.String(maxLength: 20),
-                        MemberKey = c.String(maxLength: 40),
                         IsMotorPilot = c.Boolean(nullable: false),
                         IsTowPilot = c.Boolean(nullable: false),
                         IsGliderInstructor = c.Boolean(nullable: false),

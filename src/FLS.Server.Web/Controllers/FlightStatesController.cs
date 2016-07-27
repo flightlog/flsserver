@@ -26,16 +26,46 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
-        /// Gets the flight state list items.
+        /// Gets the flight air state list items.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         [Route("")]
+        [Route("air")]
         [Route("listitems")]
+        [Route("air/listitems")]
         [ResponseType(typeof(List<FlightStateListItem>))]
-        public IHttpActionResult GetFlightStateListItems()
+        public IHttpActionResult GetFlightAirStateListItems()
         {
-            var flightStates = _flightService.GetFlightStateListItems();
+            var flightStates = _flightService.GetFlightAirStateListItems();
+            return Ok(flightStates);
+        }
+
+        /// <summary>
+        /// Gets the flight validation state list items.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("validation")]
+        [Route("validation/listitems")]
+        [ResponseType(typeof(List<FlightStateListItem>))]
+        public IHttpActionResult GetFlightValidationStateListItems()
+        {
+            var flightStates = _flightService.GetFlightValidationStateListItems();
+            return Ok(flightStates);
+        }
+
+        /// <summary>
+        /// Gets the flight process state list items.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("process")]
+        [Route("process/listitems")]
+        [ResponseType(typeof(List<FlightStateListItem>))]
+        public IHttpActionResult GetFlightProcessStateListItems()
+        {
+            var flightStates = _flightService.GetFlightProcessStateListItems();
             return Ok(flightStates);
         }
     }

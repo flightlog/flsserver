@@ -769,7 +769,7 @@ namespace FLS.Server.Tests
             using (var context = DataAccessService.CreateDbContext())
             {
                 context.Flights.Attach(flight);
-                flight.FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Locked;
+                flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked;
 
                 if (context.ChangeTracker.HasChanges())
                 {
@@ -1461,7 +1461,7 @@ namespace FLS.Server.Tests
             using (var context = DataAccessService.CreateDbContext())
             {
                 context.Flights.Attach(flight);
-                flight.FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Locked;
+                flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked;
 
                 if (context.ChangeTracker.HasChanges())
                 {

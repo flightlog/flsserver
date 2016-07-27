@@ -66,7 +66,9 @@ DELETE FROM AircraftStates
 DELETE FROM FlightCrew
 DELETE FROM FlightCrewTypes
 DELETE FROM Flights
-DELETE FROM FlightStates
+DELETE FROM FlightAirStates
+DELETE FROM FlightValidationStates
+DELETE FROM FlightProcessStates
 DELETE FROM Aircrafts
 DELETE FROM UserRoles
 DELETE FROM Users
@@ -658,62 +660,35 @@ SET IDENTITY_INSERT [FlightCostBalanceTypes] OFF
 
 
 PRINT 'INSERT FlightStates'
-SET IDENTITY_INSERT [FlightStates] ON
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (0, 'Neu', 'Neuer Flug / Noch nicht gestartet'
-           ,SYSDATETIME())
 
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (5, 'Flugplan eröffnet', 'Flugplan eröffnet'
-           ,SYSDATETIME())
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (10, 'Gestartet', 'Flugzeug gestartet / in der Luft'
-           ,SYSDATETIME())
+INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (0, N'Neu', N'Neuer Flug / Noch nicht gestartet', SYSUTCDATETIME())
+GO
+INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (5, N'Flugplan eröffnet', N'Flugplan eröffnet', SYSUTCDATETIME())
+GO
+INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (10, N'Gestartet', N'Flugzeug gestartet / in der Luft', SYSUTCDATETIME())
+GO
+INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (20, N'Gelandet', N'Flugzeug gelandet', SYSUTCDATETIME())
+GO
+INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (25, N'Geschlossen', N'Flug/Flugplan geschlossen', SYSUTCDATETIME())
+GO
 
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (20, 'Gelandet', 'Flugzeug gelandet'
-           ,SYSDATETIME())
+INSERT [dbo].[FlightValidationStates] ([FlightValidationStateId], [FlightValidationStateName], [Comment], [CreatedOn]) VALUES (0, N'Nicht validiert', N'Flug wurde noch nicht validiert', SYSUTCDATETIME())
+GO
+INSERT [dbo].[FlightValidationStates] ([FlightValidationStateId], [FlightValidationStateName], [Comment], [CreatedOn]) VALUES (28, N'Ungültig', N'Flug wurde validiert, Angaben sind aber ungültig oder nicht plausibel', SYSUTCDATETIME())
+GO
+INSERT [dbo].[FlightValidationStates] ([FlightValidationStateId], [FlightValidationStateName], [Comment], [CreatedOn]) VALUES (30, N'Gültig', N'Flug wurde validiert und Angaben zum Flug sind gültig', SYSUTCDATETIME())
+GO
 
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (25, 'Geschlossen', 'Flug/Flugplan geschlossen'
-           ,SYSDATETIME())
-
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (28, 'Ungültig', 'Flug wurde validiert, Angaben sind aber ungültig oder nicht plausibel'
-           ,SYSDATETIME())
-
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (30, 'Gültig', 'Flug wurde validiert und Angaben zum Flug sind gültig'
-           ,SYSDATETIME())
-
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (40, 'Gesperrt', 'Flug kann nicht mehr editiert werden und ist für Verrechnung bereit'
-           ,SYSDATETIME())
-
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (50, 'Verrechnet', 'Flug wurde verrechnet und kann nicht mehr editiert werden'
-           ,SYSDATETIME())
-
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (55, 'Teilweise bezahlt', 'Flug wurde verrechnet und einen Teil der Rechnung(en) wurde bezahlt.'
-           ,SYSDATETIME())
-
-INSERT INTO [FlightStates] ([FlightStateId],[FlightStateName],[Comment],[CreatedOn])
-     VALUES
-           (60, 'Bezahlt', 'Flug wurde bezahlt.'
-           ,SYSDATETIME())
-
-SET IDENTITY_INSERT [FlightStates] OFF
+INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (0, N'Kein Prozess gelaufen', N'Für diesen Flug war noch kein Prozess gelaufen', SYSUTCDATETIME())
+GO
+INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (40, N'Gesperrt', N'Flug kann nicht mehr editiert werden und ist für Verrechnung bereit', SYSUTCDATETIME())
+GO
+INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (50, N'Verrechnet', N'Flug wurde verrechnet und kann nicht mehr editiert werden', SYSUTCDATETIME())
+GO
+INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (55, N'Teilweise bezahlt', N'Flug wurde verrechnet und einen Teil der Rechnung(en) wurde bezahlt.', SYSUTCDATETIME())
+GO
+INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (60, N'Bezahlt', N'Flug wurde bezahlt.', SYSUTCDATETIME())
+GO
 
 
 PRINT 'INSERT SystemClub'

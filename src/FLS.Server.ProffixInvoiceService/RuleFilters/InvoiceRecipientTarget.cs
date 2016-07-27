@@ -4,6 +4,5 @@
     {
         internal string DisplayName { get; set; }
         internal string MemberNumber { get; set; }
-        internal string MemberKey { get; set; }
     }
 }

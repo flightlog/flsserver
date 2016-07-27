@@ -66,32 +66,27 @@ namespace FLS.Server.ProffixInvoiceService
 
             var invoiceRecipientTarget = new InvoiceRecipientTarget();
             invoiceRecipientTarget.DisplayName = "FGZO Schnupperflug Gutschein";
-            invoiceRecipientTarget.MemberKey = "999006";
             invoiceRecipientTarget.MemberNumber = "999006";
             invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("68", invoiceRecipientTarget); //Schnupperflug Gutschein
 
             invoiceRecipientTarget = new InvoiceRecipientTarget();
             invoiceRecipientTarget.DisplayName = "FGZO Schnupperflug und Lufttaufe bar";
-            invoiceRecipientTarget.MemberKey = "999000";
             invoiceRecipientTarget.MemberNumber = "999000";
             invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("69", invoiceRecipientTarget); //Schnupperflug bar
             invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("66", invoiceRecipientTarget); //Lufttaufe bar
 
             invoiceRecipientTarget = new InvoiceRecipientTarget();
             invoiceRecipientTarget.DisplayName = "FGZO Passagierflug bar";
-            invoiceRecipientTarget.MemberKey = "999001";
             invoiceRecipientTarget.MemberNumber = "999001";
             invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("63", invoiceRecipientTarget); //PAX bar
 
             invoiceRecipientTarget = new InvoiceRecipientTarget();
             invoiceRecipientTarget.DisplayName = "FGZO Passagierflug Gutschein";
-            invoiceRecipientTarget.MemberKey = "999007";
             invoiceRecipientTarget.MemberNumber = "999007";
             invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("62", invoiceRecipientTarget); //PAX Gutschein
 
             invoiceRecipientTarget = new InvoiceRecipientTarget();
             invoiceRecipientTarget.DisplayName = "FGZO Marketingflug";
-            invoiceRecipientTarget.MemberKey = "999004";
             invoiceRecipientTarget.MemberNumber = "999004";
             invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("100", invoiceRecipientTarget);
             

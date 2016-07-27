@@ -838,7 +838,9 @@ namespace FLS.Server.Data.Mapping
                 overview.FlightCode = entity.FlightType.FlightCode;
             }
 
-            overview.FlightState = entity.FlightStateId;
+            overview.AirState = entity.AirStateId;
+            overview.ValidationState = entity.ValidationStateId;
+            overview.ProcessState = entity.ProcessStateId;
 
             if (entity.Aircraft != null)
             {
@@ -907,7 +909,9 @@ namespace FLS.Server.Data.Mapping
                 overview.FlightCode = entity.FlightType.FlightCode;
             }
 
-            overview.FlightState = entity.FlightStateId;
+            overview.AirState = entity.AirStateId;
+            overview.ValidationState = entity.ValidationStateId;
+            overview.ProcessState = entity.ProcessStateId;
 
             if (entity.Aircraft != null)
             {
@@ -943,7 +947,9 @@ namespace FLS.Server.Data.Mapping
                 if (entity.TowFlight.StartLocation != null) overview.TowFlightStartLocation = entity.TowFlight.StartLocation.LocationName;
                 if (entity.TowFlight.LdgLocation != null) overview.TowFlightLdgLocation = entity.TowFlight.LdgLocation.LocationName;
                 overview.TowAircraftImmatriculation = entity.TowFlight.AircraftImmatriculation;
-                overview.TowFlightState = entity.TowFlight.FlightStateId;
+                overview.TowFlightAirState = entity.TowFlight.AirStateId;
+                overview.TowFlightValidationState = entity.TowFlight.ValidationStateId;
+                overview.TowFlightProcessState = entity.TowFlight.ProcessStateId;
 
                 if (entity.TowFlight.StartDateTime.HasValue)
                 {
@@ -1091,7 +1097,9 @@ namespace FLS.Server.Data.Mapping
             flightDetailsData.EngineEndOperatingCounter = flight.EngineEndOperatingCounter;
             flightDetailsData.EngineOperatingCounterUnitTypeId = flight.EngineOperatingCounterUnitTypeId;
 
-            flightDetailsData.FlightState = flight.FlightStateId;
+            flightDetailsData.AirStateId = flight.AirStateId;
+            flightDetailsData.ValidationStateId = flight.ValidationStateId;
+            flightDetailsData.ProcessStateId = flight.ProcessStateId;
             flightDetailsData.FlightTypeId = flight.FlightTypeId;
             flightDetailsData.StartLocationId = flight.StartLocationId;
             flightDetailsData.LdgLocationId = flight.LdgLocationId;
@@ -1239,8 +1247,9 @@ namespace FLS.Server.Data.Mapping
         public static Flight ToFlight(this FlightDetailsData details, Flight entity = null, AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null, FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
         {
             details.ArgumentNotNull("details");
+            detailsRelatedAircraft.ArgumentNotNull("detailsRelatedAircraft");
 
-            if (detailsRelatedAircraft != null && detailsRelatedAircraft.AircraftId != details.AircraftId)
+            if (detailsRelatedAircraft.AircraftId != details.AircraftId)
             {
                 throw new InvalidConstraintException("FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
             }
@@ -1265,7 +1274,9 @@ namespace FLS.Server.Data.Mapping
             entity.EngineOperatingCounterUnitTypeId = details.EngineOperatingCounterUnitTypeId;
 
             entity.Comment = details.FlightComment;
-            entity.FlightStateId = details.FlightState;
+            entity.AirStateId = details.AirStateId;
+            entity.ValidationStateId = details.ValidationStateId;
+            entity.ProcessStateId = details.ProcessStateId;
             entity.FlightTypeId = details.FlightTypeId.GetNullableGuid();
             entity.LdgDateTime = details.LdgDateTime;
             entity.LdgLocationId = details.LdgLocationId.GetNullableGuid();
@@ -1279,7 +1290,7 @@ namespace FLS.Server.Data.Mapping
             entity.IsSoloFlight = details.IsSoloFlight;
 
             //override IsSoloFlight flag if aircraft is one seat
-            if (detailsRelatedAircraft != null && detailsRelatedAircraft.NrOfSeats.HasValue && detailsRelatedAircraft.NrOfSeats == 1)
+            if (detailsRelatedAircraft.NrOfSeats.HasValue && detailsRelatedAircraft.NrOfSeats == 1)
             {
                 entity.IsSoloFlight = true;
             }
@@ -1293,8 +1304,8 @@ namespace FLS.Server.Data.Mapping
                 entity.FlightCostBalanceTypeId = (int) FLS.Data.WebApi.Flight.FlightCostBalanceType.PilotPaysAllCosts;
             }
 
-            //may override FlightState (depending on Start or Ldg date time
-            entity.FlightStateId = entity.GetCalculatedFlightStateId();
+            //may override FlightAirState (depending on Start or Ldg date time
+            entity.AirStateId = entity.GetCalculatedFlightAirStateId();
 
             //may override NrOfLdgs (depending on start or ldg date time
             entity.NrOfLdgs = entity.GetCalculatedNrOfLandings(detailsRelatedAircraft.IsTowingOrWinchRequired);
@@ -1769,70 +1780,6 @@ namespace FLS.Server.Data.Mapping
         }
 
         #endregion FlightCostBalanceType
-
-        #region FlightState
-
-        public static FlightStateListItem ToFlightStateListItem(this DbEntities.FlightState entity, FlightStateListItem listItem = null)
-        {
-            entity.ArgumentNotNull("entity");
-
-            if (listItem == null)
-            {
-                listItem = new FlightStateListItem();
-            }
-
-            listItem.FlightStateId = entity.FlightStateId;
-
-            listItem.FlightState = entity.FlightStateName;
-
-            return listItem;
-        }
-
-        public static string ToFlightStateName(this FLS.Data.WebApi.Flight.FlightState flightStateEnum)
-        {
-            var flightStateString = "Schleppstart";
-
-            switch (flightStateEnum)
-            {
-                case FLS.Data.WebApi.Flight.FlightState.New:
-                    flightStateString = "Neuer Flug";
-                    break;
-                case FLS.Data.WebApi.Flight.FlightState.FlightPlanOpen:
-                    flightStateString = "Flugplan eröffnet";
-                    break;
-                case FLS.Data.WebApi.Flight.FlightState.Started:
-                    flightStateString = "Gestartet";
-                    break;
-                case FLS.Data.WebApi.Flight.FlightState.Landed:
-                    flightStateString = "Gelandet";
-                    break;
-                case FLS.Data.WebApi.Flight.FlightState.FlightPlanClosed:
-                    flightStateString = "Flugplan geschlossen";
-                    break;
-                case FLS.Data.WebApi.Flight.FlightState.Invalid:
-                    flightStateString = "Ungültige Angaben";
-                    break;
-                case FLS.Data.WebApi.Flight.FlightState.Valid:
-                    flightStateString = "Gültig";
-                    break;
-                case FLS.Data.WebApi.Flight.FlightState.Locked:
-                    flightStateString = "Gesperrt";
-                    break;
-                case FLS.Data.WebApi.Flight.FlightState.Invoiced:
-                    flightStateString = "Verrechnet";
-                    break;
-                case FLS.Data.WebApi.Flight.FlightState.PartialPaid:
-                    flightStateString = "Teilweise bezahlt";
-                    break;
-                case FLS.Data.WebApi.Flight.FlightState.Paid:
-                    flightStateString = "Bezahlt";
-                    break;
-            }
-
-            return flightStateString;
-        }
-
-        #endregion FlightState
 
         #region FlightType
 
@@ -2370,7 +2317,6 @@ namespace FLS.Server.Data.Mapping
 
                 details.ClubRelatedPersonDetails.MemberStateId = personClub.MemberStateId;
                 details.ClubRelatedPersonDetails.MemberNumber = personClub.MemberNumber;
-                details.ClubRelatedPersonDetails.MemberKey = personClub.MemberKey;
                 details.ClubRelatedPersonDetails.IsGliderInstructor = personClub.IsGliderInstructor;
                 details.ClubRelatedPersonDetails.IsGliderPilot = personClub.IsGliderPilot;
                 details.ClubRelatedPersonDetails.IsGliderTrainee = personClub.IsGliderTrainee;
@@ -2484,7 +2430,6 @@ namespace FLS.Server.Data.Mapping
                 }
 
                 personClub.MemberNumber = details.ClubRelatedPersonDetails.MemberNumber;
-                personClub.MemberKey = details.ClubRelatedPersonDetails.MemberKey;
                 personClub.MemberStateId = details.ClubRelatedPersonDetails.MemberStateId;
                 personClub.IsGliderInstructor = details.ClubRelatedPersonDetails.IsGliderInstructor;
                 personClub.IsGliderPilot = details.ClubRelatedPersonDetails.IsGliderPilot;

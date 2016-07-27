@@ -46,14 +46,14 @@ namespace FLS.Server.Tests.ServiceTests
             //set not invoiced flights to valid flights, so that it will not invoiced during next run in ProffixInvoiceTest test data line
             using (var context = DataAccessService.CreateDbContext())
             {
-                var lockedFlights = context.Flights.Where(x => x.FlightStateId == (int) FLS.Data.WebApi.Flight.FlightState.Locked);
+                var lockedFlights = context.Flights.Where(x => x.ProcessStateId == (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked);
 
                 if (lockedFlights.Any())
                 {
                     foreach (var lockedFlight in lockedFlights)
                     {
-                        lockedFlight.FlightStateId = (int) FLS.Data.WebApi.Flight.FlightState.Valid;
-                        Logger.Debug($"Set flight state to valid for FlightId: {lockedFlight.FlightId}");
+                        lockedFlight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.NotProcessed;
+                        Logger.Debug($"Set flight process state to not processed for FlightId: {lockedFlight.FlightId}");
                     }
 
                     context.SaveChanges();
@@ -245,7 +245,7 @@ namespace FLS.Server.Tests.ServiceTests
 
                 //check flight state
                 var invoicedFlight = FlightService.GetFlight(flightInvoiceDetails.FlightId);
-                Assert.AreEqual((int)FLS.Data.WebApi.Flight.FlightState.Invoiced, invoicedFlight.FlightStateId, $"Flight state of master flight {invoicedFlight} was not set correctly after invoicing");
+                Assert.AreEqual((int)FLS.Data.WebApi.Flight.FlightProcessState.Invoiced, invoicedFlight.ProcessStateId, $"Flight process state of master flight {invoicedFlight} was not set correctly after invoicing");
 
                 if (flightInvoiceDetails.IncludesTowFlightId.HasValue)
                 {
@@ -254,8 +254,8 @@ namespace FLS.Server.Tests.ServiceTests
                     Assert.IsNotNull(invoicedFlight.TowFlight, "The invoiced flight has no loaded tow flight reference.");
                     Assert.AreEqual(flightInvoiceDetails.IncludesTowFlightId, invoicedFlight.TowFlightId,
                         "TowFlightId between invoice details and invoiced glider flight is not equals.");
-                    Assert.AreEqual((int) FLS.Data.WebApi.Flight.FlightState.Invoiced,
-                        invoicedFlight.TowFlight.FlightStateId,
+                    Assert.AreEqual((int) FLS.Data.WebApi.Flight.FlightProcessState.Invoiced,
+                        invoicedFlight.TowFlight.ProcessStateId,
                         $"Flight state of tow flight {invoicedFlight.TowFlight} was not set correctly after invoicing");
                 }
                 else

@@ -7,13 +7,13 @@ namespace FLS.Data.WebApi.Flight
     {
         public Nullable<Guid> AircraftId { get; set; }
 
-        public bool IsFlightStateNew { get; set; }
+        public bool IsFlightAirStateNew { get; set; }
 
-        public bool IsFlightStateStarted { get; set; }
+        public bool IsFlightAirStateStarted { get; set; }
         
-        public bool IsFlightStateLanded { get; set; }
+        public bool IsFlightAirStateLanded { get; set; }
 
-        public bool IsFlightStateInvoiced { get; set; }
+        public bool IsFlightProcessStateInvoiced { get; set; }
 
         public Nullable<Guid> FlightCrewPersonId { get; set; }
 

@@ -188,7 +188,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(responsedFlightDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", responsedFlightDetails));
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.AircraftId, responsedFlightDetails.GliderFlightDetailsData.AircraftId);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.PilotPersonId, responsedFlightDetails.GliderFlightDetailsData.PilotPersonId);
-            Assert.AreEqual((int)FlightState.New, responsedFlightDetails.GliderFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.New, responsedFlightDetails.GliderFlightDetailsData.AirStateId);
             Assert.IsTrue(responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.HasValue == false || responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.Value == 0);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.FlightComment);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.CouponNumber);
@@ -216,7 +216,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.PilotPersonId, responsedFlightDetails.GliderFlightDetailsData.PilotPersonId);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.InstructorPersonId, responsedFlightDetails.GliderFlightDetailsData.InstructorPersonId);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.FlightTypeId, responsedFlightDetails.GliderFlightDetailsData.FlightTypeId);
-            Assert.AreEqual((int)FlightState.New, responsedFlightDetails.GliderFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.New, responsedFlightDetails.GliderFlightDetailsData.AirStateId);
             Assert.IsTrue(responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.HasValue == false || responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.Value == 0);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.FlightComment);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.CouponNumber);
@@ -246,7 +246,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.PilotPersonId, responsedFlightDetails.GliderFlightDetailsData.PilotPersonId);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.InstructorPersonId, responsedFlightDetails.GliderFlightDetailsData.InstructorPersonId);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.FlightTypeId, responsedFlightDetails.GliderFlightDetailsData.FlightTypeId);
-            Assert.AreEqual((int)FlightState.New, responsedFlightDetails.GliderFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.New, responsedFlightDetails.GliderFlightDetailsData.AirStateId);
             Assert.IsTrue(responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.HasValue == false || responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.Value == 0);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.FlightComment);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.CouponNumber);
@@ -254,7 +254,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(flightDetails.TowFlightDetailsData.AircraftId, responsedFlightDetails.TowFlightDetailsData.AircraftId);
             Assert.AreEqual(flightDetails.TowFlightDetailsData.PilotPersonId, responsedFlightDetails.TowFlightDetailsData.PilotPersonId);
             Assert.AreEqual(flightDetails.TowFlightDetailsData.FlightTypeId, responsedFlightDetails.TowFlightDetailsData.FlightTypeId);
-            Assert.AreEqual((int)FlightState.New, responsedFlightDetails.TowFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.New, responsedFlightDetails.TowFlightDetailsData.AirStateId);
             Assert.IsTrue(responsedFlightDetails.TowFlightDetailsData.NrOfLdgs.HasValue == false || responsedFlightDetails.TowFlightDetailsData.NrOfLdgs.Value == 0);
 
             flight = GetFlight(responsedFlightDetails.GliderFlightDetailsData.FlightId);
@@ -286,7 +286,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.PilotPersonId, responsedFlightDetails.GliderFlightDetailsData.PilotPersonId);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.InstructorPersonId, responsedFlightDetails.GliderFlightDetailsData.InstructorPersonId);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.FlightTypeId, responsedFlightDetails.GliderFlightDetailsData.FlightTypeId);
-            Assert.AreEqual((int)FlightState.Started, responsedFlightDetails.GliderFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.Started, responsedFlightDetails.GliderFlightDetailsData.AirStateId);
             Assert.IsTrue(responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.HasValue == false || responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.Value == 0);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.FlightComment);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.CouponNumber);
@@ -294,7 +294,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(flightDetails.TowFlightDetailsData.AircraftId, responsedFlightDetails.TowFlightDetailsData.AircraftId);
             Assert.AreEqual(flightDetails.TowFlightDetailsData.PilotPersonId, responsedFlightDetails.TowFlightDetailsData.PilotPersonId);
             Assert.AreEqual(flightDetails.TowFlightDetailsData.FlightTypeId, responsedFlightDetails.TowFlightDetailsData.FlightTypeId);
-            Assert.AreEqual((int)FlightState.Started, responsedFlightDetails.TowFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.Started, responsedFlightDetails.TowFlightDetailsData.AirStateId);
             Assert.IsTrue(responsedFlightDetails.TowFlightDetailsData.NrOfLdgs.HasValue == false || responsedFlightDetails.TowFlightDetailsData.NrOfLdgs.Value == 0);
 
             Assert.IsNotNull(flightDetails.GliderFlightDetailsData);
@@ -337,7 +337,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.PilotPersonId, responsedFlightDetails.GliderFlightDetailsData.PilotPersonId);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.InstructorPersonId, responsedFlightDetails.GliderFlightDetailsData.InstructorPersonId);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.FlightTypeId, responsedFlightDetails.GliderFlightDetailsData.FlightTypeId);
-            Assert.AreEqual((int)FlightState.Started, responsedFlightDetails.GliderFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.Started, responsedFlightDetails.GliderFlightDetailsData.AirStateId);
             Assert.IsTrue(responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.HasValue == false || responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.Value == 0);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.FlightComment);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.CouponNumber);
@@ -347,7 +347,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.AreEqual(flightDetails.TowFlightDetailsData.FlightTypeId, responsedFlightDetails.TowFlightDetailsData.FlightTypeId);
             Assert.AreEqual(flightDetails.TowFlightDetailsData.LdgDateTime.Value.ToUniversalTime(), responsedFlightDetails.TowFlightDetailsData.LdgDateTime);
             Assert.AreEqual(flightDetails.TowFlightDetailsData.LdgLocationId, responsedFlightDetails.TowFlightDetailsData.LdgLocationId);
-            Assert.AreEqual((int)FlightState.Landed, responsedFlightDetails.TowFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.Landed, responsedFlightDetails.TowFlightDetailsData.AirStateId);
             Assert.AreEqual(1, responsedFlightDetails.TowFlightDetailsData.NrOfLdgs);
 
             Assert.IsNotNull(flightDetails.GliderFlightDetailsData);
@@ -393,7 +393,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(flightDetails.GliderFlightDetailsData.LdgDateTime.HasValue);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.LdgDateTime.Value.ToUniversalTime(), responsedFlightDetails.GliderFlightDetailsData.LdgDateTime);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.LdgLocationId, responsedFlightDetails.GliderFlightDetailsData.LdgLocationId);
-            Assert.AreEqual((int)FlightState.Landed, responsedFlightDetails.GliderFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.Landed, responsedFlightDetails.GliderFlightDetailsData.AirStateId);
             Assert.AreEqual(1, responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.FlightComment);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.CouponNumber);
@@ -404,7 +404,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(flightDetails.TowFlightDetailsData.LdgDateTime.HasValue);
             Assert.AreEqual(flightDetails.TowFlightDetailsData.LdgDateTime.Value.ToUniversalTime(), responsedFlightDetails.TowFlightDetailsData.LdgDateTime);
             Assert.AreEqual(flightDetails.TowFlightDetailsData.LdgLocationId, responsedFlightDetails.TowFlightDetailsData.LdgLocationId);
-            Assert.AreEqual((int)FlightState.Landed, responsedFlightDetails.TowFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.Landed, responsedFlightDetails.TowFlightDetailsData.AirStateId);
             Assert.AreEqual(1, responsedFlightDetails.TowFlightDetailsData.NrOfLdgs);
 
             Assert.IsNotNull(flightDetails.GliderFlightDetailsData);
@@ -449,7 +449,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(flightDetails.GliderFlightDetailsData.LdgDateTime.HasValue);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.LdgDateTime.Value.ToUniversalTime(), responsedFlightDetails.GliderFlightDetailsData.LdgDateTime);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.LdgLocationId, responsedFlightDetails.GliderFlightDetailsData.LdgLocationId);
-            Assert.AreEqual((int)FlightState.Landed, responsedFlightDetails.GliderFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.Landed, responsedFlightDetails.GliderFlightDetailsData.AirStateId);
             Assert.AreEqual(1, responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs);
             Assert.AreEqual(comment, responsedFlightDetails.GliderFlightDetailsData.FlightComment);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.CouponNumber);
@@ -460,7 +460,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(flightDetails.TowFlightDetailsData.LdgDateTime.HasValue);
             Assert.AreEqual(flightDetails.TowFlightDetailsData.LdgDateTime.Value.ToUniversalTime(), responsedFlightDetails.TowFlightDetailsData.LdgDateTime);
             Assert.AreEqual(flightDetails.TowFlightDetailsData.LdgLocationId, responsedFlightDetails.TowFlightDetailsData.LdgLocationId);
-            Assert.AreEqual((int)FlightState.Landed, responsedFlightDetails.TowFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.Landed, responsedFlightDetails.TowFlightDetailsData.AirStateId);
             Assert.AreEqual(1, responsedFlightDetails.TowFlightDetailsData.NrOfLdgs);
 
             Assert.IsNotNull(flightDetails.GliderFlightDetailsData);
@@ -516,7 +516,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
                                         responsedFlightDetails));
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.AircraftId,
                             responsedFlightDetails.GliderFlightDetailsData.AircraftId);
-            Assert.AreEqual((int) FlightState.New, responsedFlightDetails.GliderFlightDetailsData.FlightState);
+            Assert.AreEqual((int) FlightAirState.New, responsedFlightDetails.GliderFlightDetailsData.AirStateId);
             Assert.IsTrue(responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.HasValue == false ||
                           responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.Value == 0);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.FlightComment);
@@ -546,7 +546,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             responsedFlightDetails = ConvertToModel<FlightDetails>(response);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.AircraftId, responsedFlightDetails.GliderFlightDetailsData.AircraftId);
             Assert.AreEqual(flightDetails.GliderFlightDetailsData.FlightTypeId, responsedFlightDetails.GliderFlightDetailsData.FlightTypeId);
-            Assert.AreEqual((int)FlightState.New, responsedFlightDetails.GliderFlightDetailsData.FlightState);
+            Assert.AreEqual((int)FlightAirState.New, responsedFlightDetails.GliderFlightDetailsData.AirStateId);
             Assert.IsTrue(responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.HasValue == false || responsedFlightDetails.GliderFlightDetailsData.NrOfLdgs.Value == 0);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.FlightComment);
             Assert.IsNull(responsedFlightDetails.GliderFlightDetailsData.CouponNumber);
@@ -621,9 +621,9 @@ namespace FLS.Server.Tests.WebApiControllerTests
                 Assert.IsNotNull(flightDetails, string.Format("FlightDetails is null with FlightId: {0}", id));
                 Assert.AreEqual(id, flightDetails.Id, string.Format("Overview.FlightId: {0} not equal with FlightDetails.FlightId: {1}", id, flightDetails.Id));
 
-                if ((flightDetails.GliderFlightDetailsData != null && flightDetails.GliderFlightDetailsData.FlightState >= (int) FlightState.Locked)
-                    || (flightDetails.TowFlightDetailsData != null && flightDetails.TowFlightDetailsData.FlightState >= (int)FlightState.Locked)
-                    || (flightDetails.MotorFlightDetailsData != null && flightDetails.MotorFlightDetailsData.FlightState >= (int)FlightState.Locked))
+                if ((flightDetails.GliderFlightDetailsData != null && flightDetails.GliderFlightDetailsData.ProcessStateId >= (int)FlightProcessState.Locked)
+                    || (flightDetails.TowFlightDetailsData != null && flightDetails.TowFlightDetailsData.ProcessStateId >= (int)FlightProcessState.Locked)
+                    || (flightDetails.MotorFlightDetailsData != null && flightDetails.MotorFlightDetailsData.ProcessStateId >= (int)FlightProcessState.Locked))
                 {
                     //can't update record which is locked
                     continue;
@@ -675,12 +675,12 @@ namespace FLS.Server.Tests.WebApiControllerTests
                 var notValidatedFlights2 = context.Flights.Where(q => q.ValidatedOn == null);
                 Assert.IsFalse(notValidatedFlights2.Any());
 
-                var lockedFlights = context.Flights.Where(q => q.FlightStateId == (int)FLS.Data.WebApi.Flight.FlightState.Locked);
+                var lockedFlights = context.Flights.Where(q => q.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked);
                 Assert.IsFalse(lockedFlights.Any());
 
                 var lockFlights = GetAsync("/api/v1/flights/lock/force").Result;
 
-                var lockedFlights2 = context.Flights.Where(q => q.FlightStateId == (int)FLS.Data.WebApi.Flight.FlightState.Locked);
+                var lockedFlights2 = context.Flights.Where(q => q.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked);
                 Assert.IsTrue(lockedFlights2.Any());
             }
         }

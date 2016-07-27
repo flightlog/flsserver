@@ -39,7 +39,11 @@ namespace FLS.Data.WebApi.Flight
 
         public string FlightComment { get; set; }
 
-        public int FlightState { get; set; }
+        public int AirStateId { get; set; }
+
+        public int ValidationStateId { get; set; }
+
+        public int ProcessStateId { get; set; }
 
         public Nullable<Guid> FlightTypeId { get; set; }
 

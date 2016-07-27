@@ -33,7 +33,6 @@ namespace FLS.Server.ProffixInvoiceService.Rules
             {
                 flightInvoiceDetails.RecipientDetails.RecipientName = invoiceRecipientTarget.DisplayName;
                 flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber = invoiceRecipientTarget.MemberNumber;
-                flightInvoiceDetails.RecipientDetails.PersonClubMemberKey = invoiceRecipientTarget.MemberKey;
 
                 //invoice is created for club internal (customer already paid)
                 flightInvoiceDetails.IsInvoicedToClubInternal = true;

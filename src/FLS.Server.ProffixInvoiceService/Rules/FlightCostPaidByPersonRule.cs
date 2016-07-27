@@ -47,7 +47,6 @@ namespace FLS.Server.ProffixInvoiceService.Rules
                     flightInvoiceDetails.RecipientDetails.ZipCode = personDetails.ZipCode;
                     flightInvoiceDetails.RecipientDetails.City = personDetails.City;
                     flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber = personDetails.ClubRelatedPersonDetails.MemberNumber;
-                    flightInvoiceDetails.RecipientDetails.PersonClubMemberKey = personDetails.ClubRelatedPersonDetails.MemberKey;
                 }
             }
 

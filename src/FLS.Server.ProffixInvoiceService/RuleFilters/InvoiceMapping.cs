@@ -9,7 +9,7 @@ namespace FLS.Server.ProffixInvoiceService.RuleFilters
         ///// <summary>
         ///// Gets the instructor to erp article mapping.
         ///// </summary>
-        ///// <key>The MemberKey of the PersonClub of the instructor.</key>
+        ///// <key>The MemberNumber of the PersonClub of the instructor.</key>
         ///// <value>
         ///// The target ERPArticleNumber.
         ///// </value>

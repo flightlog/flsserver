@@ -79,9 +79,12 @@ namespace FLS.Server.Data.DbEntities
         public bool NoStartTimeInformation { get; set; }
 
         public bool NoLdgTimeInformation { get; set; }
+        
+        public int AirStateId { get; set; }
 
-        [Column("FlightState")]
-        public int FlightStateId { get; set; }
+        public int ValidationStateId { get; set; }
+
+        public int ProcessStateId { get; set; }
 
         public int FlightAircraftType { get; set; }
 
@@ -154,7 +157,11 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual Flight TowFlight { get; set; }
 
-        public virtual FlightState FlightState { get; set; }
+        public virtual FlightAirState FlightAirState { get; set; }
+        
+        public virtual FlightValidationState FlightValidationState { get; set; }
+
+        public virtual FlightProcessState FlightProcessState { get; set; }
 
         public virtual FlightType FlightType { get; set; }
 
@@ -165,50 +172,52 @@ namespace FLS.Server.Data.DbEntities
         public virtual StartType StartType { get; set; }
 
         #region additional methods
-        internal int GetCalculatedFlightStateId()
+        internal int GetCalculatedFlightAirStateId()
         {
-            if (FlightStateId >= (int)FLS.Data.WebApi.Flight.FlightState.Landed)
+            if (AirStateId >= (int)FLS.Data.WebApi.Flight.FlightAirState.Landed)
             {
                 //only workflow processed flight states (invalid, valid, locked, invoiced, partial paid, paid)
                 //or at minimum landed flights (after landed flights, flight state can't be calculated, except with workflows)
-                return FlightStateId;
+                return AirStateId;
             }
 
             if (LdgDateTime.HasValue)
             {
-                if (FlightStateId <= (int)FLS.Data.WebApi.Flight.FlightState.Landed)
+                if (AirStateId <= (int)FLS.Data.WebApi.Flight.FlightAirState.Landed)
                 {
-                    return (int)FLS.Data.WebApi.Flight.FlightState.Landed;
+                    return (int)FLS.Data.WebApi.Flight.FlightAirState.Landed;
                 }
             }
             else if (StartDateTime.HasValue)
             {
-                if (FlightStateId <= (int)FLS.Data.WebApi.Flight.FlightState.Started)
+                if (AirStateId <= (int)FLS.Data.WebApi.Flight.FlightAirState.Started)
                 {
-                    return (int)FLS.Data.WebApi.Flight.FlightState.Started;
+                    return (int)FLS.Data.WebApi.Flight.FlightAirState.Started;
                 }
             }
-            else if (FlightStateId == (int)FLS.Data.WebApi.Flight.FlightState.FlightPlanOpen)
+            else if (AirStateId == (int)FLS.Data.WebApi.Flight.FlightAirState.FlightPlanOpen)
             {
-                return (int)FLS.Data.WebApi.Flight.FlightState.FlightPlanOpen;
+                return (int)FLS.Data.WebApi.Flight.FlightAirState.FlightPlanOpen;
             }
 
-            return (int)FLS.Data.WebApi.Flight.FlightState.New;
+            return (int)FLS.Data.WebApi.Flight.FlightAirState.New;
         }
 
         /// <summary>
-        /// Gets the calculated nr of landings based on the current FlightState (IMPORTANT: FlightState must be updated or set first).
+        /// Gets the calculated nr of landings based on the current FlightState.
         /// </summary>
         /// <returns></returns>
         internal int? GetCalculatedNrOfLandings(bool isTowingOrWinchRequired)
         {
-            if (FlightStateId <= (int)FLS.Data.WebApi.Flight.FlightState.Started)
+            var currentFlightAirStateId = GetCalculatedFlightAirStateId();
+
+            if (currentFlightAirStateId <= (int)FLS.Data.WebApi.Flight.FlightAirState.Started)
             {
                 // not started or just started flights do not have a landing
                 return 0;
             }
             
-            if (FlightStateId == (int)FLS.Data.WebApi.Flight.FlightState.Landed
+            if (currentFlightAirStateId == (int)FLS.Data.WebApi.Flight.FlightAirState.Landed
                 && (NrOfLdgs.HasValue == false || NrOfLdgs.Value <= 0))
             {
                 // only set a value if it is landed and has no value
@@ -316,7 +325,7 @@ namespace FLS.Server.Data.DbEntities
         {
             get
             {
-                return Pilot != null && FlightStateId.Equals((int)FLS.Data.WebApi.Flight.FlightState.New);
+                return Pilot != null && AirStateId == (int)FLS.Data.WebApi.Flight.FlightAirState.New;
             }
         }
 
@@ -325,7 +334,7 @@ namespace FLS.Server.Data.DbEntities
         /// </summary>
         public bool CanLand
         {
-            get { return FlightStateId.Equals((int)FLS.Data.WebApi.Flight.FlightState.Started); }
+            get { return AirStateId == (int)FLS.Data.WebApi.Flight.FlightAirState.Started; }
         }
 
         /// <summary>
@@ -684,8 +693,12 @@ namespace FLS.Server.Data.DbEntities
                 sb.Append(FlightType.FlightCode);
             }
 
-            sb.Append(", Flight-State: ");
-            sb.Append(FlightStateId);
+            sb.Append(", Flight-Air-State: ");
+            sb.Append(AirStateId);
+            sb.Append(", Flight-Validation-State: ");
+            sb.Append(ValidationStateId);
+            sb.Append(", Flight-Process-State: ");
+            sb.Append(ProcessStateId);
 
             if (TowFlight != null)
             {
@@ -694,8 +707,12 @@ namespace FLS.Server.Data.DbEntities
                 sb.Append(", TowPilot: ");
                 sb.Append(TowFlight.PilotDisplayName);
 
-                sb.Append(", Tow-Flight-State: ");
-                sb.Append(TowFlight.FlightState);
+                sb.Append(", Tow-Flight-Air-State: ");
+                sb.Append(TowFlight.AirStateId);
+                sb.Append(", Tow-Flight-Validation-State: ");
+                sb.Append(TowFlight.ValidationStateId);
+                sb.Append(", Tow-Flight-Process-State: ");
+                sb.Append(TowFlight.ProcessStateId);
             }
 
             return sb.ToString();
@@ -742,14 +759,14 @@ namespace FLS.Server.Data.DbEntities
                 || NrOfLdgs.HasValue == false
                 || NrOfLdgs.Value < 1)
             {
-                FlightStateId = (int) FLS.Data.WebApi.Flight.FlightState.Invalid;
+                ValidationStateId = (int) FLS.Data.WebApi.Flight.FlightValidationState.Invalid;
                 return;
             }
 
             if (FlightAircraftType == (int) FlightAircraftTypeValue.TowFlight)
             {
                 //validation finished
-                FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Valid;
+                ValidationStateId = (int)FLS.Data.WebApi.Flight.FlightValidationState.Valid;
                 return;
             }
 
@@ -758,7 +775,7 @@ namespace FLS.Server.Data.DbEntities
                 if (TowFlightId == Guid.Empty
                     || TowFlight == null)
                 {
-                    FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Invalid;
+                    ValidationStateId = (int)FLS.Data.WebApi.Flight.FlightValidationState.Invalid;
                 }
 
                 if (TowFlight != null)
@@ -770,7 +787,7 @@ namespace FLS.Server.Data.DbEntities
             {
                 if (TowFlightId.HasValue)
                 {
-                    FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Invalid;
+                    ValidationStateId = (int)FLS.Data.WebApi.Flight.FlightValidationState.Invalid;
                 }
             }
             else if (StartTypeId.Value == (int)AircraftStartType.WinchLaunch)
@@ -778,7 +795,7 @@ namespace FLS.Server.Data.DbEntities
                 if (WinchOperator == null
                     || WinchOperator.HasPerson == false)
                 {
-                    FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Invalid;
+                    ValidationStateId = (int)FLS.Data.WebApi.Flight.FlightValidationState.Invalid;
                 }
             }
             else if (StartTypeId.Value == (int)AircraftStartType.SelfStart)
@@ -790,7 +807,7 @@ namespace FLS.Server.Data.DbEntities
                 
             }
 
-            FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Valid;
+            ValidationStateId = (int)FLS.Data.WebApi.Flight.FlightValidationState.Valid;
         }
         #endregion additional methods
     }

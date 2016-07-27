@@ -8,18 +8,19 @@ using System.Text;
 
 namespace FLS.Server.Data.DbEntities
 {
-    public partial class FlightState
+    public partial class FlightProcessState
     {
-        public FlightState()
+        public FlightProcessState()
         {
             Flights = new HashSet<Flight>();
         }
 
-        public int FlightStateId { get; set; }
+        [Required]
+        public int FlightProcessStateId { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string FlightStateName { get; set; }
+        public string FlightProcessStateName { get; set; }
 
         [StringLength(200)]
         public string Comment { get; set; }

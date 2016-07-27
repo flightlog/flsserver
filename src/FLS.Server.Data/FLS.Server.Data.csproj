@@ -85,6 +85,9 @@
     <Compile Include="DbEntities\AircraftReservationType.cs" />
     <Compile Include="DbEntities\ClubState.cs" />
     <Compile Include="DbEntities\Article.cs" />
+    <Compile Include="DbEntities\FlightProcessState.cs" />
+    <Compile Include="DbEntities\FlightValidationState.cs" />
+    <Compile Include="DbEntities\FlightAirState.cs" />
     <Compile Include="DbEntities\LanguageTranslation.cs" />
     <Compile Include="DbEntities\Language.cs" />
     <Compile Include="DbEntities\PlanningDayAssignment.cs" />
@@ -102,7 +105,6 @@
     <Compile Include="DbEntities\FlightCostBalanceType.cs" />
     <Compile Include="DbEntities\FlightCrew.cs" />
     <Compile Include="DbEntities\FlightCrewType.cs" />
-    <Compile Include="DbEntities\FlightState.cs" />
     <Compile Include="DbEntities\FlightType.cs" />
     <Compile Include="DbEntities\PlanningDay.cs" />
     <Compile Include="DeletedFLSDataEntities.cs" />

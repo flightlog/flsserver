@@ -144,22 +144,51 @@ namespace FLS.Server.Service
         #endregion EngineOperatingCounter
 
         #region FlightState
-        public List<FlightStateListItem> GetFlightStateListItems()
-        {
-            var flightStates = GetFlightStates();
-
-            var flightStateListItems = flightStates.Select(flightState => flightState.ToFlightStateListItem()).ToList();
-
-            return flightStateListItems;
-        }
-
-        internal List<FLS.Server.Data.DbEntities.FlightState> GetFlightStates()
+        public List<FlightStateListItem> GetFlightAirStateListItems()
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var flightStates = context.FlightStates.OrderBy(a => a.FlightStateId).ToList();
+                var flightStates = context.FlightAirStates.OrderBy(a => a.FlightAirStateId);
 
-                return flightStates;
+                var flightStateListItems = flightStates.Select(flightState => new FlightStateListItem()
+                {
+                    FlightStateId = flightState.FlightAirStateId,
+                    FlightState = flightState.FlightAirStateName
+                }).ToList();
+
+                return flightStateListItems;
+            }
+        }
+        
+        public List<FlightStateListItem> GetFlightValidationStateListItems()
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var flightStates = context.FlightValidationStates.OrderBy(a => a.FlightValidationStateId);
+
+                var flightStateListItems = flightStates.Select(flightState => new FlightStateListItem()
+                {
+                    FlightStateId = flightState.FlightValidationStateId,
+                    FlightState = flightState.FlightValidationStateName
+                }).ToList();
+
+                return flightStateListItems;
+            }
+        }
+
+        public List<FlightStateListItem> GetFlightProcessStateListItems()
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var flightStates = context.FlightProcessStates.OrderBy(a => a.FlightProcessStateId);
+
+                var flightStateListItems = flightStates.Select(flightState => new FlightStateListItem()
+                {
+                    FlightStateId = flightState.FlightProcessStateId,
+                    FlightState = flightState.FlightProcessStateName
+                }).ToList();
+
+                return flightStateListItems;
             }
         }
         #endregion FlightState
@@ -436,10 +465,12 @@ namespace FLS.Server.Service
             try
             {
                 //All flights which have a flight state of invalid or less (started, landed, new)
-                var todaysFlights = GetFlights(flight => flight.OwnerId == clubId && flight.FlightStateId < (int)FLS.Data.WebApi.Flight.FlightState.Valid);
+                var todaysFlights = GetFlights(flight => flight.OwnerId == clubId && flight.ValidationStateId < (int)FLS.Data.WebApi.Flight.FlightValidationState.Valid);
 
                 using (var context = _dataAccessService.CreateDbContext())
                 {
+                    var flightValidationStates = context.FlightValidationStates.ToList();
+
                     foreach (var flight in todaysFlights)
                     {
                         context.Flights.Attach(flight);
@@ -447,11 +478,15 @@ namespace FLS.Server.Service
                         flight.ValidateFlight();
                         flight.DoNotUpdateMetaData = true;
 
-                        Logger.Info(
-                            string.Format(
-                                "The currently validated flight {0} has now the following Flight-State: {1} ({2})",
-                                flight,
-                                flight.FlightState, ((FLS.Data.WebApi.Flight.FlightState)flight.FlightStateId).ToFlightStateName()));
+                        try
+                        {
+                            Logger.Info(
+                            $"The currently validated flight {flight} has now the following Flight-State: {flight.ValidationStateId} ({flightValidationStates.First(q => q.FlightValidationStateId == flight.ValidationStateId).FlightValidationStateName})");
+                        }
+                        catch (Exception exception)
+                        {
+                            Logger.Error(exception);
+                        }
                     }
 
                     context.SaveChanges();
@@ -479,7 +514,8 @@ namespace FLS.Server.Service
 
                 var flights =
                     GetFlights(
-                        flight => flight.FlightStateId == (int)FLS.Data.WebApi.Flight.FlightState.Valid
+                        flight => flight.ValidationStateId == (int)FLS.Data.WebApi.Flight.FlightValidationState.Valid
+                                    && flight.ProcessStateId < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
                                     && flight.OwnerId == clubId
                                    && (forceLockNow || DbFunctions.TruncateTime(flight.CreatedOn) <= lockingDate.Date));
 
@@ -489,7 +525,7 @@ namespace FLS.Server.Service
                     {
                         context.Flights.Attach(flight);
 
-                        flight.FlightStateId = (int)FLS.Data.WebApi.Flight.FlightState.Locked;
+                        flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked;
 
                         Logger.Info(string.Format("The valid flight {0} has now been locked.", flight));
                     }
@@ -600,10 +636,9 @@ namespace FLS.Server.Service
             var originalFlight = GetFlight(currentFlightDetails.FlightId);
             originalFlight.EntityNotNull("Flight", currentFlightDetails.FlightId);
 
-            if (originalFlight.FlightStateId > (int)FLS.Data.WebApi.Flight.FlightState.Locked)
+            if (originalFlight.ProcessStateId > (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked)
             {
-                var message = string.Format("Flight with Id: {0} is locked and can not be updated!",
-                                            originalFlight.Id);
+                var message = $"Flight with Id: {originalFlight.Id} has already been invoiced and can not be updated!";
                 Logger.Warn(message);
                 throw new LockedFlightException(message);
             }
@@ -733,7 +768,7 @@ namespace FLS.Server.Service
                                                     || (filterCriteria.TakeMotorFlightStarts && (flight.StartTypeId == (int)AircraftStartType.MotorFlightStart))
                                                     || (filterCriteria.TakeExternalStarts && (flight.StartTypeId == (int)AircraftStartType.ExternalStart)))
                                                     &&
-                                                    flight.FlightStateId >= (int)FLS.Data.WebApi.Flight.FlightState.Landed);
+                                                    flight.AirStateId >= (int)FLS.Data.WebApi.Flight.FlightAirState.Landed);
                 
                 if (filterCriteria.AircraftIds != null && filterCriteria.AircraftIds.Count > 0)
                 {
@@ -824,7 +859,7 @@ namespace FLS.Server.Service
             {
                 foreach (var flightOverview in list)
                 {
-                    if (flightOverview.FlightState < (int)FLS.Data.WebApi.Flight.FlightState.Locked
+                    if (flightOverview.ProcessState < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
                         || IsCurrentUserInRoleClubAdministrator)
                     {
                         flightOverview.CanUpdateRecord = true;
@@ -857,7 +892,7 @@ namespace FLS.Server.Service
             {
                 foreach (var flightOverview in list)
                 {
-                    if (flightOverview.FlightState < (int)FLS.Data.WebApi.Flight.FlightState.Locked 
+                    if (flightOverview.ProcessState < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked 
                         || IsCurrentUserInRoleClubAdministrator)
                     {
                         flightOverview.CanUpdateRecord = true;
@@ -888,7 +923,7 @@ namespace FLS.Server.Service
                 return;
             }
 
-            if (flight.FlightStateId < (int)FLS.Data.WebApi.Flight.FlightState.Locked
+            if (flight.ProcessStateId < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
                 || IsCurrentUserInRoleClubAdministrator)
             {
                 details.CanUpdateRecord = true;

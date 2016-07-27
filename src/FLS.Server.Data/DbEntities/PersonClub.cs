@@ -23,9 +23,6 @@ namespace FLS.Server.Data.DbEntities
         [StringLength(20)]
         public string MemberNumber { get; set; }
 
-        [StringLength(40)]
-        public string MemberKey { get; set; }
-
         public Guid? MemberStateId { get; set; }
 
         public bool IsMotorPilot { get; set; }

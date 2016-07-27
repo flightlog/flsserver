@@ -65,7 +65,9 @@ namespace FLS.Server.Data
         public virtual DbSet<FlightCrew> FlightCrews { get; set; }
         public virtual DbSet<FlightCrewType> FlightCrewTypes { get; set; }
         public virtual DbSet<Flight> Flights { get; set; }
-        public virtual DbSet<FlightState> FlightStates { get; set; }
+        public virtual DbSet<FlightAirState> FlightAirStates { get; set; }
+        public virtual DbSet<FlightValidationState> FlightValidationStates { get; set; }
+        public virtual DbSet<FlightProcessState> FlightProcessStates { get; set; }
         public virtual DbSet<FlightType> FlightTypes { get; set; }
         public virtual DbSet<InOutboundPoint> InOutboundPoints { get; set; }
         public virtual DbSet<LanguageTranslation> LanguageTranslations { get; set; }
@@ -369,12 +371,24 @@ namespace FLS.Server.Data
                 .HasMany(e => e.TowedFlights)
                 .WithOptional(e => e.TowFlight)
                 .HasForeignKey(e => e.TowFlightId);
-
-            modelBuilder.Entity<FlightState>()
+            
+            modelBuilder.Entity<FlightAirState>()
                 .HasMany(e => e.Flights)
-                .WithRequired(e => e.FlightState)
-                .HasForeignKey(e => e.FlightStateId)
+                .WithRequired(e => e.FlightAirState)
+                .HasForeignKey(e => e.AirStateId)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<FlightValidationState>()
+               .HasMany(e => e.Flights)
+               .WithRequired(e => e.FlightValidationState)
+               .HasForeignKey(e => e.ValidationStateId)
+               .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<FlightProcessState>()
+               .HasMany(e => e.Flights)
+               .WithRequired(e => e.FlightProcessState)
+               .HasForeignKey(e => e.ProcessStateId)
+               .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<FlightType>()
                 .HasMany(e => e.ClubsDefaultGliderFlightType)
