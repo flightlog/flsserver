@@ -464,14 +464,16 @@ namespace FLS.Server.Service
         {
             try
             {
-                //All flights which have a flight state of invalid or less (started, landed, new)
-                var todaysFlights = GetFlights(flight => flight.OwnerId == clubId && flight.ValidationStateId < (int)FLS.Data.WebApi.Flight.FlightValidationState.Valid);
+                //Flights which are not validated or are invalid, or have been modified since last validation date
+                var flightsToValidate = GetFlights(flight => flight.OwnerId == clubId 
+                    && (flight.ValidationStateId < (int)FLS.Data.WebApi.Flight.FlightValidationState.Valid
+                    || (flight.ModifiedOn.HasValue && flight.ValidatedOn.HasValue && (flight.ModifiedOn >= flight.ValidatedOn))));
 
                 using (var context = _dataAccessService.CreateDbContext())
                 {
                     var flightValidationStates = context.FlightValidationStates.ToList();
 
-                    foreach (var flight in todaysFlights)
+                    foreach (var flight in flightsToValidate)
                     {
                         context.Flights.Attach(flight);
 
@@ -508,6 +510,14 @@ namespace FLS.Server.Service
 
         public void LockFlights(Guid clubId, bool forceLockNow = false)
         {
+            if (forceLockNow && IsCurrentUserInRoleSystemAdministrator == false &&
+                IsCurrentUserInRoleClubAdministrator == false)
+            {
+                //user can not force the lock if he is not club admin or system admin
+                Logger.Info("User can not force the lock of the flight if he is not club admin or system admin");
+                throw new MethodAccessException("User can not force the lock of the flight if he is not club admin or system admin");
+            }
+
             try
             {
                 DateTime lockingDate = DateTime.Today.AddDays(-2).AddTicks(-1);
@@ -613,23 +623,16 @@ namespace FLS.Server.Service
 
             flight.EntityNotNull("Flight", Guid.Empty);
 
-            InsertFlight(flight);
-
-            //Map it back to details
-            flight.ToFlightDetails(flightDetails);
-        }
-        
-        internal void InsertFlight(Flight flight)
-        {
-            flight.ArgumentNotNull("flight");
-
             using (var context = _dataAccessService.CreateDbContext())
             {
                 context.Flights.Add(flight);
                 context.SaveChanges();
             }
-        }
 
+            //Map it back to details
+            flight.ToFlightDetails(flightDetails);
+        }
+        
         public void UpdateFlightDetails(FlightDetails currentFlightDetails)
         {
             currentFlightDetails.ArgumentNotNull("currentFlightDetails");

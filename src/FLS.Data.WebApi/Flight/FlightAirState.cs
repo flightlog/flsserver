@@ -8,7 +8,9 @@ namespace FLS.Data.WebApi.Flight
     {
         New = 0,
         FlightPlanOpen = 5,
+        MightBeStarted = 8,
         Started = 10,
+        MightBeLandedOrInAir = 15,
         Landed = 20,
         FlightPlanClosed = 25
     }

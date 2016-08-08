@@ -749,36 +749,7 @@ namespace FLS.Server.Tests
             flightDetails.StartType = (int)FLS.Server.Data.Enums.AircraftStartType.TowingByAircraft;
             return flightDetails;
         }
-
-        public void CreateFlightsForInvoicingTests(Guid clubId)
-        {
-            var startTime = DateTime.Today.AddMonths(-1).AddHours(10);
-            var flightDetails = new FlightDetails();
-            flightDetails.StartType = 1; //Towing GLider flight
-            flightDetails.GliderFlightDetailsData = CreateSchoolGliderFlightDetailsData(clubId, "HB-1824", startTime, 45);
-            flightDetails.TowFlightDetailsData = CreateTowFlightDetailsData(clubId, "HB-KCB", startTime, 12);
-
-            FlightService.InsertFlightDetails(flightDetails);
-
-            Assert.IsTrue(flightDetails.FlightId.IsValid());
-
-            var flight = FlightService.GetFlight(flightDetails.FlightId);
-
-            Assert.IsTrue(flight.FlightId.IsValid());
-
-            using (var context = DataAccessService.CreateDbContext())
-            {
-                context.Flights.Attach(flight);
-                flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked;
-
-                if (context.ChangeTracker.HasChanges())
-                {
-                    context.SaveChanges();
-                }
-            }
-
-        }
-
+        
         public Flight CreateGliderFlight(Guid clubId, DateTime startTime)
         {
             var flightDetails = new FlightDetails();

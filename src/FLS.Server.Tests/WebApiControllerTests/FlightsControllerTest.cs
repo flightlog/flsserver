@@ -660,6 +660,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         }
         #endregion GliderFlights
 
+        [Ignore]
         [TestMethod]
         [TestCategory("WebApi")]
         public void FlightValidationAndLockDetailsWebApiTest()

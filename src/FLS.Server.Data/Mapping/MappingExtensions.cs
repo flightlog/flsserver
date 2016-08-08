@@ -1274,9 +1274,10 @@ namespace FLS.Server.Data.Mapping
             entity.EngineOperatingCounterUnitTypeId = details.EngineOperatingCounterUnitTypeId;
 
             entity.Comment = details.FlightComment;
-            entity.AirStateId = details.AirStateId;
-            entity.ValidationStateId = details.ValidationStateId;
-            entity.ProcessStateId = details.ProcessStateId;
+            //do not overtake the states from the details (client)
+            //entity.AirStateId = details.AirStateId;
+            //entity.ValidationStateId = details.ValidationStateId;
+            //entity.ProcessStateId = details.ProcessStateId;
             entity.FlightTypeId = details.FlightTypeId.GetNullableGuid();
             entity.LdgDateTime = details.LdgDateTime;
             entity.LdgLocationId = details.LdgLocationId.GetNullableGuid();

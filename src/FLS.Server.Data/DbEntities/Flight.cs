@@ -15,6 +15,8 @@ namespace FLS.Server.Data.DbEntities
         {
             FlightCrews = new HashSet<FlightCrew>();
             TowedFlights = new HashSet<Flight>();
+            ValidationStateId = (int) FLS.Data.WebApi.Flight.FlightValidationState.NotValidated;
+            ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.NotProcessed;
         }
 
         public Guid FlightId { get; set; }
@@ -174,28 +176,30 @@ namespace FLS.Server.Data.DbEntities
         #region additional methods
         internal int GetCalculatedFlightAirStateId()
         {
-            if (AirStateId >= (int)FLS.Data.WebApi.Flight.FlightAirState.Landed)
-            {
-                //only workflow processed flight states (invalid, valid, locked, invoiced, partial paid, paid)
-                //or at minimum landed flights (after landed flights, flight state can't be calculated, except with workflows)
-                return AirStateId;
-            }
-
             if (LdgDateTime.HasValue)
             {
-                if (AirStateId <= (int)FLS.Data.WebApi.Flight.FlightAirState.Landed)
-                {
-                    return (int)FLS.Data.WebApi.Flight.FlightAirState.Landed;
-                }
+                return (int)FLS.Data.WebApi.Flight.FlightAirState.Landed;
             }
-            else if (StartDateTime.HasValue)
+
+            if (NoLdgTimeInformation)
             {
-                if (AirStateId <= (int)FLS.Data.WebApi.Flight.FlightAirState.Started)
+                if (StartDateTime.HasValue)
                 {
-                    return (int)FLS.Data.WebApi.Flight.FlightAirState.Started;
+                    return (int)FLS.Data.WebApi.Flight.FlightAirState.MightBeLandedOrInAir;
                 }
             }
-            else if (AirStateId == (int)FLS.Data.WebApi.Flight.FlightAirState.FlightPlanOpen)
+
+            if (StartDateTime.HasValue)
+            {
+                return (int)FLS.Data.WebApi.Flight.FlightAirState.Started;
+            }
+
+            if (NoStartTimeInformation)
+            {
+                return (int)FLS.Data.WebApi.Flight.FlightAirState.MightBeStarted;
+            }
+
+            if (AirStateId == (int)FLS.Data.WebApi.Flight.FlightAirState.FlightPlanOpen)
             {
                 return (int)FLS.Data.WebApi.Flight.FlightAirState.FlightPlanOpen;
             }
@@ -232,19 +236,7 @@ namespace FLS.Server.Data.DbEntities
 
             return NrOfLdgs;
         }
-
-        /// <summary>
-        /// returns if current flight is self start flight. If StartType is not set, returns null.
-        /// </summary>
-        public bool? IsSelfStartFlight
-        {
-            get
-            {
-                if (StartType == null) return null;
-                return StartTypeId == (int)AircraftStartType.SelfStart;
-            }
-        }
-
+        
         /// <summary>
         /// returns diffrence between landing and starting of flight, 
         /// or since how long flight is started, or zero when flight is not started
@@ -271,129 +263,7 @@ namespace FLS.Server.Data.DbEntities
                 return TimeSpan.FromSeconds(Math.Round(ret.TotalSeconds));
             }
         }
-
-        /// <summary>
-        /// returns date when flight is started (<see cref="StartDateTime"/> without time)
-        /// when flight is not started returns Today.
-        /// </summary>
-        public DateTime StartDate
-        {
-            get
-            {
-                if (StartDateTime.HasValue)
-                {
-                    return StartDateTime.Value.Date;
-                }
-
-                return DateTime.Today;
-            }
-        }
-
-        /// <summary>
-        /// return if flight is landed.
-        /// </summary>
-        public bool IsLanded
-        {
-            get { return LdgDateTime.HasValue; }
-        }
-
-        /// <summary>
-        /// returns all FlightCrews in a comma-seperated string.
-        /// </summary>
-        public string FlightCrewCommaSeperated
-        {
-            get
-            {
-                string ret = FlightCrews.Where(crew => crew.Person != null).OrderBy(crewType => crewType.FlightCrewTypeId).Aggregate("",
-                                                                                      (current, crew) =>
-                                                                                      current +
-                                                                                      (crew.Person.Lastname + " " +
-                                                                                       crew.Person.Firstname + ", "));
-                if (ret.Length > 1)
-                {
-                    ret = ret.Remove(ret.Length - 2);
-                }
-
-                return ret;
-            }
-        }
-
-        /// <summary>
-        /// returns if a flight is able to start (when flightstatus is new)
-        /// </summary>
-        public bool CanStart
-        {
-            get
-            {
-                return Pilot != null && AirStateId == (int)FLS.Data.WebApi.Flight.FlightAirState.New;
-            }
-        }
-
-        /// <summary>
-        /// returns if a flight is able to land (when flightstatus is started)
-        /// </summary>
-        public bool CanLand
-        {
-            get { return AirStateId == (int)FLS.Data.WebApi.Flight.FlightAirState.Started; }
-        }
-
-        /// <summary>
-        /// returns if flight can have an instructor (when flighttype is InstructorRequired
-        /// </summary>
-        public bool? IsInstructorRequired
-        {
-            get
-            {
-                if (FlightType == null) return null;
-                return FlightType.InstructorRequired;
-            }
-        }
-
-        public bool? IsObserverPilotOrInstructorRequired
-        {
-            get
-            {
-                if (FlightType == null) return null;
-                return FlightType.ObserverPilotOrInstructorRequired;
-            }
-        }
-
-        /// <summary>
-        /// returns if flight can have a passenger (when flightType is passengerflight and the aircraft have enough space)
-        /// </summary>
-        public bool? CanHavePassenger
-        {
-            get
-            {
-                if (Aircraft == null || FlightType == null) return null;
-
-                return FlightType.IsPassengerFlight && Aircraft.NrOfSeats >= 2;
-            }
-        }
-
-        /// <summary>
-        /// returns if flight can have two pilots (when flightType is not instructorRequired and not passengerflight and the aircraft have enough space)
-        /// </summary>
-        public bool? CanHaveTwoPilots
-        {
-            get
-            {
-                if (Aircraft == null) return null;
-
-                if (Aircraft.NrOfSeats >= 2)
-                {
-                    if (FlightType == null)
-                    {
-                        return true;
-                    }
-
-                    return (!FlightType.InstructorRequired && !FlightType.IsPassengerFlight);
-                }
-
-                return false;
-            }
-        }
-
+        
         /// <summary>
         /// returns the pilot of the flightcrew
         /// </summary>
@@ -458,62 +328,6 @@ namespace FLS.Server.Data.DbEntities
             get { return FlightCrews.FirstOrDefault(crew => crew.FlightCrewTypeId.Equals((int)FLS.Data.WebApi.Flight.FlightCrewType.FlightCostInvoiceRecipient)); }
         }
         
-        /// <summary>
-        /// returns if startlocation has a shortname.
-        /// </summary>
-        public bool HasStartLocationShortName
-        {
-            get
-            {
-                if (StartLocation == null) return false;
-                return !string.IsNullOrEmpty(StartLocation.LocationShortName);
-            }
-        }
-
-        /// <summary>
-        /// returns if landinglocation has a shortname.
-        /// </summary>
-        public bool HasLdgLocationShortName
-        {
-            get
-            {
-                if (LdgLocation == null) return false;
-                return !string.IsNullOrEmpty(LdgLocation.LocationShortName);
-            }
-        }
-
-        /// <summary>
-        /// returns if startlocation has a icao code
-        /// </summary>
-        public bool HasStartLocationIcaoCode
-        {
-            get
-            {
-                if (StartLocation == null) return false;
-                return !string.IsNullOrEmpty(StartLocation.IcaoCode);
-            }
-        }
-
-        /// <summary>
-        /// returns if flight flights longer than one day
-        /// </summary>
-        public bool FlightsLongerThanOneDay
-        {
-            get { return Duration.Days >= 1; }
-        }
-
-        /// <summary>
-        /// returns if landing location has a icao code
-        /// </summary>
-        public bool HasLdgLocationIcaoCode
-        {
-            get
-            {
-                if (LdgLocation == null) return false;
-                return !string.IsNullOrEmpty(LdgLocation.IcaoCode);
-            }
-        }
-
         /// <summary>
         /// returns if flight is towed by aircraft. If the StartType is not set, it returns null.
         /// </summary>
@@ -632,22 +446,7 @@ namespace FLS.Server.Data.DbEntities
                 return null;
             }
         }
-
-        public bool? IsPassengerFlight
-        {
-            get
-            {
-                if (FlightType == null) return null;
-
-                if (FlightType.IsPassengerFlight)
-                {
-                    return true;
-                }
-
-                return false;
-            }
-        }
-
+        
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -750,8 +549,8 @@ namespace FLS.Server.Data.DbEntities
             if (AircraftId == Guid.Empty
                 || Pilot == null
                 || Pilot.PersonId == Guid.Empty
-                || StartDateTime.HasValue == false
-                || LdgDateTime.HasValue == false
+                || (StartDateTime.HasValue == false && NoStartTimeInformation == false)
+                || (LdgDateTime.HasValue == false && NoLdgTimeInformation == false)
                 || StartLocationId.HasValue == false
                 || LdgLocationId.HasValue == false
                 || StartTypeId.HasValue == false

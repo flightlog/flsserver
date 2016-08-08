@@ -53,6 +53,7 @@ namespace FLS.Server.Tests.ServiceTests
                     foreach (var lockedFlight in lockedFlights)
                     {
                         lockedFlight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.NotProcessed;
+                        lockedFlight.DoNotUpdateMetaData = true;
                         Logger.Debug($"Set flight process state to not processed for FlightId: {lockedFlight.FlightId}");
                     }
 
