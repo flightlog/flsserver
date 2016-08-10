@@ -217,7 +217,7 @@ namespace FLS.Server.Data.DbEntities
 
             if (currentFlightAirStateId <= (int)FLS.Data.WebApi.Flight.FlightAirState.Started)
             {
-                // not started or just started flights do not have a landing
+                // not or might be started or just started flights do not have a landing
                 return 0;
             }
             
