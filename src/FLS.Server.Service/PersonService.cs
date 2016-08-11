@@ -286,6 +286,26 @@ namespace FLS.Server.Service
             return personDetails;
         }
 
+        public PilotPersonDetails GetPilotPersonDetails(string memberNumber)
+        {
+            var person = GetPerson(memberNumber);
+
+            var personDetails = person.ToPilotPersonDetails(CurrentAuthenticatedFLSUserClubId);
+            SetPersonDetailsSecurity(personDetails, person);
+
+            return personDetails;
+        }
+
+        public PilotPersonFullDetails GetPilotPersonFullDetails(string memberNumber)
+        {
+            var person = GetPerson(memberNumber);
+
+            var personFullDetails = person.ToPilotPersonFullDetails(CurrentAuthenticatedFLSUserClubId);
+            SetPersonDetailsSecurity(personFullDetails, person);
+
+            return personFullDetails;
+        }
+
         public PilotPersonFullDetails GetPilotPersonFullDetails(Guid personId)
         {
             var person = GetPerson(personId);
@@ -503,6 +523,32 @@ namespace FLS.Server.Service
                 }
 
                 return persons;
+            }
+        }
+
+        internal Person GetPerson(string memberNumber, bool controlAccess = true)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                Person person = null;
+
+                if (IsCurrentUserInRoleSystemAdministrator || controlAccess == false)
+                {
+                    person = context.Persons.Include(Constants.Users)
+                        .Include(Constants.PersonPersonCategories).Include(Constants.PersonClubs).Where(p => p.PersonClubs.Any(pc => pc.MemberNumber == memberNumber))
+                        .ToList()
+                        .FirstOrDefault();
+                }
+                else
+                {
+                    person = context.Persons.Include(Constants.Users)
+                        .Include(Constants.PersonPersonCategories).Include(Constants.PersonClubs)
+                                .Where(p => p.PersonClubs.Any(pc => pc.MemberNumber == memberNumber && pc.ClubId == CurrentAuthenticatedFLSUserClubId))
+                                .ToList()
+                                .FirstOrDefault();
+                }
+
+                return person;
             }
         }
 

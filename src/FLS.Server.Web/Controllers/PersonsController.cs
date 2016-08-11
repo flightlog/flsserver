@@ -366,6 +366,34 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
+        /// Gets the person details.
+        /// </summary>
+        /// <param name="memberNumber">The persons club member number.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("membernumber/{memberNumber}")]
+        [ResponseType(typeof(PilotPersonDetails))]
+        public IHttpActionResult GetPersonDetailsByMemberNumber(string memberNumber)
+        {
+            var personDetails = _personService.GetPilotPersonDetails(memberNumber);
+            return Ok(personDetails);
+        }
+
+        /// <summary>
+        /// Gets the person full details.
+        /// </summary>
+        /// <param name="memberNumber">The persons club member number.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("fulldetails/membernumber/{memberNumber}")]
+        [ResponseType(typeof(PilotPersonFullDetails))]
+        public IHttpActionResult GetPersonFullDetailsByMemberNumber(string memberNumber)
+        {
+            var personDetails = _personService.GetPilotPersonFullDetails(memberNumber);
+            return Ok(personDetails);
+        }
+
+        /// <summary>
         /// Gets the passenger details.
         /// </summary>
         /// <param name="personId">The person identifier.</param>

@@ -67,6 +67,26 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
         [TestMethod]
         [TestCategory("WebApi")]
+        public void GetPersonDetailsByMemberNumberWebApiTest()
+        {
+            var country = GetCountry("CH");
+            var personDetails = CreatePersonDetails(country.CountryId);
+
+            var response = PostAsync(personDetails, "/api/v1/persons").Result;
+
+            Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
+            var responseDetails = ConvertToModel<PilotPersonDetails>(response);
+            Assert.IsTrue(responseDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", responseDetails));
+
+            var personDetailsResponse = GetAsync<PilotPersonDetails>("/api/v1/persons/membernumber/" + personDetails.ClubRelatedPersonDetails.MemberNumber).Result;
+
+            Assert.IsNotNull(personDetailsResponse);
+
+            Assert.AreEqual(personDetailsResponse.Id, responseDetails.Id);
+        }
+
+        [TestMethod]
+        [TestCategory("WebApi")]
         public void GetPilotPersonFullDetailsWebApiTest()
         {
             InsertPersonFullDetailsWebApi();
