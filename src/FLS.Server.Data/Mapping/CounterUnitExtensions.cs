@@ -7,7 +7,7 @@ namespace FLS.Server.Data.Mapping
 {
     public static class CounterUnitExtensions
     {
-        public static long ToCounterValue(this TimeSpan duration, CounterUnitType counterUnitType)
+        public static long ToCounterValue(this TimeSpan duration, DbEntities.CounterUnitType counterUnitType)
         {
             counterUnitType.ArgumentNotNull("counterUnitType");
             long result = 0;
