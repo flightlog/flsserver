@@ -60,20 +60,13 @@ namespace FLS.Server.Service
         /// <returns></returns>
         public List<ElevationUnitTypeListItem> GetElevationUnitTypeListItems()
         {
-            var entities = GetElevationUnitTypes();
-
-            var items = entities.Select(t => t.ToElevationUnitTypeListItem()).ToList();
-
-            return items;
-        }
-
-        internal List<Data.DbEntities.ElevationUnitType> GetElevationUnitTypes()
-        {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var entities = context.ElevationUnitTypes.OrderBy(l => l.ElevationUnitTypeId);
+                var entities = context.ElevationUnitTypes.OrderBy(l => l.ElevationUnitTypeId).ToList();
 
-                return entities.ToList();
+                var items = entities.Select(t => t.ToElevationUnitTypeListItem()).ToList();
+
+                return items;
             }
         }
         #endregion ElevationUnitType

@@ -33,7 +33,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpGet]
         [Route("")]
         [Route("listitems")]
-        [ResponseType(typeof(List<ElevationUnitType>))]
+        [ResponseType(typeof(List<ElevationUnitTypeListItem>))]
         public IHttpActionResult GetElevationUnitTypes()
         {
             var locations = _locationService.GetElevationUnitTypeListItems();
