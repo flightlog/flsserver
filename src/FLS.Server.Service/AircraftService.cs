@@ -376,6 +376,29 @@ namespace FLS.Server.Service
         }
         #endregion AircraftOperatingCounter
 
+        #region CounterUnitType
+        /// <summary>
+        /// Gets the length unit type list items.
+        /// </summary>
+        /// <returns></returns>
+        public List<CounterUnitTypeListItem> GetCounterUnitTypeListItems()
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var entities = context.CounterUnitTypes.OrderBy(l => l.CounterUnitTypeName).ToList();
+
+                var items = entities.Select(t => new CounterUnitTypeListItem
+                {
+                    CounterUnitTypeId = t.CounterUnitTypeId,
+                    CounterUnitTypeKeyName = t.CounterUnitTypeKeyName,
+                    CounterUnitTypeName = t.CounterUnitTypeName
+                }).ToList();
+
+                return items;
+            }
+        }
+        #endregion CounterUnitType
+
         #region Security
         private void SetAircraftOverviewSecurity(IEnumerable<AircraftOverview> list)
         {
