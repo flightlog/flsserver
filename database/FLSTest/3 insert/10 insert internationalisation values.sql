@@ -33,7 +33,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'FLIGHTS', 'Startliste', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'LOCATIONS', 'Flugplätze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'LOCATIONS', 'Flugplï¿½tze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'CLUBS', 'Vereine', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -144,7 +144,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'INSTRUCTOR', 'Instruktor', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'OBSERVER', 'Überwachender Pilot / Instruktor', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'OBSERVER', 'ï¿½berwachender Pilot / Instruktor', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'PILOT', 'Pilot', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -204,7 +204,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'HAS_GLIDER_PILOT_LICENCE', 'Segelflug Lizenz', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'HAS_GLIDER_TRAINEE_LICENCE', 'Segelflugschüler Lizenz', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'HAS_GLIDER_TRAINEE_LICENCE', 'Segelflugschï¿½ler Lizenz', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'HAS_MOTOR_PILOT_LICENCE', 'Motorflug Lizenz', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -219,13 +219,13 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'HAS_TMG_LICENCE', 'TMG Lizenz', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'HAS_WINCH_OPERATOR_LICENCE', 'Windenführer Lizenz', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'HAS_WINCH_OPERATOR_LICENCE', 'Windenfï¿½hrer Lizenz', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'COST_BALANCE_TYPE', 'Kostenverteilung', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'INVOICE_RECEIPIENT', 'Rechnungsempfänger', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'INVOICE_RECEIPIENT', 'Rechnungsempfï¿½nger', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'IS_SOLO_FLIGHT', 'Soloflug', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -249,7 +249,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'APPLY_FILTER', 'Filter Anwenden', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'LOAD_FLIGHTS', 'Flüge laden', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'LOAD_FLIGHTS', 'Flï¿½ge laden', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'ALL_TIME', 'Gesamter Zeitraum', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -282,7 +282,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'NEW_PASSWORD', 'Neues Passwort', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'NEW_PASSWORD_CONFIRM', 'Neues Passwort bestätigen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'NEW_PASSWORD_CONFIRM', 'Neues Passwort bestï¿½tigen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'UPDATE_PASSWORD', 'Passwort aktualisieren', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -300,13 +300,13 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'COMPETITION_SIGN', 'Wettbewerbszeichen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'NUMBER_OF_SEATS', 'Anzahl Sitzplätze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'NUMBER_OF_SEATS', 'Anzahl Sitzplï¿½tze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'IS_TOWING_AIRCRAFT', 'Schleppflugzeug', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'IS_TOWING_OR_WINCH_REQUIRED', 'benötigt Schlepp', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'IS_TOWING_OR_WINCH_REQUIRED', 'benï¿½tigt Schlepp', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'IS_TOWING_START_ALLOWED', 'Flugzeugschlepp erlaubt', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -330,19 +330,19 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'ICAO_CODE', 'ICAO Code', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'LENGTH_UNIT', 'Längeneinheit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'LENGTH_UNIT', 'Lï¿½ngeneinheit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'ELEVATION_UNIT', 'Höheneinheit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'ELEVATION_UNIT', 'Hï¿½heneinheit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'RUNWAY_LENGTH', 'Pistenlänge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'RUNWAY_LENGTH', 'Pistenlï¿½nge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'RUNWAY_DIRECTION', 'Pistenrichtung (Grad Himmelsrichtung)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'RUNWAY_ELEVATION', 'Pistenhöhe', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'RUNWAY_ELEVATION', 'Pistenhï¿½he', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'DESCRIPTION', 'Beschreibung', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -351,16 +351,16 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'LATITUDE', 'Breitengrad (e.g. 47.37639N)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'LONGITUDE', 'Längengrad (e.g. 8.7575E)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'LONGITUDE', 'Lï¿½ngengrad (e.g. 8.7575E)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'WARN_TOWFLIGHT_LONGER_THAN_GLIDERFLIGHT', 'ACHTUNG: Der eingegebene Schleppflug ist länger als der Segelflug!', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'WARN_TOWFLIGHT_LONGER_THAN_GLIDERFLIGHT', 'ACHTUNG: Der eingegebene Schleppflug ist lï¿½nger als der Segelflug!', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'CLUB_NAME', 'Club Name', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'CLUB_KEY', 'Club Schlüssel', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'CLUB_KEY', 'Club Schlï¿½ssel', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'CLUB_HOME_BASE', 'Club Flugplatz', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -381,7 +381,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'ROLES', 'Rollen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'NOTIFICATION_EMAIL', 'Email Adresse für Benachrichtigungen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'NOTIFICATION_EMAIL', 'Email Adresse fï¿½r Benachrichtigungen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'CONTACT', 'Kontakt', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -435,10 +435,10 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'NAME', 'Name', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'IS_INSTRUCTOR_REQUIRED', 'Instruktor nötig', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'IS_INSTRUCTOR_REQUIRED', 'Instruktor nï¿½tig', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'IS_OBSERVERPILOT_OR_INSTRUCTOR_REQUIRED', 'Instruktor oder Einweisungspilot nötig', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'IS_OBSERVERPILOT_OR_INSTRUCTOR_REQUIRED', 'Instruktor oder Einweisungspilot nï¿½tig', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'IS_CHECKFLIGHT', 'Checkflug', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -450,22 +450,22 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'IS_SOLOFLIGHT', 'Soloflug', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'IS_FLIGHTCOSTBALANCE_SELECTABLE', 'Kostenverteilung wählbar', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'IS_FLIGHTCOSTBALANCE_SELECTABLE', 'Kostenverteilung wï¿½hlbar', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'IS_FOR_GLIDERFLIGHTS', 'für Segelflüge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'IS_FOR_GLIDERFLIGHTS', 'fï¿½r Segelflï¿½ge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'IS_FOR_MOTORFLIGHTS', 'für Motorflüge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'IS_FOR_MOTORFLIGHTS', 'fï¿½r Motorflï¿½ge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'IS_FOR_TOWFLIGHTS', 'für Schleppflüge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'IS_FOR_TOWFLIGHTS', 'fï¿½r Schleppflï¿½ge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'IS_SYSTEMFLIGHT', 'System Flug', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'IS_COUPONNUMBER_REQUIRED', 'Coupon nötig', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'IS_COUPONNUMBER_REQUIRED', 'Coupon nï¿½tig', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'FLIGHT_TYPES', 'Flugtypen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -483,7 +483,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'USERNAME_OR_EMAIL', 'Benutzername oder Email Adresse', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'GENERATE_NEW_PASSWORD_SUCCEEDED', 'Das Passwort wurde zurückgesetzt. Sie sollten in den nächsten Minuten ein Email mit dem entsprchenden Link erhalten.', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'GENERATE_NEW_PASSWORD_SUCCEEDED', 'Das Passwort wurde zurï¿½ckgesetzt. Sie sollten in den nï¿½chsten Minuten ein Email mit dem entsprchenden Link erhalten.', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'AIRCRAFT_TYPE', 'Flugzeug Typ', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -507,7 +507,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'DEAC_INDEX', 'DEAC Index', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'NOISE_CLASS', 'Lärmklasse', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'NOISE_CLASS', 'Lï¿½rmklasse', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'NOISE_LEVEL', 'Noise Level', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -528,10 +528,10 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'COMPANY', 'Firma', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'BUSINESS_EMAIL_ADDRESS', 'Email Adresse (geschäftlich)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'BUSINESS_EMAIL_ADDRESS', 'Email Adresse (geschï¿½ftlich)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'BUSINESS_PHONE_NUMBER', 'Telefonnummer (geschäftlich)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'BUSINESS_PHONE_NUMBER', 'Telefonnummer (geschï¿½ftlich)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'LICENSE_NUMBER', 'Lizenznummer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -549,7 +549,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'CLUB_MEMBER_NUMBER', 'Verein Mitgliednummer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'CLUB_MEMBER_KEY', 'Verein Mitgliedschlüssel', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'CLUB_MEMBER_KEY', 'Verein Mitgliedschlï¿½ssel', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'IS_GLIDER_INSTRUCTOR', 'Segelfluglehrer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -558,7 +558,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'IS_GLIDER_PILOT', 'Segelflugpilot', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'IS_GLIDER_TRAINEE', 'Segelflugschüler', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'IS_GLIDER_TRAINEE', 'Segelflugschï¿½ler', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'IS_MOTOR_PILOT', 'Motorflugpilot', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -570,7 +570,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'IS_TOW_PILOT', 'Schleppilot', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'IS_WINCH_OPERATOR', 'Windenführer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'IS_WINCH_OPERATOR', 'Windenfï¿½hrer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'RECEIVE_FLIGHT_REPORTS', 'Flug Statistiken', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -588,7 +588,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'MID_NAME', 'Zwischenname', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'USER_RELATED_PERSON', 'Zugehörige Person', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'USER_RELATED_PERSON', 'Zugehï¿½rige Person', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'USER_ACCOUNT_STATE', 'Benutzerkonto Status', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -603,7 +603,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'MY_DASHBOARD', 'Mein Dashboard', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'MY_FLIGHTS', 'Meine Flüge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'MY_FLIGHTS', 'Meine Flï¿½ge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'MY_SAFETY_STATUS', 'Mein Safety Status', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -612,37 +612,37 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'MY_MEDICAL', 'Mein Medical', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'EXPIRES_AT', 'Läuft aus am', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'EXPIRES_AT', 'Lï¿½uft aus am', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'MY_START_PERMISSIONS', 'Meine Starterlaubnis', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'SAFETY_GREEN_TITLE', 'Grüner Bereich', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'SAFETY_GREEN_TITLE', 'Grï¿½ner Bereich', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'SAFETY_GREEN_SUBTITLE', 'Der Übungsstand ist gut - trotzdem Vorsicht!', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'SAFETY_GREEN_SUBTITLE', 'Der ï¿½bungsstand ist gut - trotzdem Vorsicht!', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'SAFETY_GREEN_DESCRIPTION', 'Geübte Piloten machten folgende Fehler <ul> <li>Segelflugzeug fehlerhaft ausgerüstet</li><li>mangelhafter Cockpitcheck</li><li>Fehlverhalten bei Startunterbrechungen</li><li>Fehler bei der Landeeinteilung (vor allem bei Außenlandungen)</li></ul>', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'SAFETY_GREEN_DESCRIPTION', 'Geï¿½bte Piloten machten folgende Fehler <ul> <li>Segelflugzeug fehlerhaft ausgerï¿½stet</li><li>mangelhafter Cockpitcheck</li><li>Fehlverhalten bei Startunterbrechungen</li><li>Fehler bei der Landeeinteilung (vor allem bei Auï¿½enlandungen)</li></ul>', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'SAFETY_YELLOW_TITLE', 'Gelber Bereich', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'SAFETY_YELLOW_SUBTITLE', 'Mehr Übung könnte nicht schaden - Unerwartete Ereignisse können gefährlich werden!', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'SAFETY_YELLOW_SUBTITLE', 'Mehr ï¿½bung kï¿½nnte nicht schaden - Unerwartete Ereignisse kï¿½nnen gefï¿½hrlich werden!', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'SAFETY_YELLOW_DESCRIPTION', 'Vorsicht ist geboten beim Start <ul> <li>in unbekannten Landschaftsregionen (z.B. Alpen)</li> <li>auf unbekannten Fluggeländen</li><li>auf selten geflogenen Flugzeugmustern</li><li>in einer selten durchgeführten Startart</li> </ul>', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'SAFETY_YELLOW_DESCRIPTION', 'Vorsicht ist geboten beim Start <ul> <li>in unbekannten Landschaftsregionen (z.B. Alpen)</li> <li>auf unbekannten Fluggelï¿½nden</li><li>auf selten geflogenen Flugzeugmustern</li><li>in einer selten durchgefï¿½hrten Startart</li> </ul>', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'SAFETY_RED_TITLE', 'Roter Bereich', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'SAFETY_RED_SUBTITLE', 'Übung tut Not - Fliegen kann zum Risiko werden!', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'SAFETY_RED_SUBTITLE', 'ï¿½bung tut Not - Fliegen kann zum Risiko werden!', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'SAFETY_RED_DESCRIPTION', 'Für ungeübte Piloten gilt: <ul> <li>die ersten Starts nach einer längeren Pause nur mit vertrauten Mustern und bei unkritischen Wetterlagen durchführen</li> <li>falls der letzte Start mehr als drei Monate zurück liegt, ist Training mit einem Fluglehrer der beste Weg zu einem guten Übungsstand</li> </ul>', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'SAFETY_RED_DESCRIPTION', 'Fï¿½r ungeï¿½bte Piloten gilt: <ul> <li>die ersten Starts nach einer lï¿½ngeren Pause nur mit vertrauten Mustern und bei unkritischen Wetterlagen durchfï¿½hren</li> <li>falls der letzte Start mehr als drei Monate zurï¿½ck liegt, ist Training mit einem Fluglehrer der beste Weg zu einem guten ï¿½bungsstand</li> </ul>', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'AIR_MOVEMENTS', 'Luftbewegungen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -687,13 +687,13 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'NOTIFICATION_SETTINGS', 'Notifikationseinstellungen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'MEDICAL_CLASS1_EXPIRE_DATE', 'Medical Class 1 Gültigkeit bis', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'MEDICAL_CLASS1_EXPIRE_DATE', 'Medical Class 1 Gï¿½ltigkeit bis', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'MEDICAL_CLASS2_EXPIRE_DATE', 'Medical Class 2 Gültigkeit bis', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'MEDICAL_CLASS2_EXPIRE_DATE', 'Medical Class 2 Gï¿½ltigkeit bis', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'MEDICAL_LAPL_EXPIRE_DATE', 'Medical LAPL Gültigkeit bis', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'MEDICAL_LAPL_EXPIRE_DATE', 'Medical LAPL Gï¿½ltigkeit bis', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'BLOCK_TIME_BEGIN', 'Beginn Blockzeit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -705,16 +705,16 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'BLOCK_TIME_DURATION', 'Blockzeit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'ENGINE_MINUTES_BEGIN', 'Beginn Motorzählerst. (hhhh:mm)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'ENGINE_MINUTES_BEGIN', 'Beginn Motorzï¿½hlerst. (hhhh:mm)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'ENGINE_MINUTES_END', 'Ende Motorzählerst. (hhhh:mm)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'ENGINE_MINUTES_END', 'Ende Motorzï¿½hlerst. (hhhh:mm)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'ENGINE_MINUTES_DURATION', 'Motorlaufzeit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'LAST_ENGINE_TIME', 'Letzer Zählerstand', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'LAST_ENGINE_TIME', 'Letzer Zï¿½hlerstand', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'ERROR_NO_CORRESPONDING_PERSON', 'Der Benutzer "{{user}}" hat keine zugewiesene Person, weshalb keine Statistiken angezeigt werden.', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -738,7 +738,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'HISTORY_OF', 'Historie von ', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 	 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'MODIFICATION', 'Veränderung', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'MODIFICATION', 'Verï¿½nderung', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 	 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'CLOSE', 'Schliessen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -762,16 +762,16 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'TIME', 'Zeit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 	 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'GLIDER_INSTRUCTOR_LICENCE_EXPIRE_DATE', 'Segelfluglehrer Lizenz Gültigkeit bis', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'GLIDER_INSTRUCTOR_LICENCE_EXPIRE_DATE', 'Segelfluglehrer Lizenz Gï¿½ltigkeit bis', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
  
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'WINCH_OPERATOR', 'Windenführer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'WINCH_OPERATOR', 'Windenfï¿½hrer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
  
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'CHOOSE_PASSWORD', 'Passwort wählen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'CHOOSE_PASSWORD', 'Passwort wï¿½hlen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
  
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'PASSWORD_CONFIRM', 'Passwort bestätigen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'PASSWORD_CONFIRM', 'Passwort bestï¿½tigen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
  
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'SET_PASSWORD', 'Passwort setzen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -780,7 +780,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'CHOOSE_PASSWORD_FORM_EXPLANATION', 'Bitte geben sie ihr neues Passwort ein, um den Benutzer zu aktivieren.', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
  
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'PASSWORD_MISMATCH', 'Die eingegebenen Passwörter stimmen nicht überein.', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'PASSWORD_MISMATCH', 'Die eingegebenen Passwï¿½rter stimmen nicht ï¿½berein.', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
  
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'LANDED', 'gelandet', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -798,7 +798,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'SHOW_HISTORY', 'Historie anzeigen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
  
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'DELETE', 'Löschen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'DELETE', 'Lï¿½schen', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'EDIT', 'Bearbeiten', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -807,10 +807,10 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'NR_OF_PASSENGERS', 'Anzahl Passagiere', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'SEATS_INSUFFICIENT', 'Zu wenig Sitzplätze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'SEATS_INSUFFICIENT', 'Zu wenig Sitzplï¿½tze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'MINIMUM_NUMBER_OF_SEATS_REQUIRED', 'Mninimale Anzahl Sitzplätze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'MINIMUM_NUMBER_OF_SEATS_REQUIRED', 'Mninimale Anzahl Sitzplï¿½tze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'BIRTHDAY', 'Geburtstag', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -819,7 +819,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'MY_LICENSE_STATE', 'Mein Lizenz-Stand', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'NO_MEDICAL_INFO', 'Hier würde das Ablaufdatum des Medicals angezeigt werden. Das Datum kann unter folgendem Link ganz einfach in der Rubrik "Lizenz" erfasst werden:', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'NO_MEDICAL_INFO', 'Hier wï¿½rde das Ablaufdatum des Medicals angezeigt werden. Das Datum kann unter folgendem Link ganz einfach in der Rubrik "Lizenz" erfasst werden:', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'RESET', 'Reset', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -840,7 +840,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'FILTER_PERSON_FLAG_HasGliderPilotLicence', 'Segelflug Piloten', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'FILTER_PERSON_FLAG_HasGliderTraineeLicence', 'Segelflug Schüler', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'FILTER_PERSON_FLAG_HasGliderTraineeLicence', 'Segelflug Schï¿½ler', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
      VALUES (NEWID(), 'FILTER_PERSON_FLAG_HasMotorPilotLicence', 'Motorflug Piloten', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -858,10 +858,16 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'MEMBER_STATE', 'Mitgliederstatus', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'FLIGHT_COUNTER_UNIT_TYPE', 'Flug Zähler Einheit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'FLIGHT_COUNTER_UNIT_TYPE', 'Flug Zï¿½hler Einheit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
-     VALUES (NEWID(), 'ENGINE_COUNTER_UNIT_TYPE', 'Motor Zähler Einheit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'ENGINE_COUNTER_UNIT_TYPE', 'Motor Zï¿½hler Einheit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
+     VALUES (NEWID(), 'TOW_DURATION', 'Schleppdauer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted]) 
+     VALUES (NEWID(), 'GLIDER_FLIGHT_DURATION', 'Segelflug Dauer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 GO
 
