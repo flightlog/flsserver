@@ -35,11 +35,11 @@ namespace FLS.Server.Service
         }
 
         #region EngineOperatingCounter
-        public AircraftEngineOperatingCounterResult GetAircraftOperatingCounterResult(AircraftEngineOperatingCounterRequest request)
+        public AircraftOperatingCounterResult GetAircraftOperatingCounterResult(AircraftOperatingCounterRequest request)
         {
             request.ArgumentNotNull("request");
 
-            var result = new AircraftEngineOperatingCounterResult()
+            var result = new AircraftOperatingCounterResult()
             {
                 AircraftId = request.AircraftId,
                 AtDateTime = request.AtDateTime,
@@ -67,7 +67,12 @@ namespace FLS.Server.Service
 
                 if (aircraft.EngineOperatingCounterUnitTypeId.HasValue)
                 {
-                    result.EngineOperatingCounterUnitTypeId = aircraft.EngineOperatingCounterUnitTypeId;
+                    var counterUnitType =
+                        counterUnitTypes.FirstOrDefault(c => c.CounterUnitTypeId == aircraft.EngineOperatingCounterUnitTypeId.Value);
+
+                    counterUnitType.NotNull("CounterUnitType");
+
+                    result.EngineOperatingCounterUnitTypeKeyName = counterUnitType.CounterUnitTypeKeyName;
                 }
                 else
                 {
@@ -76,7 +81,7 @@ namespace FLS.Server.Service
 
                     counterUnitType.NotNull("CounterUnitType");
 
-                    result.EngineOperatingCounterUnitTypeId = counterUnitType.CounterUnitTypeId;
+                    result.EngineOperatingCounterUnitTypeKeyName = counterUnitType.CounterUnitTypeKeyName;
                 }
 
                 var aircraftOperatingCounter = context.AircraftOperatingCounters
@@ -126,7 +131,7 @@ namespace FLS.Server.Service
 
                     var counterUnitType =
                         counterUnitTypes.FirstOrDefault(
-                            q => q.CounterUnitTypeId == result.EngineOperatingCounterUnitTypeId.Value);
+                            q => q.CounterUnitTypeKeyName.ToLower() == result.EngineOperatingCounterUnitTypeKeyName.ToLower());
 
                     counterUnitType.NotNull("CounterUnitType");
 

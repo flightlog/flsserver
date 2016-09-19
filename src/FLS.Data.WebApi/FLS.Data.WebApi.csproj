@@ -59,7 +59,7 @@
     <Compile Include="AircraftReservation\AircraftReservationOverview.cs" />
     <Compile Include="AircraftReservation\AircraftReservationTypeListItem.cs" />
     <Compile Include="Aircraft\AircraftDetails.cs" />
-    <Compile Include="Aircraft\AircraftEngineOperatingCounterResult.cs" />
+    <Compile Include="Aircraft\AircraftOperatingCounterResult.cs" />
     <Compile Include="Aircraft\AircraftListItem.cs" />
     <Compile Include="Aircraft\AircraftOperatingCounterOverview.cs" />
     <Compile Include="Aircraft\AircraftOperatingCounterDetails.cs" />
@@ -68,7 +68,7 @@
     <Compile Include="Aircraft\AircraftStateListItem.cs" />
     <Compile Include="Aircraft\AircraftType.cs" />
     <Compile Include="Aircraft\AircraftTypeListItem.cs" />
-    <Compile Include="Aircraft\AircraftEngineOperatingCounterRequest.cs" />
+    <Compile Include="Aircraft\AircraftOperatingCounterRequest.cs" />
     <Compile Include="Aircraft\CounterUnitType.cs" />
     <Compile Include="Aircraft\CounterUnitTypeListItem.cs" />
     <Compile Include="Articles\ArticleDetails.cs" />

@@ -32,8 +32,8 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("request")]
-        [ResponseType(typeof(AircraftEngineOperatingCounterResult))]
-        public IHttpActionResult GetAircraftOperatingCounterOverviews(AircraftEngineOperatingCounterRequest request)
+        [ResponseType(typeof(AircraftOperatingCounterResult))]
+        public IHttpActionResult GetAircraftOperatingCounterOverviews(AircraftOperatingCounterRequest request)
         {
             var aircraftOperatingCounters = _flightService.GetAircraftOperatingCounterResult(request);
             return Ok(aircraftOperatingCounters);

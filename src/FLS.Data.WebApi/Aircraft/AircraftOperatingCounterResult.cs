@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FLS.Data.WebApi.Aircraft
 {
-    public class AircraftEngineOperatingCounterResult
+    public class AircraftOperatingCounterResult
     {
         [Required]
         public Guid AircraftId { get; set; }
@@ -15,7 +15,7 @@ namespace FLS.Data.WebApi.Aircraft
         /// </summary>
         public long? EngineOperatingCounter { get; set; }
 
-        public int? EngineOperatingCounterUnitTypeId { get; set; }
+        public string EngineOperatingCounterUnitTypeKeyName { get; set; }
 
         public bool AircraftHasNoEngine { get; set; }
     }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FLS.Data.WebApi.Aircraft
 {
-    public class AircraftEngineOperatingCounterRequest
+    public class AircraftOperatingCounterRequest
     {
         [Required]
         public Guid AircraftId { get; set; }
