@@ -34,14 +34,12 @@ namespace FLS.Server.Data.DbEntities
         /// <summary>
         /// Gets or sets the engine operating counter before start engine (units see EngineOperatingCounterUnitTypeId)
         /// </summary>
-        public Nullable<long> EngineStartOperatingCounter { get; set; }
+        public Nullable<long> EngineStartOperatingCounterInSeconds { get; set; }
 
         /// <summary>
         /// Gets or sets the engine operating counter after engine shutdown (units see EngineOperatingCounterUnitTypeId)
         /// </summary>
-        public Nullable<long> EngineEndOperatingCounter { get; set; }
-
-        public Nullable<int> EngineOperatingCounterUnitTypeId { get; set; }
+        public Nullable<long> EngineEndOperatingCounterInSeconds { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime? BlockStartDateTime { get; set; }

@@ -28,14 +28,13 @@ namespace FLS.Data.WebApi.Flight
         /// <summary>
         /// Gets or sets the engine operating counter before start engine (units see EngineOperatingCounterUnitTypeId)
         /// </summary>
-        public Nullable<long> EngineStartOperatingCounter { get; set; }
+        public Nullable<long> EngineStartOperatingCounterInSeconds { get; set; }
 
         /// <summary>
         /// Gets or sets the engine operating counter after engine shutdown (units see EngineOperatingCounterUnitTypeId)
         /// </summary>
-        public Nullable<long> EngineEndOperatingCounter { get; set; }
-
-        public Nullable<int> EngineOperatingCounterUnitTypeId { get; set; }
+        public Nullable<long> EngineEndOperatingCounterInSeconds { get; set; }
+        
 
         public string FlightComment { get; set; }
 

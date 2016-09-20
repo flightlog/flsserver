@@ -56,9 +56,7 @@ namespace FLS.Server.Data
         public virtual DbSet<CounterUnitType> CounterUnitTypes { get; set; }
         public virtual DbSet<ElevationUnitType> ElevationUnitTypes { get; set; }
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
-        public virtual DbSet<ExtensionParameter> ExtensionParameters { get; set; }
-        public virtual DbSet<ExtensionParameterType> ExtensionParameterTypes { get; set; }
-        public virtual DbSet<ExtensionParameterValue> ExtensionParameterValues { get; set; }
+        public virtual DbSet<ExtensionValue> ExtensionValues { get; set; }
         public virtual DbSet<Extension> Extensions { get; set; }
         public virtual DbSet<ExtensionType> ExtensionTypes { get; set; }
         public virtual DbSet<FlightCostBalanceType> FlightCostBalanceTypes { get; set; }
@@ -292,42 +290,16 @@ namespace FLS.Server.Data
                 .WithOptional(e => e.EngineOperatingCounterUnitType)
                 .HasForeignKey(e => e.EngineOperatingCounterUnitTypeId);
 
-            modelBuilder.Entity<CounterUnitType>()
-                .HasMany(e => e.AircraftOperatingCounterFlightOperatingCounters)
-                .WithOptional(e => e.FlightOperatingCounterUnitType)
-                .HasForeignKey(e => e.FlightOperatingCounterUnitTypeId);
-
-            modelBuilder.Entity<CounterUnitType>()
-                .HasMany(e => e.AircraftOperatingCounterEngineOperatingCounters)
-                .WithOptional(e => e.EngineOperatingCounterUnitType)
-                .HasForeignKey(e => e.EngineOperatingCounterUnitTypeId);
-
             modelBuilder.Entity<ElevationUnitType>()
                 .HasMany(e => e.Locations)
                 .WithOptional(e => e.ElevationUnitType)
                 .HasForeignKey(e => e.ElevationUnitTypeId);
-
-            modelBuilder.Entity<ExtensionParameter>()
-                .HasMany(e => e.ExtensionParameterValues)
-                .WithRequired(e => e.ExtensionParameter)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<ExtensionParameterType>()
-                .HasMany(e => e.ExtensionParameters)
-                .WithRequired(e => e.ExtensionParameterType)
-                .HasForeignKey(e => e.ExtensionParameterTypeId)
-                .WillCascadeOnDelete(false);
-
+            
             modelBuilder.Entity<Extension>()
                 .HasMany(e => e.ClubExtensions)
                 .WithRequired(e => e.Extension)
                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Extension>()
-                .HasMany(e => e.ExtensionParameters)
-                .WithRequired(e => e.Extension)
-                .WillCascadeOnDelete(false);
-
+            
             modelBuilder.Entity<ExtensionType>()
                 .HasMany(e => e.Extensions)
                 .WithRequired(e => e.ExtensionType)
@@ -786,10 +758,7 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Extension>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<ExtensionParameter>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<ExtensionParameterValue>()
+            modelBuilder.Entity<ExtensionValue>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Flight>()

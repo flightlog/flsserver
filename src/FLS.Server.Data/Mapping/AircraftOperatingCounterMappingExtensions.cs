@@ -23,10 +23,8 @@ namespace FLS.Server.Data.Mapping
             overview.TotalStarts = entity.TotalTowedGliderStarts.GetValueOrDefault() 
                 + entity.TotalWinchLaunchStarts.GetValueOrDefault() 
                 + entity.TotalSelfStarts.GetValueOrDefault();
-            overview.FlightOperatingCounter = entity.FlightOperatingCounter;
-            overview.EngineOperatingCounter = entity.EngineOperatingCounter;
-            overview.FlightOperatingCounterUnitTypeId = entity.FlightOperatingCounterUnitTypeId;
-            overview.EngineOperatingCounterUnitTypeId = entity.EngineOperatingCounterUnitTypeId;
+            overview.FlightOperatingCounterInSeconds = entity.FlightOperatingCounterInSeconds;
+            overview.EngineOperatingCounterInSeconds = entity.EngineOperatingCounterInSeconds;
 
             if (entity.Aircraft != null)
             {
@@ -52,12 +50,10 @@ namespace FLS.Server.Data.Mapping
             details.TotalTowedGliderStarts = entity.TotalTowedGliderStarts;
             details.TotalWinchLaunchStarts = entity.TotalWinchLaunchStarts;
             details.TotalSelfStarts = entity.TotalSelfStarts;
-            details.FlightOperatingCounter = entity.FlightOperatingCounter;
-            details.EngineOperatingCounter = entity.EngineOperatingCounter;
-            details.NextMaintenanceAtFlightOperatingCounter = entity.NextMaintenanceAtFlightOperatingCounter;
-            details.NextMaintenanceAtEngineOperatingCounter = entity.NextMaintenanceAtEngineOperatingCounter;
-            details.FlightOperatingCounterUnitTypeId = entity.FlightOperatingCounterUnitTypeId;
-            details.EngineOperatingCounterUnitTypeId = entity.EngineOperatingCounterUnitTypeId;
+            details.FlightOperatingCounterInSeconds = entity.FlightOperatingCounterInSeconds;
+            details.EngineOperatingCounterInSeconds = entity.EngineOperatingCounterInSeconds;
+            details.NextMaintenanceAtFlightOperatingCounterInSeconds = entity.NextMaintenanceAtFlightOperatingCounterInSeconds;
+            details.NextMaintenanceAtEngineOperatingCounterInSeconds = entity.NextMaintenanceAtEngineOperatingCounterInSeconds;
 
             return details;
         }
@@ -78,12 +74,10 @@ namespace FLS.Server.Data.Mapping
             entity.TotalTowedGliderStarts = details.TotalTowedGliderStarts;
             entity.TotalWinchLaunchStarts = details.TotalWinchLaunchStarts;
             entity.TotalSelfStarts = details.TotalSelfStarts;
-            entity.FlightOperatingCounter = details.FlightOperatingCounter;
-            entity.EngineOperatingCounter = details.EngineOperatingCounter;
-            entity.NextMaintenanceAtFlightOperatingCounter = details.NextMaintenanceAtFlightOperatingCounter;
-            entity.NextMaintenanceAtEngineOperatingCounter = details.NextMaintenanceAtEngineOperatingCounter;
-            entity.FlightOperatingCounterUnitTypeId = details.FlightOperatingCounterUnitTypeId;
-            entity.EngineOperatingCounterUnitTypeId = details.EngineOperatingCounterUnitTypeId;
+            entity.FlightOperatingCounterInSeconds = details.FlightOperatingCounterInSeconds;
+            entity.EngineOperatingCounterInSeconds = details.EngineOperatingCounterInSeconds;
+            entity.NextMaintenanceAtFlightOperatingCounterInSeconds = details.NextMaintenanceAtFlightOperatingCounterInSeconds;
+            entity.NextMaintenanceAtEngineOperatingCounterInSeconds = details.NextMaintenanceAtEngineOperatingCounterInSeconds;
 
             return entity;
         }

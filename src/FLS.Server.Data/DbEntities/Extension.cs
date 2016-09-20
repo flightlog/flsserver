@@ -13,7 +13,6 @@ namespace FLS.Server.Data.DbEntities
         public Extension()
         {
             ClubExtensions = new HashSet<ClubExtension>();
-            ExtensionParameters = new HashSet<ExtensionParameter>();
         }
 
         public Guid ExtensionId { get; set; }
@@ -65,8 +64,6 @@ namespace FLS.Server.Data.DbEntities
         public bool IsDeleted { get; set; }
 
         public virtual ICollection<ClubExtension> ClubExtensions { get; set; }
-
-        public virtual ICollection<ExtensionParameter> ExtensionParameters { get; set; }
 
         public virtual ExtensionType ExtensionType { get; set; }
 

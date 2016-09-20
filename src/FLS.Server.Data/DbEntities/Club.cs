@@ -15,7 +15,7 @@ namespace FLS.Server.Data.DbEntities
         {
             Aircrafts = new HashSet<Aircraft>();
             ClubExtensions = new HashSet<ClubExtension>();
-            ExtensionParameterValues = new HashSet<ExtensionParameterValue>();
+            ExtensionParameterValues = new HashSet<ExtensionValue>();
             FlightTypes = new HashSet<FlightType>();
             MemberStates = new HashSet<MemberState>();
             PersonCategories = new HashSet<PersonCategory>();
@@ -129,7 +129,7 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual FlightType DefaultTowFlightType { get; set; }
 
-        public virtual ICollection<ExtensionParameterValue> ExtensionParameterValues { get; set; }
+        public virtual ICollection<ExtensionValue> ExtensionParameterValues { get; set; }
 
         public virtual ICollection<FlightType> FlightTypes { get; set; }
 

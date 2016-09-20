@@ -33,11 +33,11 @@ namespace FLS.Server.Tests.WebApiControllerTests
             {
                 AircraftId = responseAircraftDetails.AircraftId,
                 AtDateTime = new DateTime(2015, 1, 1),
-                EngineOperatingCounter = 1255,
-                FlightOperatingCounter = 1255,
+                EngineOperatingCounterInSeconds = 75300,
+                FlightOperatingCounterInSeconds = 75300,
                 TotalSelfStarts = 150,
-                NextMaintenanceAtFlightOperatingCounter = 1300,
-                NextMaintenanceAtEngineOperatingCounter = 2000
+                NextMaintenanceAtFlightOperatingCounterInSeconds = 78000,
+                NextMaintenanceAtEngineOperatingCounterInSeconds = 12000
             };
 
             var newCounterResponse = PostAsync(newCounter, "/api/v1/aircraftoperatingcounters").Result;
@@ -59,7 +59,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var result = ConvertToModel<AircraftOperatingCounterResult>(requestResponse);
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AircraftHasNoEngine);
-            Assert.IsTrue(result.EngineOperatingCounter == 1255);
+            Assert.IsTrue(result.EngineOperatingCounterInSeconds == 75300);
 
             var flightDetails = CreateMotorFlightDetails(ClubId);
             flightDetails.MotorFlightDetailsData.AircraftId = responseAircraftDetails.AircraftId;
@@ -78,7 +78,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var result2 = ConvertToModel<AircraftOperatingCounterResult>(requestResponse2);
             Assert.IsNotNull(result2);
             Assert.IsFalse(result2.AircraftHasNoEngine);
-            Assert.IsTrue(result2.EngineOperatingCounter == 1330);
+            Assert.IsTrue(result2.EngineOperatingCounterInSeconds == 79800);
         }
 
 

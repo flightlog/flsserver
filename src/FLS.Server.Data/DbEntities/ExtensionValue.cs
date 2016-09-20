@@ -8,31 +8,53 @@ using System.Text;
 
 namespace FLS.Server.Data.DbEntities
 {
-    public partial class ExtensionParameterType
+    public partial class ExtensionValue
     {
-        public ExtensionParameterType()
-        {
-            ExtensionParameters = new HashSet<ExtensionParameter>();
-        }
-
-        public int ExtensionParameterTypeId { get; set; }
+        public Guid ExtensionValueId { get; set; }
 
         [Required]
-        [StringLength(50)]
-        public string ExtensionParameterTypeName { get; set; }
+        [StringLength(100)]
+        public string ExtensionValueName { get; set; }
 
-        public bool StoreValuesAsBinaryData { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string ExtensionValueKeyName { get; set; }
+
+        public string ExtensionStringValue { get; set; }
+
+        public byte[] ExtensionBinaryValue { get; set; }
+        
+        public Guid? ClubId { get; set; }
+
+        public bool IsDefault { get; set; }
 
         public string Comment { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 
+        public Guid CreatedByUserId { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime? ModifiedOn { get; set; }
 
-        public virtual ICollection<ExtensionParameter> ExtensionParameters { get; set; }
+        public Guid? ModifiedByUserId { get; set; }
 
+        [Column(TypeName = "datetime2")]
+        public DateTime? DeletedOn { get; set; }
+
+        public Guid? DeletedByUserId { get; set; }
+
+        public int? RecordState { get; set; }
+
+        public Guid OwnerId { get; set; }
+
+        public int OwnershipType { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public virtual Club Club { get; set; }
+        
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

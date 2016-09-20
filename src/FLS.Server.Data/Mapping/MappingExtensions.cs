@@ -1093,9 +1093,8 @@ namespace FLS.Server.Data.Mapping
             flightDetailsData.FlightId = flight.FlightId;
             flightDetailsData.AircraftId = flight.AircraftId;
 
-            flightDetailsData.EngineStartOperatingCounter = flight.EngineStartOperatingCounter;
-            flightDetailsData.EngineEndOperatingCounter = flight.EngineEndOperatingCounter;
-            flightDetailsData.EngineOperatingCounterUnitTypeId = flight.EngineOperatingCounterUnitTypeId;
+            flightDetailsData.EngineStartOperatingCounterInSeconds = flight.EngineStartOperatingCounterInSeconds;
+            flightDetailsData.EngineEndOperatingCounterInSeconds = flight.EngineEndOperatingCounterInSeconds;
 
             flightDetailsData.AirStateId = flight.AirStateId;
             flightDetailsData.ValidationStateId = flight.ValidationStateId;
@@ -1269,9 +1268,8 @@ namespace FLS.Server.Data.Mapping
 
             entity.AircraftId = details.AircraftId;
             
-            entity.EngineStartOperatingCounter = details.EngineStartOperatingCounter;
-            entity.EngineEndOperatingCounter = details.EngineEndOperatingCounter;
-            entity.EngineOperatingCounterUnitTypeId = details.EngineOperatingCounterUnitTypeId;
+            entity.EngineStartOperatingCounterInSeconds = details.EngineStartOperatingCounterInSeconds;
+            entity.EngineEndOperatingCounterInSeconds = details.EngineEndOperatingCounterInSeconds;
 
             entity.Comment = details.FlightComment;
             //do not overtake the states from the details (client)

@@ -104,7 +104,14 @@ DELETE FROM LanguageTranslations
 DELETE FROM Languages
 
 DELETE FROM ClubStates
+DELETE FROM CounterUnitTypes
 
+PRINT 'Insert CounterUnitTypes'
+INSERT INTO [dbo].[CounterUnitTypes] ([CounterUnitTypeId], [CounterUnitTypeName], [CounterUnitTypeKeyName],[Comment],[IsActive],[CreatedOn])
+     VALUES (1, 'Minutes','Min',NULL,1,SYSUTCDATETIME())
+
+INSERT INTO [dbo].[CounterUnitTypes] ([CounterUnitTypeId], [CounterUnitTypeName], [CounterUnitTypeKeyName],[Comment],[IsActive],[CreatedOn])
+     VALUES (2, '2 decimals per hour','2decimalsperhour',NULL,1,SYSUTCDATETIME())
 
 PRINT 'Insert ClubStates'
 SET IDENTITY_INSERT [ClubStates] ON
@@ -623,7 +630,7 @@ INSERT INTO [FlightCostBalanceTypes] ([FlightCostBalanceTypeId],[FlightCostBalan
      VALUES
            (2,'50:50 Pilot/Copilot',
 		   'Rechnung wird an Pilot und Copilot ausgestellt im Kostenverhältnis 50:50'
-           ,0, 1, 1, 1
+           ,0, 0, 0, 0
            ,SYSDATETIME())
 
 
@@ -633,7 +640,7 @@ INSERT INTO [FlightCostBalanceTypes] ([FlightCostBalanceTypeId],[FlightCostBalan
      VALUES
            (3,'Schlepppilot übernimmt Schleppkosten',
 		   'Rechnung mit den Segelflugkosten inkl. Landetaxen geht an den Segelflugpiloten, Schleppkosten werden dem Schlepppiloten in Rechnung gestellt.'
-           ,0, 1, 0, 0
+           ,0, 0, 0, 0
            ,SYSDATETIME())
 
 INSERT INTO [FlightCostBalanceTypes] ([FlightCostBalanceTypeId],[FlightCostBalanceTypeName]

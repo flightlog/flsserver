@@ -11,9 +11,9 @@ namespace FLS.Data.WebApi.Aircraft
         public DateTime? AtDateTime { get; set; }
 
         /// <summary>
-        /// Gets or sets the engine operating counter after engine shutdown (units see EngineOperatingCounterUnitTypeId)
+        /// Gets the engine operating counter in seconds
         /// </summary>
-        public long? EngineOperatingCounter { get; set; }
+        public long? EngineOperatingCounterInSeconds { get; set; }
 
         public string EngineOperatingCounterUnitTypeKeyName { get; set; }
 

@@ -97,9 +97,7 @@
     <Compile Include="DbEntities\Country.cs" />
     <Compile Include="DbEntities\ElevationUnitType.cs" />
     <Compile Include="DbEntities\Extension.cs" />
-    <Compile Include="DbEntities\ExtensionParameter.cs" />
-    <Compile Include="DbEntities\ExtensionParameterType.cs" />
-    <Compile Include="DbEntities\ExtensionParameterValue.cs" />
+    <Compile Include="DbEntities\ExtensionValue.cs" />
     <Compile Include="DbEntities\ExtensionType.cs" />
     <Compile Include="DbEntities\Flight.cs" />
     <Compile Include="DbEntities\FlightCostBalanceType.cs" />

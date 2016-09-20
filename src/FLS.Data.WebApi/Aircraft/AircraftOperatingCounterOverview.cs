@@ -15,13 +15,9 @@ namespace FLS.Data.WebApi.Aircraft
 
         public int? TotalStarts { get; set; }
 
-        public long? FlightOperatingCounter { get; set; }
+        public long? FlightOperatingCounterInSeconds { get; set; }
 
-        public long? EngineOperatingCounter { get; set; }
-        
-        public int? FlightOperatingCounterUnitTypeId { get; set; }
-
-        public int? EngineOperatingCounterUnitTypeId { get; set; }
+        public long? EngineOperatingCounterInSeconds { get; set; }
 
         public override Guid Id
         {

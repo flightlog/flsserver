@@ -97,8 +97,8 @@ namespace FLS.Server.Service
                     {
                         AtDateTime = DateTime.MinValue,
                         AircraftId = request.AircraftId,
-                        EngineOperatingCounter = 0,
-                        FlightOperatingCounter = 0
+                        EngineOperatingCounterInSeconds = 0,
+                        FlightOperatingCounterInSeconds = 0
                     };
                 }
                 else
@@ -112,20 +112,20 @@ namespace FLS.Server.Service
                                 && f.StartDateTime >= aircraftOperatingCounter.AtDateTime
                                 && (f.LdgDateTime.HasValue == false || f.LdgDateTime <= until)).ToList();
 
-                long operatingCounterValue = aircraftOperatingCounter.EngineOperatingCounter.GetValueOrDefault(0);
+                long operatingCounterValue = aircraftOperatingCounter.EngineOperatingCounterInSeconds.GetValueOrDefault(0);
 
                 foreach (var flight in flights.OrderBy(o => o.LdgDateTime))
                 {
-                    if (flight.EngineEndOperatingCounter.HasValue)
+                    if (flight.EngineEndOperatingCounterInSeconds.HasValue)
                     {
-                        operatingCounterValue = flight.EngineEndOperatingCounter.Value;
+                        operatingCounterValue = flight.EngineEndOperatingCounterInSeconds.Value;
                         foundAnyOperatingCounterValue = true;
                         continue;
                     }
 
-                    if (flight.EngineStartOperatingCounter.HasValue)
+                    if (flight.EngineStartOperatingCounterInSeconds.HasValue)
                     {
-                        operatingCounterValue = flight.EngineStartOperatingCounter.Value;
+                        operatingCounterValue = flight.EngineStartOperatingCounterInSeconds.Value;
                         foundAnyOperatingCounterValue = true;
                     }
 
@@ -135,12 +135,12 @@ namespace FLS.Server.Service
 
                     counterUnitType.NotNull("CounterUnitType");
 
-                    operatingCounterValue += flight.Duration.ToCounterValue(counterUnitType);
+                    operatingCounterValue += Convert.ToInt64(flight.Duration.TotalSeconds);
                 }
 
                 if (foundAnyOperatingCounterValue)
                 {
-                    result.EngineOperatingCounter = operatingCounterValue;
+                    result.EngineOperatingCounterInSeconds = operatingCounterValue;
                 }
 
                 return result;

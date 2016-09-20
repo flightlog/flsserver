@@ -14,8 +14,6 @@ namespace FLS.Server.Data.DbEntities
         {
             AircraftFlightOperatingCounters = new HashSet<Aircraft>();
             AircraftEngineOperatingCounters = new HashSet<Aircraft>();
-            AircraftOperatingCounterFlightOperatingCounters = new HashSet<AircraftOperatingCounter>();
-            AircraftOperatingCounterEngineOperatingCounters = new HashSet<AircraftOperatingCounter>();
         }
 
         public int CounterUnitTypeId { get; set; }
@@ -42,10 +40,6 @@ namespace FLS.Server.Data.DbEntities
         public virtual ICollection<Aircraft> AircraftFlightOperatingCounters { get; set; }
 
         public virtual ICollection<Aircraft> AircraftEngineOperatingCounters { get; set; }
-
-        public virtual ICollection<AircraftOperatingCounter> AircraftOperatingCounterFlightOperatingCounters { get; set; }
-
-        public virtual ICollection<AircraftOperatingCounter> AircraftOperatingCounterEngineOperatingCounters { get; set; }
 
         public override string ToString()
         {
