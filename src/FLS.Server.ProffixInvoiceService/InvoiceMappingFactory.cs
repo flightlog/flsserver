@@ -18,10 +18,9 @@ namespace FLS.Server.ProffixInvoiceService
             _locationService = locationService;
         }
 
-
-        internal InvoiceMapping CreateInvoiceMapping()
+        internal InvoiceLineRuleFilterContainer CreateInvoiceLineRuleFilterContainer()
         {
-            var invoiceMapping = new InvoiceMapping();
+            var invoiceLineRuleFilterContainer = new InvoiceLineRuleFilterContainer();
             var lszkId = GetLocationId("LSZK");
             var saanenId = GetLocationId("LSGK");
             var montricherId = GetLocationId("LSTR");
@@ -45,398 +44,498 @@ namespace FLS.Server.ProffixInvoiceService
             noFlatRateClubMemberNumbers.Add("622976"); //Rolf
             noFlatRateClubMemberNumbers.Add("686001"); //Gian
 
-            //invoiceMapping.IsErrorWhenNoAdditionalFuelFeeRuleMatches = false;
-            //invoiceMapping.IsErrorWhenNoLandingTaxRuleMatches = false;
-            //invoiceMapping.IsErrorWhenNoVFSFeeRuleMatches = false;
-            invoiceMapping.VsfFee = new VsfFee()
+            var vsfFeeRuleFilter = new VsfFeeRuleFilter()
             {
                 AddVsfFeePerLanding = true,
-                ERPArticleNumber = "1003",
+                ProffixArticleNumber = "1003",
                 InvoiceLineText = "VFS-Gebühr",
                 UseRuleForAllLdgLocationsExceptListed = false,
-                MatchedLdgLocations = new List<Guid> { lszkId }
+                MatchedLdgLocations = new List<Guid> { lszkId },
+                UseRuleForAllAircraftsExceptListed = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllFlightTypesExceptListed = true,
+                UseRuleForAllStartLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true,
+                IsRuleForMotorFlights = true
             };
+            invoiceLineRuleFilterContainer.VsfFeeRuleFilters.Add(vsfFeeRuleFilter);
 
 
-            invoiceMapping.InstructorToERPArticleMapping.Add("999999", "50"); //Silvan
-            invoiceMapping.InstructorToERPArticleMapping.Add("424976", "29"); //Karl
-            invoiceMapping.InstructorToERPArticleMapping.Add("536594", "19"); //H.U.K
-            invoiceMapping.InstructorToERPArticleMapping.Add("836001", "116"); //Päde 
-            invoiceMapping.InstructorToERPArticleMapping.Add("888888", "90"); //Thomas
-
-            var invoiceRecipientTarget = new InvoiceRecipientTarget();
-            invoiceRecipientTarget.DisplayName = "FGZO Schnupperflug Gutschein";
-            invoiceRecipientTarget.MemberNumber = "999006";
-            invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("68", invoiceRecipientTarget); //Schnupperflug Gutschein
-
-            invoiceRecipientTarget = new InvoiceRecipientTarget();
-            invoiceRecipientTarget.DisplayName = "FGZO Schnupperflug und Lufttaufe bar";
-            invoiceRecipientTarget.MemberNumber = "999000";
-            invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("69", invoiceRecipientTarget); //Schnupperflug bar
-            invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("66", invoiceRecipientTarget); //Lufttaufe bar
-
-            invoiceRecipientTarget = new InvoiceRecipientTarget();
-            invoiceRecipientTarget.DisplayName = "FGZO Passagierflug bar";
-            invoiceRecipientTarget.MemberNumber = "999001";
-            invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("63", invoiceRecipientTarget); //PAX bar
-
-            invoiceRecipientTarget = new InvoiceRecipientTarget();
-            invoiceRecipientTarget.DisplayName = "FGZO Passagierflug Gutschein";
-            invoiceRecipientTarget.MemberNumber = "999007";
-            invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("62", invoiceRecipientTarget); //PAX Gutschein
-
-            invoiceRecipientTarget = new InvoiceRecipientTarget();
-            invoiceRecipientTarget.DisplayName = "FGZO Marketingflug";
-            invoiceRecipientTarget.MemberNumber = "999004";
-            invoiceMapping.FlightTypeToInvoiceRecipientMapping.Add("100", invoiceRecipientTarget);
+            invoiceLineRuleFilterContainer.InstructorToProffixArticleMapping.Add("999999", "50"); //Silvan
+            invoiceLineRuleFilterContainer.InstructorToProffixArticleMapping.Add("424976", "29"); //Karl
+            invoiceLineRuleFilterContainer.InstructorToProffixArticleMapping.Add("536594", "19"); //H.U.K
+            invoiceLineRuleFilterContainer.InstructorToProffixArticleMapping.Add("836001", "116"); //Päde 
+            invoiceLineRuleFilterContainer.InstructorToProffixArticleMapping.Add("888888", "90"); //Thomas
             
             var aircraftId = GetAircraftId("HB-3256");
             int sortIndicator = 1;
-            var aircraftMappingRule = new AircraftMapping
+            var aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1059",
+                ProffixArticleNumber = "1059",
                 InvoiceLineText = "Schulung",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-3407");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1061",
+                ProffixArticleNumber = "1061",
                 InvoiceLineText = "Schulung",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-1841");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1063",
+                ProffixArticleNumber = "1063",
                 InvoiceLineText = "Schulung",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-1824");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1065",
+                ProffixArticleNumber = "1065",
                 InvoiceLineText = "Schulung",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-2464");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1072",
+                ProffixArticleNumber = "1072",
                 InvoiceLineText = "Schulung",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-3256");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1059",
+                ProffixArticleNumber = "1059",
                 InvoiceLineText = "Weiterbildung ohne Pauschale",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllClubMemberNumbersExceptListed = false,
-                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers),
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-3407");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1061",
+                ProffixArticleNumber = "1061",
                 InvoiceLineText = "Weiterbildung ohne Pauschale",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllClubMemberNumbersExceptListed = false,
-                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers),
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-1841");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1063",
+                ProffixArticleNumber = "1063",
                 InvoiceLineText = "Weiterbildung ohne Pauschale",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllClubMemberNumbersExceptListed = false,
-                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers),
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-1824");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1065",
+                ProffixArticleNumber = "1065",
                 InvoiceLineText = "Weiterbildung ohne Pauschale",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllClubMemberNumbersExceptListed = false,
-                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers),
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-2464");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1072",
+                ProffixArticleNumber = "1072",
                 InvoiceLineText = "Weiterbildung ohne Pauschale",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllClubMemberNumbersExceptListed = false,
-                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers),
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
 
 
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-3256");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1187",
+                ProffixArticleNumber = "1187",
                 InvoiceLineText = "Weiterbildung mit Pauschale",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
-                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers),
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-3407");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1186",
+                ProffixArticleNumber = "1186",
                 InvoiceLineText = "Weiterbildung mit Pauschale",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
-                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers),
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-1841");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1189",
+                ProffixArticleNumber = "1189",
                 InvoiceLineText = "Weiterbildung mit Pauschale",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
-                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers),
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-1824");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1188",
+                ProffixArticleNumber = "1188",
                 InvoiceLineText = "Weiterbildung mit Pauschale",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
-                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers),
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-2464");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1190",
+                ProffixArticleNumber = "1190",
                 InvoiceLineText = "Weiterbildung mit Pauschale",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(furtherTrainingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
-                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers)
+                MatchedClubMemberNumbers = new List<string>(noFlatRateClubMemberNumbers),
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
 
             sortIndicator = 1;
             aircraftId = GetAircraftId("HB-3256");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1058",
+                ProffixArticleNumber = "1058",
                 InvoiceLineText = "Privat",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-3407");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1060",
+                ProffixArticleNumber = "1060",
                 InvoiceLineText = "Privat",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-1841");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1062",
+                ProffixArticleNumber = "1062",
                 InvoiceLineText = "Privat",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-1824");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1064",
+                ProffixArticleNumber = "1064",
                 InvoiceLineText = "Privat",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-2464");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1071",
+                ProffixArticleNumber = "1071",
                 InvoiceLineText = "Privat",
                 IncludeFlightTypeName = true,
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllStartLocationsExceptListed = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             //Towing Aircrafts
             sortIndicator++;
             aircraftId = GetAircraftId("HB-KCB");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1068",
+                ProffixArticleNumber = "1068",
                 InvoiceLineText = "Schulung",
                 IncludeThresholdText = true,
                 ThresholdText = "1. bis 10. Min.",
@@ -448,18 +547,24 @@ namespace FLS.Server.ProffixInvoiceService
                 MaxFlightTimeMatchingValue = 10,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<Guid>(),
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             aircraftMappingRule.MatchedStartLocations.Add(lszkId);
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1069",
+                ProffixArticleNumber = "1069",
                 InvoiceLineText = "Schulung",
                 IncludeThresholdText = true,
                 ThresholdText = "ab 11. Min.",
@@ -471,18 +576,24 @@ namespace FLS.Server.ProffixInvoiceService
                 MaxFlightTimeMatchingValue = int.MaxValue,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<Guid>(),
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             aircraftMappingRule.MatchedStartLocations.Add(lszkId);
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1066",
+                ProffixArticleNumber = "1066",
                 InvoiceLineText = "Privat",
                 IncludeThresholdText = true,
                 ThresholdText = "1. bis 10. Min.",
@@ -494,18 +605,24 @@ namespace FLS.Server.ProffixInvoiceService
                 MaxFlightTimeMatchingValue = 10,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<Guid>(),
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             aircraftMappingRule.MatchedStartLocations.Add(lszkId);
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1067",
+                ProffixArticleNumber = "1067",
                 InvoiceLineText = "Privat",
                 IncludeThresholdText = true,
                 ThresholdText = "ab 11. Min.",
@@ -517,147 +634,201 @@ namespace FLS.Server.ProffixInvoiceService
                 MaxFlightTimeMatchingValue = int.MaxValue,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<Guid>(),
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             aircraftMappingRule.MatchedStartLocations.Add(lszkId);
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-PFW");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1153",
+                ProffixArticleNumber = "1153",
                 InvoiceLineText = "",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-KIO");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1154",
+                ProffixArticleNumber = "1154",
                 InvoiceLineText = "",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-PDL");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1155",
+                ProffixArticleNumber = "1155",
                 InvoiceLineText = "",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-EQC");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1156",
+                ProffixArticleNumber = "1156",
                 InvoiceLineText = "",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-WAT");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1157",
+                ProffixArticleNumber = "1157",
                 InvoiceLineText = "",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-DGP");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1158",
+                ProffixArticleNumber = "1158",
                 InvoiceLineText = "",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-KDO");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1159",
+                ProffixArticleNumber = "1159",
                 InvoiceLineText = "",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-DCU");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1161",
+                ProffixArticleNumber = "1161",
                 InvoiceLineText = "",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
                 MinFlightTimeMatchingValue = 0,
                 MaxFlightTimeMatchingValue = int.MaxValue,
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
             aircraftId = GetAircraftId("HB-KCB");
-            aircraftMappingRule = new AircraftMapping
+            aircraftMappingRule = new AircraftRuleFilter
             {
-                AircraftId = aircraftId,
                 SortIndicator = sortIndicator,
-                ERPArticleNumber = "1162",
+                ProffixArticleNumber = "1162",
                 InvoiceLineText = "Saanen",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
@@ -665,34 +836,49 @@ namespace FLS.Server.ProffixInvoiceService
                 MaxFlightTimeMatchingValue = int.MaxValue,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<Guid>(),
-                UseRuleForAllClubMemberNumbersExceptListed = true
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllAircraftsExceptListed = false,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForTowingFlights = true
             };
+            aircraftMappingRule.Aircrafts.Add(aircraftId);
             aircraftMappingRule.MatchedStartLocations.Add(saanenId);
-            invoiceMapping.AircraftERPArticleMapping.Add(aircraftMappingRule);
+            invoiceLineRuleFilterContainer.AircraftRuleFilters.Add(aircraftMappingRule);
 
-            
 
-            var additionalFuelFeeRule = new AdditionalFuelFee
+
+            var additionalFuelFeeRule = new AdditionalFuelFeeRuleFilter
             {
                 UseRuleForAllAircraftsExceptListed = false,
-                AircraftIds = new List<Guid>(),
+                Aircrafts = new List<Guid>(),
                 SortIndicator = 1,
-                ERPArticleNumber = "1086",
+                ProffixArticleNumber = "1086",
                 InvoiceLineText = "Treibstoffzuschlag",
                 UseRuleForAllStartLocationsExceptListed = false,
-                MatchedStartLocations = new List<Guid>()
+                MatchedStartLocations = new List<Guid>(),
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                UseRuleForAllFlightTypesExceptListed = true,
+                UseRuleForAllLdgLocationsExceptListed = true,
+                IsActive = true,
+                IsRuleForGliderFlights = true,
+                IsRuleForSelfstartedGliderFlights = true,
+                IsRuleForMotorFlights = true,
+                IsRuleForTowingFlights = true
             };
-            additionalFuelFeeRule.AircraftIds.Add(aircraftId);
+            additionalFuelFeeRule.Aircrafts.Add(aircraftId);
             additionalFuelFeeRule.MatchedStartLocations.Add(lszkId);
-            invoiceMapping.AdditionalFuelFeeRules.Add(additionalFuelFeeRule);
+            invoiceLineRuleFilterContainer.AdditionalFuelFeeRuleFilters.Add(additionalFuelFeeRule);
 
-            var noLandingTax = new NoLandingTax()
+            var noLandingTax = new NoLandingTaxRuleFilter()
             {
                 IsRuleForGliderFlights = true,
                 IsRuleForTowingFlights = true,
                 IsRuleForSelfstartedGliderFlights = false,
                 UseRuleForAllAircraftsExceptListed = true,
-                AircraftIds = new List<Guid>(),
+                Aircrafts = new List<Guid>(),
                 SortIndicator = 1,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
@@ -700,17 +886,21 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedLdgLocations = new List<Guid> { lszkId },
                 NoLandingTaxForGlider = true,
                 NoLandingTaxForTowingAircraft = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                IsActive = true,
+                IsRuleForMotorFlights = true,
+                UseRuleForAllStartLocationsExceptListed = true
             };
             noLandingTax.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceMapping.NoLandingTaxRules.Add(noLandingTax);
+            invoiceLineRuleFilterContainer.NoLandingTaxRuleFilters.Add(noLandingTax);
 
-            noLandingTax = new NoLandingTax()
+            noLandingTax = new NoLandingTaxRuleFilter()
             {
                 IsRuleForGliderFlights = false,
                 IsRuleForTowingFlights = true,
                 IsRuleForSelfstartedGliderFlights = false,
                 UseRuleForAllAircraftsExceptListed = true,
-                AircraftIds = new List<Guid>(),
+                Aircrafts = new List<Guid>(),
                 SortIndicator = 1,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
@@ -719,16 +909,20 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedLdgLocations = new List<Guid> { lszkId },
                 NoLandingTaxForGlider = true,
                 NoLandingTaxForTowingAircraft = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                IsActive = true,
+                IsRuleForMotorFlights = true,
+                UseRuleForAllStartLocationsExceptListed = true
             };
             noLandingTax.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceMapping.NoLandingTaxRules.Add(noLandingTax);
+            invoiceLineRuleFilterContainer.NoLandingTaxRuleFilters.Add(noLandingTax);
 
-            var landingTaxRule = new LandingTax
+            var landingTaxRule = new LandingTaxRuleFilter
             {
                 UseRuleForAllAircraftsExceptListed = true,
-                AircraftIds = new List<Guid>(),
+                Aircrafts = new List<Guid>(),
                 SortIndicator = 1,
-                ERPArticleNumber = "",
+                ProffixArticleNumber = "",
                 InvoiceLineText = "Keine Landetaxen Speck für Schulung",
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
@@ -737,17 +931,20 @@ namespace FLS.Server.ProffixInvoiceService
                 IsRuleForSelfstartedGliderFlights = true,
                 IsRuleForGliderFlights = true,
                 IsRuleForTowingFlights = true,
-                IsRuleForMotorFlights = true
+                IsRuleForMotorFlights = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                IsActive = true,
+                UseRuleForAllStartLocationsExceptListed = true
             };
             landingTaxRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceMapping.LandingTaxRules.Add(landingTaxRule);
+            invoiceLineRuleFilterContainer.LandingTaxRuleFilters.Add(landingTaxRule);
 
-            landingTaxRule = new LandingTax
+            landingTaxRule = new LandingTaxRuleFilter
             {
                 UseRuleForAllAircraftsExceptListed = true,
-                AircraftIds = new List<Guid>(),
+                Aircrafts = new List<Guid>(),
                 SortIndicator = 1,
-                ERPArticleNumber = "1037",
+                ProffixArticleNumber = "1037",
                 InvoiceLineText = "Landetaxen Speck",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
@@ -755,17 +952,21 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedLdgLocations = new List<Guid> { lszkId },
                 IsRuleForSelfstartedGliderFlights = true,   //TODO: create start tax for self starting gliders
                 IsRuleForGliderFlights = false,
-                IsRuleForTowingFlights = true
+                IsRuleForTowingFlights = true,
+                IsRuleForMotorFlights = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                IsActive = true,
+                UseRuleForAllStartLocationsExceptListed = true
             };
             landingTaxRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceMapping.LandingTaxRules.Add(landingTaxRule);
+            invoiceLineRuleFilterContainer.LandingTaxRuleFilters.Add(landingTaxRule);
 
-            landingTaxRule = new LandingTax
+            landingTaxRule = new LandingTaxRuleFilter
             {
                 UseRuleForAllAircraftsExceptListed = true,
-                AircraftIds = new List<Guid>(),
+                Aircrafts = new List<Guid>(),
                 SortIndicator = 1,
-                ERPArticleNumber = "1106",
+                ProffixArticleNumber = "1106",
                 InvoiceLineText = "Landetaxen Montricher",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
@@ -773,16 +974,20 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedLdgLocations = new List<Guid> { montricherId },
                 IsRuleForSelfstartedGliderFlights = false,
                 IsRuleForGliderFlights = false,
-                IsRuleForTowingFlights = true
+                IsRuleForTowingFlights = true,
+                IsRuleForMotorFlights = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                IsActive = true,
+                UseRuleForAllStartLocationsExceptListed = true
             };
-            invoiceMapping.LandingTaxRules.Add(landingTaxRule);
+            invoiceLineRuleFilterContainer.LandingTaxRuleFilters.Add(landingTaxRule);
 
-            landingTaxRule = new LandingTax
+            landingTaxRule = new LandingTaxRuleFilter
             {
                 UseRuleForAllAircraftsExceptListed = true,
-                AircraftIds = new List<Guid>(),
+                Aircrafts = new List<Guid>(),
                 SortIndicator = 1,
-                ERPArticleNumber = "1160",
+                ProffixArticleNumber = "1160",
                 InvoiceLineText = "Landetaxen Saanen",
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
@@ -790,11 +995,50 @@ namespace FLS.Server.ProffixInvoiceService
                 MatchedLdgLocations = new List<Guid> { saanenId },
                 IsRuleForSelfstartedGliderFlights = false,
                 IsRuleForGliderFlights = false,
-                IsRuleForTowingFlights = true
+                IsRuleForTowingFlights = true,
+                IsRuleForMotorFlights = true,
+                UseRuleForAllClubMemberNumbersExceptListed = true,
+                IsActive = true,
+                UseRuleForAllStartLocationsExceptListed = true
             };
-            invoiceMapping.LandingTaxRules.Add(landingTaxRule);
+            invoiceLineRuleFilterContainer.LandingTaxRuleFilters.Add(landingTaxRule);
+
+            return invoiceLineRuleFilterContainer;
+        }
+
+        internal Dictionary<string, InvoiceRecipientTarget> CreateFlightTypeToInvoiceRecipientMapping()
+        {
+            Dictionary<string, InvoiceRecipientTarget> flightTypeToInvoiceRecipientMapping =
+                new Dictionary<string, InvoiceRecipientTarget>();
+
+
+            var invoiceRecipientTarget = new InvoiceRecipientTarget();
+            invoiceRecipientTarget.DisplayName = "FGZO Schnupperflug Gutschein";
+            invoiceRecipientTarget.MemberNumber = "999006";
+            flightTypeToInvoiceRecipientMapping.Add("68", invoiceRecipientTarget); //Schnupperflug Gutschein
+
+            invoiceRecipientTarget = new InvoiceRecipientTarget();
+            invoiceRecipientTarget.DisplayName = "FGZO Schnupperflug und Lufttaufe bar";
+            invoiceRecipientTarget.MemberNumber = "999000";
+            flightTypeToInvoiceRecipientMapping.Add("69", invoiceRecipientTarget); //Schnupperflug bar
+            flightTypeToInvoiceRecipientMapping.Add("66", invoiceRecipientTarget); //Lufttaufe bar
+
+            invoiceRecipientTarget = new InvoiceRecipientTarget();
+            invoiceRecipientTarget.DisplayName = "FGZO Passagierflug bar";
+            invoiceRecipientTarget.MemberNumber = "999001";
+            flightTypeToInvoiceRecipientMapping.Add("63", invoiceRecipientTarget); //PAX bar
+
+            invoiceRecipientTarget = new InvoiceRecipientTarget();
+            invoiceRecipientTarget.DisplayName = "FGZO Passagierflug Gutschein";
+            invoiceRecipientTarget.MemberNumber = "999007";
+            flightTypeToInvoiceRecipientMapping.Add("62", invoiceRecipientTarget); //PAX Gutschein
+
+            invoiceRecipientTarget = new InvoiceRecipientTarget();
+            invoiceRecipientTarget.DisplayName = "FGZO Marketingflug";
+            invoiceRecipientTarget.MemberNumber = "999004";
+            flightTypeToInvoiceRecipientMapping.Add("100", invoiceRecipientTarget);
             
-            return invoiceMapping;
+            return flightTypeToInvoiceRecipientMapping;
         }
 
         internal Guid GetAircraftId(string immatriculation)

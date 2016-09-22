@@ -26,6 +26,9 @@ namespace FLS.Server.ProffixInvoiceService
         public bool NoLandingTaxForGliderFlight { get; set; }
 
         [JsonIgnore]
+        public bool NoLandingTaxForFlight { get; set; }
+
+        [JsonIgnore]
         public Guid ClubId { get; set; }
     }
 }

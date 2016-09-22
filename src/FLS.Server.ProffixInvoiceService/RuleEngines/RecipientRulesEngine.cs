@@ -11,21 +11,22 @@ namespace FLS.Server.ProffixInvoiceService.RuleEngines
     internal class RecipientRulesEngine
     {
         private readonly ProffixFlightInvoiceDetails _flightInvoiceDetails;
-        private readonly InvoiceMapping _invoiceMapping;
         private readonly Flight _flight;
         private readonly IPersonService _personService;
+        private readonly Dictionary<string, InvoiceRecipientTarget> _flightTypeToInvoiceRecipientMapping;
 
-        public RecipientRulesEngine(ProffixFlightInvoiceDetails flightInvoiceDetails, InvoiceMapping invoiceMapping, Flight flight, IPersonService personService)
+        public RecipientRulesEngine(ProffixFlightInvoiceDetails flightInvoiceDetails, Flight flight, 
+            IPersonService personService, Dictionary<string, InvoiceRecipientTarget> flightTypeToInvoiceRecipientMapping)
         {
             _flightInvoiceDetails = flightInvoiceDetails;
-            _invoiceMapping = invoiceMapping;
+            _flightTypeToInvoiceRecipientMapping = flightTypeToInvoiceRecipientMapping;
             _flight = flight;
             _personService = personService;
         }
 
         public ProffixFlightInvoiceDetails Run()
         {
-            var flightTypeToRecipientMappingRule = new FlightTypeToInvoiceRecipientMappingRule(_invoiceMapping.FlightTypeToInvoiceRecipientMapping,
+            var flightTypeToRecipientMappingRule = new FlightTypeToInvoiceRecipientMappingRule(_flightTypeToInvoiceRecipientMapping,
                 _flight.FlightType.FlightCode);
             flightTypeToRecipientMappingRule.StopRuleEngineWhenRuleApplied = true;
 

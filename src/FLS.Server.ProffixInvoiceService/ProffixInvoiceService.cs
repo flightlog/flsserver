@@ -20,12 +20,14 @@ namespace FLS.Server.ProffixInvoiceService
     {
         private readonly IPersonService _personService;
         protected Logger Logger { get; set; } = LogManager.GetCurrentClassLogger();
-        private InvoiceMapping InvoiceMapping { get; set; }
+        private Dictionary<string, InvoiceRecipientTarget> FlightTypeToInvoiceRecipientMapping { get; set; }
+        private InvoiceLineRuleFilterContainer InvoiceLineRuleFilterContainer { get; set; }
 
         public ProffixInvoiceService(InvoiceMappingFactory invoiceMappingFactory, IPersonService personService)
         {
             _personService = personService;
-            InvoiceMapping = invoiceMappingFactory.CreateInvoiceMapping();
+            InvoiceLineRuleFilterContainer = invoiceMappingFactory.CreateInvoiceLineRuleFilterContainer();
+            FlightTypeToInvoiceRecipientMapping = invoiceMappingFactory.CreateFlightTypeToInvoiceRecipientMapping();
         }
 
         public List<FlightInvoiceDetails> CreateFlightInvoiceDetails(List<Flight> flightsToInvoice, Guid clubId)
@@ -49,14 +51,14 @@ namespace FLS.Server.ProffixInvoiceService
                         ClubId = clubId
                     };
 
-                    var recipientRulesEngine = new RecipientRulesEngine(flightInvoiceDetails, InvoiceMapping, flight, _personService);
+                    var recipientRulesEngine = new RecipientRulesEngine(flightInvoiceDetails, flight, _personService, FlightTypeToInvoiceRecipientMapping);
                     recipientRulesEngine.Run();
 
-                    var invoideDetailsRuleEngine = new InvoiceDetailsRulesEngine(flightInvoiceDetails, flight);
-                    invoideDetailsRuleEngine.Run();
+                    var invoiceDetailsRuleEngine = new InvoiceDetailsRulesEngine(flightInvoiceDetails, flight);
+                    invoiceDetailsRuleEngine.Run();
 
                     var invoiceLineRulesEngine = new InvoiceLineRulesEngine(flightInvoiceDetails, flight,
-                        InvoiceMapping, _personService);
+                        _personService, InvoiceLineRuleFilterContainer);
                     invoiceLineRulesEngine.Run();
 
                     Logger.Info($"Created invoice for {flightInvoiceDetails.RecipientDetails.RecipientName}: Flight-Date: {flightInvoiceDetails.FlightDate.ToShortDateString()} Aircraft: {flightInvoiceDetails.AircraftImmatriculation} Nr of Lines: {flightInvoiceDetails.FlightInvoiceLineItems.Count}");
