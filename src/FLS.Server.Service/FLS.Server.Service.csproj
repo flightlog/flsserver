@@ -124,6 +124,7 @@
     <Compile Include="Identity\IdentityUserStoreService.cs" />
     <Compile Include="DashboardService.cs" />
     <Compile Include="Jobs\LicenceNotificationJob.cs" />
+    <Compile Include="ExtensionService.cs" />
     <Compile Include="TemplateService.cs" />
     <Compile Include="AircraftService.cs" />
     <Compile Include="BaseService.cs" />

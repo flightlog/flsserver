@@ -13,21 +13,34 @@ using FLS.Server.Interfaces;
 using FLS.Server.Interfaces.RulesEngine;
 using FLS.Server.ProffixInvoiceService.RuleEngines;
 using FLS.Server.ProffixInvoiceService.RuleFilters;
+using Newtonsoft.Json;
 
 namespace FLS.Server.ProffixInvoiceService
 {
     public class ProffixInvoiceService : IInvoiceService
     {
         private readonly IPersonService _personService;
+        private readonly IExtensionService _extensionService;
         protected Logger Logger { get; set; } = LogManager.GetCurrentClassLogger();
         private Dictionary<string, InvoiceRecipientTarget> FlightTypeToInvoiceRecipientMapping { get; set; }
         private InvoiceLineRuleFilterContainer InvoiceLineRuleFilterContainer { get; set; }
 
-        public ProffixInvoiceService(InvoiceMappingFactory invoiceMappingFactory, IPersonService personService)
+        public ProffixInvoiceService(InvoiceMappingFactory invoiceMappingFactory, IPersonService personService, IExtensionService extensionService)
         {
             _personService = personService;
+            _extensionService = extensionService;
             InvoiceLineRuleFilterContainer = invoiceMappingFactory.CreateInvoiceLineRuleFilterContainer();
             FlightTypeToInvoiceRecipientMapping = invoiceMappingFactory.CreateFlightTypeToInvoiceRecipientMapping();
+
+            var ser = JsonConvert.SerializeObject(InvoiceLineRuleFilterContainer);
+            _extensionService.SaveExtensionStringValue("ProffixInvoiceLineRuleFilterContainer", ser);
+            var obj = JsonConvert.DeserializeObject<InvoiceLineRuleFilterContainer>(ser);
+            var ser2 = _extensionService.GetExtensionStringValue("ProffixInvoiceLineRuleFilterContainer");
+
+            if (ser == ser2)
+            {
+                
+            }
         }
 
         public List<FlightInvoiceDetails> CreateFlightInvoiceDetails(List<Flight> flightsToInvoice, Guid clubId)

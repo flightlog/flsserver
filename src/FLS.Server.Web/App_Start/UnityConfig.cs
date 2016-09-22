@@ -68,6 +68,7 @@ namespace FLS.Server.WebApi
             container.RegisterType<IIdentityService, IdentityService>(new HierarchicalLifetimeManager());
             container.RegisterType<IdentityUserManager>();
             container.RegisterType<UserManager<User, Guid>, IdentityUserManager>();
+            container.RegisterType<IExtensionService, ExtensionService>();
             //container.RegisterType<IdentitySignInManager<User, Guid>, IdentitySignInManager>();
             container.RegisterType<IUserStore<User, Guid>, IdentityUserStoreService>();
             container.RegisterType<IUserPasswordStore<User, Guid>, IdentityUserStoreService>();

@@ -111,6 +111,7 @@ namespace FLS.Server.Tests
             container.RegisterType<IDataProtectionProvider, MachineKeyDataProtectionProvider>(new HierarchicalLifetimeManager());
             container.RegisterType<IIdentityMessageService, IdentityEmailService>();
 
+            container.RegisterType<IExtensionService, ExtensionService>();
             container.RegisterType<IIdentityService, IdentityService>(new HierarchicalLifetimeManager());
             //container.RegisterType<IdentityUserManager>(new HierarchicalLifetimeManager());
             container.RegisterType<UserManager<User, Guid>, IdentityUserManager>();
