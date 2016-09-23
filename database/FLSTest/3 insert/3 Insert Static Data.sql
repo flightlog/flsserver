@@ -547,29 +547,29 @@ SET IDENTITY_INSERT [LengthUnitTypes] OFF
 
 PRINT 'INSERT AircraftTypes'
 SET IDENTITY_INSERT [AircraftTypes] ON
-INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn])
-     VALUES (0, 'Unbekannt', 'Flugzeugtyp ist nicht bekannt / nicht gesetzt', SYSDATETIME())
+INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn], [HasEngine], [RequiresTowingInfo], [MayBeTowingAircraft])
+     VALUES (0, 'Unbekannt', 'Flugzeugtyp ist nicht bekannt / nicht gesetzt', SYSDATETIME(), null, null, null)
 
-INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn])
-     VALUES (1, 'Segelflugzeug', 'Reines Segelflugzeug ohne Motor oder Turbo', SYSDATETIME())
+INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn], [HasEngine], [RequiresTowingInfo], [MayBeTowingAircraft])
+     VALUES (1, 'Segelflugzeug', 'Reines Segelflugzeug ohne Motor oder Turbo', SYSDATETIME(), 0, 1, 0)
 
-INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn])
-     VALUES (2, 'Segelflugzeug mit Motor', 'Segelflugzeug mit Motor oder Turbo', SYSDATETIME())
+INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn], [HasEngine], [RequiresTowingInfo], [MayBeTowingAircraft])
+     VALUES (2, 'Segelflugzeug mit Motor', 'Segelflugzeug mit Motor oder Turbo', SYSDATETIME(), 1, 1, 0)
 
-INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn])
-     VALUES (4, 'Motorsegelflugzeug', 'Motorsegelflugzeug', SYSDATETIME())
+INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn], [HasEngine], [RequiresTowingInfo], [MayBeTowingAircraft])
+     VALUES (4, 'Motorsegelflugzeug', 'Motorsegelflugzeug', SYSDATETIME(), 1, 0, 1)
 
-INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn])
-     VALUES (8, 'Motorflugzeug', 'Motorflugzeug oder Schleppflugzeug', SYSDATETIME())
+INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn], [HasEngine], [RequiresTowingInfo], [MayBeTowingAircraft])
+     VALUES (8, 'Motorflugzeug', 'Motorflugzeug oder Schleppflugzeug', SYSDATETIME(), 1, 0, 1)
 
-INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn])
-     VALUES (16, 'Multi-Motorflugzeug', 'Motorflugzeug mit mehr als einem Motor', SYSDATETIME())
+INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn], [HasEngine], [RequiresTowingInfo], [MayBeTowingAircraft])
+     VALUES (16, 'Multi-Motorflugzeug', 'Motorflugzeug mit mehr als einem Motor', SYSDATETIME(), 1, 0, 0)
 
-INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn])
-     VALUES (32, 'Jet', 'Jet', SYSDATETIME())
+INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn], [HasEngine], [RequiresTowingInfo], [MayBeTowingAircraft])
+     VALUES (32, 'Jet', 'Jet', SYSDATETIME(), 1, 0, 0)
 
-INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn])
-     VALUES (64, 'Helikopter', 'Helikopter', SYSDATETIME())
+INSERT INTO [AircraftTypes] ([AircraftTypeId], [AircraftTypeName], [Comment], [CreatedOn], [HasEngine], [RequiresTowingInfo], [MayBeTowingAircraft])
+     VALUES (64, 'Helikopter', 'Helikopter', SYSDATETIME(), 1, 0, 0)
 SET IDENTITY_INSERT [AircraftTypes] OFF
 
 PRINT 'INSERT FlightCrewTypes'
