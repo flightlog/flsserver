@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace FLS.Server.ProffixInvoiceService.RuleFilters
 {
@@ -7,10 +8,13 @@ namespace FLS.Server.ProffixInvoiceService.RuleFilters
     {
         public BaseInvoiceLineRuleFilter()
         {
+            AircraftImmatriculations = new List<string>();
             Aircrafts = new List<Guid>();
             MatchedFlightTypeCodes = new List<string>();
-            MatchedStartLocations = new List<Guid>();
-            MatchedLdgLocations = new List<Guid>();
+            MatchedStartLocations = new List<string>();
+            MatchedLdgLocations = new List<string>();
+            MatchedStartLocationIds = new List<Guid>();
+            MatchedLdgLocationIds = new List<Guid>();
             MatchedClubMemberNumbers = new List<string>();
             UseRuleForAllStartLocationsExceptListed = true;
             UseRuleForAllLdgLocationsExceptListed = true;
@@ -34,6 +38,9 @@ namespace FLS.Server.ProffixInvoiceService.RuleFilters
         public bool IsRuleForMotorFlights { get; set; }
 
         public bool UseRuleForAllAircraftsExceptListed { get; set; }
+        public List<string> AircraftImmatriculations { get; set; }
+
+        [JsonIgnore]
         public List<Guid> Aircrafts { get; set; }
         public bool UseRuleForAllFlightTypesExceptListed { get; set; }
         public List<string> MatchedFlightTypeCodes { get; set; }
@@ -41,9 +48,21 @@ namespace FLS.Server.ProffixInvoiceService.RuleFilters
         public bool ExtendMatchingFlightTypeCodesToGliderAndTowFlight { get; set; }
 
         public bool UseRuleForAllStartLocationsExceptListed { get; set; }
-        public List<Guid> MatchedStartLocations { get; set; }
+        /// <summary>
+        /// Get or sets the start locations ICAO codes for this rule filter
+        /// </summary>
+        public List<string> MatchedStartLocations { get; set; }
+
+        [JsonIgnore]
+        public List<Guid> MatchedStartLocationIds { get; set; }
         public bool UseRuleForAllLdgLocationsExceptListed { get; set; }
-        public List<Guid> MatchedLdgLocations { get; set; }
+        /// <summary>
+        /// Get or sets the landing locations ICAO codes for this rule filter
+        /// </summary>
+        public List<string> MatchedLdgLocations { get; set; }
+
+        [JsonIgnore]
+        public List<Guid> MatchedLdgLocationIds { get; set; }
 
         public bool UseRuleForAllClubMemberNumbersExceptListed { get; set; }
         public List<string> MatchedClubMemberNumbers { get; set; }

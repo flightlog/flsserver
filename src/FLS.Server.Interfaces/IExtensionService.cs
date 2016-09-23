@@ -10,10 +10,14 @@ namespace FLS.Server.Interfaces
 {
     public interface IExtensionService
     {
-        string GetExtensionStringValue(string key);
+        string GetExtensionStringValue(string key, Guid clubId);
 
-        void SaveExtensionStringValue(string key, string value);
+        byte[] GetExtensionBinaryValue(string key, Guid clubId);
 
-        void DeleteExtensionValue(string key);
+        void SaveExtensionStringValue(string key, string value, Guid clubId);
+
+        void SaveExtensionBinaryValue(string key, byte[] value, Guid clubId);
+
+        void DeleteExtensionValue(string key, Guid clubId);
     }
 }

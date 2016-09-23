@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FLS.Common.Exceptions;
 using FLS.Common.Validators;
 using FLS.Data.WebApi.Location;
 using FLS.Server.Data.DbEntities;
@@ -201,6 +202,12 @@ namespace FLS.Server.Service
                     context.Locations.Include(Constants.Country)
                                  .Include(Constants.LocationType)
                                  .FirstOrDefault(l => l.IcaoCode.ToLower() == icaoCode.ToLower());
+
+                if (location == null)
+                {
+                    Logger.Warn($"Location with ICAO code {icaoCode} not found in database.");
+                    throw new EntityNotFoundException("location");
+                }
 
                 return location.ToLocationDetails();
             }

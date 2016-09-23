@@ -5,10 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using FLS.Data.WebApi;
 
 namespace FLS.Server.Data.DbEntities
 {
-    public partial class ExtensionValue
+    public partial class ExtensionValue : IFLSMetaData
     {
         public Guid ExtensionValueId { get; set; }
 
@@ -54,7 +55,13 @@ namespace FLS.Server.Data.DbEntities
         public bool IsDeleted { get; set; }
 
         public virtual Club Club { get; set; }
-        
+
+        public Guid Id 
+        {
+            get { return ExtensionValueId; }
+            set { ExtensionValueId = value; }
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

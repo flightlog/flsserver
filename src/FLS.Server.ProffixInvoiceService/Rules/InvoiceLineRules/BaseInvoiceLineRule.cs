@@ -49,7 +49,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules.InvoiceLineRules
 
             if (_invoiceLineRuleFilter.UseRuleForAllAircraftsExceptListed)
             {
-                if (_invoiceLineRuleFilter.Aircrafts.Any())
+                if (_invoiceLineRuleFilter.AircraftImmatriculations.Any())
                 {
                     Conditions.Add(new Inverter(new Contains<Guid>(_invoiceLineRuleFilter.Aircrafts, _flight.AircraftId)));
                 }
@@ -123,7 +123,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules.InvoiceLineRules
                     else
                     {
                         Conditions.Add(
-                            new Inverter(new Contains<Guid>(_invoiceLineRuleFilter.MatchedStartLocations,
+                            new Inverter(new Contains<Guid>(_invoiceLineRuleFilter.MatchedStartLocationIds,
                                 _flight.StartLocationId.Value)));
                     }
                 }
@@ -136,7 +136,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules.InvoiceLineRules
                 }
                 else
                 {
-                    Conditions.Add(new Contains<Guid>(_invoiceLineRuleFilter.MatchedStartLocations,
+                    Conditions.Add(new Contains<Guid>(_invoiceLineRuleFilter.MatchedStartLocationIds,
                         _flight.StartLocationId.Value));
                 }
             }
@@ -152,7 +152,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules.InvoiceLineRules
                     else
                     {
                         Conditions.Add(
-                            new Inverter(new Contains<Guid>(_invoiceLineRuleFilter.MatchedLdgLocations,
+                            new Inverter(new Contains<Guid>(_invoiceLineRuleFilter.MatchedLdgLocationIds,
                                 _flight.LdgLocationId.Value)));
                     }
                 }
@@ -165,7 +165,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules.InvoiceLineRules
                 }
                 else
                 {
-                    Conditions.Add(new Contains<Guid>(_invoiceLineRuleFilter.MatchedLdgLocations,
+                    Conditions.Add(new Contains<Guid>(_invoiceLineRuleFilter.MatchedLdgLocationIds,
                         _flight.LdgLocationId.Value));
                 }
             }

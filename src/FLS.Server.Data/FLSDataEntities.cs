@@ -107,6 +107,7 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Club>().Ignore(t => t.HomebaseName);
             modelBuilder.Entity<Country>().Ignore(t => t.Id);
             modelBuilder.Entity<EmailTemplate>().Ignore(t => t.Id);
+            modelBuilder.Entity<ExtensionValue>().Ignore(t => t.Id);
             modelBuilder.Entity<Flight>().Ignore(t => t.Id);
             modelBuilder.Entity<Flight>().Ignore(t => t.Pilot);
             modelBuilder.Entity<Flight>().Ignore(t => t.CoPilot);
