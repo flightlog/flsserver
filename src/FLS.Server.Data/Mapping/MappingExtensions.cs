@@ -203,6 +203,7 @@ namespace FLS.Server.Data.Mapping
             details.FlightOperatingCounterUnitTypeId = entity.FlightOperatingCounterUnitTypeId;
             details.EngineOperatingCounterUnitTypeId = entity.EngineOperatingCounterUnitTypeId;
             details.SpotLink = entity.SpotLink;
+            details.HasEngine = entity.HasEngine;
 
             if (entity.CurrentAircraftAircraftState != null)
             {

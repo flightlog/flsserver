@@ -65,6 +65,8 @@ namespace FLS.Data.WebApi.Aircraft
 
         public int? EngineOperatingCounterUnitTypeId { get; set; }
 
+        public bool HasEngine { get; set; }
+
         [StringLength(250)]
         public string SpotLink { get; set; }
 
