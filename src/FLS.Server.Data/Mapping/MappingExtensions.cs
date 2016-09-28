@@ -870,7 +870,7 @@ namespace FLS.Server.Data.Mapping
                 overview.LdgLocation = entity.LdgLocation.LocationName;
             }
 
-            overview.FlightDuration = entity.Duration;
+            overview.FlightDuration = entity.FlightDuration;
 
             return overview;
         }
@@ -943,7 +943,7 @@ namespace FLS.Server.Data.Mapping
                 overview.LdgLocation = entity.LdgLocation.LocationName;
             }
 
-            overview.GliderFlightDuration = entity.Duration;
+            overview.GliderFlightDuration = entity.FlightDuration;
 
             overview.TowFlightId = entity.TowFlightId;
 
@@ -971,7 +971,7 @@ namespace FLS.Server.Data.Mapping
                     overview.TowPilotName = entity.TowFlight.PilotDisplayName;
                 }
 
-                overview.TowFlightDuration = entity.TowFlight.Duration;
+                overview.TowFlightDuration = entity.TowFlight.FlightDuration;
             }
 
             return overview;

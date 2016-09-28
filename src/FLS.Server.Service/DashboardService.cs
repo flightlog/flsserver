@@ -99,15 +99,15 @@ namespace FLS.Server.Service
                     }
                     else
                     { 
-                        statistic.MonthlyFlightHours[keyDate] += gliderFlight.Duration.TotalHours;
+                        statistic.MonthlyFlightHours[keyDate] += gliderFlight.FlightDurationZeroBased.TotalHours;
                         statistic.MonthlyLandings[keyDate] += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
-                        statistic.TotalFlightHours += gliderFlight.Duration.TotalHours;
+                        statistic.TotalFlightHours += gliderFlight.FlightDurationZeroBased.TotalHours;
                         statistic.TotalLandings += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
 
                         if (gliderFlight.StartDateTime.Value >= now.AddMonths(-safetyDetails.StatisticBasedOnLastMonths))
                         {
                             safetyDetails.Starts += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
-                            safetyDetails.FlightTimeInHours += gliderFlight.Duration.TotalHours;
+                            safetyDetails.FlightTimeInHours += gliderFlight.FlightDurationZeroBased.TotalHours;
                         }
                     }
 
@@ -131,7 +131,7 @@ namespace FLS.Server.Service
                         else
                         {
                             gliderLicenceStateForecast.Landings += gliderFlight.NrOfLdgs.GetValueOrDefault(0);
-                            gliderLicenceStateForecast.FlightTimeInHours += gliderFlight.Duration.TotalHours;
+                            gliderLicenceStateForecast.FlightTimeInHours += gliderFlight.FlightDurationZeroBased.TotalHours;
                         }
 
                         if (gliderFlight.FlightType != null && gliderFlight.FlightType.IsCheckFlight
@@ -219,9 +219,9 @@ namespace FLS.Server.Service
                     }
 
                     //TODO: splitted flight time calculation
-                    statistic.MonthlyFlightHours[keyDate] += motorFlight.Duration.TotalHours;
+                    statistic.MonthlyFlightHours[keyDate] += motorFlight.FlightDurationZeroBased.TotalHours;
                     statistic.MonthlyLandings[keyDate] += motorFlight.NrOfLdgs.GetValueOrDefault(0);
-                    statistic.TotalFlightHours += motorFlight.Duration.TotalHours;
+                    statistic.TotalFlightHours += motorFlight.FlightDurationZeroBased.TotalHours;
                     statistic.TotalLandings += motorFlight.NrOfLdgs.GetValueOrDefault(0);
                 }
 

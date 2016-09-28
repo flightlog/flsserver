@@ -234,12 +234,13 @@ namespace FLS.Server.Data.DbEntities
 
             return NrOfLdgs;
         }
-        
+
         /// <summary>
-        /// returns diffrence between landing and starting of flight, 
+        /// returns diffrence between landing and starting of flight (flight duration), 
         /// or since how long flight is started, or zero when flight is not started
         /// </summary>
-        public TimeSpan Duration
+        [NotMapped]
+        public TimeSpan FlightDurationZeroBased
         {
             get
             {
@@ -255,13 +256,37 @@ namespace FLS.Server.Data.DbEntities
                 }
                 else
                 {
-                    ret = DateTime.Now - StartDateTime.Value;
+                    if (StartDateTime.Value.Kind == DateTimeKind.Local)
+                    {
+                        ret = DateTime.Now - StartDateTime.Value;
+                    }
+                    else
+                    {
+                        ret = DateTime.UtcNow - StartDateTime.Value;
+                    }
                 }
 
                 return TimeSpan.FromSeconds(Math.Round(ret.TotalSeconds));
             }
         }
-        
+
+        [NotMapped]
+        public TimeSpan? FlightDuration
+        {
+            get
+            {
+                if (StartDateTime.HasValue == false
+                    || LdgDateTime.HasValue == false
+                    || NoStartTimeInformation
+                    || NoLdgTimeInformation)
+                {
+                    return null;
+                }
+
+                return LdgDateTime.Value - StartDateTime.Value;
+            }
+        }
+
         /// <summary>
         /// returns the pilot of the flightcrew
         /// </summary>

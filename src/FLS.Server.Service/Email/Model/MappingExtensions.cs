@@ -130,15 +130,13 @@ namespace FLS.Server.Service.Email.Model
                 flightInfoRow.LdgTimeLocal = flight.LdgDateTime.Value.ToLocalTime().ToShortTimeString();
             }
 
-            if (flight.NoLdgTimeInformation || flight.NoStartTimeInformation
-                || flight.LdgDateTime.HasValue == false
-                || flight.StartDateTime.HasValue == false)
+            if (flight.FlightDuration.HasValue == false)
             {
                 flightInfoRow.FlightDuration = "n/a";
             }
             else
             {
-                flightInfoRow.FlightDuration = flight.Duration.ToString(@"h\:mm");
+                flightInfoRow.FlightDuration = flight.FlightDuration.Value.ToString(@"h\:mm");
             }
 
             if (flight.StartLocation != null)
@@ -171,7 +169,14 @@ namespace FLS.Server.Service.Email.Model
                     flightInfoRow.TowPilotName = flight.TowFlight.PilotDisplayName;
                 }
 
-                flightInfoRow.TowFlightDuration = flight.TowFlight.Duration.ToString(@"h\:mm");
+                if (flight.TowFlight.FlightDuration.HasValue == false)
+                {
+                    flightInfoRow.TowFlightDuration = "n/a";
+                }
+                else
+                {
+                    flightInfoRow.TowFlightDuration = flight.TowFlight.FlightDuration.Value.ToString(@"h\:mm");
+                }
             }
 
             return flightInfoRow;

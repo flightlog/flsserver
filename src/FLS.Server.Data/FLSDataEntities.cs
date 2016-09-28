@@ -117,7 +117,6 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Flight>().Ignore(t => t.InvoiceRecipient);
             modelBuilder.Entity<Flight>().Ignore(t => t.WinchOperator);
             modelBuilder.Entity<Flight>().Ignore(t => t.ObserverPerson);
-            modelBuilder.Entity<Flight>().Ignore(t => t.Duration);
             modelBuilder.Entity<Flight>().Ignore(t => t.IsTowed);
             modelBuilder.Entity<Flight>().Ignore(t => t.IsGliderFlight);
             modelBuilder.Entity<Flight>().Ignore(t => t.IsTowFlight);

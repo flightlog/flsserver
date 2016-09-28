@@ -56,7 +56,7 @@ namespace FLS.Server.ProffixInvoiceService.RuleEngines
                 rules.Add(rule);
             }
 
-            _flightInvoiceDetails.ActiveFlightTime = _flight.Duration.TotalMinutes;
+            _flightInvoiceDetails.ActiveFlightTime = _flight.FlightDurationZeroBased.TotalMinutes;
 
             while (_flightInvoiceDetails.ActiveFlightTime > 0)
             {

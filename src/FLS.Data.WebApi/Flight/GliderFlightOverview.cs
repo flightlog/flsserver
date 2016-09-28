@@ -35,7 +35,7 @@ namespace FLS.Data.WebApi.Flight
 
         public string LdgLocation { get; set; }
 
-        public TimeSpan GliderFlightDuration { get; set; }
+        public TimeSpan? GliderFlightDuration { get; set; }
 
 
         public Nullable<Guid> TowFlightId { get; set; }
@@ -58,7 +58,7 @@ namespace FLS.Data.WebApi.Flight
 
         public string TowFlightLdgLocation { get; set; }
 
-        public TimeSpan TowFlightDuration { get; set; }
+        public TimeSpan? TowFlightDuration { get; set; }
 
 
         public override Guid Id

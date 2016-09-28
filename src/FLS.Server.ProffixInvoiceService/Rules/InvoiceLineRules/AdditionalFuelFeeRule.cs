@@ -22,7 +22,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules.InvoiceLineRules
             {
                 //this case should never happened. It happens when multiple rules matches
                 var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == BaseInvoiceLineRuleFilter.ProffixArticleNumber);
-                line.Quantity += Convert.ToDecimal(Flight.Duration.TotalMinutes);
+                line.Quantity += Convert.ToDecimal(Flight.FlightDurationZeroBased.TotalMinutes);
 
                 Logger.Warn($"Invoice line already exists. Added quantity to the existing line! New line values: {line}");
             }
@@ -32,7 +32,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules.InvoiceLineRules
                 line.FlightId = Flight.FlightId;
                 line.InvoiceLinePosition = flightInvoiceDetails.FlightInvoiceLineItems.Count + 1;
                 line.ERPArticleNumber = BaseInvoiceLineRuleFilter.ProffixArticleNumber;
-                line.Quantity = Convert.ToDecimal(Flight.Duration.TotalMinutes);
+                line.Quantity = Convert.ToDecimal(Flight.FlightDurationZeroBased.TotalMinutes);
                 line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
                 line.InvoiceLineText = $"{BaseInvoiceLineRuleFilter.InvoiceLineText} {Flight.AircraftImmatriculation}";
                 

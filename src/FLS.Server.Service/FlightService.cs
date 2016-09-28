@@ -135,7 +135,7 @@ namespace FLS.Server.Service
 
                     counterUnitType.NotNull("CounterUnitType");
 
-                    operatingCounterValue += Convert.ToInt64(flight.Duration.TotalSeconds);
+                    operatingCounterValue += Convert.ToInt64(flight.FlightDurationZeroBased.TotalSeconds);
                 }
 
                 if (foundAnyOperatingCounterValue)
@@ -719,7 +719,7 @@ namespace FLS.Server.Service
                     var id = aircraftId;
                     foreach (var flight in flights.Where(x => x.AircraftId == id))
                     {
-                        aircraftFlightReportData.FlightDuration += flight.Duration;
+                        aircraftFlightReportData.FlightDuration += flight.FlightDurationZeroBased;
 
                         if (flight.NrOfLdgs.HasValue)
                         {

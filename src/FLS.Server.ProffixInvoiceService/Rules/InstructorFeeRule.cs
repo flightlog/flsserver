@@ -74,7 +74,7 @@ namespace FLS.Server.ProffixInvoiceService.Rules
             }
             else
             {
-                line.Quantity = Convert.ToDecimal(_flight.Duration.TotalMinutes);
+                line.Quantity = Convert.ToDecimal(_flight.FlightDurationZeroBased.TotalMinutes);
             }
 
             flightInvoiceDetails.FlightInvoiceLineItems.Add(line);
