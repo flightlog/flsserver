@@ -34,6 +34,8 @@ namespace FLS.Data.WebApi.Flight
 
         public string LdgLocation { get; set; }
 
+        public TimeSpan FlightDuration { get; set; }
+
         public override Guid Id
         {
             get { return FlightId; }

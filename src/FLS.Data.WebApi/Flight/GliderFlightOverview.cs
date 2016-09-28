@@ -34,7 +34,10 @@ namespace FLS.Data.WebApi.Flight
         public string StartLocation { get; set; }
 
         public string LdgLocation { get; set; }
-        
+
+        public TimeSpan GliderFlightDuration { get; set; }
+
+
         public Nullable<Guid> TowFlightId { get; set; }
 
         public Nullable<int> TowFlightAirState { get; set; }
@@ -54,6 +57,9 @@ namespace FLS.Data.WebApi.Flight
         public string TowFlightStartLocation { get; set; }
 
         public string TowFlightLdgLocation { get; set; }
+
+        public TimeSpan TowFlightDuration { get; set; }
+
 
         public override Guid Id
         {
