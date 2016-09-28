@@ -1680,7 +1680,7 @@ namespace FLS.Server.Tests
 
             var ownClubData = new ClubRelatedPersonDetails
             {
-                MemberNumber = "10000",
+                MemberNumber = DateTime.Now.Ticks.ToString(),
                 IsGliderPilot = true,
             };
 
@@ -1711,7 +1711,7 @@ namespace FLS.Server.Tests
 
             var ownClubData = new ClubRelatedPersonDetails
             {
-                MemberNumber = "23456",
+                MemberNumber = DateTime.Now.Ticks.ToString(),
                 IsGliderPilot = true,
                 IsGliderInstructor = true,
             };
