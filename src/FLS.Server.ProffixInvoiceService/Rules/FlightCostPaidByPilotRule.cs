@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 using FLS.Data.WebApi.Invoicing;
 using FLS.Server.ProffixInvoiceService.Conditions;
 using FLS.Server.Data.DbEntities;
+using FLS.Server.Data.Enums;
 using FLS.Server.Interfaces;
+using FLS.Server.Interfaces.RulesEngine;
+using FLS.Server.ProffixInvoiceService.RuleFilters;
 
 namespace FLS.Server.ProffixInvoiceService.Rules
 {
@@ -23,7 +26,12 @@ namespace FLS.Server.ProffixInvoiceService.Rules
 
         public override void Initialize(ProffixFlightInvoiceDetails flightInvoiceDetails)
         {
-            Conditions.Add(new Equals<int>(_flight.FlightCostBalanceTypeId.GetValueOrDefault(), (int)FLS.Data.WebApi.Flight.FlightCostBalanceType.PilotPaysAllCosts));
+            ICondition condition = new Equals<int>(_flight.FlightCostBalanceTypeId.GetValueOrDefault(), (int)FLS.Data.WebApi.Flight.FlightCostBalanceType.PilotPaysAllCosts);
+
+            condition = new Or(condition,
+                    new Equals<int>(_flight.FlightCostBalanceTypeId.GetValueOrDefault(), (int)FLS.Data.WebApi.Flight.FlightCostBalanceType.NoInstructorFee));
+
+            Conditions.Add(condition);
         }
 
         public override ProffixFlightInvoiceDetails Apply(ProffixFlightInvoiceDetails flightInvoiceDetails)
