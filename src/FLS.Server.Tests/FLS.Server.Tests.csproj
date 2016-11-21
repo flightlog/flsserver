@@ -267,10 +267,6 @@
       <Project>{7b834855-a8dc-4dba-9e86-b6d38b8f9e13}</Project>
       <Name>FLS.Server.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FLS.Server.ProffixInvoiceService\FLS.Server.ProffixInvoiceService.csproj">
-      <Project>{d67e152d-61b9-420d-aae0-13f52f0fdd38}</Project>
-      <Name>FLS.Server.ProffixInvoiceService</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FLS.Server.Service\FLS.Server.Service.csproj">
       <Project>{abaf4760-2558-4fc0-8d42-2f4d1b1aa8bd}</Project>
       <Name>FLS.Server.Service</Name>

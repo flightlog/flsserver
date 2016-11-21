@@ -49,41 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Conditions\Or.cs" />
-    <Compile Include="Conditions\And.cs" />
-    <Compile Include="RuleFilters\AdditionalFuelFeeRuleFilter.cs" />
-    <Compile Include="RuleFilters\AircraftRuleFilter.cs" />
-    <Compile Include="Conditions\Contains.cs" />
-    <Compile Include="Conditions\ContainsKey.cs" />
-    <Compile Include="Conditions\Between.cs" />
-    <Compile Include="Conditions\Inverter.cs" />
-    <Compile Include="Conditions\Equals.cs" />
-    <Compile Include="RuleFilters\BaseInvoiceLineRuleFilter.cs" />
-    <Compile Include="InvoiceLineRuleFilterContainer.cs" />
-    <Compile Include="RuleFilters\NoLandingTaxRuleFilter.cs" />
-    <Compile Include="RuleFilters\LandingTaxRuleFilter.cs" />
-    <Compile Include="ProffixFlightInvoiceDetails.cs" />
-    <Compile Include="RuleEngines\RecipientRulesEngine.cs" />
-    <Compile Include="RuleEngines\InvoiceDetailsRulesEngine.cs" />
-    <Compile Include="RuleEngines\InvoiceLineRulesEngine.cs" />
-    <Compile Include="InvoiceMappingFactory.cs" />
-    <Compile Include="RuleFilters\InvoiceRecipientTarget.cs" />
-    <Compile Include="ProffixInvoiceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rules\InvoiceLineRules\BaseInvoiceLineRule.cs" />
-    <Compile Include="Rules\InvoiceLineRules\NoLandingTaxRule.cs" />
-    <Compile Include="Rules\InvoiceLineRules\VsfFeeRule.cs" />
-    <Compile Include="Rules\InvoiceLineRules\LandingTaxRule.cs" />
-    <Compile Include="Rules\InvoiceLineRules\AdditionalFuelFeeRule.cs" />
-    <Compile Include="Rules\InstructorFeeRule.cs" />
-    <Compile Include="Rules\BaseRule.cs" />
-    <Compile Include="Rules\FlightCostPaidByPilotRule.cs" />
-    <Compile Include="Rules\FlightCostPaidByPersonRule.cs" />
-    <Compile Include="Rules\AdditionalInfoRule.cs" />
-    <Compile Include="Rules\FlightInvoiceInfoRule.cs" />
-    <Compile Include="Rules\InvoiceLineRules\AircraftFlightTimeRule.cs" />
-    <Compile Include="Rules\FlightTypeToInvoiceRecipientMappingRule.cs" />
-    <Compile Include="RuleFilters\VsfFeeRuleFilter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FLS.Common\FLS.Common.csproj">

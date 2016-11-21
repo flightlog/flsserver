@@ -16,9 +16,8 @@ namespace FLS.Server.Tests.WebApiControllerTests
         {
             LoginAsWorkflow();
         }
-        
+
         [TestMethod]
-        [TestCategory("WebApi-Workflow-Jobs")]
         public void ExecuteWorkflowsWebApiTest()
         {
             var response = GetAsync(RoutePrefix).Result;
@@ -27,7 +26,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
         }
 
         [TestMethod]
-        [TestCategory("WebApi-Workflow-Jobs")]
         public void ExecuteDailyReportJobWebApiTest()
         {
             var response = GetAsync(RoutePrefix + "dailyreports").Result;
@@ -36,7 +34,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
         }
 
         [TestMethod]
-        [TestCategory("WebApi-Workflow-Jobs")]
         public void ExecuteMonthlyReportJobWebApiTest()
         {
             var response = GetAsync(RoutePrefix + "monthlyreports").Result;
@@ -45,7 +42,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
         }
 
         [TestMethod]
-        [TestCategory("WebApi-Workflow-Jobs")]
         public void ExecuteFlightValidationWebApiTest()
         {
             var response = GetAsync(RoutePrefix + "flightvalidation").Result;
@@ -54,7 +50,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
         }
 
         [TestMethod]
-        [TestCategory("WebApi-Workflow-Jobs")]
         public void ExecutePlanningDayMailsWebApiTest()
         {
             var response = GetAsync(RoutePrefix + "planningdaymails").Result;
@@ -63,7 +58,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
         }
 
         [TestMethod]
-        [TestCategory("WebApi-Workflow-Jobs")]
         public void ExecuteTestMailWebApiTest()
         {
             var response = GetAsync(RoutePrefix + "testmails").Result;
@@ -72,7 +66,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
         }
 
         [TestMethod]
-        [TestCategory("WebApi-Workflow-Jobs")]
         public void ExecuteInvoiceReportJobWebApiTest()
         {
             var response = GetAsync(RoutePrefix + "invoices").Result;

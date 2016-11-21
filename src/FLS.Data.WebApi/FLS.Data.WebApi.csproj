@@ -118,6 +118,15 @@
     <Compile Include="Invoicing\FlightInvoiceBooking.cs" />
     <Compile Include="Invoicing\FlightInvoiceDetails.cs" />
     <Compile Include="Invoicing\FlightInvoiceLineItem.cs" />
+    <Compile Include="Invoicing\RuleFilters\AdditionalFuelFeeRuleFilter.cs" />
+    <Compile Include="Invoicing\RuleFilters\AircraftRuleFilter.cs" />
+    <Compile Include="Invoicing\RuleFilters\ArticleTarget.cs" />
+    <Compile Include="Invoicing\RuleFilters\BaseRuleFilter.cs" />
+    <Compile Include="Invoicing\RuleFilters\InvoiceRecipientTarget.cs" />
+    <Compile Include="Invoicing\RuleFilters\LandingTaxRuleFilter.cs" />
+    <Compile Include="Invoicing\RuleFilters\NoLandingTaxRuleFilter.cs" />
+    <Compile Include="Invoicing\RuleFilters\RecipientTarget.cs" />
+    <Compile Include="Invoicing\RuleFilters\VsfFeeRuleFilter.cs" />
     <Compile Include="IOwnershipMetaData.cs" />
     <Compile Include="Licensing\LicenseTrainingStateResult.cs" />
     <Compile Include="Licensing\LicenseTrainingStateRequest.cs" />

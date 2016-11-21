@@ -6,6 +6,7 @@ using System.Web.Http.Description;
 using FLS.Data.WebApi.Invoicing;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Service;
+using FLS.Server.Service.Invoicing;
 
 namespace FLS.Server.WebApi.Controllers
 {

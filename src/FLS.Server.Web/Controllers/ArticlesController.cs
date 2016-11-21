@@ -4,7 +4,6 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using FLS.Data.WebApi.Articles;
 using FLS.Data.WebApi.Resources;
-using FLS.Server.Interfaces.Invoicing;
 using FLS.Server.Service;
 
 namespace FLS.Server.WebApi.Controllers
@@ -16,14 +15,14 @@ namespace FLS.Server.WebApi.Controllers
     [RoutePrefix("api/v1/articles")]
     public class ArticlesController : ApiController
     {
-        private readonly InvoiceService _invoiceService;
+        private readonly ArticleService _articleService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ArticlesController"/> class.
         /// </summary>
-        public ArticlesController(InvoiceService invoiceService)
+        public ArticlesController(ArticleService articleService)
         {
-            _invoiceService = invoiceService;
+            _articleService = articleService;
         }
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(List<ArticleOverview>))]
         public IHttpActionResult GetArticleOverviews()
         {
-            var articles = _invoiceService.GetArticleOverviews();
+            var articles = _articleService.GetArticleOverviews();
             return Ok(articles);
         }
 
@@ -50,7 +49,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(ArticleDetails))]
         public IHttpActionResult GetArticleDetails(Guid articleId)
         {
-            var articleDetails = _invoiceService.GetArticleDetails(articleId);
+            var articleDetails = _articleService.GetArticleDetails(articleId);
             return Ok(articleDetails);
         }
 
@@ -64,7 +63,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(ArticleDetails))]
         public IHttpActionResult Insert([FromBody] ArticleDetails articleDetails)
         {
-            _invoiceService.InsertArticleDetails(articleDetails);
+            _articleService.InsertArticleDetails(articleDetails);
             return Ok(articleDetails);
         }
 
@@ -79,7 +78,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(ArticleDetails))]
         public IHttpActionResult Update(Guid articleId, [FromBody]ArticleDetails articleDetails)
         {
-            _invoiceService.UpdateArticleDetails(articleDetails);
+            _articleService.UpdateArticleDetails(articleDetails);
             return Ok(articleDetails);
         }
 
@@ -93,7 +92,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(void))]
         public IHttpActionResult Delete(Guid articleId)
         {
-            _invoiceService.DeleteArticle(articleId);
+            _articleService.DeleteArticle(articleId);
             return Ok();
         }
 
@@ -106,7 +105,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(Nullable<DateTime>))]
         public IHttpActionResult GetLastArticleSynchronisationOn()
         {
-            var lastArticleSynchronisationOn = _invoiceService.GetLastArticleSynchronisationOn();
+            var lastArticleSynchronisationOn = _articleService.GetLastArticleSynchronisationOn();
             return Ok(lastArticleSynchronisationOn);
         }
 
@@ -120,7 +119,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(Nullable<DateTime>))]
         public IHttpActionResult SetLastArticleSynchronisationOn([FromBody]Nullable<DateTime> lastArticleSynchronisationOn)
         {
-            _invoiceService.SetLastArticleSynchronisationOn(lastArticleSynchronisationOn);
+            _articleService.SetLastArticleSynchronisationOn(lastArticleSynchronisationOn);
             return Ok(lastArticleSynchronisationOn);
         }
     }

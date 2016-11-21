@@ -3,6 +3,7 @@ using System.Linq;
 using FLS.Data.WebApi.Invoicing;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Exporting;
+using FLS.Server.Service.Invoicing;
 using NLog;
 using Quartz;
 

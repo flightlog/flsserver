@@ -16,15 +16,14 @@ using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
 using FLS.Server.Data.Mapping;
 using FLS.Server.Interfaces;
-using FLS.Server.Interfaces.Invoicing;
 using FLS.Server.Service;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Identity;
+using FLS.Server.Service.Invoicing;
 using FLS.Server.TestInfrastructure;
 using FLS.Server.Tests.Extensions;
 using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure;
-using FLS.Server.Tests.Infrastructure.WebApi;
 using FLS.Server.Tests.Mocks.Services;
 using FLS.Server.WebApi;
 using FLS.Server.WebApi.ActionFilters;
@@ -135,7 +134,6 @@ namespace FLS.Server.Tests
             container.RegisterType<ILocationService, LocationService>();
             container.RegisterType<IAircraftService, AircraftService>();
             container.RegisterType<IPersonService, PersonService>();
-            container.RegisterType<IInvoiceService, ProffixInvoiceService.ProffixInvoiceService>();
 
             //container.RegisterType<IUserStore<ApplicationUser>, UserStore<ApplicationUser>>(
             //    new InjectionConstructor(typeof(ApplicationDbContext)));

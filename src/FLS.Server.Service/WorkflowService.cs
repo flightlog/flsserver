@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Mail;
 using FLS.Server.Service.Email;
+using FLS.Server.Service.Invoicing;
 using FLS.Server.Service.Jobs;
 using NLog;
 

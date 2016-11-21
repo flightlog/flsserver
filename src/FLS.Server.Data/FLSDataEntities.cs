@@ -888,15 +888,12 @@ namespace FLS.Server.Data
             catch (Exception ex)
             {
                 var message = ex.Message;
+                var innerException = ex.InnerException;
 
-                if (ex.InnerException != null)
+                while (innerException != null)
                 {
-                    message += $" InnerException: {ex.InnerException.Message}";
-
-                    if (ex.InnerException.InnerException != null)
-                    {
-                        message += $" InnerException: {ex.InnerException.InnerException.Message}";
-                    }
+                    message += $" InnerException: {innerException.Message}";
+                    innerException = ex.InnerException;
                 }
 
                 Logger.Error(ex, $"Error while trying to save entity changes: {message}");

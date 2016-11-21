@@ -34,6 +34,7 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
             _token = string.Empty;
             MyUserDetails = null;
             ClubId = Guid.Empty;
+            Logger.Info($"Logged out!");
         }
 
         protected override void PostSetup(TestServer server)
@@ -93,6 +94,8 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
                 Assert.IsNotNull(MyUserDetails, "MyUserDetails is NULL");
 
                 ClubId = MyUserDetails.ClubId;
+
+                Logger.Info($"Logged in as user: {MyUserDetails.UserName}");
             }
         }
 

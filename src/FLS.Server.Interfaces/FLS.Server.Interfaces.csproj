@@ -45,11 +45,7 @@
     <Compile Include="IPersonService.cs" />
     <Compile Include="ILocationService.cs" />
     <Compile Include="IAircraftService.cs" />
-    <Compile Include="Invoicing\IInvoiceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RulesEngine\ICondition.cs" />
-    <Compile Include="RulesEngine\IRule.cs" />
-    <Compile Include="RulesEngine\RulesEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FLS.Data.WebApi\FLS.Data.WebApi.csproj">

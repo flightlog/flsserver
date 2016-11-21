@@ -1,17 +1,13 @@
 using System;
-using System.Linq;
 using System.Web;
 using FLS.Server.Data;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Interfaces;
-using FLS.Server.Interfaces.Invoicing;
 using FLS.Server.Service;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Identity;
-using FLS.Server.WebApi.ActionFilters;
 using FLS.Server.WebApi.Identity;
 using Microsoft.AspNet.Identity;
-using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Practices.Unity;
 
@@ -81,7 +77,6 @@ namespace FLS.Server.WebApi
             container.RegisterType<ILocationService, LocationService>();
             container.RegisterType<IAircraftService, AircraftService>();
             container.RegisterType<IPersonService, PersonService>();
-            container.RegisterType<IInvoiceService, ProffixInvoiceService.ProffixInvoiceService>();
             //container.RegisterType<DataAccessService>(); 
             //container.RegisterType<AircraftReservationService>();
             //container.RegisterType<AircraftService>();

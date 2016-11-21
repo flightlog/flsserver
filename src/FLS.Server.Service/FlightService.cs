@@ -626,7 +626,7 @@ namespace FLS.Server.Service
 
             var flight = flightDetails.ToFlight(null, relatedAircrafts, relatedFlightTypes);
 
-            flight.EntityNotNull("Flight", Guid.Empty);
+            flight.EntityNotNull("Flight");
 
             using (var context = _dataAccessService.CreateDbContext())
             {

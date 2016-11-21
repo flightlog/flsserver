@@ -123,8 +123,39 @@
     <Compile Include="Identity\IdentityRoleStoreService.cs" />
     <Compile Include="Identity\IdentityUserStoreService.cs" />
     <Compile Include="DashboardService.cs" />
+    <Compile Include="ArticleService.cs" />
+    <Compile Include="Invoicing\InvoiceLineRuleFilterContainer.cs" />
+    <Compile Include="Invoicing\InvoiceMappingFactory.cs" />
+    <Compile Include="Invoicing\RuleBasedFlightInvoiceDetails.cs" />
+    <Compile Include="Invoicing\InvoiceService.cs" />
+    <Compile Include="Invoicing\RuleEngines\InvoiceDetailsRulesEngine.cs" />
+    <Compile Include="Invoicing\RuleEngines\InvoiceLineRulesEngine.cs" />
+    <Compile Include="Invoicing\RuleEngines\RecipientRulesEngine.cs" />
+    <Compile Include="Invoicing\Rules\AdditionalInfoRule.cs" />
+    <Compile Include="Invoicing\Rules\BaseRule.cs" />
+    <Compile Include="Invoicing\Rules\FlightCostPaidByPersonRule.cs" />
+    <Compile Include="Invoicing\Rules\FlightCostPaidByPilotRule.cs" />
+    <Compile Include="Invoicing\Rules\FlightInvoiceInfoRule.cs" />
+    <Compile Include="Invoicing\Rules\FlightTypeToInvoiceRecipientMappingRule.cs" />
+    <Compile Include="Invoicing\Rules\InstructorFeeRule.cs" />
+    <Compile Include="Invoicing\Rules\InvoiceLineRules\AdditionalFuelFeeRule.cs" />
+    <Compile Include="Invoicing\Rules\InvoiceLineRules\AircraftFlightTimeRule.cs" />
+    <Compile Include="Invoicing\Rules\InvoiceLineRules\BaseInvoiceLineRule.cs" />
+    <Compile Include="Invoicing\Rules\InvoiceLineRules\LandingTaxRule.cs" />
+    <Compile Include="Invoicing\Rules\InvoiceLineRules\NoLandingTaxRule.cs" />
+    <Compile Include="Invoicing\Rules\InvoiceLineRules\VsfFeeRule.cs" />
     <Compile Include="Jobs\LicenceNotificationJob.cs" />
     <Compile Include="ExtensionService.cs" />
+    <Compile Include="RulesEngine\Conditions\And.cs" />
+    <Compile Include="RulesEngine\Conditions\Between.cs" />
+    <Compile Include="RulesEngine\Conditions\Contains.cs" />
+    <Compile Include="RulesEngine\Conditions\ContainsKey.cs" />
+    <Compile Include="RulesEngine\Conditions\Equals.cs" />
+    <Compile Include="RulesEngine\Conditions\Inverter.cs" />
+    <Compile Include="RulesEngine\Conditions\Or.cs" />
+    <Compile Include="RulesEngine\ICondition.cs" />
+    <Compile Include="RulesEngine\IRule.cs" />
+    <Compile Include="RulesEngine\RulesEngine.cs" />
     <Compile Include="TemplateService.cs" />
     <Compile Include="AircraftService.cs" />
     <Compile Include="BaseService.cs" />
@@ -155,7 +186,6 @@
     <Compile Include="IdentityService.cs" />
     <Compile Include="Identity\IdentityEmailService.cs" />
     <Compile Include="Identity\GoogleSmsService.cs" />
-    <Compile Include="InvoiceService.cs" />
     <Compile Include="FlightService.cs" />
     <Compile Include="PersonService.cs" />
     <Compile Include="PlanningDayService.cs" />
@@ -187,10 +217,6 @@
     <ProjectReference Include="..\FLS.Server.Interfaces\FLS.Server.Interfaces.csproj">
       <Project>{7b834855-a8dc-4dba-9e86-b6d38b8f9e13}</Project>
       <Name>FLS.Server.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FLS.Server.ProffixInvoiceService\FLS.Server.ProffixInvoiceService.csproj">
-      <Project>{d67e152d-61b9-420d-aae0-13f52f0fdd38}</Project>
-      <Name>FLS.Server.ProffixInvoiceService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
