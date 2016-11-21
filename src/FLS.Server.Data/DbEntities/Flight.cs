@@ -104,6 +104,9 @@ namespace FLS.Server.Data.DbEntities
         [StringLength(100)]
         public string InvoiceNumber { get; set; }
 
+        [Column(TypeName = "datetime2")]
+        public DateTime? DeliveredOn { get; set; }
+
         [StringLength(100)]
         public string DeliveryNumber { get; set; }
 

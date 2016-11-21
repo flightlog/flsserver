@@ -59,7 +59,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
                     {
                         FlightId = flightInvoiceDetails.FlightId,
                         IncludesTowFlightId = flightInvoiceDetails.IncludesTowFlightId,
-                        DeliveryNumber = "2015-01-001",
+                        InvoiceNumber = "2015-01-001",
                         InvoiceDate = DateTime.Now
                     };
 

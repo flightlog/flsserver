@@ -8,6 +8,7 @@ namespace FLS.Data.WebApi.Flight
     {
         NotProcessed = 0,
         Locked = 40,
+        Delivered = 45,
         Invoiced = 50,
         PartialPaid = 55,
         Paid = 60

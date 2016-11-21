@@ -4,7 +4,7 @@ using FLS.Common.Validators;
 
 namespace FLS.Data.WebApi.Invoicing
 {
-    public class FlightInvoiceBooking
+    public class FlightDeliveryBooking
     {
         [Required]
         [GuidNotEmptyValidator]
@@ -19,9 +19,9 @@ namespace FLS.Data.WebApi.Invoicing
         public Nullable<Guid> IncludesTowFlightId { get; set; }
 
         [Required]
-        public DateTime InvoiceDate { get; set; }
+        public DateTime DeliveryDate { get; set; }
 
         [Required]
-        public string InvoiceNumber { get; set; }
+        public string DeliveryNumber { get; set; }
     }
 }

@@ -112,6 +112,7 @@
     <Compile Include="Globalization\LanguageListItem.cs" />
     <Compile Include="Globalization\Translation.cs" />
     <Compile Include="IFLSMetaData.cs" />
+    <Compile Include="Invoicing\FlightDeliveryBooking.cs" />
     <Compile Include="Invoicing\RecipientDetails.cs" />
     <Compile Include="Invoicing\InvoicePaymentDetails.cs" />
     <Compile Include="Invoicing\DeliveryDetails.cs" />

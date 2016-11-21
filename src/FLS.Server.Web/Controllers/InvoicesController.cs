@@ -58,7 +58,7 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
-        /// Sets the flight as invoiced or stored with a delivery number in the invoice system.
+        /// Sets the flight as invoiced (stored with an invoice number in the invoice system).
         /// </summary>
         /// <param name="flightInvoiceBooking">The flight invoice booking.</param>
         /// <returns></returns>
@@ -69,6 +69,21 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult SetFlightAsInvoiced([FromBody] FlightInvoiceBooking flightInvoiceBooking)
         {
             var result = InvoiceService.SetFlightAsInvoiced(flightInvoiceBooking);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Sets the flight as delivered (stored with a delivery number in the invoice system).
+        /// </summary>
+        /// <param name="flightDeliveryBooking">The flight delivery booking.</param>
+        /// <returns></returns>
+        [Authorize(Roles = RoleApplicationKeyStrings.ClubAdministrator)]
+        [HttpPost]
+        [Route("delivered")]
+        [ResponseType(typeof(bool))]
+        public IHttpActionResult SetFlightAsDelivered([FromBody] FlightDeliveryBooking flightDeliveryBooking)
+        {
+            var result = InvoiceService.SetFlightAsDelivered(flightDeliveryBooking);
             return Ok(result);
         }
 

@@ -688,6 +688,8 @@ INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateN
 
 INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (40, N'Gesperrt', N'Flug kann nicht mehr editiert werden und ist für Verrechnung bereit', SYSUTCDATETIME())
 
+INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (45, N'Geliefert', N'Flug wurde mit Lieferschein abgebucht und kann nicht mehr editiert werden', SYSUTCDATETIME())
+
 INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (50, N'Verrechnet', N'Flug wurde verrechnet und kann nicht mehr editiert werden', SYSUTCDATETIME())
 
 INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (55, N'Teilweise bezahlt', N'Flug wurde verrechnet und einen Teil der Rechnung(en) wurde bezahlt.', SYSUTCDATETIME())

@@ -127,7 +127,6 @@ namespace FLS.Server.Service.Invoicing
                 flight.DoNotUpdateMetaData = true;
                 flight.InvoicedOn = flightInvoiceBooking.InvoiceDate;
                 flight.InvoiceNumber = flightInvoiceBooking.InvoiceNumber;
-                flight.DeliveryNumber = flightInvoiceBooking.DeliveryNumber;
 
                 if (flightInvoiceBooking.IncludesTowFlightId.HasValue)
                 {
@@ -141,7 +140,41 @@ namespace FLS.Server.Service.Invoicing
                     towFlight.DoNotUpdateMetaData = true;
                     towFlight.InvoicedOn = flightInvoiceBooking.InvoiceDate;
                     towFlight.InvoiceNumber = flightInvoiceBooking.InvoiceNumber;
-                    towFlight.DeliveryNumber = flightInvoiceBooking.DeliveryNumber;
+                }
+
+                context.SaveChanges();
+
+                return true;
+            }
+        }
+
+        public bool SetFlightAsDelivered(FlightDeliveryBooking flightDeliveryBooking)
+        {
+            flightDeliveryBooking.ArgumentNotNull("flightDeliveryBooking");
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var flight = context.Flights.FirstOrDefault(f => f.FlightId == flightDeliveryBooking.FlightId);
+
+                if (flight == null) return false;
+
+                flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Delivered;
+                flight.DoNotUpdateMetaData = true;
+                flight.DeliveredOn = flightDeliveryBooking.DeliveryDate;
+                flight.DeliveryNumber = flightDeliveryBooking.DeliveryNumber;
+
+                if (flightDeliveryBooking.IncludesTowFlightId.HasValue)
+                {
+                    var towFlight =
+                        context.Flights.FirstOrDefault(
+                            f => f.FlightId == flightDeliveryBooking.IncludesTowFlightId.Value);
+
+                    if (towFlight == null) return false;
+
+                    towFlight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Delivered;
+                    towFlight.DoNotUpdateMetaData = true;
+                    towFlight.DeliveredOn = flightDeliveryBooking.DeliveryDate;
+                    towFlight.DeliveryNumber = flightDeliveryBooking.DeliveryNumber;
                 }
 
                 context.SaveChanges();
@@ -164,6 +197,7 @@ namespace FLS.Server.Service.Invoicing
                 foreach (var flight in flights)
                 {
                     flight.InvoiceNumber = invoiceNumber;
+                    flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Invoiced;
                     flight.DoNotUpdateMetaData = true;
 
                     if (invoicePaymentDate.HasValue)
