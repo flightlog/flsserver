@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace FLS.Server.Service.RulesEngine.Conditions
 {
@@ -16,6 +17,11 @@ namespace FLS.Server.Service.RulesEngine.Conditions
         public bool IsSatisfied()
         {
             return _dictionary.ContainsKey(_key);
+        }
+
+        public override string ToString()
+        {
+            return $"(dictionary keys: '{string.Join(",", _dictionary.Keys.Select(x => x))}' CONTAINSKEY key: {_key} ==> {IsSatisfied()})";
         }
     }
 }

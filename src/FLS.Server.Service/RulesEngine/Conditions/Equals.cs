@@ -15,5 +15,10 @@
         {
             return Equals(_actual, _threshold);
         }
+
+        public override string ToString()
+        {
+            return $"({_actual} EQUALS {_threshold} ==> {IsSatisfied()})";
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace FLS.Data.WebApi.Invoicing.RuleFilters
     {
         public BaseRuleFilter()
         {
+            IsActive = true;
             AircraftImmatriculations = new List<string>();
             Aircrafts = new List<Guid>();
             MatchedFlightTypeCodes = new List<string>();
@@ -19,6 +20,10 @@ namespace FLS.Data.WebApi.Invoicing.RuleFilters
             MatchedFlightCrewTypes = new List<int>();
             UseRuleForAllStartLocationsExceptListed = true;
             UseRuleForAllLdgLocationsExceptListed = true;
+            UseRuleForAllFlightCrewTypesExceptListed = true;
+            UseRuleForAllAircraftsExceptListed = true;
+            UseRuleForAllClubMemberNumbersExceptListed = true;
+            UseRuleForAllFlightTypesExceptListed = true;
         }
 
         public string RuleFilterName { get; set; }
@@ -31,7 +36,7 @@ namespace FLS.Data.WebApi.Invoicing.RuleFilters
 
         public ArticleTarget ArticleTarget { get; set; }
 
-        public RecipientTarget RecipientTarget { get; set; }
+        public RecipientDetails RecipientTarget { get; set; }
 
         public bool IsRuleForSelfstartedGliderFlights { get; set; }
         public bool IsRuleForGliderFlights { get; set; }

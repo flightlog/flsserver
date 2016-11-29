@@ -18,6 +18,8 @@ namespace FLS.Data.WebApi.Invoicing
 
         public string City { get; set; }
 
+        public string CountryName { get; set; }
+
         public string PersonClubMemberNumber { get; set; }
     }
 }

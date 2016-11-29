@@ -124,7 +124,6 @@
     <Compile Include="Identity\IdentityUserStoreService.cs" />
     <Compile Include="DashboardService.cs" />
     <Compile Include="ArticleService.cs" />
-    <Compile Include="Invoicing\InvoiceLineRuleFilterContainer.cs" />
     <Compile Include="Invoicing\InvoiceMappingFactory.cs" />
     <Compile Include="Invoicing\RuleBasedFlightInvoiceDetails.cs" />
     <Compile Include="Invoicing\InvoiceService.cs" />
@@ -136,11 +135,11 @@
     <Compile Include="Invoicing\Rules\FlightCostPaidByPersonRule.cs" />
     <Compile Include="Invoicing\Rules\FlightCostPaidByPilotRule.cs" />
     <Compile Include="Invoicing\Rules\FlightInvoiceInfoRule.cs" />
-    <Compile Include="Invoicing\Rules\FlightTypeToInvoiceRecipientMappingRule.cs" />
-    <Compile Include="Invoicing\Rules\InstructorFeeRule.cs" />
+    <Compile Include="Invoicing\Rules\InvoiceRecipientRule.cs" />
+    <Compile Include="Invoicing\Rules\InvoiceLineRules\InstructorFeeRule.cs" />
     <Compile Include="Invoicing\Rules\InvoiceLineRules\AdditionalFuelFeeRule.cs" />
     <Compile Include="Invoicing\Rules\InvoiceLineRules\AircraftFlightTimeRule.cs" />
-    <Compile Include="Invoicing\Rules\InvoiceLineRules\BaseInvoiceLineRule.cs" />
+    <Compile Include="Invoicing\Rules\BaseInvoiceRule.cs" />
     <Compile Include="Invoicing\Rules\InvoiceLineRules\LandingTaxRule.cs" />
     <Compile Include="Invoicing\Rules\InvoiceLineRules\NoLandingTaxRule.cs" />
     <Compile Include="Invoicing\Rules\InvoiceLineRules\VsfFeeRule.cs" />
@@ -148,6 +147,7 @@
     <Compile Include="ExtensionService.cs" />
     <Compile Include="RulesEngine\Conditions\And.cs" />
     <Compile Include="RulesEngine\Conditions\Between.cs" />
+    <Compile Include="RulesEngine\Conditions\IntersectAny.cs" />
     <Compile Include="RulesEngine\Conditions\Contains.cs" />
     <Compile Include="RulesEngine\Conditions\ContainsKey.cs" />
     <Compile Include="RulesEngine\Conditions\Equals.cs" />

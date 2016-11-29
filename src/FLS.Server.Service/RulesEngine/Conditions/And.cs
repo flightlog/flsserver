@@ -1,4 +1,6 @@
-﻿namespace FLS.Server.Service.RulesEngine.Conditions
+﻿using System.Security.Policy;
+
+namespace FLS.Server.Service.RulesEngine.Conditions
 {
     internal class And : ICondition
     {
@@ -15,6 +17,11 @@
         {
             if (_conditionA == null || _conditionB == null) return false;
             return _conditionA.IsSatisfied() && _conditionB.IsSatisfied();
+        }
+
+        public override string ToString()
+        {
+            return $"({_conditionA} AND {_conditionB} ==> {IsSatisfied()})";
         }
     }
 }

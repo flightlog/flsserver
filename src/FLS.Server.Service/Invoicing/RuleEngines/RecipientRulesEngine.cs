@@ -12,25 +12,28 @@ namespace FLS.Server.Service.Invoicing.RuleEngines
         private readonly RuleBasedFlightInvoiceDetails _flightInvoiceDetails;
         private readonly Flight _flight;
         private readonly IPersonService _personService;
-        private readonly Dictionary<string, InvoiceRecipientTarget> _flightTypeToInvoiceRecipientMapping;
+        private readonly List<InvoiceRecipientRuleFilter> _invoiceRecipientRuleFilters;
 
         public RecipientRulesEngine(RuleBasedFlightInvoiceDetails flightInvoiceDetails, Flight flight, 
-            IPersonService personService, Dictionary<string, InvoiceRecipientTarget> flightTypeToInvoiceRecipientMapping)
+            IPersonService personService, List<InvoiceRecipientRuleFilter> invoiceRecipientRuleFilters)
         {
             _flightInvoiceDetails = flightInvoiceDetails;
-            _flightTypeToInvoiceRecipientMapping = flightTypeToInvoiceRecipientMapping;
+            _invoiceRecipientRuleFilters = invoiceRecipientRuleFilters;
             _flight = flight;
             _personService = personService;
         }
 
         public RuleBasedFlightInvoiceDetails Run()
         {
-            var flightTypeToRecipientMappingRule = new FlightTypeToInvoiceRecipientMappingRule(_flightTypeToInvoiceRecipientMapping,
-                _flight.FlightType.FlightCode);
-            flightTypeToRecipientMappingRule.StopRuleEngineWhenRuleApplied = true;
-
             var rules = new List<IRule<RuleBasedFlightInvoiceDetails>>();
-            rules.Add(flightTypeToRecipientMappingRule);
+
+            foreach (var invoiceRecipientRuleFilter in _invoiceRecipientRuleFilters)
+            {
+                var rule = new InvoiceRecipientRule(_flight, invoiceRecipientRuleFilter);
+                rule.StopRuleEngineWhenRuleApplied = true;
+                rules.Add(rule);
+            }
+
             rules.Add(new FlightCostPaidByPersonRule(_flight, _personService));
             rules.Add(new FlightCostPaidByPilotRule(_flight, _personService));
 

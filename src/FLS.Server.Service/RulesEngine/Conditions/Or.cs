@@ -18,5 +18,11 @@
 
             return _conditionA.IsSatisfied() || _conditionB.IsSatisfied();
         }
+
+        public override string ToString()
+        {
+            var conditionA = _conditionA?.ToString() ?? "null"; 
+            return $"({conditionA} OR {_conditionB} ==> {IsSatisfied()})";
+        }
     }
 }

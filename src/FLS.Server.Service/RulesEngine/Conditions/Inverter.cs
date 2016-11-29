@@ -13,5 +13,10 @@
         {
             return _condition.IsSatisfied() == false;
         }
+
+        public override string ToString()
+        {
+            return $"(INVERTS condition: {_condition} ==> {IsSatisfied()})";
+        }
     }
 }

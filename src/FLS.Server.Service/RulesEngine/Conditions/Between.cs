@@ -45,5 +45,10 @@ namespace FLS.Server.Service.RulesEngine.Conditions
 
             return lowerConditionTrue && upperConditionTrue;
         }
+
+        public override string ToString()
+        {
+            return $"(Value: {_value} is BETWEEN {_minValue} and {_maxValue} (incl. minValue = {_includeMinValue}; maxValue = {_includeMaxValue} ==> {IsSatisfied()})";
+        }
     }
 }

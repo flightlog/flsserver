@@ -4,7 +4,7 @@ using FLS.Server.Data.DbEntities;
 
 namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
 {
-    internal class NoLandingTaxRule : BaseInvoiceLineRule
+    internal class NoLandingTaxRule : BaseInvoiceRule
     {
         private readonly NoLandingTaxRuleFilter _noLandingTax;
 

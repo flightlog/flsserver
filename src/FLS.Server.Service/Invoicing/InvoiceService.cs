@@ -23,8 +23,8 @@ namespace FLS.Server.Service.Invoicing
         private readonly IExtensionService _extensionService;
         private readonly IAircraftService _aircraftService;
         private readonly ILocationService _locationService;
-        private Dictionary<string, InvoiceRecipientTarget> FlightTypeToInvoiceRecipientMapping { get; set; }
-        private InvoiceLineRuleFilterContainer InvoiceLineRuleFilterContainer { get; set; }
+
+        private InvoiceRules _invoiceRules;
 
         public InvoiceService(DataAccessService dataAccessService, IdentityService identityService, InvoiceMappingFactory invoiceMappingFactory, IPersonService personService, 
             IExtensionService extensionService, IAircraftService aircraftService, ILocationService locationService)
@@ -71,6 +71,7 @@ namespace FLS.Server.Service.Invoicing
                             .Include(Constants.FlightType)
                             .Include(Constants.FlightCrews)
                             .Include(Constants.FlightCrews + "." + Constants.Person)
+                            .Include(Constants.FlightCrews + "." + Constants.Person + "." + Constants.PersonClubs)
                             .Include(Constants.StartType)
                             .Include(Constants.StartLocation)
                             .Include(Constants.LdgLocation)
@@ -79,6 +80,7 @@ namespace FLS.Server.Service.Invoicing
                             .Include(Constants.TowFlight + "." + Constants.FlightType)
                             .Include(Constants.TowFlight + "." + Constants.FlightCrews)
                             .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person + "." + Constants.PersonClubs)
                             .Include(Constants.TowFlight + "." + Constants.StartLocation)
                             .Include(Constants.TowFlight + "." + Constants.LdgLocation)
                                      .OrderBy(c => c.StartDateTime)
@@ -240,250 +242,62 @@ namespace FLS.Server.Service.Invoicing
 
         private List<FlightInvoiceDetails> GetFlightInvoiceDetails(List<Flight> flightsToInvoice, Guid clubId)
         {
-            var extensionValue = _extensionService.GetExtensionStringValue("InvoiceLineRuleFilterContainer", clubId);
-            InvoiceLineRuleFilterContainer = JsonConvert.DeserializeObject<InvoiceLineRuleFilterContainer>(extensionValue);
+            var extensionValue = _extensionService.GetExtensionStringValue("InvoiceRules", clubId);
+            _invoiceRules = JsonConvert.DeserializeObject<InvoiceRules>(extensionValue);
 
-            extensionValue = _extensionService.GetExtensionStringValue("FlightTypeToInvoiceRecipientMapping", clubId);
-            FlightTypeToInvoiceRecipientMapping = JsonConvert.DeserializeObject<Dictionary<string, InvoiceRecipientTarget>>(extensionValue);
-
-
-            if (InvoiceLineRuleFilterContainer == null)
+            if (_invoiceRules == null)
             {
-                InvoiceLineRuleFilterContainer = _invoiceMappingFactory.CreateInvoiceLineRuleFilterContainer();
-                var stringValue = JsonConvert.SerializeObject(InvoiceLineRuleFilterContainer);
-                _extensionService.SaveExtensionStringValue("InvoiceLineRuleFilterContainer", stringValue, clubId);
+                _invoiceRules = _invoiceMappingFactory.CreateInvoiceRules();
+                var stringValue = JsonConvert.SerializeObject(_invoiceRules);
+                _extensionService.SaveExtensionStringValue("InvoiceRules", stringValue, clubId);
             }
 
-            if (FlightTypeToInvoiceRecipientMapping == null)
-            {
-                FlightTypeToInvoiceRecipientMapping = _invoiceMappingFactory.CreateFlightTypeToInvoiceRecipientMapping();
-                var stringValue = JsonConvert.SerializeObject(FlightTypeToInvoiceRecipientMapping);
-                _extensionService.SaveExtensionStringValue("FlightTypeToInvoiceRecipientMapping", stringValue, clubId);
-            }
-
-
+            var ruleFilters = new List<BaseRuleFilter>();
+            ruleFilters.AddRange(_invoiceRules.InvoiceRecipientRuleFilters);
+            ruleFilters.AddRange(_invoiceRules.InvoiceLineBaseRuleFilters);
+            
             //validate rules and re-map keys to IDs
-            foreach (var aircraftRuleFilter in InvoiceLineRuleFilterContainer.AircraftRuleFilters)
+            foreach (var filter in ruleFilters)
             {
-                foreach (var aircraftImmatriculation in aircraftRuleFilter.AircraftImmatriculations)
+                foreach (var aircraftImmatriculation in filter.AircraftImmatriculations)
                 {
                     var aircraft = _aircraftService.GetAircraftDetails(aircraftImmatriculation);
 
                     if (aircraft == null)
                     {
-                        Logger.Warn($"Aircraft immatriculation {aircraftImmatriculation} for invoice rule {aircraftRuleFilter.RuleFilterName} not found!");
+                        Logger.Warn($"Aircraft immatriculation {aircraftImmatriculation} for invoice rule {filter.RuleFilterName} not found!");
                     }
                     else
                     {
-                        aircraftRuleFilter.Aircrafts.Add(aircraft.AircraftId);
+                        filter.Aircrafts.Add(aircraft.AircraftId);
                     }
                 }
 
-                foreach (var icaoCode in aircraftRuleFilter.MatchedLdgLocations)
+                foreach (var icaoCode in filter.MatchedLdgLocations)
                 {
                     var location = _locationService.GetLocationDetailsByIcaoCode(icaoCode);
 
                     if (location == null)
                     {
-                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {aircraftRuleFilter.RuleFilterName} not found!");
+                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {filter.RuleFilterName} not found!");
                     }
                     else
                     {
-                        aircraftRuleFilter.MatchedLdgLocationIds.Add(location.LocationId);
+                        filter.MatchedLdgLocationIds.Add(location.LocationId);
                     }
                 }
 
-                foreach (var icaoCode in aircraftRuleFilter.MatchedStartLocations)
+                foreach (var icaoCode in filter.MatchedStartLocations)
                 {
                     var location = _locationService.GetLocationDetailsByIcaoCode(icaoCode);
 
                     if (location == null)
                     {
-                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {aircraftRuleFilter.RuleFilterName} not found!");
+                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {filter.RuleFilterName} not found!");
                     }
                     else
                     {
-                        aircraftRuleFilter.MatchedStartLocationIds.Add(location.LocationId);
-                    }
-                }
-            }
-
-            foreach (var ruleFilter in InvoiceLineRuleFilterContainer.LandingTaxRuleFilters)
-            {
-                foreach (var aircraftImmatriculation in ruleFilter.AircraftImmatriculations)
-                {
-                    var aircraft = _aircraftService.GetAircraftDetails(aircraftImmatriculation);
-
-                    if (aircraft == null)
-                    {
-                        Logger.Warn($"Aircraft immatriculation {aircraftImmatriculation} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.Aircrafts.Add(aircraft.AircraftId);
-                    }
-                }
-
-                foreach (var icaoCode in ruleFilter.MatchedLdgLocations)
-                {
-                    var location = _locationService.GetLocationDetailsByIcaoCode(icaoCode);
-
-                    if (location == null)
-                    {
-                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.MatchedLdgLocationIds.Add(location.LocationId);
-                    }
-                }
-
-                foreach (var icaoCode in ruleFilter.MatchedStartLocations)
-                {
-                    var location = _locationService.GetLocationDetailsByIcaoCode(icaoCode);
-
-                    if (location == null)
-                    {
-                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.MatchedStartLocationIds.Add(location.LocationId);
-                    }
-                }
-            }
-
-            foreach (var ruleFilter in InvoiceLineRuleFilterContainer.AdditionalFuelFeeRuleFilters)
-            {
-                foreach (var aircraftImmatriculation in ruleFilter.AircraftImmatriculations)
-                {
-                    var aircraft = _aircraftService.GetAircraftDetails(aircraftImmatriculation);
-
-                    if (aircraft == null)
-                    {
-                        Logger.Warn($"Aircraft immatriculation {aircraftImmatriculation} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.Aircrafts.Add(aircraft.AircraftId);
-                    }
-                }
-
-                foreach (var icaoCode in ruleFilter.MatchedLdgLocations)
-                {
-                    var location = _locationService.GetLocationDetailsByIcaoCode(icaoCode);
-
-                    if (location == null)
-                    {
-                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.MatchedLdgLocationIds.Add(location.LocationId);
-                    }
-                }
-
-                foreach (var icaoCode in ruleFilter.MatchedStartLocations)
-                {
-                    var location = _locationService.GetLocationDetailsByIcaoCode(icaoCode);
-
-                    if (location == null)
-                    {
-                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.MatchedStartLocationIds.Add(location.LocationId);
-                    }
-                }
-            }
-
-            foreach (var ruleFilter in InvoiceLineRuleFilterContainer.NoLandingTaxRuleFilters)
-            {
-                foreach (var aircraftImmatriculation in ruleFilter.AircraftImmatriculations)
-                {
-                    var aircraft = _aircraftService.GetAircraftDetails(aircraftImmatriculation);
-
-                    if (aircraft == null)
-                    {
-                        Logger.Warn($"Aircraft immatriculation {aircraftImmatriculation} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.Aircrafts.Add(aircraft.AircraftId);
-                    }
-                }
-
-                foreach (var icaoCode in ruleFilter.MatchedLdgLocations)
-                {
-                    var location = _locationService.GetLocationDetailsByIcaoCode(icaoCode);
-
-                    if (location == null)
-                    {
-                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.MatchedLdgLocationIds.Add(location.LocationId);
-                    }
-                }
-
-                foreach (var icaoCode in ruleFilter.MatchedStartLocations)
-                {
-                    var location = _locationService.GetLocationDetailsByIcaoCode(icaoCode);
-
-                    if (location == null)
-                    {
-                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.MatchedStartLocationIds.Add(location.LocationId);
-                    }
-                }
-            }
-
-            foreach (var ruleFilter in InvoiceLineRuleFilterContainer.VsfFeeRuleFilters)
-            {
-                foreach (var aircraftImmatriculation in ruleFilter.AircraftImmatriculations)
-                {
-                    var aircraft = _aircraftService.GetAircraftDetails(aircraftImmatriculation);
-
-                    if (aircraft == null)
-                    {
-                        Logger.Warn($"Aircraft immatriculation {aircraftImmatriculation} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.Aircrafts.Add(aircraft.AircraftId);
-                    }
-                }
-
-                foreach (var icaoCode in ruleFilter.MatchedLdgLocations)
-                {
-                    var location = _locationService.GetLocationDetailsByIcaoCode(icaoCode);
-
-                    if (location == null)
-                    {
-                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.MatchedLdgLocationIds.Add(location.LocationId);
-                    }
-                }
-
-                foreach (var icaoCode in ruleFilter.MatchedStartLocations)
-                {
-                    var location = _locationService.GetLocationDetailsByIcaoCode(icaoCode);
-
-                    if (location == null)
-                    {
-                        Logger.Warn($"Location ICAO code {icaoCode} for invoice rule {ruleFilter.RuleFilterName} not found!");
-                    }
-                    else
-                    {
-                        ruleFilter.MatchedStartLocationIds.Add(location.LocationId);
+                        filter.MatchedStartLocationIds.Add(location.LocationId);
                     }
                 }
             }
@@ -495,7 +309,7 @@ namespace FLS.Server.Service.Invoicing
 
             foreach (var flight in flightsToInvoice)
             {
-                Logger.Debug($"Start creating invoice for flight: {flight}.");
+                Logger.Debug($"Start creating invoice for flight: {flight} using {_invoiceRules.InvoiceRecipientRuleFilters.Count} recipient rule filters and {_invoiceRules.InvoiceLineBaseRuleFilters.Count} invoice line rule filters.");
                 try
                 {
                     var flightInvoiceDetails = new RuleBasedFlightInvoiceDetails
@@ -507,14 +321,14 @@ namespace FLS.Server.Service.Invoicing
                         ClubId = clubId
                     };
 
-                    var recipientRulesEngine = new RecipientRulesEngine(flightInvoiceDetails, flight, _personService, FlightTypeToInvoiceRecipientMapping);
+                    var recipientRulesEngine = new RecipientRulesEngine(flightInvoiceDetails, flight, _personService, _invoiceRules.InvoiceRecipientRuleFilters);
                     recipientRulesEngine.Run();
 
                     var invoiceDetailsRuleEngine = new InvoiceDetailsRulesEngine(flightInvoiceDetails, flight);
                     invoiceDetailsRuleEngine.Run();
 
                     var invoiceLineRulesEngine = new InvoiceLineRulesEngine(flightInvoiceDetails, flight,
-                        _personService, InvoiceLineRuleFilterContainer);
+                        _personService, _invoiceRules.InvoiceLineBaseRuleFilters);
                     invoiceLineRulesEngine.Run();
 
                     Logger.Info($"Created invoice for {flightInvoiceDetails.RecipientDetails.RecipientName}: Flight-Date: {flightInvoiceDetails.FlightDate.ToShortDateString()} Aircraft: {flightInvoiceDetails.AircraftImmatriculation} Nr of Lines: {flightInvoiceDetails.FlightInvoiceLineItems.Count}");

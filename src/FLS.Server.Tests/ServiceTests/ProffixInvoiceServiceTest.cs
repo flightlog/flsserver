@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using FLS.Data.WebApi.Flight;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
@@ -35,7 +36,8 @@ namespace FLS.Server.Tests.ServiceTests
 
         [TestInitialize]
         public void ProffixInvoiceTestInitialize()
-        {
+        { 
+            Thread.Sleep(1000);
         }
 
         [TestCleanup]
@@ -65,6 +67,8 @@ namespace FLS.Server.Tests.ServiceTests
                 }
 
             }
+
+            Thread.Sleep(1000);
         }
 
         //http://stackoverflow.com/questions/24012253/datadriven-mstests-csv-with-semicolon-separator
@@ -76,6 +80,7 @@ namespace FLS.Server.Tests.ServiceTests
             DataAccessMethod.Sequential)]
         public void ProffixInvoiceTest()
         {
+            
             var useCase = TestContext.DataRow["UseCase"].ToString();
 
             if (string.IsNullOrWhiteSpace(useCase))
@@ -220,11 +225,24 @@ namespace FLS.Server.Tests.ServiceTests
 
             foreach (var flightInvoiceDetails in invoices)
             {
-                Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.FlightInvoiceLineItems.Count, $"Number of invoice lines is not as expected. Created invoice lines are: {GetInvoiceLinesForLogging(flightInvoiceDetails)}");
-                Assert.AreEqual(expectedInvoiceAircraftImmatriculation, flightInvoiceDetails.AircraftImmatriculation, "Wrong aircraft immatriculation reported in invoice");
                 Assert.AreEqual(expectedInvoiceRecipientName, flightInvoiceDetails.RecipientDetails.RecipientName, "Wrong recipient person in invoice");
                 Assert.AreEqual(expectedInvoiceFlightInfo, flightInvoiceDetails.FlightInvoiceInfo, "Wrong invoice information in invoice");
                 Assert.AreEqual(expectedInvoiceAdditionalInfo, flightInvoiceDetails.AdditionalInfo, "Wrong additional information in invoice");
+                Assert.AreEqual(expectedInvoiceAircraftImmatriculation, flightInvoiceDetails.AircraftImmatriculation, "Wrong aircraft immatriculation reported in invoice");
+
+                if (expectedInvoiceLineItemsCount != flightInvoiceDetails.FlightInvoiceLineItems.Count)
+                {
+                    if (flightInvoiceDetails.FlightInvoiceLineItems.Count == 0)
+                    {
+                        Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.FlightInvoiceLineItems.Count,
+                        $"Number of invoice lines is not as expected. No invoice lines created.");
+                    }
+                    else
+                    {
+                        Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.FlightInvoiceLineItems.Count,
+                            $"Number of invoice lines is not as expected. Created invoice lines are: {GetInvoiceLinesForLogging(flightInvoiceDetails)}");
+                    }
+                }
 
                 foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
                 {

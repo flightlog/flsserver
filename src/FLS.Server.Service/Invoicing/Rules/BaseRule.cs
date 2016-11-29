@@ -7,7 +7,7 @@ namespace FLS.Server.Service.Invoicing.Rules
 {
     public abstract class BaseRule<T> : IRule<T>
     {
-        protected Logger Logger { get; set; } = LogManager.GetCurrentClassLogger();
+        protected Logger Logger { get; set; } = LogManager.GetLogger("FLS.Server.Service.Invoicing.Rules.BaseRule");
 
         protected BaseRule()
         {
@@ -31,18 +31,24 @@ namespace FLS.Server.Service.Invoicing.Rules
 
         public virtual T Apply(T obj)
         {
-            Logger.Debug($"Applied rule {this.GetType().Name}");
             RuleApplied = true;
+            Logger.Debug($"Applied rule {this}");
             return obj;
         }
 
         public virtual T ElseApply(T obj)
         {
+            Logger.Debug($"NOT applied rule {this}");
             return obj;
         }
 
         public bool RuleApplied { get; protected set; }
 
         public bool StopRuleEngineWhenRuleApplied { get; set; }
+
+        public override string ToString()
+        {
+            return $"{this.GetType().Name}, Nr of Conditions={Conditions.Count}, RuleApplied={RuleApplied}, StopRuleEngineWhenRuleApplied={StopRuleEngineWhenRuleApplied}";
+        }
     }
 }

@@ -34,6 +34,7 @@ using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NLog;
+using NLog.Targets.Wrappers;
 using AircraftType = FLS.Data.WebApi.Aircraft.AircraftType;
 using Constants = FLS.Server.Data.Resources.Constants;
 using ElevationUnitType = FLS.Server.Data.DbEntities.ElevationUnitType;
@@ -142,6 +143,14 @@ namespace FLS.Server.Tests
         [TestInitialize]
         public void Setup()
         {
+            LogManager.Configuration.AllTargets
+                .OfType<BufferingTargetWrapper>()
+                .ToList()
+                .ForEach(b => b.Flush(e =>
+                {
+                    //do nothing here
+                }));
+            Console.WriteLine("TestInitialize: BaseTest.Setup()");
             UnityInitialize();
             _userStoreService = UnityContainer.Resolve<IUserStore<User, Guid>>();
             IdentityService = UnityContainer.Resolve<IIdentityService>();

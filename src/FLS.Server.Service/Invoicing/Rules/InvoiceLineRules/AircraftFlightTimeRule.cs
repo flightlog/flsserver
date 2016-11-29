@@ -10,7 +10,7 @@ using FLS.Server.Service.RulesEngine.Conditions;
 
 namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
 {
-    internal class AircraftFlightTimeRule : BaseInvoiceLineRule
+    internal class AircraftFlightTimeRule : BaseInvoiceRule
     {
         private readonly AircraftRuleFilter _aircraftMapping;
 
@@ -22,7 +22,7 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
 
         public override void Initialize(RuleBasedFlightInvoiceDetails flightInvoiceDetails)
         {
-            BaseInvoiceLineRuleFilter.ArticleTarget.NotNull("ArticleTarget");
+            BaseInvoiceRuleFilter.ArticleTarget.NotNull("ArticleTarget");
             base.Initialize(flightInvoiceDetails);
 
             Conditions.Add(new Between<double>(flightInvoiceDetails.ActiveFlightTime, _aircraftMapping.MinFlightTimeMatchingValue, _aircraftMapping.MaxFlightTimeMatchingValue, includeMinValue:false, includeMaxValue:true));
@@ -43,10 +43,10 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
                 flightInvoiceDetails.ActiveFlightTime = _aircraftMapping.MinFlightTimeMatchingValue;
             }
 
-            if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ERPArticleNumber == BaseInvoiceLineRuleFilter.ArticleTarget.ArticleNumber))
+            if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ERPArticleNumber == BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber))
             {
                 //this case should never happened. It happens when multiple rules matches
-                var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == BaseInvoiceLineRuleFilter.ArticleTarget.ArticleNumber);
+                var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber);
                 line.Quantity += lineQuantity;
 
                 Logger.Warn($"Invoice line already exists. Added quantity to the existing line! New line values: {line}");
@@ -56,7 +56,7 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
                 var line = new FlightInvoiceLineItem();
                 line.FlightId = Flight.FlightId;
                 line.InvoiceLinePosition = flightInvoiceDetails.FlightInvoiceLineItems.Count + 1;
-                line.ERPArticleNumber = BaseInvoiceLineRuleFilter.ArticleTarget.ArticleNumber;
+                line.ERPArticleNumber = BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber;
                 line.Quantity = lineQuantity;
                 line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
 
@@ -65,11 +65,11 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
                     if (_aircraftMapping.IncludeFlightTypeName)
                     {
                         line.InvoiceLineText =
-                            $"{Flight.AircraftImmatriculation} {BaseInvoiceLineRuleFilter.ArticleTarget.InvoiceLineText} {Flight.FlightType.FlightTypeName} {_aircraftMapping.ThresholdText}";
+                            $"{Flight.AircraftImmatriculation} {BaseInvoiceRuleFilter.ArticleTarget.InvoiceLineText} {Flight.FlightType.FlightTypeName} {_aircraftMapping.ThresholdText}";
                     }
                     else
                     {
-                        line.InvoiceLineText = $"{Flight.AircraftImmatriculation} {BaseInvoiceLineRuleFilter.ArticleTarget.InvoiceLineText} {_aircraftMapping.ThresholdText}";
+                        line.InvoiceLineText = $"{Flight.AircraftImmatriculation} {BaseInvoiceRuleFilter.ArticleTarget.InvoiceLineText} {_aircraftMapping.ThresholdText}";
                     }
                 }
                 else
@@ -77,11 +77,11 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
                     if (_aircraftMapping.IncludeFlightTypeName)
                     {
                         line.InvoiceLineText =
-                            $"{Flight.AircraftImmatriculation} {BaseInvoiceLineRuleFilter.ArticleTarget.InvoiceLineText} {Flight.FlightType.FlightTypeName}";
+                            $"{Flight.AircraftImmatriculation} {BaseInvoiceRuleFilter.ArticleTarget.InvoiceLineText} {Flight.FlightType.FlightTypeName}";
                     }
                     else
                     {
-                        line.InvoiceLineText = $"{Flight.AircraftImmatriculation} {BaseInvoiceLineRuleFilter.ArticleTarget.InvoiceLineText}";
+                        line.InvoiceLineText = $"{Flight.AircraftImmatriculation} {BaseInvoiceRuleFilter.ArticleTarget.InvoiceLineText}";
                     }
                 }
 
