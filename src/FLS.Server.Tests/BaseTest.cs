@@ -40,6 +40,7 @@ using Constants = FLS.Server.Data.Resources.Constants;
 using ElevationUnitType = FLS.Server.Data.DbEntities.ElevationUnitType;
 using LengthUnitType = FLS.Server.Data.DbEntities.LengthUnitType;
 using LocationType = FLS.Server.Data.DbEntities.LocationType;
+using System.Threading;
 
 namespace FLS.Server.Tests
 {
@@ -105,33 +106,25 @@ namespace FLS.Server.Tests
         {
             // NOTE: To load from web.config uncomment the line below. Make sure to add a Microsoft.Practices.Unity.Configuration to the using statements.
             // container.LoadConfiguration();
-            container.RegisterType<ValidateModelStateAttribute>();
-            container.RegisterType<CheckModelForNullAttribute>();
-            container.RegisterType<UnhandledExceptionFilterAttribute>();
+            //container.RegisterType<ValidateModelStateAttribute>();
+            //container.RegisterType<CheckModelForNullAttribute>();
+            //container.RegisterType<UnhandledExceptionFilterAttribute>();
             container.RegisterType<IDataProtectionProvider, MachineKeyDataProtectionProvider>(new HierarchicalLifetimeManager());
-            container.RegisterType<IIdentityMessageService, IdentityEmailService>();
 
-            container.RegisterType<IExtensionService, ExtensionService>();
+            container.RegisterType<IIdentityMessageService, IdentityEmailService>();
             container.RegisterType<IIdentityService, IdentityService>(new HierarchicalLifetimeManager());
-            //container.RegisterType<IdentityUserManager>(new HierarchicalLifetimeManager());
+            container.RegisterType<IdentityUserManager>();
             container.RegisterType<UserManager<User, Guid>, IdentityUserManager>();
+            container.RegisterType<IExtensionService, ExtensionService>();
+            //container.RegisterType<IdentitySignInManager<User, Guid>, IdentitySignInManager>();
             container.RegisterType<IUserStore<User, Guid>, IdentityUserStoreService>();
             container.RegisterType<IUserPasswordStore<User, Guid>, IdentityUserStoreService>();
             container.RegisterType<IUserRoleStore<User, Guid>, IdentityUserStoreService>();
+            container.RegisterType<IUserLockoutStore<User, Guid>, IdentityUserStoreService>();
+            container.RegisterType<IUserEmailStore<User, Guid>, IdentityUserStoreService>();
+            container.RegisterType<IUserSecurityStampStore<User, Guid>, IdentityUserStoreService>();
             container.RegisterType<IRoleStore<Role, Guid>, IdentityRoleStoreService>();
-            container.RegisterType<IEmailSendService, MockEmailSendService>();
-            container.RegisterType<DataAccessService>();
-            container.RegisterType<AircraftReservationService>();
-            container.RegisterType<AircraftService>();
-            container.RegisterType<ClubService>();
-            container.RegisterType<LocationService>();
-            container.RegisterType<FlightService>();
-            container.RegisterType<InvoiceService>();
-            container.RegisterType<LanguageService>();
-            container.RegisterType<PersonService>();
-            container.RegisterType<PlanningDayService>();
-            container.RegisterType<UserService>();
-            container.RegisterType<WorkflowService>();
+            container.RegisterType<IEmailSendService, EmailSendService>();
             container.RegisterType<ILocationService, LocationService>();
             container.RegisterType<IAircraftService, AircraftService>();
             container.RegisterType<IPersonService, PersonService>();
@@ -170,6 +163,16 @@ namespace FLS.Server.Tests
             LocationService = UnityContainer.Resolve<LocationService>();
             WorkflowService = UnityContainer.Resolve<WorkflowService>();
             AircraftReportEmailService = UnityContainer.Resolve<AircraftReportEmailBuildService>();
+            
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            LogManager.Flush();
+            LogManager.Shutdown();
+            Console.WriteLine("BaseTest.TestCleanup");
+            Thread.Sleep(1000);
         }
 
         protected void SetCurrentUser(string userName)

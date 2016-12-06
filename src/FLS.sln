@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLS.Workflow.Activator", "F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9D5C984C-8F20-4105-9E20-5E4699C03FDA}"
 	ProjectSection(SolutionItems) = preProject
-		LocalTestRun.testsettings = LocalTestRun.testsettings
+		FLS.Server.Tests.runsettings = FLS.Server.Tests.runsettings
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLS.Server.Interfaces", "FLS.Server.Interfaces\FLS.Server.Interfaces.csproj", "{7B834855-A8DC-4DBA-9E86-B6D38B8F9E13}"

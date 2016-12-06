@@ -37,7 +37,7 @@ namespace FLS.Server.Tests.ServiceTests
         [TestInitialize]
         public void ProffixInvoiceTestInitialize()
         { 
-            Thread.Sleep(1000);
+            Console.WriteLine("ProffixInvoiceTestInitialize");
         }
 
         [TestCleanup]
