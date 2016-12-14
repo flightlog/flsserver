@@ -35,6 +35,7 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
             RegisterTypes(container);
             var resolver = new UnityDependencyResolver(container);
             config.DependencyResolver = resolver;
+            config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
 
             return config;
         }
@@ -87,6 +88,7 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
                 container.RegisterType<ILocationService, LocationService>();
                 container.RegisterType<IAircraftService, AircraftService>();
                 container.RegisterType<IPersonService, PersonService>();
+                container.RegisterType<IExtensionService, ExtensionService>();
 
                 try
                 {
