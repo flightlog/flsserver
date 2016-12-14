@@ -18,5 +18,10 @@ namespace FLS.Data.WebApi.Invoicing
         public List<InvoiceRecipientRuleFilter> InvoiceRecipientRuleFilters { get; set; }
 
         public List<BaseRuleFilter> InvoiceLineBaseRuleFilters { get; set; }
+
+        public override string ToString()
+        {
+            return $"InvoiceRules with {InvoiceLineBaseRuleFilters.Count} InvoiceLineBaseRuleFilters and {InvoiceLineBaseRuleFilters.Where(x => x.GetType() == typeof(AircraftRuleFilter)).Count()} AircraftRuleFilter";
+        }
     }
 }

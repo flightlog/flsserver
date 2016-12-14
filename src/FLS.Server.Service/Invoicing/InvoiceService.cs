@@ -243,12 +243,14 @@ namespace FLS.Server.Service.Invoicing
         private List<FlightInvoiceDetails> GetFlightInvoiceDetails(List<Flight> flightsToInvoice, Guid clubId)
         {
             var extensionValue = _extensionService.GetExtensionStringValue("InvoiceRules", clubId);
-            _invoiceRules = JsonConvert.DeserializeObject<InvoiceRules>(extensionValue);
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            _invoiceRules = JsonConvert.DeserializeObject<InvoiceRules>(extensionValue, settings);
 
             if (_invoiceRules == null)
             {
+                Logger.Warn($"No invoice rules found in database under key: InvoiceRules. Using invoice mapping factory to create default rules.");
                 _invoiceRules = _invoiceMappingFactory.CreateInvoiceRules();
-                var stringValue = JsonConvert.SerializeObject(_invoiceRules);
+                var stringValue = JsonConvert.SerializeObject(_invoiceRules, settings);
                 _extensionService.SaveExtensionStringValue("InvoiceRules", stringValue, clubId);
             }
 
@@ -327,6 +329,7 @@ namespace FLS.Server.Service.Invoicing
                     var invoiceDetailsRuleEngine = new InvoiceDetailsRulesEngine(flightInvoiceDetails, flight);
                     invoiceDetailsRuleEngine.Run();
 
+                    Logger.Trace(_invoiceRules.ToString());
                     var invoiceLineRulesEngine = new InvoiceLineRulesEngine(flightInvoiceDetails, flight,
                         _personService, _invoiceRules.InvoiceLineBaseRuleFilters);
                     invoiceLineRulesEngine.Run();

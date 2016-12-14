@@ -68,7 +68,7 @@ namespace FLS.Server.Tests.ServiceTests
 
             }
 
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
         }
 
         //http://stackoverflow.com/questions/24012253/datadriven-mstests-csv-with-semicolon-separator

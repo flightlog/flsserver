@@ -69,7 +69,7 @@ namespace FLS.Server.Tests
             }
         }
 
-        protected IUnityContainer UnityContainer { get; set; }
+        public IUnityContainer UnityContainer { get; protected set; }
         protected Logger Logger { get; set; } = LogManager.GetCurrentClassLogger();
         protected IIdentityService IdentityService { get; set; }
         private IUserStore<User, Guid> _userStoreService;
@@ -97,7 +97,8 @@ namespace FLS.Server.Tests
 
         public void UnityInitialize()
         {
-            UnityContainer = UnityConfig.GetEmptyContainer();
+            //UnityContainer = UnityConfig.GetEmptyContainer();
+            UnityContainer = new UnityContainer();
             RegisterTypes(UnityContainer);
             
         }
@@ -136,13 +137,13 @@ namespace FLS.Server.Tests
         [TestInitialize]
         public void Setup()
         {
-            LogManager.Configuration.AllTargets
-                .OfType<BufferingTargetWrapper>()
-                .ToList()
-                .ForEach(b => b.Flush(e =>
-                {
-                    //do nothing here
-                }));
+            //LogManager.Configuration.AllTargets
+            //    .OfType<BufferingTargetWrapper>()
+            //    .ToList()
+            //    .ForEach(b => b.Flush(e =>
+            //    {
+            //        //do nothing here
+            //    }));
             Console.WriteLine("TestInitialize: BaseTest.Setup()");
             UnityInitialize();
             _userStoreService = UnityContainer.Resolve<IUserStore<User, Guid>>();
@@ -170,9 +171,9 @@ namespace FLS.Server.Tests
         public void TestCleanup()
         {
             LogManager.Flush();
-            LogManager.Shutdown();
+            //LogManager.Shutdown();
             Console.WriteLine("BaseTest.TestCleanup");
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
         }
 
         protected void SetCurrentUser(string userName)
@@ -404,14 +405,7 @@ namespace FLS.Server.Tests
 
             return reservation;
         }
-
-        public AircraftReservationOverview CreateAircraftReservationOverview()
-        {
-            var hydrator = new Hydrator<AircraftReservationOverview>();
-            var reservation = hydrator.GetSingle();
-
-            return reservation;
-        }
+        
         #endregion AircraftReservation
 
         #region Club
@@ -425,195 +419,7 @@ namespace FLS.Server.Tests
                         c => c.ClubId == clubId && c.FlightCode.ToLower() == flightCode.ToLower());
             }
         }
-
-        public ClubDetails CreateTestClubDetails()
-        {
-            var clubDetails = new ClubDetails()
-            {
-                ClubName = "TestClub1",
-                ClubKey = "TestClub1",
-                Address = "Hauptstrasse 1",
-                ZipCode = "9999",
-                City = "New City",
-                ContactName = "Nobody",
-                EmailAddress = "test@glider-fls.ch",
-                WebPage = "www.glider-fls.ch",
-                SendAircraftStatisticReportTo = "test@glider-fls.ch",
-                SendInvoiceReportsTo = "test@glider-fls.ch",
-                SendPlanningDayInfoMailTo = "test@glider-fls.ch",
-                CountryId = GetCountry("CH").CountryId
-            };
-
-            return clubDetails;
-        }
-
-        public FlightTypeDetails CreateCharterFlightTypeDetails()
-        {
-            var flightType = new FlightTypeDetails
-            {
-                FlightTypeName = "Charter-Flug",
-                FlightCode = "100",
-                IsForGliderFlights = true,
-                IsForMotorFlights = true,
-                IsForTowFlights = false,
-                IsCheckFlight = false,
-                ObserverPilotOrInstructorRequired = false,
-                InstructorRequired = false,
-                IsFlightCostBalanceSelectable = true,
-                IsPassengerFlight = false,
-                IsCouponNumberRequired = false,
-                IsSoloFlight = false,
-            };
-            return flightType;
-        }
-
-        public FlightTypeDetails CreatePrivateCharterFlightTypeDetails()
-        {
-            var flightType = new FlightTypeDetails
-            {
-                FlightTypeName = "Privater Charter-Flug",
-                FlightCode = "110",
-                IsForGliderFlights = true,
-                IsForMotorFlights = true,
-                IsForTowFlights = false,
-                IsCheckFlight = false,
-                ObserverPilotOrInstructorRequired = false,
-                InstructorRequired = false,
-                IsFlightCostBalanceSelectable = true,
-                IsPassengerFlight = false,
-                IsCouponNumberRequired = false,
-                IsSoloFlight = false,
-            };
-            return flightType;
-        }
-
-        public FlightTypeDetails CreateGliderCheckFlightTypeDetails()
-        {
-            var flightType = new FlightTypeDetails
-            {
-                FlightTypeName = "Checkflug",
-                FlightCode = "200",
-                IsForGliderFlights = true,
-                IsForMotorFlights = false,
-                IsForTowFlights = false,
-                IsCheckFlight = true,
-                ObserverPilotOrInstructorRequired = false,
-                InstructorRequired = true,
-                IsFlightCostBalanceSelectable = true,
-                IsPassengerFlight = false,
-                IsCouponNumberRequired = false,
-                IsSoloFlight = false,
-            };
-            return flightType;
-        }
-
-        public FlightTypeDetails CreateGliderTraineeFlightTypeDetails()
-        {
-            var flightType = new FlightTypeDetails
-            {
-                FlightTypeName = "Schulungsflug",
-                FlightCode = "210",
-                IsForGliderFlights = true,
-                IsForMotorFlights = false,
-                IsForTowFlights = false,
-                IsCheckFlight = false,
-                ObserverPilotOrInstructorRequired = false,
-                InstructorRequired = true,
-                IsFlightCostBalanceSelectable = true,
-                IsPassengerFlight = false,
-                IsCouponNumberRequired = false,
-                IsSoloFlight = false,
-            };
-            return flightType;
-        }
-
-        public FlightTypeDetails CreateGliderUpgradeFlightTypeDetails()
-        {
-            var flightType = new FlightTypeDetails
-            {
-                FlightTypeName = "Weiterbildungsflug",
-                FlightCode = "220",
-                IsForGliderFlights = true,
-                IsForMotorFlights = false,
-                IsForTowFlights = false,
-                IsCheckFlight = false,
-                ObserverPilotOrInstructorRequired = true,
-                InstructorRequired = false,
-                IsFlightCostBalanceSelectable = true,
-                IsPassengerFlight = false,
-                IsCouponNumberRequired = false,
-                IsSoloFlight = false,
-            };
-            return flightType;
-        }
-
-        public FlightTypeDetails CreateGliderPassengerWithCouponFlightTypeDetails()
-        {
-            var flightType = new FlightTypeDetails
-            {
-                FlightTypeName = "Passagierflug mit Gutschein",
-                FlightCode = "300",
-                IsForGliderFlights = true,
-                IsForMotorFlights = false,
-                IsForTowFlights = false,
-                IsCheckFlight = false,
-                ObserverPilotOrInstructorRequired = false,
-                InstructorRequired = false,
-                IsFlightCostBalanceSelectable = true,
-                IsPassengerFlight = true,
-                IsCouponNumberRequired = true,
-                IsSoloFlight = false,
-            };
-            return flightType;
-        }
-
-        public FlightTypeDetails CreateGliderPassengerWithoutCouponFlightTypeDetails()
-        {
-            var flightType = new FlightTypeDetails
-            {
-                FlightTypeName = "Passagierflug ohne Gutschein",
-                FlightCode = "310",
-                IsForGliderFlights = true,
-                IsForMotorFlights = false,
-                IsForTowFlights = false,
-                IsCheckFlight = false,
-                ObserverPilotOrInstructorRequired = false,
-                InstructorRequired = false,
-                IsFlightCostBalanceSelectable = true,
-                IsPassengerFlight = true,
-                IsCouponNumberRequired = false,
-                IsSoloFlight = false,
-            };
-            return flightType;
-        }
-
-        public FlightTypeDetails CreateTowFlightTypeDetails()
-        {
-            var flightType = new FlightTypeDetails
-            {
-                FlightTypeName = "Schleppflug",
-                FlightCode = "800",
-                IsForGliderFlights = false,
-                IsForMotorFlights = false,
-                IsForTowFlights = true,
-                IsCheckFlight = false,
-                ObserverPilotOrInstructorRequired = false,
-                InstructorRequired = false,
-                IsFlightCostBalanceSelectable = false,
-                IsPassengerFlight = false,
-                IsCouponNumberRequired = false,
-                IsSoloFlight = false,
-            };
-            return flightType;
-        }
-
-        public Club CreateClub()
-        {
-            var hydrator = new Hydrator<Club>();
-            var club = hydrator.GetSingle();
-            club.RemoveMetadataInfo();
-            return club;
-        }
+        
 
         public ClubDetails CreateClubDetails()
         {
@@ -643,27 +449,7 @@ namespace FLS.Server.Tests
 
             return club;
         }
-
-        public FlightTypeDetails CreateFlightType()
-        {
-            var flightType = new FlightTypeDetails
-            {
-                FlightTypeName = "Test Flight type @ " + DateTime.Now.Ticks,
-                FlightCode = DateTime.Now.ToShortTimeString(),
-                IsForGliderFlights = true,
-                IsCheckFlight = true
-            };
-            return flightType;
-        }
-
-        public FlightType GetFirstGliderFlightType(Guid clubId)
-        {
-            using (var context = DataAccessService.CreateDbContext())
-            {
-                return context.FlightTypes.FirstOrDefault(c => c.ClubId == clubId && c.IsForGliderFlights);
-            }
-        }
-
+        
         public FlightType GetFirstSoloGliderFlightType(Guid clubId)
         {
             using (var context = DataAccessService.CreateDbContext())
@@ -672,24 +458,7 @@ namespace FLS.Server.Tests
                     && c.IsSoloFlight);
             }
         }
-
-        public FlightType GetFirstPassengerGliderFlightType(Guid clubId)
-        {
-            using (var context = DataAccessService.CreateDbContext())
-            {
-                return context.FlightTypes.FirstOrDefault(c => c.ClubId == clubId && c.IsForGliderFlights
-                    && c.IsPassengerFlight);
-            }
-        }
-
-        public FlightType GetFirstObserverPilotOrInstructorRequiredGliderFlightType(Guid clubId)
-        {
-            using (var context = DataAccessService.CreateDbContext())
-            {
-                return context.FlightTypes.FirstOrDefault(c => c.ClubId == clubId && c.IsForGliderFlights
-                    && c.ObserverPilotOrInstructorRequired);
-            }
-        }
+        
 
         public FlightType GetFirstInstructorRequiredGliderFlightType(Guid clubId)
         {
@@ -709,14 +478,7 @@ namespace FLS.Server.Tests
                     && c.InstructorRequired == instructorRequired);
             }
         }
-
-        public List<FlightType> GetFlightTypes(Guid clubId)
-        {
-            using (var context = DataAccessService.CreateDbContext())
-            {
-                return context.FlightTypes.Where(c => c.ClubId == clubId).ToList();
-            }
-        }
+        
         #endregion Club
 
         #region Flight
@@ -778,52 +540,7 @@ namespace FLS.Server.Tests
 
             return flight;
         }
-
-        public GliderFlightDetailsData CreateOneSeatGliderFlightDetailsData(Guid clubId, string immatriculation, DateTime startTime, int flightDurationInMinutes = 90, string locationIcaoCode = "LSZK")
-        {
-            Aircraft glider = null;
-
-            if (string.IsNullOrEmpty(immatriculation) == false)
-            {
-                glider = GetAircraft(immatriculation);
-            }
-
-            if (glider == null)
-            {
-                glider = GetFirstOneSeatGlider();
-            }
-
-            Assert.IsNotNull(glider);
-
-            var startlocation = GetLocation(locationIcaoCode);
-
-            if (startlocation == null)
-            {
-                startlocation = GetFirstLocation();
-            }
-
-            Assert.IsNotNull(startlocation);
-
-            var gliderPilot = GetFirstGliderPilotPerson(clubId);
-            Assert.IsNotNull(gliderPilot);
-            var gliderFlightType = GetFirstGliderFlightType(clubId);
-            Assert.IsNotNull(gliderFlightType);
-
-            var gliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = glider.AircraftId,
-                FlightComment = "Gliderflight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(flightDurationInMinutes),
-                PilotPersonId = gliderPilot.PersonId,
-                StartLocationId = startlocation.LocationId,
-                LdgLocationId = startlocation.LocationId,
-                FlightTypeId = gliderFlightType.FlightTypeId
-            };
-
-            return gliderFlightDetailsData;
-        }
-
+        
         public GliderFlightDetailsData CreateSchoolGliderFlightDetailsData(Guid clubId, string immatriculation, DateTime startTime, int flightDurationInMinutes = 90, string locationIcaoCode = "LSZK")
         {
             Aircraft glider = null;
@@ -947,491 +664,7 @@ namespace FLS.Server.Tests
             flightDetails.StartType = (int)FLS.Server.Data.Enums.AircraftStartType.MotorFlightStart;
             return flightDetails;
         }
-
-        public Dictionary<string, Guid> CreateFlightsForProffixInvoicingTests(Guid clubId, DateTime flightDate)
-        {
-            var flightDictionary = new Dictionary<string, Guid>();
-
-            var gliderHB1824 = GetAircraft("HB-1824");
-            var gliderHB1841 = GetAircraft("HB-1841");
-            var gliderHB2464 = GetAircraft("HB-2464");
-            var gliderHB3256 = GetAircraft("HB-3256");
-            var gliderHB3407 = GetAircraft("HB-3407");
-            var gliderHB3254 = GetAircraft("HB-3254"); //privat, extern
-            var kcb = GetAircraft("HB-KCB");
-            var kio = GetAircraft("HB-KIO"); //Montricher Schlepp
-            var gliderPilot = GetFirstGliderPilotPerson(clubId);
-            var gliderPilot2 = GetLastGliderPilotPerson(clubId);
-            var instructor = GetFirstGliderInstructorPerson(clubId);
-            var towPilot = GetFirstTowingPilotPerson(clubId);
-            var gliderTrainee = GetFirstGliderTraineePerson(clubId);
-            var passenger = GetFirstPassengerPerson(clubId);
-            var lszk = GetLocation("LSZK"); //Speck
-            var lszx = GetLocation("LSZX"); //Schänis
-            var lst = GetLocation("LSTR"); //Montricher
-            var lsgk = GetLocation("LSGK"); //Saanen
-            var flightTypes = GetFlightTypes(clubId);
-            var towFlightTypeId = GetFirstTowingFlightType(clubId).FlightTypeId;
-
-            #region UC1: create local charter flight with 1 seat glider and less then 10 min. towing
-            //UC1: create local charter flight with 1 seat glider and less then 10 min. towing
-            //HB-1824 Charter Clubflugzeug
-            var startTime = flightDate.AddHours(10);
-            var flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB1824.AircraftId,
-                FlightComment = "Charterflug",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(42),
-                PilotPersonId = gliderPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "60").FlightTypeId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(8),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC1", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC1: create local charter flight with 1 seat glider and less then 10 min. towing
-
-            #region UC2: create local charter flight with 1 seat glider and more then 10 min. towing
-            //UC2: create local charter flight with 1 seat glider and more then 10 min. towing
-            //HB-2464 Charter Clubflugzeug
-            startTime = flightDate.AddHours(10).AddMinutes(15);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB2464.AircraftId,
-                FlightComment = "Charterflug",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(355),
-                PilotPersonId = gliderPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "60").FlightTypeId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(22),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC2", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC2: create local charter flight with 1 seat glider and more then 10 min. towing
-
-            #region UC3a: create local charter flight with 2 seat glider and more then 10 min. towing, pilot pays
-            //UC3a: create local charter flight with 2 seat glider and more then 10 min. towing, pilot pays
-            //HB-3407 Charter Clubflugzeug
-            startTime = flightDate.AddHours(10).AddMinutes(45);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB3407.AircraftId,
-                FlightComment = "Charterflug mit Copilot",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(65),
-                PilotPersonId = gliderPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "60").FlightTypeId,
-                CoPilotPersonId = gliderPilot2.PersonId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(11),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC3a", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC3a: create local charter flight with 2 seat glider and more then 10 min. towing, pilot pays
-
-            #region UC4: create local private charter flight with 2 seat private glider and 10 min. towing
-            //UC4: create local private charter flight with 2 seat private glider and 10 min. towing
-            //HB-3254 Charter Privatflugzeug
-            startTime = flightDate.AddHours(11);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB3254.AircraftId,
-                FlightComment = "Charterflug Privat",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(355),
-                PilotPersonId = gliderPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "61").FlightTypeId,
-                CoPilotPersonId = passenger.PersonId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(10),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC4", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC4: create local private charter flight with 2 seat private glider and 10 min. towing
-
-            #region UC5: create local trainee flight with 2 seat glider and less then 10 min. towing
-            //UC5: create local trainee flight with 2 seat glider and less then 10 min. towing
-            //HB - 3256 Schulung Grundschulung Doppelsteuer
-            startTime = flightDate.AddHours(11).AddMinutes(15);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB3256.AircraftId,
-                FlightComment = "Kurvenflug i.O., Anfluggeschwindigkeit zu tief",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(22),
-                PilotPersonId = gliderTrainee.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "70").FlightTypeId,
-                InstructorPersonId = instructor.PersonId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(8),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC5", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC5: create local trainee flight with 2 seat glider and less then 10 min. towing
-
-            #region UC6: create local trainee flight with 2 seat glider and more then 10 min. towing
-            //UC6: create local trainee flight with 2 seat glider and more then 10 min. towing
-            //HB - 3256 Schulung Grundschulung Doppelsteuer
-            startTime = flightDate.AddHours(11).AddMinutes(30);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB3256.AircraftId,
-                FlightComment = "Streckenflug i.O.",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(185),
-                PilotPersonId = gliderTrainee.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "70").FlightTypeId,
-                InstructorPersonId = instructor.PersonId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(14),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC6", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC6: create local trainee flight with 2 seat glider and more then 10 min. towing
-
-            #region UC7: create local solo trainee flight with 1 seat glider and less then 10 min. towing
-            //UC7: create local solo trainee flight with 1 seat glider and less then 10 min. towing
-            //HB - 1824 Schulung Grundschulung Solo
-            startTime = flightDate.AddHours(11).AddMinutes(50);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB1824.AircraftId,
-                FlightComment = "Soloflug i.O.",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(14),
-                PilotPersonId = gliderTrainee.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "80").FlightTypeId,
-                InstructorPersonId = instructor.PersonId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(6),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC7", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC7: create local solo trainee flight with 1 seat glider and less then 10 min. towing
-
-            #region UC8: create local solo further education flight with 1 seat glider and less then 10 min. towing
-            //UC8: create local solo further education flight with 1 seat glider and less then 10 min. towing
-            //HB - 2464 Weiterbildung Solo
-            startTime = flightDate.AddHours(12);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB2464.AircraftId,
-                FlightComment = "Umschulung auf Discus 2cT i.O.",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(8),
-                PilotPersonId = gliderTrainee.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "88").FlightTypeId,
-                InstructorPersonId = instructor.PersonId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(5),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC8", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC8: create local solo further education flight with 1 seat glider and less then 10 min. towing
-
-            #region UC9: create local further education flight with 2 seat glider and less then 10 min. towing
-            //UC9: create local further education flight with 2 seat glider and less then 10 min. towing
-            //HB - 3407 Weiterbildung Doppelsteuer
-            startTime = flightDate.AddHours(12).AddMinutes(15);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB3407.AircraftId,
-                FlightComment = "Umschulung auf Duo Discus i.O.",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(23),
-                PilotPersonId = gliderTrainee.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "77").FlightTypeId,
-                InstructorPersonId = instructor.PersonId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(8),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC9", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC9: create local further education flight with 2 seat glider and less then 10 min. towing
-
-            #region UC10: create local check flight with 2 seat glider and less then 10 min. towing
-            //UC10: create local check flight with 2 seat glider and less then 10 min. towing
-            //HB - 3407 Jahres-Checkflug
-            startTime = flightDate.AddHours(13).AddMinutes(45);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB3407.AircraftId,
-                FlightComment = "Jahres-Checkflug i.O.",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(18),
-                PilotPersonId = gliderTrainee.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "78").FlightTypeId,
-                InstructorPersonId = instructor.PersonId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(9),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC10", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC10: create local check flight with 2 seat glider and less then 10 min. towing
-
-            #region UC11: create local check flight with rope cut simulation with 2 seat glider and less then 10 min. towing
-            //UC11: create local check flight with rope cut simulation with 2 seat glider and less then 10 min. towing
-            //HB - 3256 Jahres-Checkflug
-            startTime = flightDate.AddHours(14);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB3256.AircraftId,
-                FlightComment = "Seilrissübung i.O.",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(3),
-                PilotPersonId = gliderTrainee.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "78").FlightTypeId,
-                InstructorPersonId = instructor.PersonId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(5),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC11", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC11: create local check flight with rope cut simulation with 2 seat glider and less then 10 min. towing
-
-            #region UC12: create local private further education flight with 1 seat glider and less then 10 min. towing
-            //UC12: create local private further education flight with 1 seat glider and less then 10 min. towing
-            //HB - 3254 Umschulung Privatflugzeug
-            startTime = flightDate.AddHours(14).AddMinutes(15);
-            flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
-
-            flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData
-            {
-                AircraftId = gliderHB3254.AircraftId,
-                FlightComment = "Umschulung auf Privatflugzeug i.O.",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(15),
-                PilotPersonId = gliderTrainee.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = flightTypes.First(x => x.FlightCode == "79").FlightTypeId,
-                InstructorPersonId = instructor.PersonId
-            };
-
-            flightDetails.TowFlightDetailsData = new TowFlightDetailsData
-            {
-                AircraftId = kcb.AircraftId,
-                FlightComment = "TowFlight",
-                StartDateTime = startTime,
-                LdgDateTime = startTime.AddMinutes(7),
-                PilotPersonId = towPilot.PersonId,
-                StartLocationId = lszk.LocationId,
-                LdgLocationId = lszk.LocationId,
-                FlightTypeId = towFlightTypeId
-            };
-
-            FlightService.InsertFlightDetails(flightDetails);
-            flightDictionary.Add("UC12", flightDetails.FlightId);
-            SetFlightAsLocked(flightDetails);
-            #endregion UC12: create local private further education flight with 1 seat glider and less then 10 min. towing
-
-            //UC6: create local yearly check flight with 2 seat glider and less then 10 min. towing
-            //UC7: create local yearly check flight with 2 seat glider and more then 10 min. towing
-
-            //UC8: create local passenger bar flight with 2 seat glider and more then 10 min. towing
-
-            //UC9: create local passenger coupon flight with 2 seat glider and more then 10 min. towing
-
-            //UC10: create local possible trainee flight with 2 seat glider and more then 10 min. towing
-
-            //UC11: create local marketing flight with 2 seat glider and more then 10 min. towing
-
-            //UC12: create charter glider flight from external airport to local airport with 2 seat club owned glider
-            //UC13: create external glider flight from external airport to local airport with 1 seat foreign glider
-
-            return flightDictionary;
-        }
-
+        
         protected void SetFlightAsLocked(FlightDetails flightDetails)
         {
             Assert.IsTrue(flightDetails.FlightId.IsValid());
@@ -1454,13 +687,6 @@ namespace FLS.Server.Tests
         #endregion Flight
 
         #region Location
-        public Country CreateCountry()
-        {
-            var hydrator = new Hydrator<Country>();
-            var entity = hydrator.GetSingle();
-            entity.RemoveMetadataInfo();
-            return entity;
-        }
 
         public Country GetFirstCountry()
         {
@@ -1584,24 +810,7 @@ namespace FLS.Server.Tests
             entity.LocationTypeId = locationType.LocationTypeId;
             return entity;
         }
-
-        public LocationDetails CreateTestClubHomebaseLocationDetails()
-        {
-            var country = GetCountry("CH");
-            var locationDetails = new LocationDetails()
-            {
-                CountryId = country.CountryId,
-                LocationName = "Swiss Narromine Airfield",
-                AirportFrequency = "123.45",
-                Description = "Nice airfield",
-                LocationShortName = "SNA",
-                RunwayLength = 3450,
-                LocationTypeId = GetLocationType((int)FLS.Data.WebApi.Location.LocationType.AirfieldSolid).LocationTypeId
-            };
-
-            return locationDetails;
-        }
-
+        
         public Location GetLocation(string locationIcaoCode)
         {
             using (var context = DataAccessService.CreateDbContext())
@@ -1730,93 +939,7 @@ namespace FLS.Server.Tests
 
             return personDetails;
         }
-
-        public PilotPersonDetails CreateGliderTraineePersonDetails(Guid countryId)
-        {
-            var personDetails = new PilotPersonDetails()
-            {
-                CountryId = countryId,
-                Lastname = "Müller-Schüler",
-                Firstname = "Peter",
-                AddressLine1 = "Schulstrasse 13",
-                ZipCode = "6677",
-                City = "Schulcity",
-                BusinessEmail = "test@glider-fls.ch",
-                HasGliderTraineeLicence = true,
-                Region = "ZH",
-                LicenceNumber = "CH.FCL.99388",
-            };
-
-            var ownClubData = new ClubRelatedPersonDetails
-            {
-                MemberNumber = "77777",
-                IsGliderTrainee = true,
-            };
-
-            personDetails.ClubRelatedPersonDetails = ownClubData;
-
-            return personDetails;
-        }
-
-        public PilotPersonDetails CreateTowPilotPersonDetails(Guid countryId)
-        {
-            var personDetails = new PilotPersonDetails()
-            {
-                CountryId = countryId,
-                Lastname = "Müller-Tower",
-                Firstname = "Heinz",
-                AddressLine1 = "Towing-Strasse 100",
-                ZipCode = "3434",
-                City = "Towcity",
-                BusinessEmail = "test@glider-fls.ch",
-                HasTowPilotLicence = true,
-                HasMotorPilotLicence = true,
-                Region = "ZH",
-                LicenceNumber = "CH.FCL.33445",
-            };
-
-            var ownClubData = new ClubRelatedPersonDetails
-            {
-                MemberNumber = "7855",
-                IsTowPilot = true,
-                IsMotorPilot = true,
-            };
-
-            personDetails.ClubRelatedPersonDetails = ownClubData;
-
-            return personDetails;
-        }
-
-        public PilotPersonDetails CreateWinchOperatorPilotPersonDetails(Guid countryId)
-        {
-            var personDetails = new PilotPersonDetails()
-            {
-                CountryId = countryId,
-                Lastname = "Huber-Winch-Pilot",
-                Firstname = "Gunther",
-                AddressLine1 = "Windstrasse 2",
-                ZipCode = "9876",
-                City = "Wind-City",
-                BusinessEmail = "test@glider-fls.ch",
-                HasGliderPilotLicence = true,
-                HasGliderPassengerLicence = true,
-                HasWinchOperatorLicence = true,
-                Region = "ZH",
-                LicenceNumber = "CH.FCL.34567",
-            };
-
-            var ownClubData = new ClubRelatedPersonDetails
-            {
-                MemberNumber = "87392",
-                IsGliderPilot = true,
-                IsWinchOperator = true,
-            };
-
-            personDetails.ClubRelatedPersonDetails = ownClubData;
-
-            return personDetails;
-        }
-
+        
         public PilotPersonDetails CreatePersonDetails(Guid countryId)
         {
             var hydrator = new Hydrator<PilotPersonDetails>();
@@ -1873,14 +996,7 @@ namespace FLS.Server.Tests
                 return context.Persons.FirstOrDefault(q => q.PersonClubs.Any(pc => pc.ClubId == clubId));
             }
         }
-
-        public Person GetFirstPassengerPerson(Guid clubId)
-        {
-            using (var context = DataAccessService.CreateDbContext())
-            {
-                return context.Persons.FirstOrDefault(q => q.PersonClubs.Any(pc => pc.ClubId == clubId) && q.HasGliderPilotLicence == false && q.HasGliderTraineeLicence == false);
-            }
-        }
+        
 
         public Person GetFirstGliderPilotPerson(Guid clubId)
         {
@@ -1889,16 +1005,7 @@ namespace FLS.Server.Tests
                 return context.Persons.FirstOrDefault(q => q.PersonClubs.Any(pc => pc.ClubId == clubId) && q.HasGliderPilotLicence);
             }
         }
-
-        public Person GetLastGliderPilotPerson(Guid clubId)
-        {
-            using (var context = DataAccessService.CreateDbContext())
-            {
-                var persons = context.Persons.Where(q => q.PersonClubs.Any(pc => pc.ClubId == clubId) && q.HasGliderPilotLicence).OrderBy(y => y.Lastname);
-                return persons.FirstOrDefault();
-            }
-        }
-
+        
         public Person GetFirstGliderTraineePerson(Guid clubId)
         {
             using (var context = DataAccessService.CreateDbContext())
@@ -1922,15 +1029,7 @@ namespace FLS.Server.Tests
                 return context.Persons.FirstOrDefault(q => q.PersonClubs.Any(pc => pc.ClubId == clubId) && q.HasGliderInstructorLicence);
             }
         }
-
-        public List<Person> GetPersons(Guid clubId)
-        {
-            using (var context = DataAccessService.CreateDbContext())
-            {
-                return context.Persons.Where(q => q.PersonClubs.Any(pc => pc.ClubId == clubId)).ToList();
-            }
-        }
-
+        
         public Person GetDifferentPerson(Guid? personId)
         {
             if (personId == null) return GetFirstPerson();
@@ -1988,22 +1087,7 @@ namespace FLS.Server.Tests
                 return role;
             }
         }
-
-        public Guid GetClubIdOfUser(string username)
-        {
-            using (var context = DataAccessService.CreateDbContext())
-            {
-                var user = context.Users.FirstOrDefault(u => u.UserName.ToLower() == username.ToLower());
-
-                if (user != null)
-                {
-                    return user.ClubId;
-                }
-            }
-
-            throw new Exception("User not found");
-        }
-
+        
         public UserDetails CreateUserDetails(Guid clubId)
         {
             var hydrator = new Hydrator<UserDetails>();
@@ -2033,26 +1117,7 @@ namespace FLS.Server.Tests
             userDetails.EmailConfirmationLink = "http://localhost/api/account/ConfirmEmail?userId={userid}&code={code}";
             return userDetails;
         }
-
-        public UserDetails CreateTestClubAdminUserDetails(Guid clubId)
-        {
-            var userDetails = new UserDetails()
-            {
-                ClubId = clubId,
-                UserRoleIds = new List<Guid>(),
-                NotificationEmail = "test@glider-fls.ch",
-                FriendlyName = "TestClub-Admin-User",
-                UserName = "TestClub-Admin-User",
-                Remarks = "TestClub-Admin"
-            };
-
-            var role = GetRole(RoleApplicationKeyStrings.ClubAdministrator);
-            Assert.IsNotNull(role);
-            userDetails.UserRoleIds.Add(role.Id);
-
-            return userDetails;
-        }
-
+        
         public User CreateNewUserInDb(Guid clubId, string plainPassword, bool emailConfirmed = false)
         {
             using (var context = DataAccessService.CreateDbContext())
@@ -2085,28 +1150,7 @@ namespace FLS.Server.Tests
                 return user;
             }
         }
-
-        public void SetUsersPassword(Guid userId, string plainPassword)
-        {
-            using (var context = DataAccessService.CreateDbContext())
-            {
-                var user = context.Users.FirstOrDefault(u => u.UserId == userId);
-
-                if (user != null)
-                {
-                    var passwordHasher = new PasswordHasher();
-                    var hashedPassword = passwordHasher.HashPassword(plainPassword);
-                    user.PasswordHash = hashedPassword;
-                    user.LastPasswordChangeOn = DateTime.UtcNow;
-
-                    context.SaveChanges();
-                }
-                else
-                {
-                    throw new Exception("User not found");
-                }
-            }
-        }
+        
         #endregion User
     }
 }
