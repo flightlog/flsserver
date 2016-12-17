@@ -18,7 +18,6 @@ GO
 
 
 PRINT 'Add invoice rule filter tables'
-/****** Object:  Table [dbo].[CounterUnitTypes]    Script Date: 16.12.2016 22:55:37 ******/
 SET ANSI_NULLS ON
 GO
 
