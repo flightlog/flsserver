@@ -9,9 +9,9 @@ namespace FLS.Server.Service.Invoicing.Rules
 {
     internal class InvoiceRecipientRule : BaseInvoiceRule
     {
-        private readonly InvoiceRecipientRuleFilter _invoiceRecipientRuleFilter;
+        private readonly InvoiceRuleFilterDetails _invoiceRecipientRuleFilter;
 
-        internal InvoiceRecipientRule(Flight flight, InvoiceRecipientRuleFilter invoiceRecipientRuleFilter)
+        internal InvoiceRecipientRule(Flight flight, InvoiceRuleFilterDetails invoiceRecipientRuleFilter)
             : base(flight, invoiceRecipientRuleFilter)
         {
             _invoiceRecipientRuleFilter = invoiceRecipientRuleFilter;
@@ -19,10 +19,10 @@ namespace FLS.Server.Service.Invoicing.Rules
         
         public override RuleBasedFlightInvoiceDetails Apply(RuleBasedFlightInvoiceDetails flightInvoiceDetails)
         {
-            if (BaseInvoiceRuleFilter != null && BaseInvoiceRuleFilter.RecipientTarget != null)
+            if (InvoiceRuleFilter != null && _invoiceRecipientRuleFilter.RecipientTarget != null)
             {
-                flightInvoiceDetails.RecipientDetails.RecipientName = BaseInvoiceRuleFilter.RecipientTarget.RecipientName;
-                flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber = BaseInvoiceRuleFilter.RecipientTarget.PersonClubMemberNumber;
+                flightInvoiceDetails.RecipientDetails.RecipientName = _invoiceRecipientRuleFilter.RecipientTarget.RecipientName;
+                flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber = _invoiceRecipientRuleFilter.RecipientTarget.PersonClubMemberNumber;
 
                 //invoice is created for club internal (customer already paid)
                 flightInvoiceDetails.IsInvoicedToClubInternal = _invoiceRecipientRuleFilter.IsInvoicedToClubInternal;

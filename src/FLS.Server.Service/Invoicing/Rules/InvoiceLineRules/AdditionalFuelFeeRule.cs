@@ -12,23 +12,23 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
     internal class AdditionalFuelFeeRule : BaseInvoiceRule
     {
 
-        internal AdditionalFuelFeeRule(Flight flight, AdditionalFuelFeeRuleFilter additionalFuelFee)
+        internal AdditionalFuelFeeRule(Flight flight, InvoiceRuleFilterDetails additionalFuelFee)
             : base(flight, additionalFuelFee)
         {
         }
 
         public override void Initialize(RuleBasedFlightInvoiceDetails flightInvoiceDetails)
         {
-            BaseInvoiceRuleFilter.ArticleTarget.NotNull("ArticleTarget");
+            InvoiceRuleFilter.ArticleTarget.NotNull("ArticleTarget");
             base.Initialize(flightInvoiceDetails);
         }
 
         public override RuleBasedFlightInvoiceDetails Apply(RuleBasedFlightInvoiceDetails flightInvoiceDetails)
         {
-            if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ERPArticleNumber == BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber))
+            if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ERPArticleNumber == InvoiceRuleFilter.ArticleTarget.ArticleNumber))
             {
                 //this case should never happened. It happens when multiple rules matches
-                var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber);
+                var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == InvoiceRuleFilter.ArticleTarget.ArticleNumber);
                 line.Quantity += Convert.ToDecimal(Flight.FlightDurationZeroBased.TotalMinutes);
 
                 Logger.Warn($"Invoice line already exists. Added quantity to the existing line! New line values: {line}");
@@ -38,10 +38,10 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
                 var line = new FlightInvoiceLineItem();
                 line.FlightId = Flight.FlightId;
                 line.InvoiceLinePosition = flightInvoiceDetails.FlightInvoiceLineItems.Count + 1;
-                line.ERPArticleNumber = BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber;
+                line.ERPArticleNumber = InvoiceRuleFilter.ArticleTarget.ArticleNumber;
                 line.Quantity = Convert.ToDecimal(Flight.FlightDurationZeroBased.TotalMinutes);
                 line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
-                line.InvoiceLineText = $"{BaseInvoiceRuleFilter.ArticleTarget.InvoiceLineText} {Flight.AircraftImmatriculation}";
+                line.InvoiceLineText = $"{InvoiceRuleFilter.ArticleTarget.InvoiceLineText} {Flight.AircraftImmatriculation}";
                 
                 flightInvoiceDetails.FlightInvoiceLineItems.Add(line);
 

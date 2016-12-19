@@ -13,11 +13,11 @@ namespace FLS.Server.Service.Invoicing.Rules
     internal abstract class BaseInvoiceRule : BaseRule<RuleBasedFlightInvoiceDetails>
     {
         private readonly Flight _flight;
-        private readonly BaseRuleFilter _invoiceRuleFilter;
+        private readonly InvoiceRuleFilterDetails _invoiceRuleFilter;
 
         protected Flight Flight { get { return _flight; } }
-        protected BaseRuleFilter BaseInvoiceRuleFilter { get { return _invoiceRuleFilter; } }
-        internal BaseInvoiceRule(Flight flight, BaseRuleFilter invoiceRuleFilter)
+        protected InvoiceRuleFilterDetails InvoiceRuleFilter { get { return _invoiceRuleFilter; } }
+        internal BaseInvoiceRule(Flight flight, InvoiceRuleFilterDetails invoiceRuleFilter)
         {
             _flight = flight;
             _invoiceRuleFilter = invoiceRuleFilter;
@@ -28,18 +28,18 @@ namespace FLS.Server.Service.Invoicing.Rules
         {
             ICondition condition = null;
 
-            if (BaseInvoiceRuleFilter.IsRuleForSelfstartedGliderFlights)
+            if (InvoiceRuleFilter.IsRuleForSelfstartedGliderFlights)
             {
                 condition = new Equals<int>(_flight.StartTypeId.GetValueOrDefault(), (int)AircraftStartType.SelfStart);
             }
 
-            if (BaseInvoiceRuleFilter.IsRuleForGliderFlights)
+            if (InvoiceRuleFilter.IsRuleForGliderFlights)
             {
                 condition = new Or(condition,
                     new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.GliderFlight));
             }
 
-            if (BaseInvoiceRuleFilter.IsRuleForTowingFlights)
+            if (InvoiceRuleFilter.IsRuleForTowingFlights)
             {
                 condition = new Or(condition, new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.TowFlight));
             }
@@ -248,9 +248,6 @@ namespace FLS.Server.Service.Invoicing.Rules
                         _flight.FlightCrews.Select(x => x.FlightCrewTypeId)));
                 }
             }
-
-            Console.WriteLine($"Initialized Rule-Filter: {_invoiceRuleFilter.RuleFilterName} of type: {this.GetType()} has conditions: '{string.Join(",", Conditions.Select(x => x))}'");
-
         }
 
         public override string ToString()

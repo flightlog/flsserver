@@ -24,8 +24,6 @@ namespace FLS.Server.Service.Invoicing
         private readonly IAircraftService _aircraftService;
         private readonly ILocationService _locationService;
 
-        private InvoiceRules _invoiceRules;
-
         public InvoiceService(DataAccessService dataAccessService, IdentityService identityService, InvoiceMappingFactory invoiceMappingFactory, IPersonService personService, 
             IExtensionService extensionService, IAircraftService aircraftService, ILocationService locationService)
             : base(dataAccessService, identityService)
@@ -242,24 +240,10 @@ namespace FLS.Server.Service.Invoicing
 
         private List<FlightInvoiceDetails> GetFlightInvoiceDetails(List<Flight> flightsToInvoice, Guid clubId)
         {
-            var extensionValue = _extensionService.GetExtensionStringValue("InvoiceRules", clubId);
-            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-            _invoiceRules = JsonConvert.DeserializeObject<InvoiceRules>(extensionValue, settings);
-
-            if (_invoiceRules == null)
-            {
-                Logger.Warn($"No invoice rules found in database under key: InvoiceRules. Using invoice mapping factory to create default rules.");
-                _invoiceRules = _invoiceMappingFactory.CreateInvoiceRules();
-                var stringValue = JsonConvert.SerializeObject(_invoiceRules, settings);
-                _extensionService.SaveExtensionStringValue("InvoiceRules", stringValue, clubId);
-            }
-
-            var ruleFilters = new List<BaseRuleFilter>();
-            ruleFilters.AddRange(_invoiceRules.InvoiceRecipientRuleFilters);
-            ruleFilters.AddRange(_invoiceRules.InvoiceLineBaseRuleFilters);
+            List<InvoiceRuleFilterDetails> invoiceRuleFilters = _invoiceMappingFactory.CreateInvoiceRuleFilters();
             
             //validate rules and re-map keys to IDs
-            foreach (var filter in ruleFilters)
+            foreach (var filter in invoiceRuleFilters)
             {
                 foreach (var aircraftImmatriculation in filter.AircraftImmatriculations)
                 {
@@ -311,7 +295,7 @@ namespace FLS.Server.Service.Invoicing
 
             foreach (var flight in flightsToInvoice)
             {
-                Logger.Debug($"Start creating invoice for flight: {flight} using {_invoiceRules.InvoiceRecipientRuleFilters.Count} recipient rule filters and {_invoiceRules.InvoiceLineBaseRuleFilters.Count} invoice line rule filters.");
+                Logger.Debug($"Start creating invoice for flight: {flight} using {invoiceRuleFilters.Count} recipient rule filters and {invoiceRuleFilters.Count} invoice line rule filters.");
                 try
                 {
                     var flightInvoiceDetails = new RuleBasedFlightInvoiceDetails
@@ -323,15 +307,14 @@ namespace FLS.Server.Service.Invoicing
                         ClubId = clubId
                     };
 
-                    var recipientRulesEngine = new RecipientRulesEngine(flightInvoiceDetails, flight, _personService, _invoiceRules.InvoiceRecipientRuleFilters);
+                    var recipientRulesEngine = new RecipientRulesEngine(flightInvoiceDetails, flight, _personService, invoiceRuleFilters.Where(x => x.InvoiceRuleFilterTypeId == (int)FLS.Data.WebApi.Invoicing.RuleFilters.InvoiceRuleFilterType.RecipientInvoiceRuleFilter).ToList());
                     recipientRulesEngine.Run();
 
                     var invoiceDetailsRuleEngine = new InvoiceDetailsRulesEngine(flightInvoiceDetails, flight);
                     invoiceDetailsRuleEngine.Run();
 
-                    Logger.Trace(_invoiceRules.ToString());
                     var invoiceLineRulesEngine = new InvoiceLineRulesEngine(flightInvoiceDetails, flight,
-                        _personService, _invoiceRules.InvoiceLineBaseRuleFilters);
+                        _personService, invoiceRuleFilters.Where(x => x.InvoiceRuleFilterTypeId != (int)FLS.Data.WebApi.Invoicing.RuleFilters.InvoiceRuleFilterType.RecipientInvoiceRuleFilter).ToList());
                     invoiceLineRulesEngine.Run();
 
                     Logger.Info($"Created invoice for {flightInvoiceDetails.RecipientDetails.RecipientName}: Flight-Date: {flightInvoiceDetails.FlightDate.ToShortDateString()} Aircraft: {flightInvoiceDetails.AircraftImmatriculation} Nr of Lines: {flightInvoiceDetails.FlightInvoiceLineItems.Count}");

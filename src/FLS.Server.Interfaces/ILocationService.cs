@@ -10,6 +10,8 @@ namespace FLS.Server.Interfaces
 {
     public interface ILocationService
     {
+        List<LocationListItem> GetLocationListItems(bool airfieldsOnly);
+
         LocationDetails GetLocationDetailsByIcaoCode(string icaoCode);
     }
 }

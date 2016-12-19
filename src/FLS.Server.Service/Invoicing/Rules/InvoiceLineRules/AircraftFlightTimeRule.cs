@@ -12,41 +12,38 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
 {
     internal class AircraftFlightTimeRule : BaseInvoiceRule
     {
-        private readonly AircraftRuleFilter _aircraftMapping;
-
-        internal AircraftFlightTimeRule(Flight flight, AircraftRuleFilter aircraftMapping)
+        internal AircraftFlightTimeRule(Flight flight, InvoiceRuleFilterDetails aircraftMapping)
             : base(flight, aircraftMapping)
         {
-            _aircraftMapping = aircraftMapping;
         }
 
         public override void Initialize(RuleBasedFlightInvoiceDetails flightInvoiceDetails)
         {
-            BaseInvoiceRuleFilter.ArticleTarget.NotNull("ArticleTarget");
+            InvoiceRuleFilter.ArticleTarget.NotNull("ArticleTarget");
             base.Initialize(flightInvoiceDetails);
 
-            Conditions.Add(new Between<double>(flightInvoiceDetails.ActiveFlightTime, _aircraftMapping.MinFlightTimeMatchingValue, _aircraftMapping.MaxFlightTimeMatchingValue, includeMinValue:false, includeMaxValue:true));
+            Conditions.Add(new Between<double>(flightInvoiceDetails.ActiveFlightTime, InvoiceRuleFilter.MinFlightTimeMatchingValue, InvoiceRuleFilter.MaxFlightTimeMatchingValue, includeMinValue:false, includeMaxValue:true));
         }
 
         public override RuleBasedFlightInvoiceDetails Apply(RuleBasedFlightInvoiceDetails flightInvoiceDetails)
         {
             var lineQuantity = 0.0m;
 
-            if (_aircraftMapping.MinFlightTimeMatchingValue == 0)
+            if (InvoiceRuleFilter.MinFlightTimeMatchingValue == 0)
             {
                 lineQuantity = Convert.ToDecimal(flightInvoiceDetails.ActiveFlightTime);
                 flightInvoiceDetails.ActiveFlightTime = 0;
             }
             else
             {
-                lineQuantity = Convert.ToDecimal(flightInvoiceDetails.ActiveFlightTime - _aircraftMapping.MinFlightTimeMatchingValue);
-                flightInvoiceDetails.ActiveFlightTime = _aircraftMapping.MinFlightTimeMatchingValue;
+                lineQuantity = Convert.ToDecimal(flightInvoiceDetails.ActiveFlightTime - InvoiceRuleFilter.MinFlightTimeMatchingValue);
+                flightInvoiceDetails.ActiveFlightTime = InvoiceRuleFilter.MinFlightTimeMatchingValue;
             }
 
-            if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ERPArticleNumber == BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber))
+            if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ERPArticleNumber == InvoiceRuleFilter.ArticleTarget.ArticleNumber))
             {
                 //this case should never happened. It happens when multiple rules matches
-                var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber);
+                var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == InvoiceRuleFilter.ArticleTarget.ArticleNumber);
                 line.Quantity += lineQuantity;
 
                 Logger.Warn($"Invoice line already exists. Added quantity to the existing line! New line values: {line}");
@@ -56,32 +53,32 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
                 var line = new FlightInvoiceLineItem();
                 line.FlightId = Flight.FlightId;
                 line.InvoiceLinePosition = flightInvoiceDetails.FlightInvoiceLineItems.Count + 1;
-                line.ERPArticleNumber = BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber;
+                line.ERPArticleNumber = InvoiceRuleFilter.ArticleTarget.ArticleNumber;
                 line.Quantity = lineQuantity;
                 line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
 
-                if (_aircraftMapping.IncludeThresholdText)
+                if (InvoiceRuleFilter.IncludeThresholdText)
                 {
-                    if (_aircraftMapping.IncludeFlightTypeName)
+                    if (InvoiceRuleFilter.IncludeFlightTypeName)
                     {
                         line.InvoiceLineText =
-                            $"{Flight.AircraftImmatriculation} {BaseInvoiceRuleFilter.ArticleTarget.InvoiceLineText} {Flight.FlightType.FlightTypeName} {_aircraftMapping.ThresholdText}";
+                            $"{Flight.AircraftImmatriculation} {InvoiceRuleFilter.ArticleTarget.InvoiceLineText} {Flight.FlightType.FlightTypeName} {InvoiceRuleFilter.ThresholdText}";
                     }
                     else
                     {
-                        line.InvoiceLineText = $"{Flight.AircraftImmatriculation} {BaseInvoiceRuleFilter.ArticleTarget.InvoiceLineText} {_aircraftMapping.ThresholdText}";
+                        line.InvoiceLineText = $"{Flight.AircraftImmatriculation} {InvoiceRuleFilter.ArticleTarget.InvoiceLineText} {InvoiceRuleFilter.ThresholdText}";
                     }
                 }
                 else
                 {
-                    if (_aircraftMapping.IncludeFlightTypeName)
+                    if (InvoiceRuleFilter.IncludeFlightTypeName)
                     {
                         line.InvoiceLineText =
-                            $"{Flight.AircraftImmatriculation} {BaseInvoiceRuleFilter.ArticleTarget.InvoiceLineText} {Flight.FlightType.FlightTypeName}";
+                            $"{Flight.AircraftImmatriculation} {InvoiceRuleFilter.ArticleTarget.InvoiceLineText} {Flight.FlightType.FlightTypeName}";
                     }
                     else
                     {
-                        line.InvoiceLineText = $"{Flight.AircraftImmatriculation} {BaseInvoiceRuleFilter.ArticleTarget.InvoiceLineText}";
+                        line.InvoiceLineText = $"{Flight.AircraftImmatriculation} {InvoiceRuleFilter.ArticleTarget.InvoiceLineText}";
                     }
                 }
 

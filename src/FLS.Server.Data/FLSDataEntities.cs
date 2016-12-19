@@ -59,6 +59,8 @@ namespace FLS.Server.Data
         public virtual DbSet<ExtensionValue> ExtensionValues { get; set; }
         public virtual DbSet<Extension> Extensions { get; set; }
         public virtual DbSet<ExtensionType> ExtensionTypes { get; set; }
+        public virtual DbSet<InvoiceRuleFilter> InvoiceRuleFilters { get; set; }
+        public virtual DbSet<InvoiceRuleFilterType> InvoiceRuleFilterTypes { get; set; }
         public virtual DbSet<FlightCostBalanceType> FlightCostBalanceTypes { get; set; }
         public virtual DbSet<FlightCrew> FlightCrews { get; set; }
         public virtual DbSet<FlightCrewType> FlightCrewTypes { get; set; }
@@ -108,6 +110,7 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Country>().Ignore(t => t.Id);
             modelBuilder.Entity<EmailTemplate>().Ignore(t => t.Id);
             modelBuilder.Entity<ExtensionValue>().Ignore(t => t.Id);
+            modelBuilder.Entity<InvoiceRuleFilter>().Ignore(t => t.Id);
             modelBuilder.Entity<Flight>().Ignore(t => t.Id);
             modelBuilder.Entity<Flight>().Ignore(t => t.Pilot);
             modelBuilder.Entity<Flight>().Ignore(t => t.CoPilot);
@@ -212,6 +215,12 @@ namespace FLS.Server.Data
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Club>()
+                .HasMany(e => e.InvoiceRuleFilters)
+                .WithRequired(e => e.Club)
+                .HasForeignKey(e => e.ClubId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Club>()
                 .HasMany(e => e.PlanningDays)
                 .WithRequired(e => e.Club)
                 .HasForeignKey(e => e.ClubId)
@@ -303,6 +312,11 @@ namespace FLS.Server.Data
             modelBuilder.Entity<ExtensionType>()
                 .HasMany(e => e.Extensions)
                 .WithRequired(e => e.ExtensionType)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<InvoiceRuleFilterType>()
+                .HasMany(e => e.InvoiceRuleFilters)
+                .WithRequired(e => e.InvoiceRuleFilterType)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<FlightCostBalanceType>()
@@ -607,6 +621,16 @@ namespace FLS.Server.Data
                 .And(x => x.OwnerId)
                 .And(x => x.OwnershipType)
                 .And(x => x.RecordState);
+            EntityTracker.TrackAllProperties<InvoiceRuleFilter>().Except(x => x.Id)
+                .And(x => x.CreatedByUserId)
+                .And(x => x.CreatedOn)
+                .And(x => x.ModifiedByUserId)
+                .And(x => x.ModifiedOn)
+                .And(x => x.DeletedByUserId)
+                .And(x => x.DeletedOn)
+                .And(x => x.OwnerId)
+                .And(x => x.OwnershipType)
+                .And(x => x.RecordState);
             EntityTracker.TrackAllProperties<Location>().Except(x => x.Id)
                 .And(x => x.CreatedByUserId)
                 .And(x => x.CreatedOn)
@@ -771,6 +795,9 @@ namespace FLS.Server.Data
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<InOutboundPoint>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<InvoiceRuleFilter>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<LanguageTranslation>()

@@ -12,10 +12,10 @@ namespace FLS.Server.Service.Invoicing.RuleEngines
         private readonly RuleBasedFlightInvoiceDetails _flightInvoiceDetails;
         private readonly Flight _flight;
         private readonly IPersonService _personService;
-        private readonly List<InvoiceRecipientRuleFilter> _invoiceRecipientRuleFilters;
+        private readonly List<InvoiceRuleFilterDetails> _invoiceRecipientRuleFilters;
 
         public RecipientRulesEngine(RuleBasedFlightInvoiceDetails flightInvoiceDetails, Flight flight, 
-            IPersonService personService, List<InvoiceRecipientRuleFilter> invoiceRecipientRuleFilters)
+            IPersonService personService, List<InvoiceRuleFilterDetails> invoiceRecipientRuleFilters)
         {
             _flightInvoiceDetails = flightInvoiceDetails;
             _invoiceRecipientRuleFilters = invoiceRecipientRuleFilters;

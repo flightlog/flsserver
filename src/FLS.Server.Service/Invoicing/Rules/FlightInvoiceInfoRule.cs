@@ -1,4 +1,5 @@
 ﻿using FLS.Server.Data.DbEntities;
+using FLS.Server.Service.RulesEngine;
 using FLS.Server.Service.RulesEngine.Conditions;
 
 namespace FLS.Server.Service.Invoicing.Rules

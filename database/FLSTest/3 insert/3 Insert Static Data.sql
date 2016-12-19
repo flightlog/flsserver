@@ -44,6 +44,9 @@ DefaultStartType = null,
 DefaultTowFlightTypeId = null,
 HomebaseId = null
 
+DELETE FROM InvoiceRuleFilters
+DELETE FROM InvoiceRuleFilterTypes
+
 DELETE FROM Articles
 DELETE FROM EmailTemplates
 
@@ -886,5 +889,51 @@ INSERT INTO [dbo].[AuditLogEventTypes]
      VALUES
            (4, 'Undeleted')
 
+
+PRINT 'INSERT InvoiceRuleFilterTypes'
+--SET IDENTITY_INSERT [InvoiceRuleFilterTypes] ON
+INSERT INTO [dbo].[InvoiceRuleFilterTypes]
+           ([InvoiceRuleFilterTypeId],[InvoiceRuleFilterTypeName], [InvoiceRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (1,'Recipient invoice rule filter', 'RecipientInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[InvoiceRuleFilterTypes]
+           ([InvoiceRuleFilterTypeId],[InvoiceRuleFilterTypeName], [InvoiceRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (2,'Aircraft invoice rule filter', 'AircraftInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[InvoiceRuleFilterTypes]
+           ([InvoiceRuleFilterTypeId],[InvoiceRuleFilterTypeName], [InvoiceRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (3,'Additional fuel fee invoice rule filter', 'AdditionalFuelFeeInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[InvoiceRuleFilterTypes]
+           ([InvoiceRuleFilterTypeId],[InvoiceRuleFilterTypeName], [InvoiceRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (4,'Instructor fee invoice rule filter', 'InstructorFeeInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[InvoiceRuleFilterTypes]
+           ([InvoiceRuleFilterTypeId],[InvoiceRuleFilterTypeName], [InvoiceRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (5,'Landing tax invoice rule filter', 'LandingTaxInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[InvoiceRuleFilterTypes]
+           ([InvoiceRuleFilterTypeId],[InvoiceRuleFilterTypeName], [InvoiceRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (6,'No landing tax invoice rule filter', 'NoLandingTaxInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[InvoiceRuleFilterTypes]
+           ([InvoiceRuleFilterTypeId],[InvoiceRuleFilterTypeName], [InvoiceRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (7,'VSF fee invoice rule filter', 'VsfFeeInvoiceRuleFilter', SYSDATETIME(), null)
+
+--SET IDENTITY_INSERT [InvoiceRuleFilterTypes] OFF
 
 PRINT 'INSERT Static Data Finished'

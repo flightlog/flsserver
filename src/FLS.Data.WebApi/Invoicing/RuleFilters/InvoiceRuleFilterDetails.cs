@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
 namespace FLS.Data.WebApi.Invoicing.RuleFilters
 {
-    public class BaseRuleFilter
+    public class InvoiceRuleFilterDetails
     {
-        public BaseRuleFilter()
+        public InvoiceRuleFilterDetails()
         {
             IsActive = true;
             AircraftImmatriculations = new List<string>();
@@ -24,8 +25,10 @@ namespace FLS.Data.WebApi.Invoicing.RuleFilters
             UseRuleForAllAircraftsExceptListed = true;
             UseRuleForAllClubMemberNumbersExceptListed = true;
             UseRuleForAllFlightTypesExceptListed = true;
+            MinFlightTimeMatchingValue = 0;
+            MaxFlightTimeMatchingValue = int.MaxValue;
         }
-
+        
         public string RuleFilterName { get; set; }
 
         public string Description { get; set; }
@@ -34,9 +37,7 @@ namespace FLS.Data.WebApi.Invoicing.RuleFilters
 
         public int SortIndicator { get; set; }
 
-        public ArticleTarget ArticleTarget { get; set; }
-
-        public RecipientDetails RecipientTarget { get; set; }
+        public int InvoiceRuleFilterTypeId { get; set; }
 
         public bool IsRuleForSelfstartedGliderFlights { get; set; }
         public bool IsRuleForGliderFlights { get; set; }
@@ -76,5 +77,30 @@ namespace FLS.Data.WebApi.Invoicing.RuleFilters
 
         public bool UseRuleForAllFlightCrewTypesExceptListed { get; set; }
         public List<int> MatchedFlightCrewTypes { get; set; }
+
+        #region Recipient rule part
+        public RecipientDetails RecipientTarget { get; set; }
+
+        public bool IsInvoicedToClubInternal { get; set; }
+        #endregion Recipient rule part
+
+        #region invoice line rule part
+        public ArticleTargetDetails ArticleTarget { get; set; }
+
+        public int MinFlightTimeMatchingValue { get; set; }
+        public int MaxFlightTimeMatchingValue { get; set; }
+
+        public bool IncludeThresholdText { get; set; }
+
+        [StringLength(250)]
+        public string ThresholdText { get; set; }
+
+        public bool IncludeFlightTypeName { get; set; }
+
+        public bool NoLandingTaxForGlider { get; set; }
+        public bool NoLandingTaxForTowingAircraft { get; set; }
+
+        public bool NoLandingTaxForAircraft { get; set; }
+        #endregion invoice line rule part
     }
 }

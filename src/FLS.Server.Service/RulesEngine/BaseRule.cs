@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using FLS.Server.Service.RulesEngine;
 using NLog;
 
-namespace FLS.Server.Service.Invoicing.Rules
+namespace FLS.Server.Service.RulesEngine
 {
     public abstract class BaseRule<T> : IRule<T>
     {
-        protected Logger Logger { get; set; } = LogManager.GetLogger("FLS.Server.Service.Invoicing.Rules.BaseRule");
+        protected Logger Logger { get; set; } = LogManager.GetLogger("FLS.Server.Service.RulesEngine.BaseRule");
 
         protected BaseRule()
         {

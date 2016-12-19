@@ -9,6 +9,10 @@ namespace FLS.Server.Interfaces
 {
     public interface IAircraftService
     {
+        List<AircraftListItem> GetAircraftListItems();
+
+        List<AircraftOverview> GetAircraftOverviews();
+
         AircraftDetails GetAircraftDetails(string immatriculation);
     }
 }

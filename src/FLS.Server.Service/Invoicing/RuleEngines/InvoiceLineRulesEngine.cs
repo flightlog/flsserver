@@ -15,15 +15,15 @@ namespace FLS.Server.Service.Invoicing.RuleEngines
         private Logger Logger { get; set; } = LogManager.GetCurrentClassLogger();
         private readonly RuleBasedFlightInvoiceDetails _flightInvoiceDetails;
         private readonly Flight _flight;
-        private readonly List<BaseRuleFilter> _invoiceLineBaseRuleFilters;
+        private readonly List<InvoiceRuleFilterDetails> _invoiceRuleFilters;
         private readonly IPersonService _personService;
 
         public InvoiceLineRulesEngine(RuleBasedFlightInvoiceDetails flightInvoiceDetails, Flight flight, 
-            IPersonService personService, List<BaseRuleFilter> invoiceLineBaseRuleFilters)
+            IPersonService personService, List<InvoiceRuleFilterDetails> invoiceRuleFilters)
         {
             _flightInvoiceDetails = flightInvoiceDetails;
             _flight = flight;
-            _invoiceLineBaseRuleFilters = invoiceLineBaseRuleFilters;
+            _invoiceRuleFilters = invoiceRuleFilters;
             _personService = personService;
         }
 
@@ -36,25 +36,22 @@ namespace FLS.Server.Service.Invoicing.RuleEngines
             #region NO Landing taxes
             rules.Clear();
 
-            foreach (var filter in _invoiceLineBaseRuleFilters.Where(x => x.GetType() == typeof(NoLandingTaxRuleFilter)).ToList())
+            foreach (var filter in _invoiceRuleFilters.Where(x => x.InvoiceRuleFilterTypeId == (int)FLS.Data.WebApi.Invoicing.RuleFilters.InvoiceRuleFilterType.NoLandingTaxInvoiceRuleFilter))
             {
-                var rule = new NoLandingTaxRule(_flight, (NoLandingTaxRuleFilter)filter);
+                var rule = new NoLandingTaxRule(_flight, filter);
                 rules.Add(rule);
             }
 
             Logger.Trace($"Run {rules.Count} rules of NoLandingTaxRuleFilter");
-            Logger.Trace($"Before apply rules: {_invoiceLineBaseRuleFilters.Count} and {_invoiceLineBaseRuleFilters.Count(x => x.GetType() == typeof(AircraftRuleFilter))} AircraftRuleFilter");
             _flightInvoiceDetails.ApplyRules(rules);
-            Logger.Trace($"After apply rules: {_invoiceLineBaseRuleFilters.Count} and {_invoiceLineBaseRuleFilters.Count(x => x.GetType() == typeof(AircraftRuleFilter))} AircraftRuleFilter"); 
             #endregion NO Landing taxes
 
             #region Aircraft in MasterFlight (Glider- or Motor-Flight)
             rules.Clear();
-            Logger.Trace($"After clearing rules: {_invoiceLineBaseRuleFilters.Count} and {_invoiceLineBaseRuleFilters.Count(x => x.GetType() == typeof(AircraftRuleFilter))} AircraftRuleFilter");
 
-            foreach (var filter in _invoiceLineBaseRuleFilters.Where(x => x.GetType() == typeof(AircraftRuleFilter)).ToList())
+            foreach (var filter in _invoiceRuleFilters.Where(x => x.InvoiceRuleFilterTypeId == (int)FLS.Data.WebApi.Invoicing.RuleFilters.InvoiceRuleFilterType.AircraftInvoiceRuleFilter))
             {
-                var rule = new AircraftFlightTimeRule(_flight, (AircraftRuleFilter)filter);
+                var rule = new AircraftFlightTimeRule(_flight, filter);
                 rules.Add(rule);
             }
 
@@ -75,10 +72,10 @@ namespace FLS.Server.Service.Invoicing.RuleEngines
 
             #region Instructor fee
             rules.Clear();
-            Logger.Trace($"After clearing rules of AircraftRuleFilter: {_invoiceLineBaseRuleFilters.Count} and {_invoiceLineBaseRuleFilters.Count(x => x.GetType() == typeof(AircraftRuleFilter))} AircraftRuleFilter");
-            foreach (var filter in _invoiceLineBaseRuleFilters.Where(x => x.GetType() == typeof(InstructorFeeRuleFilter)).ToList())
+
+            foreach (var filter in _invoiceRuleFilters.Where(x => x.InvoiceRuleFilterTypeId == (int)FLS.Data.WebApi.Invoicing.RuleFilters.InvoiceRuleFilterType.InstructorFeeInvoiceRuleFilter))
             {
-                var rule = new InstructorFeeRule(_flight, (InstructorFeeRuleFilter)filter);
+                var rule = new InstructorFeeRule(_flight, filter);
                 rules.Add(rule);
             }
 
@@ -94,7 +91,7 @@ namespace FLS.Server.Service.Invoicing.RuleEngines
                 _flightInvoiceDetails.IncludesTowFlightId = _flight.TowFlightId;
 
                 var invoiceLineRulesEngine = new InvoiceLineRulesEngine(_flightInvoiceDetails, _flight.TowFlight,
-                    _personService, _invoiceLineBaseRuleFilters);
+                    _personService, _invoiceRuleFilters);
                 invoiceLineRulesEngine.Run();
             }
             #endregion Aircraft in TowFlight
@@ -102,9 +99,9 @@ namespace FLS.Server.Service.Invoicing.RuleEngines
             #region Additional Fuel Fee
             rules.Clear();
 
-            foreach (var filter in _invoiceLineBaseRuleFilters.Where(x => x.GetType() == typeof(AdditionalFuelFeeRuleFilter)).ToList())
+            foreach (var filter in _invoiceRuleFilters.Where(x => x.InvoiceRuleFilterTypeId == (int)FLS.Data.WebApi.Invoicing.RuleFilters.InvoiceRuleFilterType.AdditionalFuelFeeInvoiceRuleFilter))
             {
-                var rule = new AdditionalFuelFeeRule(_flight, (AdditionalFuelFeeRuleFilter)filter);
+                var rule = new AdditionalFuelFeeRule(_flight, filter);
                 rules.Add(rule);
             }
 
@@ -115,9 +112,9 @@ namespace FLS.Server.Service.Invoicing.RuleEngines
             #region Landing taxes
             rules.Clear();
 
-            foreach (var filter in _invoiceLineBaseRuleFilters.Where(x => x.GetType() == typeof(LandingTaxRuleFilter)).ToList())
+            foreach (var filter in _invoiceRuleFilters.Where(x => x.InvoiceRuleFilterTypeId == (int)FLS.Data.WebApi.Invoicing.RuleFilters.InvoiceRuleFilterType.LandingTaxInvoiceRuleFilter))
             {
-                var rule = new LandingTaxRule(_flight, (LandingTaxRuleFilter)filter);
+                var rule = new LandingTaxRule(_flight, filter);
                 rules.Add(rule);
             }
 
@@ -128,9 +125,9 @@ namespace FLS.Server.Service.Invoicing.RuleEngines
             #region VSF fee
             rules.Clear();
 
-            foreach (var filter in _invoiceLineBaseRuleFilters.Where(x => x.GetType() == typeof(VsfFeeRuleFilter)).ToList())
+            foreach (var filter in _invoiceRuleFilters.Where(x => x.InvoiceRuleFilterTypeId == (int)FLS.Data.WebApi.Invoicing.RuleFilters.InvoiceRuleFilterType.VsfFeeInvoiceRuleFilter))
             {
-                var rule = new VsfFeeRule(_flight, (VsfFeeRuleFilter)filter);
+                var rule = new VsfFeeRule(_flight, filter);
                 rules.Add(rule);
             }
 

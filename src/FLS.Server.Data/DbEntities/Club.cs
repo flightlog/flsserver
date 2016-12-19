@@ -23,6 +23,7 @@ namespace FLS.Server.Data.DbEntities
             Users = new HashSet<User>();
             AircraftReservations = new HashSet<AircraftReservation>();
             EmailTemplates = new HashSet<EmailTemplate>();
+            InvoiceRuleFilters = new HashSet<InvoiceRuleFilter>();
             Articles = new HashSet<Article>();
         }
 
@@ -148,6 +149,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual ICollection<AircraftReservation> AircraftReservations { get; set; }
 
         public virtual ICollection<EmailTemplate> EmailTemplates { get; set; }
+
+        public virtual ICollection<InvoiceRuleFilter> InvoiceRuleFilters { get; set; }
 
         public virtual ICollection<Article> Articles { get; set; }
 

@@ -9,7 +9,7 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
 {
     internal class InstructorFeeRule : BaseInvoiceRule
     {
-        internal InstructorFeeRule(Flight flight, InstructorFeeRuleFilter instructorFeeRuleFilter)
+        internal InstructorFeeRule(Flight flight, InvoiceRuleFilterDetails instructorFeeRuleFilter)
             : base(flight, instructorFeeRuleFilter)
         {
         }
@@ -19,7 +19,7 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
             var line = new FlightInvoiceLineItem();
             line.FlightId = Flight.FlightId;
             line.InvoiceLinePosition = flightInvoiceDetails.FlightInvoiceLineItems.Count + 1;
-            line.ERPArticleNumber = BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber;
+            line.ERPArticleNumber = InvoiceRuleFilter.ArticleTarget.ArticleNumber;
             line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
 
             line.InvoiceLineText = $"Fluglehrer-Honorar {Flight.InstructorDisplayName}";

@@ -86,43 +86,19 @@ namespace FLS.Server.WebApi.Controllers
             var result = InvoiceService.SetFlightAsDelivered(flightDeliveryBooking);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Sets the invoice number for deliverables.
-        /// </summary>
-        /// <param name="deliveryNumber">The delivery number.</param>
-        /// <param name="deliveryDetails">The delivery details.</param>
-        /// <returns></returns>
-        [Authorize(Roles = RoleApplicationKeyStrings.ClubAdministrator)]
-        [HttpPost]
-        [Route("deliveries/{deliveryNumber}")]
-        [ResponseType(typeof(bool))]
-        public IHttpActionResult SetInvoiceNumberForDeliverables(string deliveryNumber, [FromBody] DeliveryDetails deliveryDetails)
-        {
-            var result = InvoiceService.SetInvoiceNumberForDeliverables(deliveryDetails.DeliveryNumber,
-                                                                        deliveryDetails.InvoiceNumber,
-                                                                        deliveryDetails.InvoicePaymentDate);
-            return Ok(result);
-        }
-
+        
         /// <summary>
         /// Sets the invoiced as paid.
         /// </summary>
-        /// <param name="invoiceNumber">The invoice number.</param>
         /// <param name="invoicePaymentDetails">The invoice payment details.</param>
         /// <returns></returns>
         [Authorize(Roles = RoleApplicationKeyStrings.ClubAdministrator)]
         [HttpPost]
-        [Route("{invoiceNumber}")]
+        [Route("paid")]
         [ResponseType(typeof(bool))]
-        public IHttpActionResult SetInvoiceAsPaid(string invoiceNumber, [FromBody] InvoicePaymentDetails invoicePaymentDetails)
+        public IHttpActionResult SetInvoiceAsPaid([FromBody] InvoicePaymentDetails invoicePaymentDetails)
         {
-            if (invoiceNumber != invoicePaymentDetails.InvoiceNumber)
-            {
-                return BadRequest("Invoice number is not equal in body");
-            }
-
-            var result = InvoiceService.SetInvoiceAsPaid(invoiceNumber, invoicePaymentDetails.InvoicePaymentDate);
+            var result = InvoiceService.SetInvoiceAsPaid(invoicePaymentDetails.InvoiceNumber, invoicePaymentDetails.InvoicePaymentDate);
             return Ok(result);
         }
     }

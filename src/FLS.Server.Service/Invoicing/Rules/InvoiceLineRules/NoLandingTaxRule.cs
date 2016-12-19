@@ -6,20 +6,17 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
 {
     internal class NoLandingTaxRule : BaseInvoiceRule
     {
-        private readonly NoLandingTaxRuleFilter _noLandingTax;
-
-        internal NoLandingTaxRule(Flight flight, NoLandingTaxRuleFilter noLandingTax)
+        internal NoLandingTaxRule(Flight flight, InvoiceRuleFilterDetails noLandingTax)
             : base(flight, noLandingTax)
         {
-            _noLandingTax = noLandingTax;
         }
         
         public override RuleBasedFlightInvoiceDetails Apply(RuleBasedFlightInvoiceDetails flightInvoiceDetails)
         {
 
-            flightInvoiceDetails.NoLandingTaxForGliderFlight = _noLandingTax.NoLandingTaxForGlider;
-            flightInvoiceDetails.NoLandingTaxForTowFlight = _noLandingTax.NoLandingTaxForTowingAircraft;
-            flightInvoiceDetails.NoLandingTaxForFlight = _noLandingTax.NoLandingTaxForAircraft;
+            flightInvoiceDetails.NoLandingTaxForGliderFlight = InvoiceRuleFilter.NoLandingTaxForGlider;
+            flightInvoiceDetails.NoLandingTaxForTowFlight = InvoiceRuleFilter.NoLandingTaxForTowingAircraft;
+            flightInvoiceDetails.NoLandingTaxForFlight = InvoiceRuleFilter.NoLandingTaxForAircraft;
 
             Logger.Debug($"Apply no landing tax! Set NO landing tax for glider to : {flightInvoiceDetails.NoLandingTaxForGliderFlight}, for towing to: {flightInvoiceDetails.NoLandingTaxForTowFlight}");
 

@@ -10,17 +10,9 @@ namespace FLS.Server.Service.Invoicing
 {
     public class InvoiceMappingFactory
     {
-        public InvoiceRules CreateInvoiceRules()
+        internal List<InvoiceRuleFilterDetails> CreateInvoiceRuleFilters()
         {
-            var invoiceRules = new InvoiceRules();
-            invoiceRules.InvoiceLineBaseRuleFilters = CreateInvoiceLineRuleFilterContainer();
-            invoiceRules.InvoiceRecipientRuleFilters = CreateFlightTypeToInvoiceRecipientMapping();
-            return invoiceRules;
-        }
-
-        internal List<BaseRuleFilter> CreateInvoiceLineRuleFilterContainer()
-        {
-            var invoiceLineRuleFilters = new List<BaseRuleFilter>();
+            var invoiceRuleFilters = new List<InvoiceRuleFilterDetails>();
 
             var baseTeachingFlightTypeCodes = new List<string>();
             baseTeachingFlightTypeCodes.Add("70"); //Grundschulung Doppelsteuer
@@ -42,10 +34,11 @@ namespace FLS.Server.Service.Invoicing
             noFlatRateClubMemberNumbers.Add("622976"); //Rolf
             noFlatRateClubMemberNumbers.Add("686001"); //Gian
 
-            var vsfFeeRuleFilter = new VsfFeeRuleFilter()
+            var vsfFeeRuleFilter = new InvoiceRuleFilterDetails()
             {
-                ArticleTarget = new ArticleTarget { ArticleNumber = "1003", InvoiceLineText = "VFS-Gebühr"},
-                RuleFilterName = "VFS-Gebühr",
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.VsfFeeInvoiceRuleFilter,
+                ArticleTarget = new ArticleTargetDetails { ArticleNumber = "1003", InvoiceLineText = "VSF-Gebühr"},
+                RuleFilterName = "VSF-Gebühr",
                 UseRuleForAllLdgLocationsExceptListed = false,
                 MatchedLdgLocations = new List<string> { "LSZK" },
                 UseRuleForAllAircraftsExceptListed = true,
@@ -59,14 +52,15 @@ namespace FLS.Server.Service.Invoicing
                 IsRuleForTowingFlights = true,
                 IsRuleForMotorFlights = true
             };
-            invoiceLineRuleFilters.Add(vsfFeeRuleFilter);
+            invoiceRuleFilters.Add(vsfFeeRuleFilter);
 
-            var instructorRule = new InstructorFeeRuleFilter()
+            var instructorRule = new InvoiceRuleFilterDetails()
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.InstructorFeeInvoiceRuleFilter,
                 UseRuleForAllClubMemberNumbersExceptListed = false,
                 MatchedClubMemberNumbers = new List<string>() {"999999"},
                 Description = "Silvan",
-                ArticleTarget = new ArticleTarget() { ArticleNumber = "50" },
+                ArticleTarget = new ArticleTargetDetails() { ArticleNumber = "50" },
                 UseRuleForAllFlightCrewTypesExceptListed = false,
                 MatchedFlightCrewTypes = new List<int>() {(int) FlightCrewType.FlightInstructor},
                 UseRuleForAllStartLocationsExceptListed = true,
@@ -75,14 +69,15 @@ namespace FLS.Server.Service.Invoicing
                 UseRuleForAllFlightTypesExceptListed = true,
                 RuleFilterName = "Instruktor-Honorar Silvan"
             };
-            invoiceLineRuleFilters.Add(instructorRule);
+            invoiceRuleFilters.Add(instructorRule);
 
-            instructorRule = new InstructorFeeRuleFilter()
+            instructorRule = new InvoiceRuleFilterDetails()
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.InstructorFeeInvoiceRuleFilter,
                 UseRuleForAllClubMemberNumbersExceptListed = false,
                 MatchedClubMemberNumbers = new List<string>() { "424976" },
                 Description = "Karl",
-                ArticleTarget = new ArticleTarget() { ArticleNumber = "29" },
+                ArticleTarget = new ArticleTargetDetails() { ArticleNumber = "29" },
                 UseRuleForAllFlightCrewTypesExceptListed = false,
                 MatchedFlightCrewTypes = new List<int>() { (int)FlightCrewType.FlightInstructor },
                 UseRuleForAllStartLocationsExceptListed = true,
@@ -91,14 +86,15 @@ namespace FLS.Server.Service.Invoicing
                 UseRuleForAllFlightTypesExceptListed = true,
                 RuleFilterName = "Instruktor-Honorar Karl"
             };
-            invoiceLineRuleFilters.Add(instructorRule);
+            invoiceRuleFilters.Add(instructorRule);
 
-            instructorRule = new InstructorFeeRuleFilter()
+            instructorRule = new InvoiceRuleFilterDetails()
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.InstructorFeeInvoiceRuleFilter,
                 UseRuleForAllClubMemberNumbersExceptListed = false,
                 MatchedClubMemberNumbers = new List<string>() { "536594" },
                 Description = "HUK",
-                ArticleTarget = new ArticleTarget() { ArticleNumber = "19" },
+                ArticleTarget = new ArticleTargetDetails() { ArticleNumber = "19" },
                 UseRuleForAllFlightCrewTypesExceptListed = false,
                 MatchedFlightCrewTypes = new List<int>() { (int)FlightCrewType.FlightInstructor },
                 UseRuleForAllStartLocationsExceptListed = true,
@@ -107,14 +103,15 @@ namespace FLS.Server.Service.Invoicing
                 UseRuleForAllFlightTypesExceptListed = true,
                 RuleFilterName = "Instruktor-Honorar HUK"
             };
-            invoiceLineRuleFilters.Add(instructorRule);
+            invoiceRuleFilters.Add(instructorRule);
 
-            instructorRule = new InstructorFeeRuleFilter()
+            instructorRule = new InvoiceRuleFilterDetails()
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.InstructorFeeInvoiceRuleFilter,
                 UseRuleForAllClubMemberNumbersExceptListed = false,
                 MatchedClubMemberNumbers = new List<string>() { "836001" },
                 Description = "Päde",
-                ArticleTarget = new ArticleTarget() { ArticleNumber = "116" },
+                ArticleTarget = new ArticleTargetDetails() { ArticleNumber = "116" },
                 UseRuleForAllFlightCrewTypesExceptListed = false,
                 MatchedFlightCrewTypes = new List<int>() { (int)FlightCrewType.FlightInstructor },
                 UseRuleForAllStartLocationsExceptListed = true,
@@ -123,14 +120,15 @@ namespace FLS.Server.Service.Invoicing
                 UseRuleForAllFlightTypesExceptListed = true,
                 RuleFilterName = "Instruktor-Honorar Päde"
             };
-            invoiceLineRuleFilters.Add(instructorRule);
+            invoiceRuleFilters.Add(instructorRule);
 
-            instructorRule = new InstructorFeeRuleFilter()
+            instructorRule = new InvoiceRuleFilterDetails()
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.InstructorFeeInvoiceRuleFilter,
                 UseRuleForAllClubMemberNumbersExceptListed = false,
                 MatchedClubMemberNumbers = new List<string>() { "888888" },
                 Description = "Thomas",
-                ArticleTarget = new ArticleTarget() { ArticleNumber = "90" },
+                ArticleTarget = new ArticleTargetDetails() { ArticleNumber = "90" },
                 UseRuleForAllFlightCrewTypesExceptListed = false,
                 MatchedFlightCrewTypes = new List<int>() { (int)FlightCrewType.FlightInstructor },
                 UseRuleForAllStartLocationsExceptListed = true,
@@ -139,13 +137,14 @@ namespace FLS.Server.Service.Invoicing
                 UseRuleForAllFlightTypesExceptListed = true,
                 RuleFilterName = "Instruktor-Honorar Thomas"
             };
-            invoiceLineRuleFilters.Add(instructorRule);
+            invoiceRuleFilters.Add(instructorRule);
 
             int sortIndicator = 1;
-            var aircraftMappingRule = new AircraftRuleFilter
+            var aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1059",
                     InvoiceLineText = "Schulung"
@@ -165,13 +164,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-3256 Schulung"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-3256");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1061",
                     InvoiceLineText = "Schulung",
@@ -191,13 +191,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-3407 Schulung"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-3407");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1063",
                     InvoiceLineText = "Schulung",
@@ -217,13 +218,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-1841 Schulung"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-1841");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1065",
                     InvoiceLineText = "Schulung",
@@ -243,13 +245,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-1824 Schulung"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-1824");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1072",
                     InvoiceLineText = "Schulung",
@@ -269,13 +272,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-2464 Schulung"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-2464");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1059",
                     InvoiceLineText = "Weiterbildung ohne Pauschale",
@@ -296,13 +300,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-3256 Weiterbildung ohne Pauschale"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-3256");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1061",
                     InvoiceLineText = "Weiterbildung ohne Pauschale",
@@ -323,13 +328,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-3407 Weiterbildung ohne Pauschale"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-3407");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1063",
                     InvoiceLineText = "Weiterbildung ohne Pauschale",
@@ -350,13 +356,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-1841 Weiterbildung ohne Pauschale"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-1841");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1065",
                     InvoiceLineText = "Weiterbildung ohne Pauschale",
@@ -377,13 +384,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-1824 Weiterbildung ohne Pauschale"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-1824");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1072",
                     InvoiceLineText = "Weiterbildung ohne Pauschale",
@@ -404,16 +412,17 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-2464 Weiterbildung ohne Pauschale"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-2464");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
 
 
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1187",
                     InvoiceLineText = "Weiterbildung mit Pauschale",
@@ -434,13 +443,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-3256 Weiterbildung mit Pauschale"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-3256");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1186",
                     InvoiceLineText = "Weiterbildung mit Pauschale",
@@ -461,13 +471,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-3407 Weiterbildung mit Pauschale"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-3407");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1189",
                     InvoiceLineText = "Weiterbildung mit Pauschale",
@@ -488,13 +499,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-1841 Weiterbildung mit Pauschale"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-1841");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1188",
                     InvoiceLineText = "Weiterbildung mit Pauschale",
@@ -515,13 +527,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-1824 Weiterbildung mit Pauschale"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-1824");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1190",
                     InvoiceLineText = "Weiterbildung mit Pauschale",
@@ -542,14 +555,15 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-2464 Weiterbildung mit Pauschale"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-2464");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
 
             sortIndicator = 1;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1058",
                     InvoiceLineText = "Privat",
@@ -570,13 +584,14 @@ namespace FLS.Server.Service.Invoicing
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-3256");
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1060",
                     InvoiceLineText = "Privat"
@@ -597,13 +612,14 @@ namespace FLS.Server.Service.Invoicing
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-3407");
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1062",
                     InvoiceLineText = "Privat"
@@ -624,13 +640,14 @@ namespace FLS.Server.Service.Invoicing
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-1841");
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1064",
                     InvoiceLineText = "Privat"
@@ -651,13 +668,14 @@ namespace FLS.Server.Service.Invoicing
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-1824");
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1071",
                     InvoiceLineText = "Privat"
@@ -678,14 +696,15 @@ namespace FLS.Server.Service.Invoicing
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-2464");
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             //Towing Aircrafts
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1068",
                     InvoiceLineText = "Schulung"
@@ -712,13 +731,14 @@ namespace FLS.Server.Service.Invoicing
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-KCB");
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1069",
                     InvoiceLineText = "Schulung"
@@ -745,13 +765,14 @@ namespace FLS.Server.Service.Invoicing
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-KCB");
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1066",
                     InvoiceLineText = "Privat"
@@ -778,13 +799,14 @@ namespace FLS.Server.Service.Invoicing
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-KCB");
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1067",
                     InvoiceLineText = "Privat"
@@ -811,13 +833,14 @@ namespace FLS.Server.Service.Invoicing
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-KCB");
             aircraftMappingRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1153",
                     InvoiceLineText = ""
@@ -837,13 +860,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-PFW"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-PFW");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1154",
                     InvoiceLineText = ""
@@ -863,13 +887,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-KIO"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-KIO");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1155",
                     InvoiceLineText = ""
@@ -889,13 +914,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-PDL"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-PDL");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1156",
                     InvoiceLineText = ""
@@ -915,13 +941,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-EQC"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-EQC");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1157",
                     InvoiceLineText = ""
@@ -941,13 +968,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-WAT"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-WAT");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1158",
                     InvoiceLineText = ""
@@ -967,13 +995,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-DGP"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-DGP");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1159",
                     InvoiceLineText = ""
@@ -993,13 +1022,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-KDO"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-KDO");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1161",
                     InvoiceLineText = ""
@@ -1019,13 +1049,14 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-DCU"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-DCU");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
             sortIndicator++;
-            aircraftMappingRule = new AircraftRuleFilter
+            aircraftMappingRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AircraftInvoiceRuleFilter,
                 SortIndicator = sortIndicator,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1162",
                     InvoiceLineText = "Saanen"
@@ -1047,16 +1078,17 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "HB-KCB Saanen"
             };
             aircraftMappingRule.AircraftImmatriculations.Add("HB-KCB");
-            invoiceLineRuleFilters.Add(aircraftMappingRule);
+            invoiceRuleFilters.Add(aircraftMappingRule);
 
 
 
-            var additionalFuelFeeRule = new AdditionalFuelFeeRuleFilter
+            var additionalFuelFeeRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.AdditionalFuelFeeInvoiceRuleFilter,
                 UseRuleForAllAircraftsExceptListed = false,
                 AircraftImmatriculations = new List<string> { "HB-KCB" },
                 SortIndicator = 1,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1086",
                     InvoiceLineText = "Treibstoffzuschlag"
@@ -1074,10 +1106,11 @@ namespace FLS.Server.Service.Invoicing
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-KCB Treibstoffzuschlag"
             };
-            invoiceLineRuleFilters.Add(additionalFuelFeeRule);
+            invoiceRuleFilters.Add(additionalFuelFeeRule);
 
-            var noLandingTax = new NoLandingTaxRuleFilter()
+            var noLandingTax = new InvoiceRuleFilterDetails()
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.NoLandingTaxInvoiceRuleFilter,
                 IsRuleForGliderFlights = true,
                 IsRuleForTowingFlights = true,
                 IsRuleForSelfstartedGliderFlights = false,
@@ -1098,11 +1131,12 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "Keine Landetaxen für Schulung ab Speck"
             };
             noLandingTax.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(noLandingTax);
+            invoiceRuleFilters.Add(noLandingTax);
 
             //TODO: May duplicate rule with rule above, test it.
-            noLandingTax = new NoLandingTaxRuleFilter()
+            noLandingTax = new InvoiceRuleFilterDetails()
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.NoLandingTaxInvoiceRuleFilter,
                 IsRuleForGliderFlights = false,
                 IsRuleForTowingFlights = true,
                 IsRuleForSelfstartedGliderFlights = false,
@@ -1123,14 +1157,15 @@ namespace FLS.Server.Service.Invoicing
                 UseRuleForAllStartLocationsExceptListed = true
             };
             noLandingTax.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(noLandingTax);
+            invoiceRuleFilters.Add(noLandingTax);
 
-            var landingTaxRule = new LandingTaxRuleFilter
+            var landingTaxRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.LandingTaxInvoiceRuleFilter,
                 UseRuleForAllAircraftsExceptListed = true,
                 AircraftImmatriculations = new List<string>(),
                 SortIndicator = 1,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "",
                     InvoiceLineText = "Keine Landetaxen Speck für Schulung"
@@ -1150,14 +1185,15 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "Keine Landetaxen Speck für Schulung"
             };
             landingTaxRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(landingTaxRule);
+            invoiceRuleFilters.Add(landingTaxRule);
 
-            landingTaxRule = new LandingTaxRuleFilter
+            landingTaxRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.LandingTaxInvoiceRuleFilter,
                 UseRuleForAllAircraftsExceptListed = true,
                 AircraftImmatriculations = new List<string>(),
                 SortIndicator = 1,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1037",
                     InvoiceLineText = "Landetaxen Speck"
@@ -1177,14 +1213,15 @@ namespace FLS.Server.Service.Invoicing
                 RuleFilterName = "Landetaxen Speck"
             };
             landingTaxRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceLineRuleFilters.Add(landingTaxRule);
+            invoiceRuleFilters.Add(landingTaxRule);
 
-            landingTaxRule = new LandingTaxRuleFilter
+            landingTaxRule = new InvoiceRuleFilterDetails
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.LandingTaxInvoiceRuleFilter,
                 UseRuleForAllAircraftsExceptListed = true,
                 AircraftImmatriculations = new List<string>(),
                 SortIndicator = 1,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1106",
                     InvoiceLineText = "Landetaxen Montricher"
@@ -1203,14 +1240,15 @@ namespace FLS.Server.Service.Invoicing
                 UseRuleForAllStartLocationsExceptListed = true,
                 RuleFilterName = "Landetaxen Montricher"
             };
-            invoiceLineRuleFilters.Add(landingTaxRule);
+            invoiceRuleFilters.Add(landingTaxRule);
 
-            landingTaxRule = new LandingTaxRuleFilter
+            landingTaxRule = new InvoiceRuleFilterDetails()
             {
+                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.LandingTaxInvoiceRuleFilter,
                 UseRuleForAllAircraftsExceptListed = true,
                 AircraftImmatriculations = new List<string>(),
                 SortIndicator = 1,
-                ArticleTarget = new ArticleTarget
+                ArticleTarget = new ArticleTargetDetails
                 {
                     ArticleNumber = "1160",
                     InvoiceLineText = "Landetaxen Saanen"
@@ -1229,29 +1267,25 @@ namespace FLS.Server.Service.Invoicing
                 UseRuleForAllStartLocationsExceptListed = true,
                 RuleFilterName = "Landetaxen Saanen"
             };
-            invoiceLineRuleFilters.Add(landingTaxRule);
+            invoiceRuleFilters.Add(landingTaxRule);
 
-            return invoiceLineRuleFilters;
-        }
 
-        internal List<InvoiceRecipientRuleFilter> CreateFlightTypeToInvoiceRecipientMapping()
-        {
-            var invoiceRecipientRuleFilters = new List<InvoiceRecipientRuleFilter>();
-
-            var invoiceRecipientRuleFilter = new InvoiceRecipientRuleFilter();
+            var invoiceRecipientRuleFilter = new InvoiceRuleFilterDetails();
+            invoiceRecipientRuleFilter.InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.RecipientInvoiceRuleFilter;
             invoiceRecipientRuleFilter.RecipientTarget = new RecipientDetails()
             {
                 RecipientName = "FGZO Schnupperflug Gutschein",
                 PersonClubMemberNumber = "999006"
             };
-            invoiceRecipientRuleFilter.MatchedFlightTypeCodes = new List<string>() {"68"};
+            invoiceRecipientRuleFilter.MatchedFlightTypeCodes = new List<string>() { "68" };
             invoiceRecipientRuleFilter.UseRuleForAllFlightTypesExceptListed = false;
             invoiceRecipientRuleFilter.RuleFilterName = "Schnupperflug Gutschein auf FGZO Konto buchen";
             invoiceRecipientRuleFilter.Description = "Schnupperflug Gutschein auf FGZO Konto buchen";
             invoiceRecipientRuleFilter.IsInvoicedToClubInternal = true;
-            invoiceRecipientRuleFilters.Add(invoiceRecipientRuleFilter);
+            invoiceRuleFilters.Add(invoiceRecipientRuleFilter);
 
-            invoiceRecipientRuleFilter = new InvoiceRecipientRuleFilter();
+            invoiceRecipientRuleFilter = new InvoiceRuleFilterDetails();
+            invoiceRecipientRuleFilter.InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.RecipientInvoiceRuleFilter;
             invoiceRecipientRuleFilter.RecipientTarget = new RecipientDetails()
             {
                 RecipientName = "FGZO Schnupperflug und Lufttaufe bar",
@@ -1264,10 +1298,11 @@ namespace FLS.Server.Service.Invoicing
             invoiceRecipientRuleFilter.RuleFilterName = "FGZO Schnupperflug und Lufttaufe bar auf FGZO Konto buchen";
             invoiceRecipientRuleFilter.Description = "FGZO Schnupperflug und Lufttaufe bar auf FGZO Konto buchen";
             invoiceRecipientRuleFilter.IsInvoicedToClubInternal = true;
-            invoiceRecipientRuleFilters.Add(invoiceRecipientRuleFilter);
+            invoiceRuleFilters.Add(invoiceRecipientRuleFilter);
 
 
-            invoiceRecipientRuleFilter = new InvoiceRecipientRuleFilter();
+            invoiceRecipientRuleFilter = new InvoiceRuleFilterDetails();
+            invoiceRecipientRuleFilter.InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.RecipientInvoiceRuleFilter;
             invoiceRecipientRuleFilter.RecipientTarget = new RecipientDetails()
             {
                 RecipientName = "FGZO Passagierflug bar",
@@ -1278,10 +1313,11 @@ namespace FLS.Server.Service.Invoicing
             invoiceRecipientRuleFilter.RuleFilterName = "FGZO Passagierflug bar auf FGZO Konto buchen";
             invoiceRecipientRuleFilter.Description = "FGZO Passagierflug bar auf FGZO Konto buchen";
             invoiceRecipientRuleFilter.IsInvoicedToClubInternal = true;
-            invoiceRecipientRuleFilters.Add(invoiceRecipientRuleFilter);
+            invoiceRuleFilters.Add(invoiceRecipientRuleFilter);
 
 
-            invoiceRecipientRuleFilter = new InvoiceRecipientRuleFilter();
+            invoiceRecipientRuleFilter = new InvoiceRuleFilterDetails();
+            invoiceRecipientRuleFilter.InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.RecipientInvoiceRuleFilter;
             invoiceRecipientRuleFilter.RecipientTarget = new RecipientDetails()
             {
                 RecipientName = "FGZO Passagierflug Gutschein",
@@ -1292,9 +1328,10 @@ namespace FLS.Server.Service.Invoicing
             invoiceRecipientRuleFilter.RuleFilterName = "FGZO Passagierflug Gutschein auf FGZO Konto buchen";
             invoiceRecipientRuleFilter.Description = "FGZO Passagierflug Gutschein auf FGZO Konto buchen";
             invoiceRecipientRuleFilter.IsInvoicedToClubInternal = true;
-            invoiceRecipientRuleFilters.Add(invoiceRecipientRuleFilter);
+            invoiceRuleFilters.Add(invoiceRecipientRuleFilter);
 
-            invoiceRecipientRuleFilter = new InvoiceRecipientRuleFilter();
+            invoiceRecipientRuleFilter = new InvoiceRuleFilterDetails();
+            invoiceRecipientRuleFilter.InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.RecipientInvoiceRuleFilter;
             invoiceRecipientRuleFilter.RecipientTarget = new RecipientDetails()
             {
                 RecipientName = "FGZO Marketingflug",
@@ -1305,9 +1342,9 @@ namespace FLS.Server.Service.Invoicing
             invoiceRecipientRuleFilter.RuleFilterName = "FGZO Marketingflug auf FGZO Konto buchen";
             invoiceRecipientRuleFilter.Description = "FGZO Marketingflug auf FGZO Konto buchen";
             invoiceRecipientRuleFilter.IsInvoicedToClubInternal = true;
-            invoiceRecipientRuleFilters.Add(invoiceRecipientRuleFilter);
+            invoiceRuleFilters.Add(invoiceRecipientRuleFilter);
 
-            return invoiceRecipientRuleFilters;
+            return invoiceRuleFilters;
         }
     }
 }

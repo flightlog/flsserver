@@ -11,14 +11,14 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
 {
     internal class LandingTaxRule : BaseInvoiceRule
     {
-        internal LandingTaxRule(Flight flight, LandingTaxRuleFilter landingTax)
+        internal LandingTaxRule(Flight flight, InvoiceRuleFilterDetails landingTax)
             : base(flight, landingTax)
         {
         }
 
         public override void Initialize(RuleBasedFlightInvoiceDetails flightInvoiceDetails)
         {
-            BaseInvoiceRuleFilter.ArticleTarget.NotNull("ArticleTarget");
+            InvoiceRuleFilter.ArticleTarget.NotNull("ArticleTarget");
             base.Initialize(flightInvoiceDetails);
 
             if (flightInvoiceDetails.NoLandingTaxForGliderFlight &&
@@ -38,9 +38,9 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
 
         public override RuleBasedFlightInvoiceDetails Apply(RuleBasedFlightInvoiceDetails flightInvoiceDetails)
         {
-            if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ERPArticleNumber == BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber))
+            if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ERPArticleNumber == InvoiceRuleFilter.ArticleTarget.ArticleNumber))
             {
-                var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber);
+                var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == InvoiceRuleFilter.ArticleTarget.ArticleNumber);
                 line.Quantity++;
 
                 Logger.Warn($"Invoice line for landing tax already exists. Add quantity to the existing line! New line value: {line}");
@@ -50,10 +50,10 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
                 var line = new FlightInvoiceLineItem();
                 line.FlightId = Flight.FlightId;
                 line.InvoiceLinePosition = flightInvoiceDetails.FlightInvoiceLineItems.Count + 1;
-                line.ERPArticleNumber = BaseInvoiceRuleFilter.ArticleTarget.ArticleNumber;
+                line.ERPArticleNumber = InvoiceRuleFilter.ArticleTarget.ArticleNumber;
                 line.Quantity = 1.0m;
                 line.UnitType = CostCenterUnitType.PerLanding.ToUnitTypeString();
-                line.InvoiceLineText = $"{BaseInvoiceRuleFilter.ArticleTarget.InvoiceLineText}";
+                line.InvoiceLineText = $"{InvoiceRuleFilter.ArticleTarget.InvoiceLineText}";
 
                 flightInvoiceDetails.FlightInvoiceLineItems.Add(line);
 

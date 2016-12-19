@@ -131,7 +131,7 @@
     <Compile Include="Invoicing\RuleEngines\InvoiceLineRulesEngine.cs" />
     <Compile Include="Invoicing\RuleEngines\RecipientRulesEngine.cs" />
     <Compile Include="Invoicing\Rules\AdditionalInfoRule.cs" />
-    <Compile Include="Invoicing\Rules\BaseRule.cs" />
+    <Compile Include="RulesEngine\BaseRule.cs" />
     <Compile Include="Invoicing\Rules\FlightCostPaidByPersonRule.cs" />
     <Compile Include="Invoicing\Rules\FlightCostPaidByPilotRule.cs" />
     <Compile Include="Invoicing\Rules\FlightInvoiceInfoRule.cs" />
