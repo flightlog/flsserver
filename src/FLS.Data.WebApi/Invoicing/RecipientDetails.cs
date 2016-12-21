@@ -4,6 +4,8 @@ namespace FLS.Data.WebApi.Invoicing
 {
     public class RecipientDetails
     {
+        public Guid? PersonId { get; set; }
+
         public string RecipientName { get; set; }
 
         public string Firstname { get; set; }

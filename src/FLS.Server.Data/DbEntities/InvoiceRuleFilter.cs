@@ -60,7 +60,7 @@ namespace FLS.Server.Data.DbEntities
         public string MatchedClubMemberNumbers { get; set; }
 
         public bool UseRuleForAllFlightCrewTypesExceptListed { get; set; }
-        public int MatchedFlightCrewTypes { get; set; }
+        public string MatchedFlightCrewTypes { get; set; }
 
         public bool IsInvoicedToClubInternal { get; set; }
 

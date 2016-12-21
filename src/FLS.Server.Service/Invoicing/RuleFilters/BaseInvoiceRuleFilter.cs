@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using FLS.Data.WebApi;
 using Newtonsoft.Json;
 
-namespace FLS.Data.WebApi.Invoicing.RuleFilters
+namespace FLS.Server.Service.Invoicing.RuleFilters
 {
-    public class InvoiceRuleFilterDetails : FLSBaseData
+    public abstract class BaseInvoiceRuleFilter
     {
-        public InvoiceRuleFilterDetails()
+        public BaseInvoiceRuleFilter()
         {
             IsActive = true;
             AircraftImmatriculations = new List<string>();
@@ -25,8 +25,6 @@ namespace FLS.Data.WebApi.Invoicing.RuleFilters
             UseRuleForAllAircraftsExceptListed = true;
             UseRuleForAllClubMemberNumbersExceptListed = true;
             UseRuleForAllFlightTypesExceptListed = true;
-            MinFlightTimeMatchingValue = 0;
-            MaxFlightTimeMatchingValue = int.MaxValue;
         }
 
         public Guid InvoiceRuleFilterId { get; set; }
@@ -79,32 +77,7 @@ namespace FLS.Data.WebApi.Invoicing.RuleFilters
 
         public bool UseRuleForAllFlightCrewTypesExceptListed { get; set; }
         public List<int> MatchedFlightCrewTypes { get; set; }
-
-        #region Recipient rule part
-        public RecipientDetails RecipientTarget { get; set; }
-
-        public bool IsInvoicedToClubInternal { get; set; }
-        #endregion Recipient rule part
-
-        #region invoice line rule part
-        public ArticleTargetDetails ArticleTarget { get; set; }
-
-        public int MinFlightTimeMatchingValue { get; set; }
-        public int MaxFlightTimeMatchingValue { get; set; }
-
-        public bool IncludeThresholdText { get; set; }
-
-        [StringLength(250)]
-        public string ThresholdText { get; set; }
-
-        public bool IncludeFlightTypeName { get; set; }
-
-        public bool NoLandingTaxForGlider { get; set; }
-        public bool NoLandingTaxForTowingAircraft { get; set; }
-
-        public bool NoLandingTaxForAircraft { get; set; }
-        #endregion invoice line rule part
-
+        
         public override Guid Id
         {
             get { return InvoiceRuleFilterId; }

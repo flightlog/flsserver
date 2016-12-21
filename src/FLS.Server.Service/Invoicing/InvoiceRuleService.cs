@@ -19,58 +19,37 @@ namespace FLS.Server.Service.Invoicing
     public class InvoiceRuleService : BaseService
     {
         private readonly DataAccessService _dataAccessService;
-        private readonly InvoiceMappingFactory _invoiceMappingFactory;
         private readonly IPersonService _personService;
         private readonly IExtensionService _extensionService;
         private readonly IAircraftService _aircraftService;
         private readonly ILocationService _locationService;
 
-        public InvoiceRuleService(DataAccessService dataAccessService, IdentityService identityService, InvoiceMappingFactory invoiceMappingFactory, IPersonService personService, 
+        public InvoiceRuleService(DataAccessService dataAccessService, IdentityService identityService, IPersonService personService, 
             IExtensionService extensionService, IAircraftService aircraftService, ILocationService locationService)
             : base(dataAccessService, identityService)
         {
             _dataAccessService = dataAccessService;
-            _invoiceMappingFactory = invoiceMappingFactory;
             _personService = personService;
             _extensionService = extensionService;
             _aircraftService = aircraftService;
             _locationService = locationService;
         }
 
-        #region InvoiceLineRuleFilter
-        //public List<InvoiceRuleFilterOverview> GetInvoiceRuleFilterOverviews()
-        //{
-        //    using (var context = _dataAccessService.CreateDbContext())
-        //    {
-        //        List<Article> articles = context.Articles.Where(c => c.ClubId == CurrentAuthenticatedFLSUserClubId).OrderBy(t => t.ArticleNumber).ToList();
-
-        //        var overviewList = articles.Select(x => new ArticleOverview()
-        //        {
-        //            ArticleId = x.ArticleId,
-        //            ArticleNumber = x.ArticleNumber,
-        //            ArticleName = x.ArticleName,
-        //            IsActive = x.IsActive
-        //        }).ToList();
-
-        //        SetArticleOverviewSecurity(overviewList);
-        //        return overviewList;
-        //    }
-        //}
-
-        public List<InvoiceLineRuleFilterDetails> GetInvoiceLineRuleFilterDetailsList(Guid clubId)
+        #region InvoiceRuleFilter
+        public List<InvoiceRuleFilterOverview> GetInvoiceRuleFilterOverview()
         {
             var aicrafts = _aircraftService.GetAircraftListItems();
             var locations = _locationService.GetLocationListItems(airfieldsOnly:true);
 
-            List<InvoiceLineRuleFilterDetails> filters = new List<InvoiceLineRuleFilterDetails>();
+            var filters = new List<InvoiceRuleFilterOverview>();
 
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var invoiceRuleFilters = context.InvoiceRuleFilters.Where(q => q.ClubId == clubId);
+                var invoiceRuleFilters = context.InvoiceRuleFilters.Where(q => q.ClubId == CurrentAuthenticatedFLSUserClubId);
 
                 foreach (var invoiceRuleFilter in invoiceRuleFilters)
                 {
-                    var filter = invoiceRuleFilter.ToInvoiceLineRuleFilterDetails(aicrafts, locations);
+                    var filter = invoiceRuleFilter.ToInvoiceRuleFilterOverview(aicrafts, locations);
                     filters.Add(filter);
                 }
             }
@@ -78,97 +57,134 @@ namespace FLS.Server.Service.Invoicing
             return filters;
         }
 
-        //public InvoiceRuleFilterDetails GetInvoiceRuleFilterDetails(Guid articleId)
-        //{
-        //    using (var context = _dataAccessService.CreateDbContext())
-        //    {
-        //        var article = context.Articles.FirstOrDefault(c => c.ArticleId == articleId && c.ClubId == CurrentAuthenticatedFLSUserClubId);
-
-        //        var articleDetails = article.ToInvoiceRuleFilterDetails();
-        //        SetInvoiceRuleFilterDetailsSecurity(articleDetails);
-        //        return articleDetails;
-        //    }
-        //}
-
-        public void InsertInvoiceRuleFilterDetails(BaseInvoiceRuleFilterDetails articleDetails)
+        internal List<InvoiceRuleFilterDetails> GetInvoiceRuleFilterDetailsListByClubId(Guid clubId)
         {
-            var article = articleDetails.ToArticle(CurrentAuthenticatedFLSUserClubId);
-            article.EntityNotNull("Article", Guid.Empty);
+            var aicrafts = _aircraftService.GetAircraftListItems();
+            var locations = _locationService.GetLocationListItems(airfieldsOnly: true);
 
-            if (IsCurrentUserInRoleClubAdministrator == false)
-            {
-                throw new UnauthorizedAccessException("You must be a club administrator to insert a new article!");
-            }
+            var filters = new List<InvoiceRuleFilterDetails>();
 
             using (var context = _dataAccessService.CreateDbContext())
             {
-                context.Articles.Add(article);
+                var invoiceRuleFilters = context.InvoiceRuleFilters.Where(q => q.ClubId == clubId);
+
+                foreach (var invoiceRuleFilter in invoiceRuleFilters)
+                {
+                    var filter = invoiceRuleFilter.ToInvoiceRuleFilterDetails(aicrafts, locations);
+                    filters.Add(filter);
+                }
+            }
+
+            return filters;
+        }
+
+        public InvoiceRuleFilterDetails GetInvoiceRuleFilterDetails(Guid invoiceRuleFilterId)
+        {
+            var aicrafts = _aircraftService.GetAircraftListItems();
+            var locations = _locationService.GetLocationListItems(airfieldsOnly: true);
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var invoiceRuleFilter = context.InvoiceRuleFilters.FirstOrDefault(c => c.InvoiceRuleFilterId == invoiceRuleFilterId && c.ClubId == CurrentAuthenticatedFLSUserClubId);
+
+                var invoiceRuleFilterDetails = invoiceRuleFilter.ToInvoiceRuleFilterDetails(aicrafts, locations);
+                SetInvoiceRuleFilterDetailsSecurity(invoiceRuleFilterDetails);
+                return invoiceRuleFilterDetails;
+            }
+        }
+
+        /// <summary>
+        /// Used only for initial insert of FGZO rules from InvoiceMappingFactory
+        /// </summary>
+        /// <param name="invoieRuleFilterDetails"></param>
+        /// <param name="clubId"></param>
+        internal void InsertInvoiceRuleFilterDetails(InvoiceRuleFilterDetails invoieRuleFilterDetails, Guid clubId)
+        {
+            var aicrafts = _aircraftService.GetAircraftListItems();
+            var locations = _locationService.GetLocationListItems(airfieldsOnly: true);
+
+            var invoiceRuleFilter = invoieRuleFilterDetails.ToInvoiceRuleFilter(clubId, aicrafts, locations);
+            invoiceRuleFilter.EntityNotNull("InvoiceRuleFilter", Guid.Empty);
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                context.InvoiceRuleFilters.Add(invoiceRuleFilter);
                 context.SaveChanges();
             }
 
             //Map it back to details
-            article.ToInvoiceRuleFilterDetails(articleDetails);
+            invoiceRuleFilter.ToInvoiceRuleFilterDetails(aicrafts, locations, invoieRuleFilterDetails);
         }
-        public void UpdateInvoiceRuleFilterDetails(BaseInvoiceRuleFilterDetails currentInvoiceRuleFilterDetails)
+
+
+        public void InsertInvoiceRuleFilterDetails(InvoiceRuleFilterDetails invoieRuleFilterDetails)
         {
-            currentInvoiceRuleFilterDetails.ArgumentNotNull("currentInvoiceRuleFilterDetails");
+            if (IsCurrentUserInRoleClubAdministrator == false)
+            {
+                throw new UnauthorizedAccessException("You must be a club administrator to insert a new invoice rule filter!");
+            }
+
+            var aicrafts = _aircraftService.GetAircraftListItems();
+            var locations = _locationService.GetLocationListItems(airfieldsOnly: true);
+
+            var invoiceRuleFilter = invoieRuleFilterDetails.ToInvoiceRuleFilter(CurrentAuthenticatedFLSUserClubId, aicrafts, locations);
+            invoiceRuleFilter.EntityNotNull("InvoiceRuleFilter", Guid.Empty);
 
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var original = context.Articles.FirstOrDefault(x => x.ArticleId == currentInvoiceRuleFilterDetails.ArticleId);
-                original.EntityNotNull("Article", currentInvoiceRuleFilterDetails.ArticleId);
+                context.InvoiceRuleFilters.Add(invoiceRuleFilter);
+                context.SaveChanges();
+            }
 
-                currentInvoiceRuleFilterDetails.ToArticle(CurrentAuthenticatedFLSUserClubId, original);
+            //Map it back to details
+            invoiceRuleFilter.ToInvoiceRuleFilterDetails(aicrafts, locations, invoieRuleFilterDetails);
+        }
+
+        public void UpdateInvoiceRuleFilterDetails(InvoiceRuleFilterDetails currentInvoiceRuleFilterDetails)
+        {
+            currentInvoiceRuleFilterDetails.ArgumentNotNull("currentInvoiceRuleFilterDetails");
+            var aicrafts = _aircraftService.GetAircraftListItems();
+            var locations = _locationService.GetLocationListItems(airfieldsOnly: true);
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var original = context.InvoiceRuleFilters.FirstOrDefault(x => x.InvoiceRuleFilterId == currentInvoiceRuleFilterDetails.InvoiceRuleFilterId);
+                original.EntityNotNull("InvoiceRuleFilter", currentInvoiceRuleFilterDetails.InvoiceRuleFilterId);
+
+                currentInvoiceRuleFilterDetails.ToInvoiceRuleFilter(CurrentAuthenticatedFLSUserClubId, aicrafts, locations, original);
 
                 if (context.ChangeTracker.HasChanges())
                 {
                     context.SaveChanges();
-                    original.ToInvoiceRuleFilterDetails(currentInvoiceRuleFilterDetails);
+                    original.ToInvoiceRuleFilterDetails(aicrafts, locations, currentInvoiceRuleFilterDetails);
                 }
             }
         }
 
-        public void DeleteArticle(Guid articleId)
+        public void DeleteInvoiceRuleFilter(Guid invoiceRuleFilterId)
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to delete a article!");
+                throw new UnauthorizedAccessException("You must be a club administrator to delete an invoice rule filter!");
             }
 
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var original = context.Articles.FirstOrDefault(x => x.ArticleId == articleId);
-                original.EntityNotNull("Article", articleId);
+                var original = context.InvoiceRuleFilters.FirstOrDefault(x => x.InvoiceRuleFilterId == invoiceRuleFilterId);
+                original.EntityNotNull("InvoiceRuleFilter", invoiceRuleFilterId);
 
-                context.Articles.Remove(original);
+                context.InvoiceRuleFilters.Remove(original);
                 context.SaveChanges();
             }
         }
+        #endregion InvoiceRuleFilter
 
-        public Nullable<DateTime> GetLastArticleSynchronisationOn()
-        {
-            if (IsCurrentUserInRoleClubAdministrator == false)
-            {
-                throw new UnauthorizedAccessException("You must be a club administrator to set the last article synchronisation datetime value!");
-            }
-
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var club = context.Clubs.FirstOrDefault(c => c.ClubId == CurrentAuthenticatedFLSUserClubId);
-                club.EntityNotNull("Club");
-
-                return club.LastArticleSynchronisationOn;
-            }
-        }
-
-        #endregion InvoiceLineRuleFilter
-
-        private void SetArticleOverviewSecurity(List<ArticleOverview> articleOverviewResult)
+        private void SetInvoiceRuleFilterOverviewSecurity(List<InvoiceRuleFilterOverview> invoiceRuleFilterOverview)
         {
             if (CurrentAuthenticatedFLSUser == null)
             {
                 Logger.Warn(string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
-                foreach (var overview in articleOverviewResult)
+                foreach (var overview in invoiceRuleFilterOverview)
                 {
                     overview.CanUpdateRecord = false;
                     overview.CanDeleteRecord = false;
@@ -177,7 +193,7 @@ namespace FLS.Server.Service.Invoicing
                 return;
             }
 
-            foreach (var overview in articleOverviewResult)
+            foreach (var overview in invoiceRuleFilterOverview)
             {
                 if (IsCurrentUserInRoleClubAdministrator)
                 {
@@ -192,7 +208,7 @@ namespace FLS.Server.Service.Invoicing
             }
         }
 
-        private void SetInvoiceRuleFilterDetailsSecurity(BaseInvoiceRuleFilterDetails details)
+        private void SetInvoiceRuleFilterDetailsSecurity(InvoiceRuleFilterDetails details)
         {
             if (details == null)
             {

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+﻿using System.ComponentModel.DataAnnotations;
+using FLS.Data.WebApi.Invoicing;
 
-namespace FLS.Data.WebApi.Invoicing.RuleFilters
+namespace FLS.Server.Service.Invoicing.RuleFilters
 {
-    public class InvoiceLineRuleFilterDetails : InvoiceRuleFilterDetails
+    public class InvoiceLineRuleFilter : InvoiceRuleFilter
     {
-        public InvoiceLineRuleFilterDetails()
+        public InvoiceLineRuleFilter()
         {
             MinFlightTimeMatchingValue = 0;
             MaxFlightTimeMatchingValue = int.MaxValue;

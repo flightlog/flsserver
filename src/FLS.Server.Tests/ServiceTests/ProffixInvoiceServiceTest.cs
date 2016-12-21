@@ -240,7 +240,7 @@ namespace FLS.Server.Tests.ServiceTests
                     else
                     {
                         Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.FlightInvoiceLineItems.Count,
-                            $"Number of invoice lines is not as expected. Created invoice lines are: {GetInvoiceLinesForLogging(flightInvoiceDetails)}");
+                            $"Number of invoice lines is not as expected. Created invoice lines are:{Environment.NewLine}{GetInvoiceLinesForLogging(flightInvoiceDetails)}{Environment.NewLine}Expected lines are:{Environment.NewLine}{GetInvoiceLinesForLogging(expectedInvoiceLines)}");
                     }
                 }
 
@@ -294,6 +294,18 @@ namespace FLS.Server.Tests.ServiceTests
             foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
             {
                 sb.Append($"{line.InvoiceLinePosition} {line.ERPArticleNumber} {line.InvoiceLineText} {line.Quantity} {line.UnitType}");
+                sb.Append(Environment.NewLine);
+            }
+
+            return sb.ToString();
+        }
+
+        private string GetInvoiceLinesForLogging(Dictionary<int, ExpectedFlightInvoiceLineItem> expectedFlightInvoiceLines)
+        {
+            var sb = new StringBuilder();
+            foreach (var lineNr in expectedFlightInvoiceLines.Keys)
+            {
+                sb.Append($"{expectedFlightInvoiceLines[lineNr].InvoiceLinePosition} {expectedFlightInvoiceLines[lineNr].ERPArticleNumber} {expectedFlightInvoiceLines[lineNr].InvoiceLineText} {expectedFlightInvoiceLines[lineNr].Quantity} {expectedFlightInvoiceLines[lineNr].UnitType}");
                 sb.Append(Environment.NewLine);
             }
 

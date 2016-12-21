@@ -17,10 +17,10 @@ namespace FLS.Server.Service.Invoicing.Rules
 
         protected Flight Flight { get { return _flight; } }
         protected InvoiceRuleFilterDetails InvoiceRuleFilter { get { return _invoiceRuleFilter; } }
-        internal BaseInvoiceRule(Flight flight, InvoiceRuleFilterDetails invoiceRuleFilter)
+        internal BaseInvoiceRule(Flight flight, InvoiceRuleFilterDetails invoiceRuleFilterDetails)
         {
             _flight = flight;
-            _invoiceRuleFilter = invoiceRuleFilter;
+            _invoiceRuleFilter = invoiceRuleFilterDetails;
             Logger = LogManager.GetLogger("FLS.Server.Service.Invoicing.Rules.BaseInvoiceRule");
         }
 

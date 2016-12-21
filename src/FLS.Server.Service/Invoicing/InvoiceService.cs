@@ -23,9 +23,11 @@ namespace FLS.Server.Service.Invoicing
         private readonly IExtensionService _extensionService;
         private readonly IAircraftService _aircraftService;
         private readonly ILocationService _locationService;
+        private readonly InvoiceRuleService _invoiceRuleService;
 
         public InvoiceService(DataAccessService dataAccessService, IdentityService identityService, InvoiceMappingFactory invoiceMappingFactory, IPersonService personService, 
-            IExtensionService extensionService, IAircraftService aircraftService, ILocationService locationService)
+            IExtensionService extensionService, IAircraftService aircraftService, ILocationService locationService,
+            InvoiceRuleService invoiceRuleService)
             : base(dataAccessService, identityService)
         {
             _dataAccessService = dataAccessService;
@@ -34,6 +36,7 @@ namespace FLS.Server.Service.Invoicing
             _extensionService = extensionService;
             _aircraftService = aircraftService;
             _locationService = locationService;
+            _invoiceRuleService = invoiceRuleService;
         }
 
 
@@ -240,8 +243,22 @@ namespace FLS.Server.Service.Invoicing
 
         private List<FlightInvoiceDetails> GetFlightInvoiceDetails(List<Flight> flightsToInvoice, Guid clubId)
         {
-            List<InvoiceRuleFilterDetails> invoiceRuleFilters = _invoiceMappingFactory.CreateInvoiceRuleFilters();
-            
+            var invoiceRuleFilters = _invoiceRuleService.GetInvoiceRuleFilterDetailsListByClubId(clubId);
+
+            if (invoiceRuleFilters == null || invoiceRuleFilters.Count == 0)
+            {
+                invoiceRuleFilters = _invoiceMappingFactory.CreateInvoiceRuleFilters();
+
+                foreach (var invoiceRuleFilterDetails in invoiceRuleFilters)
+                {
+                    _invoiceRuleService.InsertInvoiceRuleFilterDetails(invoiceRuleFilterDetails, clubId);
+                }
+
+                invoiceRuleFilters = _invoiceRuleService.GetInvoiceRuleFilterDetailsListByClubId(clubId);
+            }
+
+            invoiceRuleFilters.NotNull("invoiceRuleFilters");
+
             //validate rules and re-map keys to IDs
             foreach (var filter in invoiceRuleFilters)
             {

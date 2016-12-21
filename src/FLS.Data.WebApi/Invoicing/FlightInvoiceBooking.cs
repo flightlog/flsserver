@@ -10,6 +10,10 @@ namespace FLS.Data.WebApi.Invoicing
         [GuidNotEmptyValidator]
         public Guid FlightId { get; set; }
 
+        //[Required]
+        //[GuidNotEmptyValidator]
+        //public Guid PersonId { get; set; }
+
         /// <summary>
         /// If <code>IncludesTowFlightId</code> has value (Guid), the invoice details includes the line items for the tow flight and hold their flightId for reference.
         /// </summary>

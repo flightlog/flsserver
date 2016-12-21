@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using FLS.Data.WebApi.Invoicing;
 
-namespace FLS.Data.WebApi.Invoicing.RuleFilters
+namespace FLS.Server.Service.Invoicing.RuleFilters
 {
     public class InvoiceRecipientRuleFilterDetails : InvoiceRuleFilterDetails
     {
