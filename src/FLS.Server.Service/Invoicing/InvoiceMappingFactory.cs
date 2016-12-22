@@ -1119,6 +1119,7 @@ namespace FLS.Server.Service.Invoicing
                 SortIndicator = 1,
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
+                ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
                 UseRuleForAllLdgLocationsExceptListed = false,
                 MatchedLdgLocations = new List<string> { "LSZK" },
                 NoLandingTaxForGlider = true,
@@ -1132,62 +1133,8 @@ namespace FLS.Server.Service.Invoicing
             };
             noLandingTax.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             invoiceRuleFilters.Add(noLandingTax);
-
-            //TODO: May duplicate rule with rule above, test it.
-            noLandingTax = new InvoiceRuleFilterDetails()
-            {
-                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.NoLandingTaxInvoiceRuleFilter,
-                IsRuleForGliderFlights = false,
-                IsRuleForTowingFlights = true,
-                IsRuleForSelfstartedGliderFlights = false,
-                UseRuleForAllAircraftsExceptListed = true,
-                AircraftImmatriculations = new List<string>(),
-                SortIndicator = 1,
-                UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
-                ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
-                UseRuleForAllLdgLocationsExceptListed = false,
-                MatchedLdgLocations = new List<string> { "LSZK" },
-                NoLandingTaxForGlider = true,
-                NoLandingTaxForTowingAircraft = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true,
-                UseRuleForAllFlightCrewTypesExceptListed = true,
-                IsActive = true,
-                IsRuleForMotorFlights = true,
-                UseRuleForAllStartLocationsExceptListed = true
-            };
-            noLandingTax.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceRuleFilters.Add(noLandingTax);
-
+            
             var landingTaxRule = new InvoiceRuleFilterDetails
-            {
-                InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.LandingTaxInvoiceRuleFilter,
-                UseRuleForAllAircraftsExceptListed = true,
-                AircraftImmatriculations = new List<string>(),
-                SortIndicator = 1,
-                ArticleTarget = new ArticleTargetDetails
-                {
-                    ArticleNumber = "",
-                    InvoiceLineText = "Keine Landetaxen Speck für Schulung"
-                },
-                UseRuleForAllFlightTypesExceptListed = false,
-                MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
-                UseRuleForAllLdgLocationsExceptListed = false,
-                MatchedLdgLocations = new List<string> { "LSZK" },
-                IsRuleForSelfstartedGliderFlights = true,
-                IsRuleForGliderFlights = true,
-                IsRuleForTowingFlights = true,
-                IsRuleForMotorFlights = true,
-                UseRuleForAllClubMemberNumbersExceptListed = true,
-                UseRuleForAllFlightCrewTypesExceptListed = true,
-                IsActive = true,
-                UseRuleForAllStartLocationsExceptListed = true,
-                RuleFilterName = "Keine Landetaxen Speck für Schulung"
-            };
-            landingTaxRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
-            invoiceRuleFilters.Add(landingTaxRule);
-
-            landingTaxRule = new InvoiceRuleFilterDetails
             {
                 InvoiceRuleFilterTypeId = (int)InvoiceRuleFilterType.LandingTaxInvoiceRuleFilter,
                 UseRuleForAllAircraftsExceptListed = true,

@@ -2,12 +2,12 @@
 {
     public enum InvoiceRuleFilterType
     {
-        RecipientInvoiceRuleFilter = 1,
-        AircraftInvoiceRuleFilter = 2,
-        AdditionalFuelFeeInvoiceRuleFilter = 3,
-        InstructorFeeInvoiceRuleFilter = 4,
-        LandingTaxInvoiceRuleFilter = 5,
-        NoLandingTaxInvoiceRuleFilter = 6,
-        VsfFeeInvoiceRuleFilter = 7
+        RecipientInvoiceRuleFilter = 10,
+        NoLandingTaxInvoiceRuleFilter = 20,
+        AircraftInvoiceRuleFilter = 30,
+        InstructorFeeInvoiceRuleFilter = 40,
+        AdditionalFuelFeeInvoiceRuleFilter = 50,
+        LandingTaxInvoiceRuleFilter = 60,
+        VsfFeeInvoiceRuleFilter = 70
     };
 }

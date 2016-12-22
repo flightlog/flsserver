@@ -28,6 +28,7 @@ namespace FLS.Server.Service.Invoicing.Rules
         {
             ICondition condition = null;
 
+            //TODO: condition matches even all "IsRuleFor..." are set to 0
             if (InvoiceRuleFilter.IsRuleForSelfstartedGliderFlights)
             {
                 condition = new Equals<int>(_flight.StartTypeId.GetValueOrDefault(), (int)AircraftStartType.SelfStart);
