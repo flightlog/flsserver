@@ -58,7 +58,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
                 var flightInvoiceBooking = new FlightInvoiceBooking
                     {
                         FlightId = flightInvoiceDetails.FlightId,
-                        IncludesTowFlightId = flightInvoiceDetails.IncludesTowFlightId,
                         InvoiceNumber = "2015-01-001",
                         InvoiceDate = DateTime.Now
                     };

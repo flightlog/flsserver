@@ -131,11 +131,11 @@ namespace FLS.Server.Service.Invoicing
                 flight.InvoicedOn = flightInvoiceBooking.InvoiceDate;
                 flight.InvoiceNumber = flightInvoiceBooking.InvoiceNumber;
 
-                if (flightInvoiceBooking.IncludesTowFlightId.HasValue)
+                if (flight.TowFlightId.HasValue)
                 {
                     var towFlight =
                         context.Flights.FirstOrDefault(
-                            f => f.FlightId == flightInvoiceBooking.IncludesTowFlightId.Value);
+                            f => f.FlightId == flight.TowFlightId.Value);
 
                     if (towFlight == null) return false;
 

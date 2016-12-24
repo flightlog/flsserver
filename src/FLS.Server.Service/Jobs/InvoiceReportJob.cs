@@ -91,7 +91,6 @@ namespace FLS.Server.Service.Jobs
                             var flightInvoiceBooking = new FlightInvoiceBooking
                             {
                                 FlightId = invoice.FlightId,
-                                IncludesTowFlightId = invoice.IncludesTowFlightId,
                                 InvoiceDate = DateTime.Now.Date,
                                 InvoiceNumber = $"Workflow {DateTime.Now.ToShortTimeString()}"
                             };

@@ -254,7 +254,6 @@ namespace FLS.Server.Tests.ServiceTests
                 var flightInvoiceBooking = new FlightInvoiceBooking
                 {
                     FlightId = flightInvoiceDetails.FlightId,
-                    IncludesTowFlightId = flightInvoiceDetails.IncludesTowFlightId,
                     InvoiceDate = DateTime.Now.Date,
                     InvoiceNumber = $"ProffixInvoiceTest {DateTime.Now.ToShortTimeString()}"
                 };
@@ -266,23 +265,22 @@ namespace FLS.Server.Tests.ServiceTests
                 var invoicedFlight = FlightService.GetFlight(flightInvoiceDetails.FlightId);
                 Assert.AreEqual((int)FLS.Data.WebApi.Flight.FlightProcessState.Invoiced, invoicedFlight.ProcessStateId, $"Flight process state of master flight {invoicedFlight} was not set correctly after invoicing");
 
-                if (flightInvoiceDetails.IncludesTowFlightId.HasValue)
+                if (invoicedFlight.TowFlightId.HasValue)
                 {
-                    Assert.IsTrue(invoicedFlight.TowFlightId.HasValue,
-                        "The invoiced flight has no tow flight. Something happend wrong in invoicing process");
                     Assert.IsNotNull(invoicedFlight.TowFlight, "The invoiced flight has no loaded tow flight reference.");
-                    Assert.AreEqual(flightInvoiceDetails.IncludesTowFlightId, invoicedFlight.TowFlightId,
-                        "TowFlightId between invoice details and invoiced glider flight is not equals.");
+
                     Assert.AreEqual((int) FLS.Data.WebApi.Flight.FlightProcessState.Invoiced,
                         invoicedFlight.TowFlight.ProcessStateId,
                         $"Flight state of tow flight {invoicedFlight.TowFlight} was not set correctly after invoicing");
-                }
-                else
-                {
-                    Assert.IsFalse(invoicedFlight.TowFlightId.HasValue,
-                        "The invoiced flight has a tow flight, but the invoice engine means not. Something happend wrong in invoicing process");
-                }
 
+                    Assert.AreEqual(flightInvoiceBooking.InvoiceNumber,
+                        invoicedFlight.TowFlight.InvoiceNumber,
+                        $"Invoice number of tow flight {invoicedFlight.TowFlight} was not set correctly after invoicing");
+
+                    Assert.AreEqual(flightInvoiceBooking.InvoiceDate,
+                        invoicedFlight.TowFlight.InvoicedOn,
+                        $"Invoice date of tow flight {invoicedFlight.TowFlight} was not set correctly after invoicing");
+                }
             }
 
             #endregion invoice check
