@@ -4,11 +4,9 @@ namespace FLS.Data.WebApi.Invoicing
 {
     public class FlightInvoiceLineItem
     {
-        public Guid FlightId { get; set; }
-
         public int InvoiceLinePosition { get; set; }
 
-        public string ERPArticleNumber { get; set; }
+        public string ArticleNumber { get; set; }
 
         public string InvoiceLineText { get; set; }
 
@@ -20,7 +18,7 @@ namespace FLS.Data.WebApi.Invoicing
 
         public override string ToString()
         {
-            return $"{InvoiceLinePosition} {ERPArticleNumber} {InvoiceLineText} {Quantity} {UnitType} {AdditionalInfo}";
+            return $"{InvoiceLinePosition} {ArticleNumber} {InvoiceLineText} {Quantity} {UnitType} {AdditionalInfo}";
         }
     }
 }

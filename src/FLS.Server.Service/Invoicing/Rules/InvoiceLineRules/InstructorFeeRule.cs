@@ -17,9 +17,8 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
         public override RuleBasedFlightInvoiceDetails Apply(RuleBasedFlightInvoiceDetails flightInvoiceDetails)
         {
             var line = new FlightInvoiceLineItem();
-            line.FlightId = Flight.FlightId;
             line.InvoiceLinePosition = flightInvoiceDetails.FlightInvoiceLineItems.Count + 1;
-            line.ERPArticleNumber = InvoiceRuleFilter.ArticleTarget.ArticleNumber;
+            line.ArticleNumber = InvoiceRuleFilter.ArticleTarget.ArticleNumber;
             line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
 
             line.InvoiceLineText = $"Fluglehrer-Honorar {Flight.InstructorDisplayName}";

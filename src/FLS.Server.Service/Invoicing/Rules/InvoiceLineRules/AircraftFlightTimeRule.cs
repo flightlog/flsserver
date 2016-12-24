@@ -40,10 +40,10 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
                 flightInvoiceDetails.ActiveFlightTime = InvoiceRuleFilter.MinFlightTimeMatchingValue;
             }
 
-            if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ERPArticleNumber == InvoiceRuleFilter.ArticleTarget.ArticleNumber))
+            if (flightInvoiceDetails.FlightInvoiceLineItems.Any(x => x.ArticleNumber == InvoiceRuleFilter.ArticleTarget.ArticleNumber))
             {
                 //this case should never happened. It happens when multiple rules matches
-                var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ERPArticleNumber == InvoiceRuleFilter.ArticleTarget.ArticleNumber);
+                var line = flightInvoiceDetails.FlightInvoiceLineItems.First(x => x.ArticleNumber == InvoiceRuleFilter.ArticleTarget.ArticleNumber);
                 line.Quantity += lineQuantity;
 
                 Logger.Warn($"Invoice line already exists. Added quantity to the existing line! New line values: {line}");
@@ -51,9 +51,8 @@ namespace FLS.Server.Service.Invoicing.Rules.InvoiceLineRules
             else
             {
                 var line = new FlightInvoiceLineItem();
-                line.FlightId = Flight.FlightId;
                 line.InvoiceLinePosition = flightInvoiceDetails.FlightInvoiceLineItems.Count + 1;
-                line.ERPArticleNumber = InvoiceRuleFilter.ArticleTarget.ArticleNumber;
+                line.ArticleNumber = InvoiceRuleFilter.ArticleTarget.ArticleNumber;
                 line.Quantity = lineQuantity;
                 line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
 

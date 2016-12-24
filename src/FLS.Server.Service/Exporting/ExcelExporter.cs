@@ -90,7 +90,7 @@ namespace FLS.Server.Service.Exporting
                                     worksheet.Cells[rowNumber, 5].Value = flightInvoiceDetails.AircraftImmatriculation;
                                     worksheet.Cells[rowNumber, 6].Value = flightInvoiceDetails.FlightInvoiceInfo;
                                     worksheet.Cells[rowNumber, 7].Value = flightInvoiceLineItem.InvoiceLinePosition;
-                                    worksheet.Cells[rowNumber, 8].Value = flightInvoiceLineItem.ERPArticleNumber;
+                                    worksheet.Cells[rowNumber, 8].Value = flightInvoiceLineItem.ArticleNumber;
                                     worksheet.Cells[rowNumber, 9].Value = flightInvoiceLineItem.InvoiceLineText;
                                     worksheet.Cells[rowNumber, 10].Value = flightInvoiceLineItem.Quantity;
                                     worksheet.Cells[rowNumber, 11].Value = flightInvoiceLineItem.UnitType;

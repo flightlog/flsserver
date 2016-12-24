@@ -246,7 +246,7 @@ namespace FLS.Server.Tests.ServiceTests
 
                 foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
                 {
-                    Assert.AreEqual(expectedInvoiceLines[line.InvoiceLinePosition].ERPArticleNumber, line.ERPArticleNumber, $"Article number in invoice line {line.InvoiceLinePosition} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.InvoiceLinePosition].ERPArticleNumber, line.ArticleNumber, $"Article number in invoice line {line.InvoiceLinePosition} is wrong.");
                     Assert.AreEqual(expectedInvoiceLines[line.InvoiceLinePosition].Quantity, line.Quantity, $"Quantity in invoice line {line.InvoiceLinePosition} is wrong.");
                     Assert.AreEqual(expectedInvoiceLines[line.InvoiceLinePosition].UnitType, line.UnitType, $"Unittype in invoice line {line.InvoiceLinePosition} is wrong.");
                 }
@@ -291,7 +291,7 @@ namespace FLS.Server.Tests.ServiceTests
             var sb = new StringBuilder();
             foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
             {
-                sb.Append($"{line.InvoiceLinePosition} {line.ERPArticleNumber} {line.InvoiceLineText} {line.Quantity} {line.UnitType}");
+                sb.Append($"{line.InvoiceLinePosition} {line.ArticleNumber} {line.InvoiceLineText} {line.Quantity} {line.UnitType}");
                 sb.Append(Environment.NewLine);
             }
 
