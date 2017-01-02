@@ -41,7 +41,8 @@ namespace FLS.Server.Service.Accounting
 
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var accountingRuleFilters = context.AccountingRuleFilters.Where(q => q.ClubId == CurrentAuthenticatedFLSUserClubId);
+                var accountingRuleFilters = context.AccountingRuleFilters.Include("AccountingRuleFilterType")
+                    .Where(q => q.ClubId == CurrentAuthenticatedFLSUserClubId);
 
                 foreach (var accountingRuleFilter in accountingRuleFilters)
                 {

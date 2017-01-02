@@ -23,5 +23,11 @@ namespace FLS.Data.WebApi.Accounting
         public string CountryName { get; set; }
 
         public string PersonClubMemberNumber { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Lastname} {Firstname}{Environment.NewLine}{AddressLine1}{Environment.NewLine}{AddressLine2}{Environment.NewLine}{ZipCode} {City}";
+        }
+
     }
 }

@@ -30,19 +30,22 @@ namespace FLS.Server.Data.Mapping
             }
 
             overview.AccountingRuleFilterId = entity.AccountingRuleFilterId;
-            overview.AccountingRuleFilterTypeId = entity.AccountingRuleFilterTypeId;
+
+            if (entity.AccountingRuleFilterType != null)
+            {
+                overview.AccountingRuleFilterTypeName = entity.AccountingRuleFilterType.AccountingRuleFilterTypeName;
+            }
+
             overview.RuleFilterName = entity.RuleFilterName;
             overview.Description = entity.Description;
             overview.IsActive = entity.IsActive;
             overview.SortIndicator = entity.SortIndicator;
-            //TODO: Serialize JSON lists to properties
 
             switch (entity.AccountingRuleFilterTypeId)
             {
                 case (int)AccountingRuleFilterType.RecipientAccountingRuleFilter:
-
-                    var recipientDetails = new RecipientDetails();
-                    //TODO: Serialize recipient target property
+                    var recipient = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientTarget);
+                    overview.Target = recipient.ToString();
                     break;
                 case (int)AccountingRuleFilterType.AircraftAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
@@ -50,7 +53,8 @@ namespace FLS.Server.Data.Mapping
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
-                    //TODO: Serialize article target property
+                     var articleTarget = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
+                    overview.Target = $"{articleTarget.ArticleNumber} ({articleTarget.DeliveryLineText})";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("AccountingRuleFilterTypeId");

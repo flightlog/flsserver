@@ -754,7 +754,7 @@ namespace FLS.Server.Data.Mapping
             if (entity.RecipientDetails != null)
             {
                 var recipient = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientDetails);
-                overview.Recipient = $"{recipient.Lastname} {recipient.Firstname}{Environment.NewLine}{recipient.AddressLine1}{Environment.NewLine}{recipient.AddressLine2}{Environment.NewLine}{recipient.ZipCode} {recipient.City}";
+                overview.Recipient = recipient.ToString();
             }
 
             overview.NumberOfDeliveryItems = entity.DeliveryItems.Count;
