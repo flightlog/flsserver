@@ -195,7 +195,7 @@
     <Compile Include="WebApiControllerTests\WorkflowsControllerTest.cs" />
     <Compile Include="WebApiControllerTests\UsersControllerTest.cs" />
     <Compile Include="WebApiControllerTests\PersonsControllerTest.cs" />
-    <Compile Include="WebApiControllerTests\InvoicesControllerTest.cs" />
+    <Compile Include="WebApiControllerTests\DeliveriesControllerTest.cs" />
     <Compile Include="WebApiControllerTests\StartTypesControllerTest.cs" />
     <Compile Include="WebApiControllerTests\LocationTypesControllerTest.cs" />
     <Compile Include="WebApiControllerTests\FlightStatesControllerTest.cs" />

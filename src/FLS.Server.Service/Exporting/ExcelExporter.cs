@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using FLS.Common.Extensions;
-using FLS.Data.WebApi.Invoicing;
+using FLS.Data.WebApi.Accounting;
 using FLS.Data.WebApi.Person;
 using FLS.Data.WebApi.Reporting;
 using Ionic.Zip;
@@ -22,17 +22,17 @@ namespace FLS.Server.Service.Exporting
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static byte[] ExportInvoicesToExcel(List<FlightInvoiceDetails> flightInvoiceDetailList)
+        public static byte[] ExportInvoicesToExcel(List<DeliveryDetails> flightInvoiceDetailList)
         {
             var list = new List<string>();
-            foreach (var flightInvoiceDetails in flightInvoiceDetailList)
+            foreach (var ruleBasedDelivery in flightInvoiceDetailList)
             {
                 //check if there are some line items in the invoice, if not, check next invoice
-                if (flightInvoiceDetails.FlightInvoiceLineItems.Any() == false) continue;
+                if (ruleBasedDelivery.DeliveryItems.Any() == false) continue;
 
-                if (list.Contains(flightInvoiceDetails.RecipientDetails.RecipientName) == false)
+                if (list.Contains(ruleBasedDelivery.RecipientDetails.RecipientName) == false)
                 {
-                    list.Add(flightInvoiceDetails.RecipientDetails.RecipientName);
+                    list.Add(ruleBasedDelivery.RecipientDetails.RecipientName);
                 }
             }
 
@@ -69,32 +69,32 @@ namespace FLS.Server.Service.Exporting
                             int flightNr = 1;
                             int rowNumber = 2;
 
-                            foreach (var flightInvoiceDetails in flightInvoiceDetailList)
+                            foreach (var ruleBasedDelivery in flightInvoiceDetailList)
                             {
-                                if (flightInvoiceDetails.RecipientDetails.RecipientName != recipient)
+                                if (ruleBasedDelivery.RecipientDetails.RecipientName != recipient)
                                 {
                                     continue;
                                 }
 
                                 int flightBeginRowNumber = rowNumber;
 
-                                foreach (var flightInvoiceLineItem in flightInvoiceDetails.FlightInvoiceLineItems)
+                                foreach (var flightInvoiceLineItem in ruleBasedDelivery.DeliveryItems)
                                 {
                                     worksheet.Cells[rowNumber, 1].Value = flightNr;
                                     worksheet.Cells[rowNumber, 2].Value =
-                                        flightInvoiceDetails.RecipientDetails.RecipientName;
+                                        ruleBasedDelivery.RecipientDetails.RecipientName;
                                     worksheet.Cells[rowNumber, 3].Value =
-                                        flightInvoiceDetails.RecipientDetails.PersonClubMemberNumber;
-                                    worksheet.Cells[rowNumber, 4].Value = flightInvoiceDetails.FlightDate;
+                                        ruleBasedDelivery.RecipientDetails.PersonClubMemberNumber;
+                                    worksheet.Cells[rowNumber, 4].Value = ruleBasedDelivery.FlightInformation.FlightDate;
                                     //.ToShortDateString();
-                                    worksheet.Cells[rowNumber, 5].Value = flightInvoiceDetails.AircraftImmatriculation;
-                                    worksheet.Cells[rowNumber, 6].Value = flightInvoiceDetails.FlightInvoiceInfo;
-                                    worksheet.Cells[rowNumber, 7].Value = flightInvoiceLineItem.InvoiceLinePosition;
+                                    worksheet.Cells[rowNumber, 5].Value = ruleBasedDelivery.FlightInformation.AircraftImmatriculation;
+                                    worksheet.Cells[rowNumber, 6].Value = ruleBasedDelivery.DeliveryInformation;
+                                    worksheet.Cells[rowNumber, 7].Value = flightInvoiceLineItem.Position;
                                     worksheet.Cells[rowNumber, 8].Value = flightInvoiceLineItem.ArticleNumber;
-                                    worksheet.Cells[rowNumber, 9].Value = flightInvoiceLineItem.InvoiceLineText;
+                                    worksheet.Cells[rowNumber, 9].Value = flightInvoiceLineItem.ItemText;
                                     worksheet.Cells[rowNumber, 10].Value = flightInvoiceLineItem.Quantity;
                                     worksheet.Cells[rowNumber, 11].Value = flightInvoiceLineItem.UnitType;
-                                    worksheet.Cells[rowNumber, 12].Value = flightInvoiceDetails.AdditionalInfo;
+                                    worksheet.Cells[rowNumber, 12].Value = ruleBasedDelivery.AdditionalInformation;
                                     rowNumber++;
                                 }
 

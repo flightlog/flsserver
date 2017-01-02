@@ -79,8 +79,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbEntities\AircraftOperatingCounter.cs" />
-    <Compile Include="DbEntities\InvoiceRuleFilterType.cs" />
-    <Compile Include="DbEntities\InvoiceRuleFilter.cs" />
+    <Compile Include="DbEntities\DeliveryItem.cs" />
+    <Compile Include="DbEntities\Delivery.cs" />
+    <Compile Include="DbEntities\AccountingRuleFilterType.cs" />
+    <Compile Include="DbEntities\AccountingRuleFilter.cs" />
     <Compile Include="DbEntities\CounterUnitType.cs" />
     <Compile Include="DbEntities\EmailTemplate.cs" />
     <Compile Include="DbEntities\Aircraft.cs" />
@@ -115,7 +117,7 @@
     <Compile Include="Exceptions\DeleteEntityException.cs" />
     <Compile Include="Extensions\EntityTrackerExtensions.cs" />
     <Compile Include="Extensions\CostCenterUnitTypeExtensions.cs" />
-    <Compile Include="Mapping\InvoiceRuleFilterMappingExtensions.cs" />
+    <Compile Include="Mapping\AccountingRuleFilterMappingExtensions.cs" />
     <Compile Include="Mapping\CounterUnitExtensions.cs" />
     <Compile Include="Mapping\AircraftOperatingCounterMappingExtensions.cs" />
     <Compile Include="Mapping\MappingExtensions.cs" />

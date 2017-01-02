@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accounting\DeliveryOverview.cs" />
     <Compile Include="AircraftReservation\AircraftReservationDetails.cs" />
     <Compile Include="AircraftReservation\AircraftReservationOverview.cs" />
     <Compile Include="AircraftReservation\AircraftReservationTypeListItem.cs" />
@@ -112,17 +113,15 @@
     <Compile Include="Globalization\LanguageListItem.cs" />
     <Compile Include="Globalization\Translation.cs" />
     <Compile Include="IFLSMetaData.cs" />
-    <Compile Include="Invoicing\FlightDeliveryBooking.cs" />
-    <Compile Include="Invoicing\RecipientDetails.cs" />
-    <Compile Include="Invoicing\InvoicePaymentDetails.cs" />
-    <Compile Include="Invoicing\DeliveryDetails.cs" />
-    <Compile Include="Invoicing\FlightInvoiceBooking.cs" />
-    <Compile Include="Invoicing\FlightInvoiceDetails.cs" />
-    <Compile Include="Invoicing\FlightInvoiceLineItem.cs" />
-    <Compile Include="Invoicing\ArticleTargetDetails.cs" />
-    <Compile Include="Invoicing\RuleFilters\InvoiceRuleFilterOverview.cs" />
-    <Compile Include="Invoicing\RuleFilters\InvoiceRuleFilterDetails.cs" />
-    <Compile Include="Invoicing\RuleFilters\InvoiceRuleFilterType.cs" />
+    <Compile Include="Accounting\DeliveryBooking.cs" />
+    <Compile Include="Accounting\FlightInformation.cs" />
+    <Compile Include="Accounting\RecipientDetails.cs" />
+    <Compile Include="Accounting\DeliveryDetails.cs" />
+    <Compile Include="Accounting\DeliveryItemDetails.cs" />
+    <Compile Include="Accounting\ArticleTargetDetails.cs" />
+    <Compile Include="Accounting\RuleFilters\AccountingRuleFilterOverview.cs" />
+    <Compile Include="Accounting\RuleFilters\AccountingRuleFilterDetails.cs" />
+    <Compile Include="Accounting\RuleFilters\AccountingRuleFilterType.cs" />
     <Compile Include="IOwnershipMetaData.cs" />
     <Compile Include="Licensing\LicenseTrainingStateResult.cs" />
     <Compile Include="Licensing\LicenseTrainingStateRequest.cs" />

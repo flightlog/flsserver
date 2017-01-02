@@ -15,6 +15,7 @@ namespace FLS.Server.Data.DbEntities
         {
             FlightCrews = new HashSet<FlightCrew>();
             TowedFlights = new HashSet<Flight>();
+            Deliveries = new HashSet<Delivery>();
             ValidationStateId = (int) FLS.Data.WebApi.Flight.FlightValidationState.NotValidated;
             ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.NotProcessed;
         }
@@ -97,25 +98,13 @@ namespace FLS.Server.Data.DbEntities
 
         [Column("FlightCostBalanceType")]
         public int? FlightCostBalanceTypeId { get; set; }
-
+        
         [Column(TypeName = "datetime2")]
-        public DateTime? InvoicedOn { get; set; }
-
-        [StringLength(100)]
-        public string InvoiceNumber { get; set; }
-
-        [Column(TypeName = "datetime2")]
-        public DateTime? DeliveredOn { get; set; }
-
-        [StringLength(100)]
-        public string DeliveryNumber { get; set; }
-
+        public DateTime? DeliveryCreatedOn { get; set; }
+        
         [Column(TypeName = "datetime2")]
         public DateTime? ValidatedOn { get; set; }
-
-        [Column(TypeName = "datetime2")]
-        public DateTime? InvoicePaidOn { get; set; }
-
+        
         public int? NrOfPassengers { get; set; }
 
         [Column(TypeName = "datetime2")]
@@ -157,6 +146,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual ICollection<FlightCrew> FlightCrews { get; set; }
 
         public virtual ICollection<Flight> TowedFlights { get; set; }
+
+        public virtual ICollection<Delivery> Deliveries { get; set; }
 
         public virtual Flight TowFlight { get; set; }
 

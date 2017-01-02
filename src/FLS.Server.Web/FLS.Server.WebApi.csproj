@@ -301,7 +301,7 @@
     <Compile Include="Controllers\LengthUnitTypesController.cs" />
     <Compile Include="Controllers\ElevationUnitTypesController.cs" />
     <Compile Include="Controllers\WorkflowsController.cs" />
-    <Compile Include="Controllers\InvoicesController.cs" />
+    <Compile Include="Controllers\DeliveriesController.cs" />
     <Compile Include="Controllers\LanguageTranslationsController.cs" />
     <Compile Include="Controllers\LanguagesController.cs" />
     <Compile Include="Controllers\PlanningDaysController.cs" />

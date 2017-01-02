@@ -71,7 +71,7 @@ INSERT INTO Clubs
            ,[DeletedOn]
            ,[DeletedByUserId]
            ,[RecordState]
-           ,[OwnerId], [OwnershipType], [ClubStateId], [SendInvoiceReportsTo])
+           ,[OwnerId], [OwnershipType], [ClubStateId], [SendDeliveryMailExportTo])
      VALUES
            (@insertClubId
            ,'Test-Club'

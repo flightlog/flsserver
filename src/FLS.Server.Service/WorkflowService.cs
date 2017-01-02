@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Mail;
+using FLS.Server.Service.Accounting;
 using FLS.Server.Service.Email;
-using FLS.Server.Service.Invoicing;
 using FLS.Server.Service.Jobs;
 using NLog;
 
@@ -17,14 +17,14 @@ namespace FLS.Server.Service
         private readonly AircraftService _aircraftService;
         private readonly PlanningDayEmailBuildService _planningDayEmailService;
         private readonly PersonService _personService;
-        private readonly InvoiceService _invoiceService;
+        private readonly DeliveryService _invoiceService;
         private readonly UserService _userService;
         private readonly EmailBuildService _emailService;
         private readonly FlightInformationEmailBuildService _flightInformationEmailService;
         private readonly LicenceExpireEmailBuildService _licenceExpireEmailBuildService;
         private readonly DataAccessService _dataAccessService;
         private readonly IdentityService _identityService;
-        private readonly InvoiceEmailBuildService _invoiceEmailBuildService;
+        private readonly AccountingEmailBuildService _invoiceEmailBuildService;
 
         public WorkflowService(FlightService flightService, 
             ClubService clubService, 
@@ -34,14 +34,14 @@ namespace FLS.Server.Service
             AircraftReportEmailBuildService aircraftReportEmailService,
             PlanningDayEmailBuildService planningDayEmailService,
             PersonService personService,
-            InvoiceService invoiceService, 
+            DeliveryService invoiceService, 
             UserService userService, 
             EmailBuildService emailService,
             FlightInformationEmailBuildService flightInformationEmailService,
             LicenceExpireEmailBuildService licenceExpireEmailBuildService,
             DataAccessService dataAccessService, 
             IdentityService identityService,
-            InvoiceEmailBuildService invoiceEmailBuildService)
+            AccountingEmailBuildService invoiceEmailBuildService)
             : base(dataAccessService, identityService)
         {
             _flightService = flightService;
@@ -157,7 +157,7 @@ namespace FLS.Server.Service
         public void ExecuteInvoiceReportJob()
         {
             Logger.Info("Execute invoice report job.");
-            var job = new InvoiceReportJob(_invoiceService, _userService, _identityService, _clubService, _invoiceEmailBuildService);
+            var job = new DeliveryMailExportJob(_invoiceService, _userService, _identityService, _clubService, _invoiceEmailBuildService);
             job.Execute(null);
         }
     }

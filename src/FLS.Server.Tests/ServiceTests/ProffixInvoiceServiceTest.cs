@@ -12,7 +12,7 @@ using FLS.Server.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Practices.Unity;
 using FLS.Common.Extensions;
-using FLS.Data.WebApi.Invoicing;
+using FLS.Data.WebApi.Accounting;
 
 namespace FLS.Server.Tests.ServiceTests
 {
@@ -184,7 +184,7 @@ namespace FLS.Server.Tests.ServiceTests
             var fromDate = new DateTime(DateTime.Now.AddDays(-10).Year, 1, 1);
             var toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
-            var invoices = InvoiceService.GetFlightInvoiceDetails(fromDate, toDate,
+            var invoices = DeliveryService.CreateDeliveriesFromFlights(fromDate, toDate,
                 IdentityService.CurrentAuthenticatedFLSUser.ClubId);
 
             var expectInvoice = TestContext.DataRow["ExpectInvoice"].ToString();
@@ -226,72 +226,64 @@ namespace FLS.Server.Tests.ServiceTests
             foreach (var flightInvoiceDetails in invoices)
             {
                 Assert.AreEqual(expectedInvoiceRecipientName, flightInvoiceDetails.RecipientDetails.RecipientName, "Wrong recipient person in invoice");
-                Assert.AreEqual(expectedInvoiceFlightInfo, flightInvoiceDetails.FlightInvoiceInfo, "Wrong invoice information in invoice");
-                Assert.AreEqual(expectedInvoiceAdditionalInfo, flightInvoiceDetails.AdditionalInfo, "Wrong additional information in invoice");
-                Assert.AreEqual(expectedInvoiceAircraftImmatriculation, flightInvoiceDetails.AircraftImmatriculation, "Wrong aircraft immatriculation reported in invoice");
+                Assert.AreEqual(expectedInvoiceFlightInfo, flightInvoiceDetails.DeliveryInformation, "Wrong invoice information in invoice");
+                Assert.AreEqual(expectedInvoiceAdditionalInfo, flightInvoiceDetails.AdditionalInformation, "Wrong additional information in invoice");
+                Assert.AreEqual(expectedInvoiceAircraftImmatriculation, flightInvoiceDetails.FlightInformation.AircraftImmatriculation, "Wrong aircraft immatriculation reported in invoice");
 
-                if (expectedInvoiceLineItemsCount != flightInvoiceDetails.FlightInvoiceLineItems.Count)
+                if (expectedInvoiceLineItemsCount != flightInvoiceDetails.DeliveryItems.Count)
                 {
-                    if (flightInvoiceDetails.FlightInvoiceLineItems.Count == 0)
+                    if (flightInvoiceDetails.DeliveryItems.Count == 0)
                     {
-                        Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.FlightInvoiceLineItems.Count,
+                        Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.DeliveryItems.Count,
                         $"Number of invoice lines is not as expected. No invoice lines created.");
                     }
                     else
                     {
-                        Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.FlightInvoiceLineItems.Count,
+                        Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.DeliveryItems.Count,
                             $"Number of invoice lines is not as expected. Created invoice lines are:{Environment.NewLine}{GetInvoiceLinesForLogging(flightInvoiceDetails)}{Environment.NewLine}Expected lines are:{Environment.NewLine}{GetInvoiceLinesForLogging(expectedInvoiceLines)}");
                     }
                 }
 
-                foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
+                foreach (var line in flightInvoiceDetails.DeliveryItems.OrderBy(o => o.Position))
                 {
-                    Assert.AreEqual(expectedInvoiceLines[line.InvoiceLinePosition].ERPArticleNumber, line.ArticleNumber, $"Article number in invoice line {line.InvoiceLinePosition} is wrong.");
-                    Assert.AreEqual(expectedInvoiceLines[line.InvoiceLinePosition].Quantity, line.Quantity, $"Quantity in invoice line {line.InvoiceLinePosition} is wrong.");
-                    Assert.AreEqual(expectedInvoiceLines[line.InvoiceLinePosition].UnitType, line.UnitType, $"Unittype in invoice line {line.InvoiceLinePosition} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.Position].ERPArticleNumber, line.ArticleNumber, $"Article number in invoice line {line.Position} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.Position].Quantity, line.Quantity, $"Quantity in invoice line {line.Position} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.Position].UnitType, line.UnitType, $"Unittype in invoice line {line.Position} is wrong.");
                 }
 
-                var flightInvoiceBooking = new FlightInvoiceBooking
+                var deliveryBooking = new DeliveryBooking()
                 {
-                    FlightId = flightInvoiceDetails.FlightId,
-                    InvoiceDate = DateTime.Now.Date,
-                    InvoiceNumber = $"ProffixInvoiceTest {DateTime.Now.ToShortTimeString()}"
+                    DeliveryId = flightInvoiceDetails.DeliveryId,
+                    DeliveryDateTime = DateTime.Now.Date,
+                    DeliveryNumber = $"ProffixInvoiceTest {DateTime.Now.ToShortTimeString()}"
                 };
 
-                var isFlightInvoiced = InvoiceService.SetFlightAsInvoiced(flightInvoiceBooking);
-                Assert.IsTrue(isFlightInvoiced, $"Flight with Id: {flightInvoiceDetails.FlightId} could not be set as invoiced");
+                var isFlightInvoiced = DeliveryService.SetDeliveryAsDelivered(deliveryBooking);
+                Assert.IsTrue(isFlightInvoiced, $"Flight with Id: {flightInvoiceDetails.FlightInformation.FlightId} could not be set as invoiced");
 
                 //check flight state
-                var invoicedFlight = FlightService.GetFlight(flightInvoiceDetails.FlightId);
-                Assert.AreEqual((int)FLS.Data.WebApi.Flight.FlightProcessState.Invoiced, invoicedFlight.ProcessStateId, $"Flight process state of master flight {invoicedFlight} was not set correctly after invoicing");
+                var invoicedFlight = FlightService.GetFlight(flightInvoiceDetails.FlightInformation.FlightId);
+                Assert.AreEqual((int)FLS.Data.WebApi.Flight.FlightProcessState.Delivered, invoicedFlight.ProcessStateId, $"Flight process state of master flight {invoicedFlight} was not set correctly after delivering.");
 
                 if (invoicedFlight.TowFlightId.HasValue)
                 {
                     Assert.IsNotNull(invoicedFlight.TowFlight, "The invoiced flight has no loaded tow flight reference.");
 
-                    Assert.AreEqual((int) FLS.Data.WebApi.Flight.FlightProcessState.Invoiced,
+                    Assert.AreEqual((int) FLS.Data.WebApi.Flight.FlightProcessState.Delivered,
                         invoicedFlight.TowFlight.ProcessStateId,
-                        $"Flight state of tow flight {invoicedFlight.TowFlight} was not set correctly after invoicing");
-
-                    Assert.AreEqual(flightInvoiceBooking.InvoiceNumber,
-                        invoicedFlight.TowFlight.InvoiceNumber,
-                        $"Invoice number of tow flight {invoicedFlight.TowFlight} was not set correctly after invoicing");
-
-                    Assert.AreEqual(flightInvoiceBooking.InvoiceDate,
-                        invoicedFlight.TowFlight.InvoicedOn,
-                        $"Invoice date of tow flight {invoicedFlight.TowFlight} was not set correctly after invoicing");
+                        $"Flight state of tow flight {invoicedFlight.TowFlight} was not set correctly after delivering");
                 }
             }
 
             #endregion invoice check
         }
 
-        private string GetInvoiceLinesForLogging(FlightInvoiceDetails flightInvoiceDetails)
+        private string GetInvoiceLinesForLogging(DeliveryDetails flightInvoiceDetails)
         {
             var sb = new StringBuilder();
-            foreach (var line in flightInvoiceDetails.FlightInvoiceLineItems.OrderBy(o => o.InvoiceLinePosition))
+            foreach (var line in flightInvoiceDetails.DeliveryItems.OrderBy(o => o.Position))
             {
-                sb.Append($"{line.InvoiceLinePosition} {line.ArticleNumber} {line.InvoiceLineText} {line.Quantity} {line.UnitType}");
+                sb.Append($"{line.Position} {line.ArticleNumber} {line.ItemText} {line.Quantity} {line.UnitType}");
                 sb.Append(Environment.NewLine);
             }
 

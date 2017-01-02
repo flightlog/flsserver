@@ -24,32 +24,32 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TABLE [dbo].[InvoiceRuleFilterTypes](
-	[InvoiceRuleFilterTypeId] [int] NOT NULL,
-	[InvoiceRuleFilterTypeName] [nvarchar](100) NOT NULL,
-	[InvoiceRuleFilterTypeKeyName] [nvarchar](50) NOT NULL,
+CREATE TABLE [dbo].[AccountingRuleFilterTypes](
+	[AccountingRuleFilterTypeId] [int] NOT NULL,
+	[AccountingRuleFilterTypeName] [nvarchar](100) NOT NULL,
+	[AccountingRuleFilterTypeKeyName] [nvarchar](50) NOT NULL,
 	[CreatedOn] [datetime2](7) NOT NULL,
 	[ModifiedOn] [datetime2](7) NULL,
- CONSTRAINT [PK_InvoiceRuleFilterTypes] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_AccountingRuleFilterTypes] PRIMARY KEY CLUSTERED 
 (
-	[InvoiceRuleFilterTypeId] ASC
+	[AccountingRuleFilterTypeId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
- CONSTRAINT [UNIQUE_InvoiceRuleFilterTypes_InvoiceRuleFilterTypeKeyName] UNIQUE NONCLUSTERED 
+ CONSTRAINT [UNIQUE_AccountingRuleFilterTypes_AccountingRuleFilterTypeKeyName] UNIQUE NONCLUSTERED 
 (
-	[InvoiceRuleFilterTypeKeyName] ASC
+	[AccountingRuleFilterTypeKeyName] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
 GO
 
 
-CREATE TABLE [dbo].[InvoiceRuleFilters](
-	[InvoiceRuleFilterId] [uniqueidentifier] NOT NULL,
+CREATE TABLE [dbo].[AccountingRuleFilters](
+	[AccountingRuleFilterId] [uniqueidentifier] NOT NULL,
 	[ClubId] [uniqueidentifier] NOT NULL,
-	[InvoiceRuleFilterTypeId] [int] NOT NULL,
+	[AccountingRuleFilterTypeId] [int] NOT NULL,
 	[RuleFilterName] [nvarchar](250) NULL,
 	[Description] [nvarchar](max) NULL,
-	[IsActive] [bit] NOT NULL CONSTRAINT [DF__InvoiceRuleFilters__IsActive]  DEFAULT ((1)),
+	[IsActive] [bit] NOT NULL CONSTRAINT [DF__AccountingRuleFilters__IsActive]  DEFAULT ((1)),
 	[SortIndicator] [int] NULL,
 	[ArticleTarget] [nvarchar](max) NULL,
 	[RecipientTarget] [nvarchar](max) NULL,
@@ -58,7 +58,7 @@ CREATE TABLE [dbo].[InvoiceRuleFilters](
 	[IsRuleForTowingFlights] [bit] NOT NULL,
 	[IsRuleForMotorFlights] [bit] NOT NULL,
 	[UseRuleForAllAircraftsExceptListed] [bit] NOT NULL,
-	[AircraftImmatriculations] [nvarchar](max) NULL,
+	[MatchedAircraftImmatriculations] [nvarchar](max) NULL,
 	[UseRuleForAllFlightTypesExceptListed] [bit] NOT NULL,
 	[MatchedFlightTypeCodes] [nvarchar](max) NULL,
 	[ExtendMatchingFlightTypeCodesToGliderAndTowFlight] [bit] NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE [dbo].[InvoiceRuleFilters](
 	[MatchedClubMemberNumbers] [nvarchar](max) NULL,
 	[UseRuleForAllFlightCrewTypesExceptListed] [bit] NOT NULL,
 	[MatchedFlightCrewTypes] [nvarchar](max) NULL,
-	[IsInvoicedToClubInternal] [bit] NULL,
+	[IsChargedToClubInternal] [bit] NULL,
 	[MinFlightTimeMatchingValue] [int] NULL,
 	[MaxFlightTimeMatchingValue] [int] NULL,
 	[IncludeThresholdText] [bit] NULL,
@@ -89,25 +89,25 @@ CREATE TABLE [dbo].[InvoiceRuleFilters](
 	[OwnerId] [uniqueidentifier] NOT NULL,
 	[OwnershipType] [int] NOT NULL,
 	[IsDeleted] [bit] NOT NULL
- CONSTRAINT [PK_InvoiceRuleFilters] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_AccountingRuleFilters] PRIMARY KEY CLUSTERED 
 (
-	[InvoiceRuleFilterId] ASC
+	[AccountingRuleFilterId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 GO
 
-ALTER TABLE [dbo].[InvoiceRuleFilters]  WITH CHECK ADD  CONSTRAINT [FK_InvoiceRuleFilters_Club] FOREIGN KEY([ClubId])
+ALTER TABLE [dbo].[AccountingRuleFilters]  WITH CHECK ADD  CONSTRAINT [FK_AccountingRuleFilters_Club] FOREIGN KEY([ClubId])
 REFERENCES [dbo].[Clubs] ([ClubId])
 GO
 
-ALTER TABLE [dbo].[InvoiceRuleFilters] CHECK CONSTRAINT [FK_InvoiceRuleFilters_Club]
+ALTER TABLE [dbo].[AccountingRuleFilters] CHECK CONSTRAINT [FK_AccountingRuleFilters_Club]
 GO
 
-ALTER TABLE [dbo].[InvoiceRuleFilters]  WITH CHECK ADD  CONSTRAINT [FK_InvoiceRuleFilters_InvoiceRuleFilterTypes] FOREIGN KEY([InvoiceRuleFilterTypeId])
-REFERENCES [dbo].[InvoiceRuleFilterTypes] ([InvoiceRuleFilterTypeId])
+ALTER TABLE [dbo].[AccountingRuleFilters]  WITH CHECK ADD  CONSTRAINT [FK_AccountingRuleFilters_AccountingRuleFilterTypes] FOREIGN KEY([AccountingRuleFilterTypeId])
+REFERENCES [dbo].[AccountingRuleFilterTypes] ([AccountingRuleFilterTypeId])
 GO
 
-ALTER TABLE [dbo].[InvoiceRuleFilters] CHECK CONSTRAINT [FK_InvoiceRuleFilters_InvoiceRuleFilterTypes]
+ALTER TABLE [dbo].[AccountingRuleFilters] CHECK CONSTRAINT [FK_AccountingRuleFilters_AccountingRuleFilterTypes]
 GO
 
