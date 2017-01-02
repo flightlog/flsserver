@@ -44,6 +44,12 @@ DefaultStartType = null,
 DefaultTowFlightTypeId = null,
 HomebaseId = null
 
+DELETE FROM DeliveryItems
+DELETE FROM Deliveries
+
+DELETE FROM AccountingRuleFilters
+DELETE FROM AccountingRuleFilterTypes
+
 DELETE FROM Articles
 DELETE FROM EmailTemplates
 
@@ -688,14 +694,7 @@ INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateN
 
 INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (40, N'Gesperrt', N'Flug kann nicht mehr editiert werden und ist für Verrechnung bereit', SYSUTCDATETIME())
 
-INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (45, N'Geliefert', N'Flug wurde mit Lieferschein abgebucht und kann nicht mehr editiert werden', SYSUTCDATETIME())
-
-INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (50, N'Verrechnet', N'Flug wurde verrechnet und kann nicht mehr editiert werden', SYSUTCDATETIME())
-
-INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (55, N'Teilweise bezahlt', N'Flug wurde verrechnet und einen Teil der Rechnung(en) wurde bezahlt.', SYSUTCDATETIME())
-
-INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (60, N'Bezahlt', N'Flug wurde bezahlt.', SYSUTCDATETIME())
-
+INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (50, N'Lieferschein erstellt', N'Flug-Lieferschein / Rechnung wurde erstellt und Flug kann nicht mehr editiert werden', SYSUTCDATETIME())
 
 
 PRINT 'INSERT SystemClub'
@@ -886,5 +885,51 @@ INSERT INTO [dbo].[AuditLogEventTypes]
      VALUES
            (4, 'Undeleted')
 
+
+PRINT 'INSERT AccountingRuleFilterTypes'
+--SET IDENTITY_INSERT [AccountingRuleFilterTypes] ON
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (10,'Recipient invoice rule filter', 'RecipientInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (20,'No landing tax invoice rule filter', 'NoLandingTaxInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (30,'Aircraft invoice rule filter', 'AircraftInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (40,'Instructor fee invoice rule filter', 'InstructorFeeInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (50,'Additional fuel fee invoice rule filter', 'AdditionalFuelFeeInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (60,'Landing tax invoice rule filter', 'LandingTaxInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (70,'VSF fee invoice rule filter', 'VsfFeeInvoiceRuleFilter', SYSDATETIME(), null)
+
+--SET IDENTITY_INSERT [AccountingRuleFilterTypes] OFF
 
 PRINT 'INSERT Static Data Finished'

@@ -66,6 +66,13 @@ namespace FLS.Server.Service
         #endregion AircraftType
 
         #region Aircraft
+        public List<AircraftListItem> GetAircraftListItems()
+        {
+            var aircrafts = GetAircrafts();
+
+            return PrepareAircraftListItems(aircrafts);
+        }
+
         public List<AircraftListItem> GetGliderAircraftListItems()
         {
             var aircrafts = GetGliderAircrafts();

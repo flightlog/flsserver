@@ -10,5 +10,14 @@ namespace FLS.Common.Extensions
         {
             return items.Select(item => condition(item) ? replaceAction(item) : item);
         }
+
+        public static TResult? MaxOrDefault<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
+            where TResult : struct
+        {
+            return source
+                .Select(selector)
+                .Cast<TResult?>()
+                .Max();
+        }
     }
 }

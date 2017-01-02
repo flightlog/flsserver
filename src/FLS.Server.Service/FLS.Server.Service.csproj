@@ -74,8 +74,8 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -112,8 +112,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accounting\RuleBasedAccountingRuleFilterDetails.cs" />
     <Compile Include="Email\AddressListEmailBuildService.cs" />
-    <Compile Include="Email\InvoiceEmailBuildService.cs" />
+    <Compile Include="Email\AccountingEmailBuildService.cs" />
     <Compile Include="Email\Model\LostPasswordResetModel.cs" />
     <Compile Include="Email\Model\EmailConfirmationModel.cs" />
     <Compile Include="Email\Model\LicenceExpireModel.cs" />
@@ -124,25 +125,27 @@
     <Compile Include="Identity\IdentityUserStoreService.cs" />
     <Compile Include="DashboardService.cs" />
     <Compile Include="ArticleService.cs" />
-    <Compile Include="Invoicing\InvoiceMappingFactory.cs" />
-    <Compile Include="Invoicing\RuleBasedFlightInvoiceDetails.cs" />
-    <Compile Include="Invoicing\InvoiceService.cs" />
-    <Compile Include="Invoicing\RuleEngines\InvoiceDetailsRulesEngine.cs" />
-    <Compile Include="Invoicing\RuleEngines\InvoiceLineRulesEngine.cs" />
-    <Compile Include="Invoicing\RuleEngines\RecipientRulesEngine.cs" />
-    <Compile Include="Invoicing\Rules\AdditionalInfoRule.cs" />
-    <Compile Include="Invoicing\Rules\BaseRule.cs" />
-    <Compile Include="Invoicing\Rules\FlightCostPaidByPersonRule.cs" />
-    <Compile Include="Invoicing\Rules\FlightCostPaidByPilotRule.cs" />
-    <Compile Include="Invoicing\Rules\FlightInvoiceInfoRule.cs" />
-    <Compile Include="Invoicing\Rules\InvoiceRecipientRule.cs" />
-    <Compile Include="Invoicing\Rules\InvoiceLineRules\InstructorFeeRule.cs" />
-    <Compile Include="Invoicing\Rules\InvoiceLineRules\AdditionalFuelFeeRule.cs" />
-    <Compile Include="Invoicing\Rules\InvoiceLineRules\AircraftFlightTimeRule.cs" />
-    <Compile Include="Invoicing\Rules\BaseInvoiceRule.cs" />
-    <Compile Include="Invoicing\Rules\InvoiceLineRules\LandingTaxRule.cs" />
-    <Compile Include="Invoicing\Rules\InvoiceLineRules\NoLandingTaxRule.cs" />
-    <Compile Include="Invoicing\Rules\InvoiceLineRules\VsfFeeRule.cs" />
+    <Compile Include="Accounting\AccountingRuleFilterFactory.cs" />
+    <Compile Include="Accounting\AccountingRuleService.cs" />
+    <Compile Include="Accounting\RuleBasedDeliveryDetails.cs" />
+    <Compile Include="Accounting\DeliveryService.cs" />
+    <Compile Include="Accounting\RuleEngines\DeliveryDetailsRulesEngine.cs" />
+    <Compile Include="Accounting\RuleEngines\DeliveryItemRulesEngine.cs" />
+    <Compile Include="Accounting\RuleEngines\RecipientRulesEngine.cs" />
+    <Compile Include="Accounting\Rules\AdditionalInfoRule.cs" />
+    <Compile Include="Jobs\DeliveryCreationJob.cs" />
+    <Compile Include="RulesEngine\BaseRule.cs" />
+    <Compile Include="Accounting\Rules\FlightCostPaidByPersonRule.cs" />
+    <Compile Include="Accounting\Rules\FlightCostPaidByPilotRule.cs" />
+    <Compile Include="Accounting\Rules\FlightDeliveryInfoRule.cs" />
+    <Compile Include="Accounting\Rules\DeliveryRecipientRule.cs" />
+    <Compile Include="Accounting\Rules\ItemRules\InstructorFeeRule.cs" />
+    <Compile Include="Accounting\Rules\ItemRules\AdditionalFuelFeeRule.cs" />
+    <Compile Include="Accounting\Rules\ItemRules\AircraftFlightTimeRule.cs" />
+    <Compile Include="Accounting\Rules\BaseAccountingRule.cs" />
+    <Compile Include="Accounting\Rules\ItemRules\LandingTaxRule.cs" />
+    <Compile Include="Accounting\Rules\ItemRules\NoLandingTaxRule.cs" />
+    <Compile Include="Accounting\Rules\ItemRules\VsfFeeRule.cs" />
     <Compile Include="Jobs\LicenceNotificationJob.cs" />
     <Compile Include="ExtensionService.cs" />
     <Compile Include="RulesEngine\Conditions\And.cs" />
@@ -170,7 +173,7 @@
     <Compile Include="Email\Model\MappingExtensions.cs" />
     <Compile Include="Email\Model\ReservationInfoRow.cs" />
     <Compile Include="Email\Model\PlanningDayInfoModel.cs" />
-    <Compile Include="Jobs\InvoiceReportJob.cs" />
+    <Compile Include="Jobs\DeliveryMailExportJob.cs" />
     <Compile Include="Jobs\DailyFlightValidationJob.cs" />
     <Compile Include="Jobs\PlanningDayNotificationJob.cs" />
     <Compile Include="LicenseService.cs" />

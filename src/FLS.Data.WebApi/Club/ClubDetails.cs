@@ -43,7 +43,7 @@ namespace FLS.Data.WebApi.Club
         
         public Nullable<Guid> HomebaseId { get; set; }
 
-        public Nullable<DateTime> LastInvoiceExportOn { get; set; }
+        public Nullable<DateTime> LastDeliverySynchronisationOn { get; set; }
 
         public Nullable<DateTime> LastPersonSynchronisationOn { get; set; }
 
@@ -65,7 +65,11 @@ namespace FLS.Data.WebApi.Club
 
         public string SendPlanningDayInfoMailTo { get; set; }
 
-        public string SendInvoiceReportsTo { get; set; }
+        public string SendDeliveryMailExportTo { get; set; }
+
+        public bool RunDeliveryCreationJob { get; set; }
+
+        public bool RunDeliveryMailExportJob { get; set; }
 
         public override Guid Id
         {

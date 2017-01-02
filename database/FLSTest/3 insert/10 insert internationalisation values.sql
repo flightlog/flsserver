@@ -1,7 +1,7 @@
 USE [FLSTest]
 GO
 
-DELETE FROM [dbo].[LanguageTranslations];
+DELETE FROM [dbo].[LanguageTranslations]
 GO
 
 DECLARE @insertClubId as uniqueidentifier
@@ -732,7 +732,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'SEND_PLANNING_DAY_INFO_MAIL_TO', 'Planungstage Informationen an (Email)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
-     VALUES (NEWID(), 'SEND_INVOICE_REPORTS_TO', 'Rechnungs-Informationen an (Email)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'SEND_DELIVERY_MAIL_EXPORT_TO', 'Rechnungs-Informationen an (Email)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'TECHNICAL_DATA', 'Technische Daten', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)

@@ -23,7 +23,9 @@ namespace FLS.Server.Data.DbEntities
             Users = new HashSet<User>();
             AircraftReservations = new HashSet<AircraftReservation>();
             EmailTemplates = new HashSet<EmailTemplate>();
+            AccountingRuleFilters = new HashSet<AccountingRuleFilter>();
             Articles = new HashSet<Article>();
+            Deliveries = new HashSet<Delivery>();
         }
 
         public Guid ClubId { get; set; }
@@ -77,13 +79,17 @@ namespace FLS.Server.Data.DbEntities
 
         public string SendPlanningDayInfoMailTo { get; set; }
 
-        public string SendInvoiceReportsTo { get; set; }
+        public string SendDeliveryMailExportTo { get; set; }
+
+        public bool RunDeliveryCreationJob { get; set; }
+
+        public bool RunDeliveryMailExportJob { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime? LastPersonSynchronisationOn { get; set; }
 
         [Column(TypeName = "datetime2")]
-        public DateTime? LastInvoiceExportOn { get; set; }
+        public DateTime? LastDeliverySynchronisationOn { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime? LastArticleSynchronisationOn { get; set; }
@@ -149,7 +155,12 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual ICollection<EmailTemplate> EmailTemplates { get; set; }
 
+        public virtual ICollection<AccountingRuleFilter> AccountingRuleFilters { get; set; }
+
         public virtual ICollection<Article> Articles { get; set; }
+
+        public virtual ICollection<Delivery> Deliveries { get; set; }
+
 
         public virtual ClubState ClubState { get; set; }
 

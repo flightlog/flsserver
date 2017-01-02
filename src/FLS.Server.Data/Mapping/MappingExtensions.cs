@@ -7,6 +7,7 @@ using FLS.Common.Extensions;
 using FLS.Common.Utils;
 using FLS.Common.Validators;
 using FLS.Data.WebApi;
+using FLS.Data.WebApi.Accounting;
 using FLS.Data.WebApi.Aircraft;
 using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.Articles;
@@ -23,6 +24,7 @@ using FLS.Data.WebApi.System;
 using FLS.Data.WebApi.User;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
+using Newtonsoft.Json;
 using NLog;
 using TrackerEnabledDbContext.Common.Models;
 
@@ -629,11 +631,14 @@ namespace FLS.Server.Data.Mapping
             details.ZipCode = entity.Zip;
             details.SendAircraftStatisticReportTo = entity.SendAircraftStatisticReportTo;
             details.SendPlanningDayInfoMailTo = entity.SendPlanningDayInfoMailTo;
-            details.SendInvoiceReportsTo = entity.SendInvoiceReportsTo;
+            details.SendDeliveryMailExportTo = entity.SendDeliveryMailExportTo;
 
             details.LastArticleSynchronisationOn = entity.LastArticleSynchronisationOn.SetAsUtc();
-            details.LastInvoiceExportOn = entity.LastInvoiceExportOn.SetAsUtc();
+            details.LastDeliverySynchronisationOn = entity.LastDeliverySynchronisationOn.SetAsUtc();
             details.LastPersonSynchronisationOn = entity.LastPersonSynchronisationOn.SetAsUtc();
+
+            details.RunDeliveryMailExportJob = entity.RunDeliveryMailExportJob;
+            details.RunDeliveryCreationJob = entity.RunDeliveryCreationJob;
 
             return details;
         }
@@ -667,7 +672,10 @@ namespace FLS.Server.Data.Mapping
 
             entity.SendAircraftStatisticReportTo = details.SendAircraftStatisticReportTo;
             entity.SendPlanningDayInfoMailTo = details.SendPlanningDayInfoMailTo;
-            entity.SendInvoiceReportsTo = details.SendInvoiceReportsTo;
+            entity.SendDeliveryMailExportTo = details.SendDeliveryMailExportTo;
+
+            entity.RunDeliveryMailExportJob = details.RunDeliveryMailExportJob;
+            entity.RunDeliveryCreationJob = details.RunDeliveryCreationJob;
 
             entity.ClubStateId = (int) FLS.Data.WebApi.Club.ClubState.Active;
 
@@ -711,6 +719,181 @@ namespace FLS.Server.Data.Mapping
         }
 
         #endregion Country
+
+        #region Delivery
+
+        public static DeliveryOverview ToDeliveryOverview(this Delivery entity, DeliveryOverview overview = null)
+        {
+            entity.ArgumentNotNull("entity");
+
+            if (overview == null)
+            {
+                overview = new DeliveryOverview();
+            }
+
+            overview.DeliveryId = entity.DeliveryId;
+
+            if (entity.Flight == null)
+            {
+                overview.FlightInformation = null;
+            }
+            else
+            {
+                overview.FlightInformation.AircraftImmatriculation = entity.Flight.AircraftImmatriculation;
+                overview.FlightInformation.FlightDate = entity.Flight.StartDateTime.Value;
+                overview.FlightInformation.FlightId = entity.Flight.FlightId;
+
+                if (entity.Flight.FlightType != null)
+                {
+                    overview.FlightInformation.FlightTypeName = entity.Flight.FlightType.FlightTypeName;
+                }
+            }
+
+            overview.DeliveryInformation = entity.DeliveryInformation;
+
+            if (entity.RecipientDetails != null)
+            {
+                var recipient = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientDetails);
+                overview.Recipient = $"{recipient.Lastname} {recipient.Firstname}{Environment.NewLine}{recipient.AddressLine1}{Environment.NewLine}{recipient.AddressLine2}{Environment.NewLine}{recipient.ZipCode} {recipient.City}";
+            }
+
+            overview.NumberOfDeliveryItems = entity.DeliveryItems.Count;
+
+            return overview;
+        }
+
+        public static DeliveryDetails ToDeliveryDetails(this Delivery entity, DeliveryDetails details = null)
+        {
+            entity.ArgumentNotNull("entity");
+
+            if (details == null)
+            {
+                details = new DeliveryDetails();
+            }
+
+            details.DeliveryId = entity.DeliveryId;
+
+            if (entity.Flight == null)
+            {
+                details.FlightInformation = null;
+            }
+            else
+            {
+                details.FlightInformation.AircraftImmatriculation = entity.Flight.AircraftImmatriculation;
+                details.FlightInformation.FlightDate = entity.Flight.StartDateTime.Value;
+                details.FlightInformation.FlightId = entity.Flight.FlightId;
+
+                if (entity.Flight.FlightType != null)
+                {
+                    details.FlightInformation.FlightTypeName = entity.Flight.FlightType.FlightTypeName;
+                }
+            }
+
+            details.DeliveryInformation = entity.DeliveryInformation;
+            details.AdditionalInformation = entity.AdditionalInformation;
+            details.DeliveredOn = entity.DeliveredOn;
+            details.DeliveryNumber = entity.DeliveryNumber;
+            details.IsFurtherProcessed = entity.IsFurtherProcessed;
+
+            if (entity.RecipientDetails == null)
+            {
+                details.RecipientDetails = null;
+            }
+            else
+            {
+                var recipient = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientDetails);
+                details.RecipientDetails = recipient;
+            }
+            
+            details.DeliveryItems = new List<DeliveryItemDetails>();
+
+            foreach (var item in entity.DeliveryItems)
+            {
+                var deliveryItem = new DeliveryItemDetails()
+                {
+                    DeliveryItemId = item.DeliveryItemId,
+                    Position = item.Position,
+                    ArticleNumber = item.ArticleNumber,
+                    ItemText = item.ItemText,
+                    Quantity = item.Quantity,
+                    UnitType = item.UnitType,
+                    DiscountInPercent = item.DiscountInPercent,
+                    AdditionalInformation = item.AdditionalInformation
+                };
+
+                details.DeliveryItems.Add(deliveryItem);
+            }
+
+            return details;
+        }
+
+        public static Delivery ToDelivery(this DeliveryDetails details, Guid clubId, Delivery entity = null, bool overwriteDeliveryId = false)
+        {
+            details.ArgumentNotNull("details");
+
+            if (entity == null)
+            {
+                entity = new Delivery();
+            }
+
+            if (overwriteDeliveryId) entity.DeliveryId = details.DeliveryId;
+            entity.DeliveryId = details.DeliveryId;
+            entity.ClubId = clubId;
+
+            if (details.FlightInformation != null)
+            {
+                entity.FlightId = details.FlightInformation.FlightId;
+            }
+
+            entity.DeliveryInformation = details.DeliveryInformation;
+            entity.AdditionalInformation = details.AdditionalInformation;
+            entity.DeliveredOn = details.DeliveredOn;
+            entity.DeliveryNumber = details.DeliveryNumber;
+            entity.IsFurtherProcessed = details.IsFurtherProcessed;
+
+            if (details.RecipientDetails == null)
+            {
+                entity.RecipientDetails = null;
+            }
+            else
+            {
+                //Serialize property to JSON 
+                entity.RecipientDetails = JsonConvert.SerializeObject(details.RecipientDetails);
+            }
+            
+            //check for new delivery items
+            foreach (var item in details.DeliveryItems)
+            {
+                if (item.DeliveryItemId == Guid.Empty || entity.DeliveryItems.Any(i => i.DeliveryItemId == item.DeliveryItemId) == false)
+                {
+                    //item not found, add it
+                    var deliveryItem = new DeliveryItem()
+                    {
+                        Position = item.Position,
+                        ArticleNumber = item.ArticleNumber,
+                        ItemText = item.ItemText,
+                        Quantity = item.Quantity,
+                        UnitType = item.UnitType,
+                        DiscountInPercent = item.DiscountInPercent,
+                        AdditionalInformation = item.AdditionalInformation
+                    };
+                    entity.DeliveryItems.Add(deliveryItem);
+                }
+            }
+
+            //remove all items which are not found in current delivery
+            foreach (var item in entity.DeliveryItems.ToList())
+            {
+                if (details.DeliveryItems.Any(i => i.DeliveryItemId == item.DeliveryItemId) == false)
+                {
+                    entity.DeliveryItems.Remove(item);
+                }
+            }
+
+            return entity;
+        }
+
+        #endregion Delivery
 
         #region ElevationUnitType
 
@@ -1731,7 +1914,7 @@ namespace FLS.Server.Data.Mapping
                 //it is a passenger flight and we have some passengers
                 foreach (var passengerPersonId in details.PassengerPersonIds)
                 {
-                    if (entity.Passengers.Any(flightPassenger => flightPassenger.PersonId == passengerPersonId) == false)
+                    if (passengerPersonId == Guid.Empty || entity.Passengers.Any(flightPassenger => flightPassenger.PersonId == passengerPersonId) == false)
                     {
                         //passenger not found, add it
                         var flightCrew = new FlightCrew();

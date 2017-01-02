@@ -39,8 +39,10 @@ namespace FLS.Server.Data
             Configuration.ProxyCreationEnabled = false;
             Configuration.LazyLoadingEnabled = false;
         }
-        
+
         #region DbSet Entity Properties
+        public virtual DbSet<AccountingRuleFilter> AccountingRuleFilters { get; set; }
+        public virtual DbSet<AccountingRuleFilterType> AccountingRuleFilterTypes { get; set; }
         public virtual DbSet<AircraftAircraftState> AircraftAircraftStates { get; set; }
         public virtual DbSet<Aircraft> Aircrafts { get; set; }
         public virtual DbSet<AircraftOperatingCounter> AircraftOperatingCounters { get; set; }
@@ -54,6 +56,8 @@ namespace FLS.Server.Data
         public virtual DbSet<ClubState> ClubStates { get; set; }
         public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<CounterUnitType> CounterUnitTypes { get; set; }
+        public virtual DbSet<Delivery> Deliveries { get; set; }
+        public virtual DbSet<DeliveryItem> DeliveryItems { get; set; }
         public virtual DbSet<ElevationUnitType> ElevationUnitTypes { get; set; }
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
         public virtual DbSet<ExtensionValue> ExtensionValues { get; set; }
@@ -98,6 +102,7 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Aircraft>().Ignore(t => t.HasEngine);
             modelBuilder.Entity<Aircraft>().Ignore(t => t.CurrentAircraftOperatingCounter);
 
+            modelBuilder.Entity<AccountingRuleFilter>().Ignore(t => t.Id);
             modelBuilder.Entity<AircraftAircraftState>().Ignore(t => t.Id);
             modelBuilder.Entity<AircraftReservation>().Ignore(t => t.Id);
             modelBuilder.Entity<AircraftOperatingCounter>().Ignore(t => t.Id);
@@ -106,6 +111,8 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Club>().Ignore(t => t.Id);
             modelBuilder.Entity<Club>().Ignore(t => t.HomebaseName);
             modelBuilder.Entity<Country>().Ignore(t => t.Id);
+            modelBuilder.Entity<Delivery>().Ignore(t => t.Id);
+            modelBuilder.Entity<DeliveryItem>().Ignore(t => t.Id);
             modelBuilder.Entity<EmailTemplate>().Ignore(t => t.Id);
             modelBuilder.Entity<ExtensionValue>().Ignore(t => t.Id);
             modelBuilder.Entity<Flight>().Ignore(t => t.Id);
@@ -162,6 +169,10 @@ namespace FLS.Server.Data
                 .Property(e => e.NoiseLevel)
                 .HasPrecision(18, 1);
 
+            modelBuilder.Entity<DeliveryItem>()
+                .Property(e => e.Quantity)
+                .HasPrecision(18, 3);
+
             modelBuilder.Entity<Aircraft>()
                 .HasMany(e => e.Flights)
                 .WithRequired(e => e.Aircraft)
@@ -206,8 +217,20 @@ namespace FLS.Server.Data
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Club>()
+                .HasMany(e => e.Deliveries)
+                .WithRequired(e => e.Club)
+                .HasForeignKey(e => e.ClubId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Club>()
                 .HasMany(e => e.EmailTemplates)
                 .WithOptional(e => e.Club)
+                .HasForeignKey(e => e.ClubId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Club>()
+                .HasMany(e => e.AccountingRuleFilters)
+                .WithRequired(e => e.Club)
                 .HasForeignKey(e => e.ClubId)
                 .WillCascadeOnDelete(false);
 
@@ -290,6 +313,12 @@ namespace FLS.Server.Data
                 .WithOptional(e => e.EngineOperatingCounterUnitType)
                 .HasForeignKey(e => e.EngineOperatingCounterUnitTypeId);
 
+            modelBuilder.Entity<Delivery>()
+                .HasMany(e => e.DeliveryItems)
+                .WithRequired(e => e.Delivery)
+                .HasForeignKey(e => e.DeliveryId)
+                .WillCascadeOnDelete(true);
+
             modelBuilder.Entity<ElevationUnitType>()
                 .HasMany(e => e.Locations)
                 .WithOptional(e => e.ElevationUnitType)
@@ -303,6 +332,11 @@ namespace FLS.Server.Data
             modelBuilder.Entity<ExtensionType>()
                 .HasMany(e => e.Extensions)
                 .WithRequired(e => e.ExtensionType)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<AccountingRuleFilterType>()
+                .HasMany(e => e.AccountingRuleFilters)
+                .WithRequired(e => e.AccountingRuleFilterType)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<FlightCostBalanceType>()
@@ -321,7 +355,13 @@ namespace FLS.Server.Data
                 .WithRequired(e => e.Flight)
                 .HasForeignKey(e => e.FlightId)
                 .WillCascadeOnDelete(false);
-            
+
+            modelBuilder.Entity<Flight>()
+                .HasMany(e => e.Deliveries)
+                .WithOptional(e => e.Flight)
+                .HasForeignKey(e => e.FlightId)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<FlightCrew>()
                 .HasRequired(e => e.Flight);
             
@@ -556,6 +596,26 @@ namespace FLS.Server.Data
                 .And(x => x.OwnerId)
                 .And(x => x.OwnershipType)
                 .And(x => x.RecordState);
+            EntityTracker.TrackAllProperties<Delivery>().Except(x => x.Id)
+                .And(x => x.CreatedByUserId)
+                .And(x => x.CreatedOn)
+                .And(x => x.ModifiedByUserId)
+                .And(x => x.ModifiedOn)
+                .And(x => x.DeletedByUserId)
+                .And(x => x.DeletedOn)
+                .And(x => x.OwnerId)
+                .And(x => x.OwnershipType)
+                .And(x => x.RecordState);
+            EntityTracker.TrackAllProperties<DeliveryItem>().Except(x => x.Id)
+                .And(x => x.CreatedByUserId)
+                .And(x => x.CreatedOn)
+                .And(x => x.ModifiedByUserId)
+                .And(x => x.ModifiedOn)
+                .And(x => x.DeletedByUserId)
+                .And(x => x.DeletedOn)
+                .And(x => x.OwnerId)
+                .And(x => x.OwnershipType)
+                .And(x => x.RecordState);
             EntityTracker.TrackAllProperties<EmailTemplate>().Except(x => x.Id)
                 .And(x => x.CreatedByUserId)
                 .And(x => x.CreatedOn)
@@ -598,6 +658,16 @@ namespace FLS.Server.Data
                 .And(x => x.OwnershipType)
                 .And(x => x.RecordState);
             EntityTracker.TrackAllProperties<InOutboundPoint>().Except(x => x.Id)
+                .And(x => x.CreatedByUserId)
+                .And(x => x.CreatedOn)
+                .And(x => x.ModifiedByUserId)
+                .And(x => x.ModifiedOn)
+                .And(x => x.DeletedByUserId)
+                .And(x => x.DeletedOn)
+                .And(x => x.OwnerId)
+                .And(x => x.OwnershipType)
+                .And(x => x.RecordState);
+            EntityTracker.TrackAllProperties<AccountingRuleFilter>().Except(x => x.Id)
                 .And(x => x.CreatedByUserId)
                 .And(x => x.CreatedOn)
                 .And(x => x.ModifiedByUserId)
@@ -752,6 +822,12 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Country>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<Delivery>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<DeliveryItem>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<EmailTemplate>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
@@ -771,6 +847,9 @@ namespace FLS.Server.Data
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<InOutboundPoint>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<AccountingRuleFilter>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<LanguageTranslation>()

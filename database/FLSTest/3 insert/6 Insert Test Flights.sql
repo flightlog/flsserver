@@ -65,12 +65,12 @@ SET @flightAirState = 20 --landed
 
 INSERT INTO [dbo].[Flights] ([FlightId] ,[AircraftId] ,[StartDateTime] ,[LdgDateTime] ,[StartLocationId] ,[LdgLocationId]
            ,[StartRunway] ,[LdgRunway] ,[FlightTypeId] ,[StartType] ,[TowFlightId] ,[NrOfLdgs] ,[AirStateId] ,[FlightAircraftType] ,[Comment] ,[IncidentComment]
-           ,[CouponNumber] ,[InvoicedOn] ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId]
+           ,[CouponNumber] ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId]
            ,[RecordState] ,[OwnerId] ,[OwnershipType])
      VALUES
            (@flightId ,@towingAircraftId ,@startDatetime ,DATEADD(n,14, @startDatetime) ,@locationId ,@locationId
            ,NULL ,NULL ,@towFlightTypeId ,@startTypeId ,@TowFlightId ,1 ,@flightAirState , @flightAircraftType ,'Towing flight' ,NULL
-           ,NULL ,NULL ,SYSDATETIME() ,@insertUserId ,NULL ,NULL ,NULL ,NULL ,@recordState ,@ownerId, @OwnershipType)
+           ,NULL ,SYSDATETIME() ,@insertUserId ,NULL ,NULL ,NULL ,NULL ,@recordState ,@ownerId, @OwnershipType)
 
 INSERT INTO [dbo].[FlightCrew] ([FlightCrewId] ,[FlightId] ,[PersonId] ,[FlightCrewType]
            ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId] ,[RecordState] ,[OwnerId] ,[OwnershipType])
@@ -83,12 +83,12 @@ SET @TowFlightId = @flightId
 SET @flightId = NEWID()
 INSERT INTO [dbo].[Flights] ([FlightId] ,[AircraftId] ,[StartDateTime] ,[LdgDateTime] ,[StartLocationId] ,[LdgLocationId]
            ,[StartRunway] ,[LdgRunway] ,[FlightTypeId] ,[StartType] ,[TowFlightId] ,[NrOfLdgs] ,[AirStateId] ,[FlightAircraftType] ,[Comment] ,[IncidentComment]
-           ,[CouponNumber] ,[InvoicedOn] ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId]
+           ,[CouponNumber]  ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId]
            ,[RecordState] ,[OwnerId] ,[OwnershipType])
      VALUES
            (@flightId ,@aircraftId ,@startDatetime ,DATEADD(n,212, @startDatetime) ,@locationId ,@locationId
            ,NULL ,NULL ,@flightTypeId ,@startTypeId ,@TowFlightId ,1 ,@flightAirState , @flightAircraftType ,'PAX flight' ,NULL
-           ,NULL ,NULL ,SYSDATETIME() ,@insertUserId ,NULL ,NULL ,NULL ,NULL ,@recordState ,@ownerId, @OwnershipType)
+           ,NULL ,SYSDATETIME() ,@insertUserId ,NULL ,NULL ,NULL ,NULL ,@recordState ,@ownerId, @OwnershipType)
 
 INSERT INTO [dbo].[FlightCrew] ([FlightCrewId] ,[FlightId] ,[PersonId] ,[FlightCrewType]
            ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId] ,[RecordState] ,[OwnerId] ,[OwnershipType])
@@ -119,12 +119,12 @@ SET @flightAircraftType = 2
 
 INSERT INTO [dbo].[Flights] ([FlightId] ,[AircraftId] ,[StartDateTime] ,[LdgDateTime] ,[StartLocationId] ,[LdgLocationId]
            ,[StartRunway] ,[LdgRunway] ,[FlightTypeId] ,[StartType] ,[TowFlightId] ,[NrOfLdgs] ,[AirStateId] ,[FlightAircraftType] ,[Comment] ,[IncidentComment]
-           ,[CouponNumber] ,[InvoicedOn] ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId]
+           ,[CouponNumber]  ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId]
            ,[RecordState] ,[OwnerId] ,[OwnershipType])
      VALUES
            (@flightId ,@towingAircraftId ,@startDatetime ,DATEADD(n,6, @startDatetime) ,@locationId ,@locationId
            ,NULL ,NULL ,@towFlightTypeId ,@startTypeId ,@TowFlightId ,1 ,@flightAirState , @flightAircraftType ,'Towing flight' ,NULL
-           ,NULL ,NULL ,SYSDATETIME() ,@insertUserId ,NULL ,NULL ,NULL ,NULL ,@recordState ,@ownerId, @OwnershipType)
+           ,NULL ,SYSDATETIME() ,@insertUserId ,NULL ,NULL ,NULL ,NULL ,@recordState ,@ownerId, @OwnershipType)
 
 INSERT INTO [dbo].[FlightCrew] ([FlightCrewId] ,[FlightId] ,[PersonId] ,[FlightCrewType]
            ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId] ,[RecordState] ,[OwnerId] ,[OwnershipType])
@@ -137,12 +137,12 @@ SET @TowFlightId = @flightId
 SET @flightId = NEWID()
 INSERT INTO [dbo].[Flights] ([FlightId] ,[AircraftId] ,[StartDateTime] ,[LdgDateTime] ,[StartLocationId] ,[LdgLocationId]
            ,[StartRunway] ,[LdgRunway] ,[FlightTypeId] ,[StartType] ,[TowFlightId] ,[NrOfLdgs] ,[AirStateId] ,[FlightAircraftType] ,[Comment] ,[IncidentComment]
-           ,[CouponNumber] ,[InvoicedOn] ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId]
+           ,[CouponNumber]  ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId]
            ,[RecordState] ,[OwnerId] ,[OwnershipType])
      VALUES
            (@flightId ,@aircraftId ,@startDatetime ,DATEADD(n,22, @startDatetime) ,@locationId ,@locationId
            ,NULL ,NULL ,@flightTypeId ,@startTypeId ,@TowFlightId ,1 ,@flightAirState , @flightAircraftType ,'Schoolflight with instructor' ,NULL
-           ,NULL ,NULL ,SYSDATETIME() ,@insertUserId ,NULL ,NULL ,NULL ,NULL ,@recordState ,@ownerId, @OwnershipType)
+           ,NULL ,SYSDATETIME() ,@insertUserId ,NULL ,NULL ,NULL ,NULL ,@recordState ,@ownerId, @OwnershipType)
 
 
 INSERT INTO [dbo].[FlightCrew] ([FlightCrewId] ,[FlightId] ,[PersonId] ,[FlightCrewType]
@@ -176,12 +176,12 @@ SET @TowFlightId = NULL
 SET @flightId = NEWID()
 INSERT INTO [dbo].[Flights] ([FlightId] ,[AircraftId] ,[StartDateTime] ,[LdgDateTime] ,[StartLocationId] ,[LdgLocationId]
            ,[StartRunway] ,[LdgRunway] ,[FlightTypeId] ,[StartType] ,[TowFlightId] ,[NrOfLdgs] ,[AirStateId] ,[FlightAircraftType] ,[Comment] ,[IncidentComment]
-           ,[CouponNumber] ,[InvoicedOn] ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId]
+           ,[CouponNumber]  ,[CreatedOn] ,[CreatedByUserId] ,[ModifiedOn] ,[ModifiedByUserId] ,[DeletedOn] ,[DeletedByUserId]
            ,[RecordState] ,[OwnerId] ,[OwnershipType])
      VALUES
            (@flightId ,@aircraftId ,@startDatetime ,NULL ,@locationId ,@locationId
            ,NULL ,NULL ,@flightTypeId ,@startTypeId ,@TowFlightId ,0 ,@flightAirState , @flightAircraftType ,'Selfstarter' ,NULL
-           ,NULL ,NULL ,SYSDATETIME() ,@insertUserId ,NULL ,NULL ,NULL ,NULL ,@recordState ,@ownerId, @OwnershipType)
+           ,NULL ,SYSDATETIME() ,@insertUserId ,NULL ,NULL ,NULL ,NULL ,@recordState ,@ownerId, @OwnershipType)
 
 
 INSERT INTO [dbo].[FlightCrew] ([FlightCrewId] ,[FlightId] ,[PersonId] ,[FlightCrewType]

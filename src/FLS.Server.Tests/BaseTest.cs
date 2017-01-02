@@ -19,7 +19,6 @@ using FLS.Server.Interfaces;
 using FLS.Server.Service;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Identity;
-using FLS.Server.Service.Invoicing;
 using FLS.Server.TestInfrastructure;
 using FLS.Server.Tests.Extensions;
 using FLS.Server.Tests.Helpers;
@@ -41,6 +40,7 @@ using ElevationUnitType = FLS.Server.Data.DbEntities.ElevationUnitType;
 using LengthUnitType = FLS.Server.Data.DbEntities.LengthUnitType;
 using LocationType = FLS.Server.Data.DbEntities.LocationType;
 using System.Threading;
+using FLS.Server.Service.Accounting;
 
 namespace FLS.Server.Tests
 {
@@ -76,7 +76,7 @@ namespace FLS.Server.Tests
         protected DataAccessService DataAccessService { get; set; }
         protected AircraftService AircraftService { get; set; }
         protected FlightService FlightService { get; set; }
-        protected InvoiceService InvoiceService { get; set; }
+        protected DeliveryService DeliveryService { get; set; }
         protected LocationService LocationService { get; set; }
         protected SystemService SystemService { get; set; }
         protected WorkflowService WorkflowService { get; set; }
@@ -153,7 +153,7 @@ namespace FLS.Server.Tests
             SetCurrentUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
 
             AircraftService = UnityContainer.Resolve<AircraftService>();
-            InvoiceService = UnityContainer.Resolve<InvoiceService>();
+            DeliveryService = UnityContainer.Resolve<DeliveryService>();
             SystemService = UnityContainer.Resolve<SystemService>();
             PasswordEmailService = UnityContainer.Resolve<UserAccountEmailBuildService>();
             PlanningDayEmailService = UnityContainer.Resolve<PlanningDayEmailBuildService>();
