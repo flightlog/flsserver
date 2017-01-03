@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FLS.Server.Service.Accounting.AccountingRuleFilterFactory" Collapsed="true">
+    <Position X="28.25" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\AccountingRuleFilterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.AccountingRuleService" Collapsed="true">
+    <Position X="31" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIgAACAAAAAIAABQAICIAACAAAAUAAIAEAEA=</HashCode>
+      <FileName>Accounting\AccountingRuleService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.DeliveryService" Collapsed="true">
+    <Position X="33.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIgCAAAAAgAAAAAAAQIEQAAgICAAAAABCAAAAJIMAQA=</HashCode>
+      <FileName>Accounting\DeliveryService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.RuleBasedAccountingRuleFilterDetails" Collapsed="true">
+    <Position X="27" Y="6.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAABAgAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Accounting\RuleBasedAccountingRuleFilterDetails.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.RuleBasedDeliveryDetails" Collapsed="true">
+    <Position X="30.25" Y="6.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAQAAAAAAAIAAAABABAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Accounting\RuleBasedDeliveryDetails.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.RuleEngines.DeliveryDetailsRulesEngine">
+    <Position X="33.25" Y="1.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Accounting\RuleEngines\DeliveryDetailsRulesEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.RuleEngines.DeliveryItemRulesEngine">
+    <Position X="22.75" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAABACAAAAIAAAAAAAAAAAAAIAgAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Accounting\RuleEngines\DeliveryItemRulesEngine.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="_accountingRuleFilters" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.RuleEngines.RecipientRulesEngine">
+    <Position X="30.75" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAARAAAAAAAAAAAAAAAAAAAAIAgAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Accounting\RuleEngines\RecipientRulesEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.AdditionalInfoRule" Collapsed="true">
+    <Position X="19.75" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAYAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\AdditionalInfoRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.BaseAccountingRule" Collapsed="true">
+    <Position X="11.5" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAQAEAAAAAAAAAAgAAAAAAAAAAAACgAA=</HashCode>
+      <FileName>Accounting\Rules\BaseAccountingRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.DeliveryRecipientRule" Collapsed="true">
+    <Position X="4.25" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\DeliveryRecipientRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.FlightCostPaidByPersonRule" Collapsed="true">
+    <Position X="24.75" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAQAAAAAAAAAAIAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\FlightCostPaidByPersonRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.FlightCostPaidByPilotRule" Collapsed="true">
+    <Position X="22.25" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAQAAAAAAAAAAIAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\FlightCostPaidByPilotRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.FlightDeliveryInfoRule" Collapsed="true">
+    <Position X="27.25" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAYAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\FlightDeliveryInfoRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.ItemRules.AdditionalFuelFeeRule" Collapsed="true">
+    <Position X="8.75" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\ItemRules\AdditionalFuelFeeRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.ItemRules.AircraftFlightTimeRule" Collapsed="true">
+    <Position X="6.5" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\ItemRules\AircraftFlightTimeRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.ItemRules.InstructorFeeRule" Collapsed="true">
+    <Position X="16" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\ItemRules\InstructorFeeRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.ItemRules.LandingTaxRule" Collapsed="true">
+    <Position X="11.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\ItemRules\LandingTaxRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.ItemRules.NoLandingTaxRule" Collapsed="true">
+    <Position X="13.5" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\ItemRules\NoLandingTaxRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.Accounting.Rules.ItemRules.VsfFeeRule" Collapsed="true">
+    <Position X="18.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounting\Rules\ItemRules\VsfFeeRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Server.Service.RulesEngine.BaseRule&lt;T&gt;" Collapsed="true">
+    <Position X="16" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABIAAYAEABgAABAAAAIAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>RulesEngine\BaseRule.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FLS.Server.Service.RulesEngine.RulesEngine">
+    <Position X="33.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>RulesEngine\RulesEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FLS.Data.WebApi.Accounting.RuleFilters.AccountingRuleFilterDetails" Collapsed="true">
+    <Position X="27.25" Y="5.25" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="FLS.Server.Service.RulesEngine.ICondition" Collapsed="true">
+    <Position X="28.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>RulesEngine\ICondition.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FLS.Server.Service.RulesEngine.IRule&lt;T&gt;" Collapsed="true">
+    <Position X="31.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAYAAAAgAABAAAAIAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>RulesEngine\IRule.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

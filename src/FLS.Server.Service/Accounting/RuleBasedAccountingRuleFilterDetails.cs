@@ -27,5 +27,7 @@ namespace FLS.Server.Service.Accounting
         public List<Guid> MatchedStartLocationIds { get; set; }
 
         public List<Guid> MatchedLdgLocationIds { get; set; }
+
+        public bool HasMatched { get; set; }
     }
 }

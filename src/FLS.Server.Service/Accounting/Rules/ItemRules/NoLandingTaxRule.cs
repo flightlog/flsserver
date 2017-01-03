@@ -19,6 +19,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
 
             Logger.Debug($"Apply no landing tax! Set NO landing tax for glider to : {ruleBasedDelivery.NoLandingTaxForGliderFlight}, for towing to: {ruleBasedDelivery.NoLandingTaxForTowFlight}");
 
+            AccountingRuleFilter.HasMatched = true;
             return base.Apply(ruleBasedDelivery);
         }
     }

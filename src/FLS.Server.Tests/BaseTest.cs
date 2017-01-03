@@ -77,6 +77,8 @@ namespace FLS.Server.Tests
         protected AircraftService AircraftService { get; set; }
         protected FlightService FlightService { get; set; }
         protected DeliveryService DeliveryService { get; set; }
+        protected AccountingRuleService AccountingRuleService { get; set; }
+        protected AccountingRuleFilterFactory AccountingRuleFilterFactory { get; set; }
         protected LocationService LocationService { get; set; }
         protected SystemService SystemService { get; set; }
         protected WorkflowService WorkflowService { get; set; }
@@ -164,7 +166,8 @@ namespace FLS.Server.Tests
             LocationService = UnityContainer.Resolve<LocationService>();
             WorkflowService = UnityContainer.Resolve<WorkflowService>();
             AircraftReportEmailService = UnityContainer.Resolve<AircraftReportEmailBuildService>();
-            
+            AccountingRuleService = UnityContainer.Resolve<AccountingRuleService>();
+            AccountingRuleFilterFactory = UnityContainer.Resolve<AccountingRuleFilterFactory>();
         }
 
         [TestCleanup]

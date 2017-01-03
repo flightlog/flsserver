@@ -171,6 +171,7 @@
     <Compile Include="Infrastructure\DatabasePreparer.cs" />
     <Compile Include="Infrastructure\ResourceExtractor.cs" />
     <Compile Include="Mocks\Services\MockEmailSendService.cs" />
+    <Compile Include="ServiceTests\DeliveryServiceTest.cs" />
     <Compile Include="ServiceTests\SystemServiceTest.cs" />
     <Compile Include="ServiceTests\ProffixInvoiceServiceTest.cs" />
     <Compile Include="ServiceTests\WorkflowServiceTest.cs" />

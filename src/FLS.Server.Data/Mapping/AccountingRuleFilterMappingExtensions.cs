@@ -51,10 +51,76 @@ namespace FLS.Server.Data.Mapping
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
-                case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
                      var articleTarget = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
                     overview.Target = $"{articleTarget.ArticleNumber} ({articleTarget.DeliveryLineText})";
+                    break;
+                case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
+                    var target = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
+                    if (target != null)
+                    {
+                        overview.Target = $"{target.ArticleNumber} ({target.DeliveryLineText})";
+                    }
+                    else
+                    {
+                        overview.Target = string.Empty;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("AccountingRuleFilterTypeId");
+                    break;
+            }
+
+            return overview;
+        }
+
+        public static AccountingRuleFilterOverview ToAccountingRuleFilterOverview(this AccountingRuleFilterDetails details,
+            List<FLS.Server.Data.DbEntities.AccountingRuleFilterType> accountingFilterTypes, AccountingRuleFilterOverview overview = null)
+        {
+            details.ArgumentNotNull("entity");
+
+            if (overview == null)
+            {
+                overview = new AccountingRuleFilterOverview();
+            }
+
+            overview.AccountingRuleFilterId = details.AccountingRuleFilterId;
+
+            var accountingFilterType =
+                accountingFilterTypes.FirstOrDefault(
+                    x => x.AccountingRuleFilterTypeId == details.AccountingRuleFilterTypeId);
+
+            if (accountingFilterType != null)
+            {
+                overview.AccountingRuleFilterTypeName = accountingFilterType.AccountingRuleFilterTypeName;
+            }
+
+            overview.RuleFilterName = details.RuleFilterName;
+            overview.Description = details.Description;
+            overview.IsActive = details.IsActive;
+            overview.SortIndicator = details.SortIndicator;
+
+            switch (details.AccountingRuleFilterTypeId)
+            {
+                case (int)AccountingRuleFilterType.RecipientAccountingRuleFilter:
+                    overview.Target = details.RecipientTarget.ToString();
+                    break;
+                case (int)AccountingRuleFilterType.AircraftAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
+                    overview.Target = $"{details.ArticleTarget.ArticleNumber} ({details.ArticleTarget.DeliveryLineText})";
+                    break;
+                case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
+                    if (details.ArticleTarget != null)
+                    {
+                        overview.Target = $"{details.ArticleTarget.ArticleNumber} ({details.ArticleTarget.DeliveryLineText})";
+                    }
+                    else
+                    {
+                        overview.Target = string.Empty;
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("AccountingRuleFilterTypeId");

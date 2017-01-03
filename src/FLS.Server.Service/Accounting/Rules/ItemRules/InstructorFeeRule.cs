@@ -39,6 +39,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
 
             Logger.Debug($"Added new delivery item line to delivery. Line: {line}");
 
+            AccountingRuleFilter.HasMatched = true;
             return base.Apply(ruleBasedDelivery);
         }
     }

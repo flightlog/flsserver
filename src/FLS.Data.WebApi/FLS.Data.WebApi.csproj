@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounting\DeliveryOverview.cs" />
+    <Compile Include="Accounting\Testing\AccountingRuleFiltersTestResult.cs" />
     <Compile Include="AircraftReservation\AircraftReservationDetails.cs" />
     <Compile Include="AircraftReservation\AircraftReservationOverview.cs" />
     <Compile Include="AircraftReservation\AircraftReservationTypeListItem.cs" />

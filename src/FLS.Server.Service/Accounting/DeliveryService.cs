@@ -5,6 +5,7 @@ using System.Linq;
 using FLS.Common.Extensions;
 using FLS.Common.Validators;
 using FLS.Data.WebApi.Accounting;
+using FLS.Data.WebApi.Accounting.Testing;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
 using FLS.Server.Data.Mapping;
@@ -134,47 +135,9 @@ namespace FLS.Server.Service.Accounting
 
                     foreach (var flight in flights)
                     {
-                        Logger.Debug(
-                            $"Start creating accounting for flight: {flight} using {accountingRuleFilters.Count} recipient rule filters and {accountingRuleFilters.Count} accounting line rule filters.");
                         try
                         {
-                            var ruleBasedDelivery = new RuleBasedDeliveryDetails
-                            {
-                                DeliveryId = Guid.NewGuid(),
-                                FlightInformation = new FlightInformation()
-                                {
-                                    FlightId = flight.FlightId,
-                                    AircraftImmatriculation = flight.AircraftImmatriculation,
-                                    FlightDate = flight.FlightDate.Value
-                                },
-                                DeliveryInformation = flight.FlightType.FlightTypeName,
-                                ClubId = clubId
-                            };
-
-                            var recipientRulesEngine = new RecipientRulesEngine(ruleBasedDelivery, flight,
-                                _personService,
-                                accountingRuleFilters.Where(
-                                    x =>
-                                        x.AccountingRuleFilterTypeId ==
-                                        (int) AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
-                            recipientRulesEngine.Run();
-
-                            var accountingDetailsRuleEngine = new DeliveryDetailsRulesEngine(ruleBasedDelivery, flight);
-                            accountingDetailsRuleEngine.Run();
-
-                            var accountingLineRulesEngine = new DeliveryItemRulesEngine(ruleBasedDelivery, flight,
-                                _personService,
-                                accountingRuleFilters.Where(
-                                    x =>
-                                        x.AccountingRuleFilterTypeId !=
-                                        (int) AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
-                            accountingLineRulesEngine.Run();
-
-                            Logger.Info(
-                                $"Created accounting for {ruleBasedDelivery.RecipientDetails.RecipientName}: Flight-Date: {ruleBasedDelivery.FlightInformation.FlightDate.ToShortDateString()} Aircraft: {ruleBasedDelivery.FlightInformation.AircraftImmatriculation} Nr of Lines: {ruleBasedDelivery.DeliveryItems.Count}");
-
-                            var delivery = ruleBasedDelivery.ToDelivery(clubId);
-                            delivery.BatchId = batchId;
+                            var delivery = CreateDeliveryForFlight(flight, clubId, batchId, accountingRuleFilters);
 
                             context.Deliveries.Add(delivery);
 
@@ -223,6 +186,53 @@ namespace FLS.Server.Service.Accounting
             }
         }
 
+        private Delivery CreateDeliveryForFlight(Flight flight, Guid clubId, long batchId, List<RuleBasedAccountingRuleFilterDetails> accountingRuleFilters)
+        {
+            Logger.Debug(
+                $"Start creating accounting for flight: {flight} using {accountingRuleFilters.Count} recipient rule filters and {accountingRuleFilters.Count} accounting line rule filters.");
+
+
+            var ruleBasedDelivery = new RuleBasedDeliveryDetails
+            {
+                DeliveryId = Guid.NewGuid(),
+                FlightInformation = new FlightInformation()
+                {
+                    FlightId = flight.FlightId,
+                    AircraftImmatriculation = flight.AircraftImmatriculation,
+                    FlightDate = flight.FlightDate.Value
+                },
+                DeliveryInformation = flight.FlightType.FlightTypeName,
+                ClubId = clubId
+            };
+
+            var recipientRulesEngine = new RecipientRulesEngine(ruleBasedDelivery, flight,
+                _personService,
+                accountingRuleFilters.Where(
+                    x =>
+                        x.AccountingRuleFilterTypeId ==
+                        (int)AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
+            recipientRulesEngine.Run();
+
+            var accountingDetailsRuleEngine = new DeliveryDetailsRulesEngine(ruleBasedDelivery, flight);
+            accountingDetailsRuleEngine.Run();
+
+            var accountingLineRulesEngine = new DeliveryItemRulesEngine(ruleBasedDelivery, flight,
+                _personService,
+                accountingRuleFilters.Where(
+                    x =>
+                        x.AccountingRuleFilterTypeId !=
+                        (int)AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
+            accountingLineRulesEngine.Run();
+
+            Logger.Info(
+                $"Created accounting for {ruleBasedDelivery.RecipientDetails.RecipientName}: Flight-Date: {ruleBasedDelivery.FlightInformation.FlightDate.ToShortDateString()} Aircraft: {ruleBasedDelivery.FlightInformation.AircraftImmatriculation} Nr of Lines: {ruleBasedDelivery.DeliveryItems.Count}");
+
+            var delivery = ruleBasedDelivery.ToDelivery(clubId);
+            delivery.BatchId = batchId;
+
+            return delivery;
+        }
+
         public bool SetDeliveryAsDelivered(DeliveryBooking flightDeliveryBooking)
         {
             flightDeliveryBooking.ArgumentNotNull("flightDeliveryBooking");
@@ -243,6 +253,79 @@ namespace FLS.Server.Service.Accounting
                 return true;
             }
         }
+
+        #region AccountingRuleFilter-Tester
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="flightId"></param>
+        /// <returns>AccountingRuleFilterTestResult</returns>
+        public AccountingRuleFiltersTestResult TestAccountingRuleFilters(Guid flightId)
+        {
+            var result = new AccountingRuleFiltersTestResult();
+
+            try
+            {
+                using (var context = _dataAccessService.CreateDbContext())
+                {
+                    var flight =
+                        context.Flights
+                            .Include(Constants.Aircraft)
+                            .Include(Constants.FlightType)
+                            .Include(Constants.FlightCrews)
+                            .Include(Constants.FlightCrews + "." + Constants.Person)
+                            .Include(Constants.FlightCrews + "." + Constants.Person + "." + Constants.PersonClubs)
+                            .Include(Constants.StartType)
+                            .Include(Constants.StartLocation)
+                            .Include(Constants.LdgLocation)
+                            .Include(Constants.TowFlight)
+                            .Include(Constants.TowFlight + "." + Constants.Aircraft)
+                            .Include(Constants.TowFlight + "." + Constants.FlightType)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person + "." +
+                                     Constants.PersonClubs)
+                            .Include(Constants.TowFlight + "." + Constants.StartLocation)
+                            .Include(Constants.TowFlight + "." + Constants.LdgLocation)
+                            .OrderBy(c => c.StartDateTime)
+                            .FirstOrDefault(f => f.FlightId == flightId);
+
+                    var accountingRuleFilters = _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(CurrentAuthenticatedFLSUserClubId);
+                    
+                    accountingRuleFilters.NotNull("accountingRuleFilters");
+
+
+                    var delivery = CreateDeliveryForFlight(flight, CurrentAuthenticatedFLSUserClubId, 1, accountingRuleFilters);
+                    var accountingFilterTypes = context.AccountingRuleFilterTypes.ToList();
+
+                    var matchedFilters = accountingRuleFilters.Where(x => x.HasMatched).ToList();
+                    result.DeliveryDetails = delivery.ToDeliveryDetails();
+                    result.MatchedAccountingRuleFilters =
+                        matchedFilters.Select(x => x.ToAccountingRuleFilterOverview(accountingFilterTypes)).ToList();
+
+                    if (result.MatchedAccountingRuleFilters.Any())
+                    {
+                        result.IsTestSuccessful = true;
+                    }
+                    else
+                    {
+                        result.Errors = $"No accounting rule filters has been matched for the flight: {flight}{Environment.NewLine}{result.DeliveryDetails}";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                var error = $"Error while trying to create accounting for flights. Message: {ex.Message}";
+                Logger.Error(ex, error);
+
+                result.IsTestSuccessful = false;
+                result.Errors += $"Exception: {error}";
+            }
+
+            return result;
+        }
+        #endregion AccountingRuleFilter-Tester
 
         #region Delivery
 

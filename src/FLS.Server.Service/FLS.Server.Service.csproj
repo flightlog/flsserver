@@ -223,6 +223,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Accounting\Accounting.cd" />
     <None Include="App.config" />
     <None Include="LICENSE.md" />
     <None Include="packages.config">
