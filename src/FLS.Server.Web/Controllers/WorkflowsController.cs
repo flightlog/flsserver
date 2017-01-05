@@ -100,15 +100,28 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
-        /// Executes the invoice report job.
+        /// Executes the delivery creation job.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("invoices")]
+        [Route("deliverycreation")]
         [ResponseType(typeof(void))]
-        public IHttpActionResult ExecuteInvoiceReportJob()
+        public IHttpActionResult ExecuteDeliveryCreationJob()
         {
-            _workflowService.ExecuteInvoiceReportJob();
+            _workflowService.ExecuteDeliveryCreationJob();
+            return Ok();
+        }
+
+        /// <summary>
+        /// Executes the delivery mail export job.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("deliverymailexport")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult ExecuteDeliveryMailExportJob()
+        {
+            _workflowService.ExecuteDeliveryMailExportJob();
             return Ok();
         }
     }

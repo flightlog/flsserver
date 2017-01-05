@@ -181,11 +181,7 @@ namespace FLS.Server.Tests.ServiceTests
             #endregion Flight preparation
 
             #region invoice check
-            var fromDate = new DateTime(DateTime.Now.AddDays(-10).Year, 1, 1);
-            var toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-
-            var invoices = DeliveryService.CreateDeliveriesFromFlights(fromDate, toDate,
-                IdentityService.CurrentAuthenticatedFLSUser.ClubId);
+            var invoices = DeliveryService.CreateDeliveriesFromFlights(IdentityService.CurrentAuthenticatedFLSUser.ClubId);
 
             var expectInvoice = TestContext.DataRow["ExpectInvoice"].ToString();
             var expectedInvoiceLineItemsCount = Convert.ToInt32(TestContext.DataRow["ExpectedInvoiceLineItemsCount"].ToString());

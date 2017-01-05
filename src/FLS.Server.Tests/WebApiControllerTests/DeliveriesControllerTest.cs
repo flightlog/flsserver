@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FLS.Data.WebApi.Accounting;
 using FLS.Data.WebApi.Flight;
+using FLS.Server.Data.Mapping;
 using FLS.Server.Service;
 using FLS.Server.Service.Identity;
 using FLS.Server.TestInfrastructure;
@@ -26,18 +27,26 @@ namespace FLS.Server.Tests.WebApiControllerTests
             Assert.IsTrue(response.Any());
         }
 
-        [Ignore]
         [TestMethod]
         [TestCategory("WebApi")]
-        public void GetFlightInvoiceDetailsWebApiTest()
+        public void CreateDeliveriesWebApiTest()
         {
-            var fromDate = new DateTime(2015, 1, 1);
-            var toDate = new DateTime(2015, 1, 31);
-            var url = string.Format("/api/v1/invoices/daterange/{0}/{1}", fromDate.ToString("yyyy-MM-dd"),
-                                    toDate.ToString("yyyy-MM-dd"));
-            var response = GetAsync<IEnumerable<DeliveryDetails>>(url).Result;
+            var flight = CreateGliderFlight(CurrentIdentityUser.ClubId, DateTime.Now.AddHours(-1));
+            Assert.IsNotNull(flight);
+            var flightDetails = flight.ToFlightDetails();
+            Assert.IsNotNull(flightDetails);
+            FlightService.InsertFlightDetails(flightDetails);
+            Assert.AreNotEqual(Guid.Empty, flightDetails.FlightId, "FlightId is empty or invalid");
 
-            Assert.IsTrue(response.Any());
+            SetFlightAsLocked(flightDetails);
+
+            var response = GetAsync("/api/v1/deliveries/create").Result;
+
+            Assert.IsTrue(response.IsSuccessStatusCode);
+
+            var deliveries = GetAsync<List<DeliveryDetails>>("/api/v1/deliveries/notprocessed").Result;
+
+            Assert.IsTrue(deliveries.Any());
         }
         
         protected override string Uri

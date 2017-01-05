@@ -71,5 +71,20 @@ namespace FLS.Server.WebApi.Controllers
             var result = DeliveryService.SetDeliveryAsDelivered(deliveryBooking);
             return Ok(result);
         }
+
+        /// <summary>
+        /// Runs a manually triggered delivery creation process to create deliveries from the flights which are in locked state 
+        /// and therefore ready for delivery creation.
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = RoleApplicationKeyStrings.ClubAdministrator)]
+        [HttpGet]
+        [Route("create")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult CreateDeliveries()
+        {
+            DeliveryService.CreateDeliveriesFromFlights();
+            return Ok();
+        }
     }
 }
