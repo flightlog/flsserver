@@ -51,9 +51,13 @@ namespace FLS.Workflow.Activator
                     {
                         actionUri = "testmails";
                     }
-                    else if (args[0].ToLower() == "invoice")
+                    else if (args[0].ToLower() == "deliverycreation")
                     {
-                        actionUri = "invoices";
+                        actionUri = "deliverycreation";
+                    }
+                    else if (args[0].ToLower() == "deliverymailexport")
+                    {
+                        actionUri = "deliverymailexport";
                     }
                     else
                     {
