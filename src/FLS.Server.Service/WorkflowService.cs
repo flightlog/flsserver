@@ -17,14 +17,14 @@ namespace FLS.Server.Service
         private readonly AircraftService _aircraftService;
         private readonly PlanningDayEmailBuildService _planningDayEmailService;
         private readonly PersonService _personService;
-        private readonly DeliveryService _invoiceService;
+        private readonly DeliveryService _deliveryService;
         private readonly UserService _userService;
         private readonly EmailBuildService _emailService;
         private readonly FlightInformationEmailBuildService _flightInformationEmailService;
         private readonly LicenceExpireEmailBuildService _licenceExpireEmailBuildService;
         private readonly DataAccessService _dataAccessService;
         private readonly IdentityService _identityService;
-        private readonly AccountingEmailBuildService _invoiceEmailBuildService;
+        private readonly AccountingEmailBuildService _accountingEmailBuildService;
 
         public WorkflowService(FlightService flightService, 
             ClubService clubService, 
@@ -34,14 +34,14 @@ namespace FLS.Server.Service
             AircraftReportEmailBuildService aircraftReportEmailService,
             PlanningDayEmailBuildService planningDayEmailService,
             PersonService personService,
-            DeliveryService invoiceService, 
+            DeliveryService deliveryService, 
             UserService userService, 
             EmailBuildService emailService,
             FlightInformationEmailBuildService flightInformationEmailService,
             LicenceExpireEmailBuildService licenceExpireEmailBuildService,
             DataAccessService dataAccessService, 
             IdentityService identityService,
-            AccountingEmailBuildService invoiceEmailBuildService)
+            AccountingEmailBuildService accountingEmailBuildService)
             : base(dataAccessService, identityService)
         {
             _flightService = flightService;
@@ -52,14 +52,14 @@ namespace FLS.Server.Service
             _aircraftReportEmailService = aircraftReportEmailService; 
             _planningDayEmailService = planningDayEmailService;
             _personService = personService;
-            _invoiceService = invoiceService;
+            _deliveryService = deliveryService;
             _userService = userService;
             _emailService = emailService;
             _flightInformationEmailService = flightInformationEmailService;
             _licenceExpireEmailBuildService = licenceExpireEmailBuildService;
             _dataAccessService = dataAccessService;
             _identityService = identityService;
-            _invoiceEmailBuildService = invoiceEmailBuildService;
+            _accountingEmailBuildService = accountingEmailBuildService;
             Logger = LogManager.GetCurrentClassLogger();
         }
 
@@ -121,6 +121,9 @@ namespace FLS.Server.Service
 
                 count++;
                 ExecuteLicenceNotificationJob();
+
+                count++;
+                ExecuteDeliveryCreationJob();
             }
 
             //TODO: add settings to database
@@ -130,7 +133,7 @@ namespace FLS.Server.Service
                 ExecuteAircraftStatisticReportJob();
 
                 count++;
-                ExecuteInvoiceReportJob();
+                ExecuteDeliveryMailExportJob();
             }
             
             Logger.Info(string.Format("Executed {0} workflows.", count));
@@ -154,10 +157,17 @@ namespace FLS.Server.Service
             }
         }
 
-        public void ExecuteInvoiceReportJob()
+        public void ExecuteDeliveryMailExportJob()
         {
-            Logger.Info("Execute invoice report job.");
-            var job = new DeliveryMailExportJob(_invoiceService, _userService, _identityService, _clubService, _invoiceEmailBuildService);
+            Logger.Info("Execute delivery mail export job.");
+            var job = new DeliveryMailExportJob(_deliveryService, _userService, _identityService, _clubService, _accountingEmailBuildService);
+            job.Execute(null);
+        }
+
+        public void ExecuteDeliveryCreationJob()
+        {
+            Logger.Info("Execute delivery creation job.");
+            var job = new DeliveryCreationJob(_deliveryService, _clubService);
             job.Execute(null);
         }
     }

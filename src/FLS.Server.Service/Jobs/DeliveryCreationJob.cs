@@ -52,18 +52,15 @@ namespace FLS.Server.Service.Jobs
         {
             try
             {
-                //as the Job runs on 3rd each month, we have to catch the correct year by add some minus days (for january)
-                var fromDate = new DateTime(DateTime.Now.AddDays(-10).Year, 1, 1);
-                var toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                 var clubs = _clubService.GetClubs(false);
 
                 foreach (var club in clubs.Where(c => c.RunDeliveryCreationJob))
                 {
                     try
                     {
-                        var invoices = _deliveryService.CreateDeliveriesFromFlights(fromDate, toDate, club.ClubId);
+                        var deliveries = _deliveryService.CreateDeliveriesFromFlights(club.ClubId);
                         
-                        Logger.Info($"{invoices.Count} deliveries for flights created.");
+                        Logger.Info($"{deliveries.Count} deliveries for flights created.");
                     }
                     catch (Exception e)
                     {

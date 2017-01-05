@@ -66,13 +66,21 @@ namespace FLS.Server.Tests.WebApiControllerTests
         }
 
         [TestMethod]
-        public void ExecuteInvoiceReportJobWebApiTest()
+        public void ExecuteDeliveryCreationJobWebApiTest()
         {
-            var response = GetAsync(RoutePrefix + "invoices").Result;
+            var response = GetAsync(RoutePrefix + "deliverycreation").Result;
 
             Assert.IsTrue(response.IsSuccessStatusCode);
         }
-        
+
+        [TestMethod]
+        public void ExecuteDeliveryMailExportJobWebApiTest()
+        {
+            var response = GetAsync(RoutePrefix + "deliverymailexport").Result;
+
+            Assert.IsTrue(response.IsSuccessStatusCode);
+        }
+
         protected override string Uri
         {
             get { return RoutePrefix; }

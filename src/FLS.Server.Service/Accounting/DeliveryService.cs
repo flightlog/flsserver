@@ -39,28 +39,18 @@ namespace FLS.Server.Service.Accounting
             _accountingRuleService = accountingRuleService;
         }
 
+        public List<DeliveryDetails> CreateDeliveriesFromFlights()
+        {
+            return CreateDeliveriesFromFlights(CurrentAuthenticatedFLSUserClubId);
+        }
 
-        public List<DeliveryDetails> CreateDeliveriesFromFlights(DateTime fromDate, DateTime toDate, Guid clubId)
+        public List<DeliveryDetails> CreateDeliveriesFromFlights(Guid clubId)
         {
             if (clubId.IsValid() == false)
             {
                 Logger.Error("No valid ClubId for getting the accountings!");
                 throw new InvalidDataException("No valid ClubId to fetch accounting data!");
             }
-
-            //needed for flights without start time (null values in StartDateTime)
-            DateTime fromDateTime = fromDate.Date;
-            DateTime toDateTime = toDate.Date;
-            if (toDate.Date < DateTime.MaxValue.Date)
-            {
-                toDateTime = toDate.Date.AddDays(1).AddTicks(-1);
-            }
-            else
-            {
-                toDateTime = DateTime.MaxValue;
-            }
-
-            bool isTodayIncluded = fromDate.Date <= DateTime.Now.Date && toDate.Date >= DateTime.Now.Date;
 
             try
             {
@@ -86,9 +76,7 @@ namespace FLS.Server.Service.Accounting
                             .Include(Constants.TowFlight + "." + Constants.StartLocation)
                             .Include(Constants.TowFlight + "." + Constants.LdgLocation)
                             .OrderBy(c => c.StartDateTime)
-                            .Where(flight => (flight.StartDateTime.Value >= fromDateTime &&
-                                              flight.StartDateTime.Value <= toDateTime)
-                                             && flight.FlightType.ClubId == clubId
+                            .Where(flight => flight.FlightType.ClubId == clubId
                                              &&
                                              (flight.FlightAircraftType ==
                                               (int) FlightAircraftTypeValue.GliderFlight
@@ -100,9 +88,7 @@ namespace FLS.Server.Service.Accounting
                                               (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked))
                             .ToList();
 
-                    Logger.Debug(
-                        string.Format("Queried Flights for accounting between {1} and {2} and got {0} flights back.",
-                            flights.Count, fromDateTime, toDateTime));
+                    Logger.Debug($"Queried Flights for accounting and got {flights.Count} flights back.");
 
 
                     var accountingRuleFilters = _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(clubId);
