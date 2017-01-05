@@ -254,16 +254,9 @@ namespace FLS.Server.Service.Accounting
             }
         }
 
-        #region AccountingRuleFilter-Tester
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="flightId"></param>
-        /// <returns>AccountingRuleFilterTestResult</returns>
-        public AccountingRuleFiltersTestResult TestAccountingRuleFilters(Guid flightId)
+        #region DeliveryCreationTesting
+        public DeliveryDetails CreateDeliveryDetailsForTest(Guid flightId)
         {
-            var result = new AccountingRuleFiltersTestResult();
-
             try
             {
                 using (var context = _dataAccessService.CreateDbContext())
@@ -289,6 +282,65 @@ namespace FLS.Server.Service.Accounting
                             .Include(Constants.TowFlight + "." + Constants.LdgLocation)
                             .OrderBy(c => c.StartDateTime)
                             .FirstOrDefault(f => f.FlightId == flightId);
+
+                    var accountingRuleFilters = _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(CurrentAuthenticatedFLSUserClubId);
+
+                    accountingRuleFilters.NotNull("accountingRuleFilters");
+
+
+                    var delivery = CreateDeliveryForFlight(flight, CurrentAuthenticatedFLSUserClubId, 1, accountingRuleFilters);
+                    var deliveryDetails = delivery.ToDeliveryDetails();
+                    return deliveryDetails;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, $"Error while trying to create delivery for flight. Message: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deliveryCreationTestId"></param>
+        /// <returns>AccountingRuleFilterTestResult</returns>
+        public AccountingRuleFiltersTestResult RunDeliveryCreationTest(Guid deliveryCreationTestId)
+        {
+            var result = new AccountingRuleFiltersTestResult();
+
+            try
+            {
+                using (var context = _dataAccessService.CreateDbContext())
+                {
+                    var deliveryCreationTest =
+                        context.DeliveryCreationTests.FirstOrDefault(
+                            x => x.DeliveryCreationTestId == deliveryCreationTestId);
+
+                    deliveryCreationTest.EntityNotNull("DeliveryCreationTest");
+
+                    var flight =
+                        context.Flights
+                            .Include(Constants.Aircraft)
+                            .Include(Constants.FlightType)
+                            .Include(Constants.FlightCrews)
+                            .Include(Constants.FlightCrews + "." + Constants.Person)
+                            .Include(Constants.FlightCrews + "." + Constants.Person + "." + Constants.PersonClubs)
+                            .Include(Constants.StartType)
+                            .Include(Constants.StartLocation)
+                            .Include(Constants.LdgLocation)
+                            .Include(Constants.TowFlight)
+                            .Include(Constants.TowFlight + "." + Constants.Aircraft)
+                            .Include(Constants.TowFlight + "." + Constants.FlightType)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person + "." +
+                                     Constants.PersonClubs)
+                            .Include(Constants.TowFlight + "." + Constants.StartLocation)
+                            .Include(Constants.TowFlight + "." + Constants.LdgLocation)
+                            .OrderBy(c => c.StartDateTime)
+                            .FirstOrDefault(f => f.FlightId == deliveryCreationTest.FlightId);
 
                     var accountingRuleFilters = _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(CurrentAuthenticatedFLSUserClubId);
                     
@@ -325,7 +377,7 @@ namespace FLS.Server.Service.Accounting
 
             return result;
         }
-        #endregion AccountingRuleFilter-Tester
+        #endregion DeliveryCreationTesting
 
         #region Delivery
 
@@ -480,6 +532,7 @@ namespace FLS.Server.Service.Accounting
         }
         #endregion Delivery
 
+        #region Security
         private void SetDeliveryOverviewSecurity(List<DeliveryOverview> overviewList)
         {
             if (CurrentAuthenticatedFLSUser == null)
@@ -542,6 +595,7 @@ namespace FLS.Server.Service.Accounting
                 details.CanDeleteRecord = false;
             }
         }
+        #endregion Security
     }
 
 }

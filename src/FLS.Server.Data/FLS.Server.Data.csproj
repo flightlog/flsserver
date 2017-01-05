@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbEntities\AircraftOperatingCounter.cs" />
+    <Compile Include="DbEntities\DeliveryCreationTest.cs" />
     <Compile Include="DbEntities\DeliveryItem.cs" />
     <Compile Include="DbEntities\Delivery.cs" />
     <Compile Include="DbEntities\AccountingRuleFilterType.cs" />

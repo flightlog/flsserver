@@ -57,6 +57,7 @@ namespace FLS.Server.Data
         public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<CounterUnitType> CounterUnitTypes { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
+        public virtual DbSet<DeliveryCreationTest> DeliveryCreationTests { get; set; }
         public virtual DbSet<DeliveryItem> DeliveryItems { get; set; }
         public virtual DbSet<ElevationUnitType> ElevationUnitTypes { get; set; }
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
@@ -112,6 +113,7 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Club>().Ignore(t => t.HomebaseName);
             modelBuilder.Entity<Country>().Ignore(t => t.Id);
             modelBuilder.Entity<Delivery>().Ignore(t => t.Id);
+            modelBuilder.Entity<DeliveryCreationTest>().Ignore(t => t.Id);
             modelBuilder.Entity<DeliveryItem>().Ignore(t => t.Id);
             modelBuilder.Entity<EmailTemplate>().Ignore(t => t.Id);
             modelBuilder.Entity<ExtensionValue>().Ignore(t => t.Id);
@@ -218,6 +220,12 @@ namespace FLS.Server.Data
 
             modelBuilder.Entity<Club>()
                 .HasMany(e => e.Deliveries)
+                .WithRequired(e => e.Club)
+                .HasForeignKey(e => e.ClubId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Club>()
+                .HasMany(e => e.DeliveryCreationTests)
                 .WithRequired(e => e.Club)
                 .HasForeignKey(e => e.ClubId)
                 .WillCascadeOnDelete(false);
@@ -359,6 +367,12 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Flight>()
                 .HasMany(e => e.Deliveries)
                 .WithOptional(e => e.Flight)
+                .HasForeignKey(e => e.FlightId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Flight>()
+                .HasMany(e => e.DeliveryCreationTests)
+                .WithRequired(e => e.Flight)
                 .HasForeignKey(e => e.FlightId)
                 .WillCascadeOnDelete(false);
 
@@ -597,6 +611,16 @@ namespace FLS.Server.Data
                 .And(x => x.OwnershipType)
                 .And(x => x.RecordState);
             EntityTracker.TrackAllProperties<Delivery>().Except(x => x.Id)
+                .And(x => x.CreatedByUserId)
+                .And(x => x.CreatedOn)
+                .And(x => x.ModifiedByUserId)
+                .And(x => x.ModifiedOn)
+                .And(x => x.DeletedByUserId)
+                .And(x => x.DeletedOn)
+                .And(x => x.OwnerId)
+                .And(x => x.OwnershipType)
+                .And(x => x.RecordState);
+            EntityTracker.TrackAllProperties<DeliveryCreationTest>().Except(x => x.Id)
                 .And(x => x.CreatedByUserId)
                 .And(x => x.CreatedOn)
                 .And(x => x.ModifiedByUserId)

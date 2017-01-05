@@ -149,6 +149,8 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual ICollection<Delivery> Deliveries { get; set; }
 
+        public virtual ICollection<DeliveryCreationTest> DeliveryCreationTests { get; set; }
+
         public virtual Flight TowFlight { get; set; }
 
         public virtual FlightAirState FlightAirState { get; set; }

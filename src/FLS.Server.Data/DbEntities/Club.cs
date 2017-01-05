@@ -161,6 +161,8 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual ICollection<Delivery> Deliveries { get; set; }
 
+        public virtual ICollection<DeliveryCreationTest> DeliveryCreationTests { get; set; }
+
 
         public virtual ClubState ClubState { get; set; }
 
