@@ -135,7 +135,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedPassengers">if set to <c>true</c> [only club related passengers].</param>
         /// <returns></returns>
-        public List<PassengerListItem> GetPassengerListItems(bool onlyClubRelatedPassengers)
+        public List<PersonListItem> GetPassengerListItems(bool onlyClubRelatedPassengers)
         {
             var persons = GetPersons(onlyClubRelatedPassengers, person => person.HasGliderInstructorLicence == false
                 && person.HasGliderPAXLicence == false
@@ -145,7 +145,7 @@ namespace FLS.Server.Service
                 && person.HasTMGLicence == false
                 && person.HasTowPilotLicence == false
                 && person.HasWinchOperatorLicence == false);
-            return persons.Select(p => p.ToPassengerListItem()).ToList();
+            return persons.Select(p => p.ToPersonListItem()).ToList();
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace FLS.Server.Service
             return GetPersonOverviewsInternal(onlyClubRelatedWinchOperators, person => person.HasWinchOperatorLicence);
         }
 
-        public List<PassengerOverview> GetPassengerOverviews(bool onlyClubRelatedPassengers)
+        public List<PersonOverview> GetPassengerOverviews(bool onlyClubRelatedPassengers)
         {
             var persons = GetPersons(onlyClubRelatedPassengers, person => person.HasGliderInstructorLicence == false
                 && person.HasGliderPAXLicence == false
@@ -230,7 +230,7 @@ namespace FLS.Server.Service
                 && person.HasTowPilotLicence == false
                 && person.HasWinchOperatorLicence == false);
 
-            var personOverviewList = persons.Select(p => p.ToPassengerOverview(CurrentAuthenticatedFLSUserClubId)).ToList();
+            var personOverviewList = persons.Select(p => p.ToPersonOverview(CurrentAuthenticatedFLSUserClubId)).ToList();
             SetPersonOverviewSecurity(personOverviewList);
             return personOverviewList.ToList();
         }
@@ -316,11 +316,11 @@ namespace FLS.Server.Service
             return personFullDetails;
         }
 
-        public PassengerDetails GetPassengerDetails(Guid personId)
+        public PersonDetails GetPassengerDetails(Guid personId)
         {
             var person = GetPerson(personId);
 
-            var passengerDetails = person.ToPassengerDetails(CurrentAuthenticatedFLSUserClubId);
+            var passengerDetails = person.ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
             SetPersonDetailsSecurity(passengerDetails, person);
 
             return passengerDetails;
@@ -607,7 +607,7 @@ namespace FLS.Server.Service
             person.ToPilotPersonFullDetails(CurrentAuthenticatedFLSUserClubId, personFullDetails);
         }
 
-        public void InsertPassengerDetails(PassengerDetails passengerDetails)
+        public void InsertPassengerDetails(PersonDetails passengerDetails)
         {
             passengerDetails.ArgumentNotNull("passengerDetails");
 
@@ -618,7 +618,7 @@ namespace FLS.Server.Service
             InsertPerson(person);
 
             //Map it back to details
-            person.ToPassengerDetails(CurrentAuthenticatedFLSUserClubId, passengerDetails);
+            person.ToPersonDetails(CurrentAuthenticatedFLSUserClubId, passengerDetails);
         }
 
         internal void InsertPerson(Person person)
@@ -689,7 +689,7 @@ namespace FLS.Server.Service
             }
         }
         
-        public void UpdatePassengerDetails(PassengerDetails currentPassengerDetails)
+        public void UpdatePassengerDetails(PersonDetails currentPassengerDetails)
         {
             currentPassengerDetails.ArgumentNotNull("currentPassengerDetails");
             var original = GetPerson(currentPassengerDetails.PersonId);
@@ -705,7 +705,7 @@ namespace FLS.Server.Service
                     context.SaveChanges();
 
                     //Map it back to details
-                    original.ToPassengerDetails(CurrentAuthenticatedFLSUserClubId, currentPassengerDetails);
+                    original.ToPersonDetails(CurrentAuthenticatedFLSUserClubId, currentPassengerDetails);
                 }
             }
         }

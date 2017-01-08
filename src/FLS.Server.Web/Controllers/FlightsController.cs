@@ -260,5 +260,21 @@ namespace FLS.Server.WebApi.Controllers
             _flightService.LockFlights(true);
             return Ok();
         }
+
+        //http://www.asp.net/web-api/overview/web-api-routing-and-actions/create-a-rest-api-with-attribute-routing
+        /// <summary>
+        /// Gets the flights for exchange created or modified since.
+        /// </summary>
+        /// <param name="modifiedSince">Created or modified date time.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("exchange/modified/{modifiedSince:datetime:regex(\\d{4}-\\d{2}-\\d{2})}")]
+        [Route("exchange/modified/{*modifiedSince:datetime:regex(\\d{4}/\\d{2}/\\d{2})}")]
+        [ResponseType(typeof(List<FlightExchangeData>))]
+        public IHttpActionResult GetFlightsModifiedSince(DateTime modifiedSince)
+        {
+            var flights = _flightService.GetFlightsModifiedSince(modifiedSince);
+            return Ok(flights);
+        }
     }
 }

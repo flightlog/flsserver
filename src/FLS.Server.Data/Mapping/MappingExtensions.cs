@@ -25,6 +25,7 @@ using FLS.Data.WebApi.System;
 using FLS.Data.WebApi.User;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
+using FLS.Server.Data.Extensions;
 using Newtonsoft.Json;
 using NLog;
 using TrackerEnabledDbContext.Common.Models;
@@ -1680,8 +1681,216 @@ namespace FLS.Server.Data.Mapping
 
             return entity;
         }
+        public static FlightExchangeData ToFlightExchangeData(this Flight entity, Guid clubId)
+        {
+            entity.ArgumentNotNull("entity");
 
+            var exchangeData = new FlightExchangeData();
+
+            exchangeData.FlightId = entity.FlightId;
+
+            if (entity.StartType != null) exchangeData.StartType = entity.StartType.StartTypeName;
+
+            exchangeData.AircraftImmatriculation = entity.AircraftImmatriculation;
+
+            if (entity.Pilot != null && entity.Pilot.Person != null)
+            {
+                exchangeData.Pilot = entity.Pilot.Person.ToFlightCrewData(clubId);
+            }
+
+            if (entity.CoPilot != null && entity.CoPilot.Person != null)
+            {
+                exchangeData.CoPilot = entity.CoPilot.Person.ToFlightCrewData(clubId);
+            }
+
+            if (entity.Instructor != null && entity.Instructor.Person != null)
+            {
+                exchangeData.Instructor = entity.Instructor.Person.ToFlightCrewData(clubId);
+            }
+
+            if (entity.ObserverPerson != null && entity.ObserverPerson.Person != null)
+            {
+                exchangeData.Observer = entity.ObserverPerson.Person.ToFlightCrewData(clubId);
+            }
+
+            if (entity.InvoiceRecipient != null && entity.InvoiceRecipient.Person != null)
+            {
+                exchangeData.InvoiceRecipient = entity.InvoiceRecipient.Person.ToRecipientDetails(clubId);
+            }
+
+            if (entity.Passengers != null && entity.Passengers.Any())
+            {
+                exchangeData.Passengers = entity.Passengers.Select(x => x.Person.ToFlightCrewData(clubId)).ToList();
+            }
+
+            exchangeData.EngineStartOperatingCounterInSeconds = entity.EngineStartOperatingCounterInSeconds;
+            exchangeData.EngineEndOperatingCounterInSeconds = entity.EngineEndOperatingCounterInSeconds;
+            exchangeData.FlightComment = entity.Comment;
+
+            exchangeData.AirState = ((FLS.Data.WebApi.Flight.FlightAirState) entity.AirStateId).ToFlightAirState();
+            exchangeData.ValidationState = ((FLS.Data.WebApi.Flight.FlightValidationState)entity.ValidationStateId).ToFlightValidationState();
+            exchangeData.ProcessState = ((FLS.Data.WebApi.Flight.FlightProcessState) entity.ProcessStateId).ToFlightProcessState();
+
+            if (entity.FlightType != null)
+            {
+                exchangeData.FlightTypeCode = entity.FlightType.FlightCode;
+                exchangeData.FlightTypeName = entity.FlightType.FlightTypeName;
+            }
+
+            exchangeData.LdgDateTime = entity.LdgDateTime;
+            exchangeData.StartDateTime = entity.StartDateTime;
+            exchangeData.BlockStartDateTime = entity.BlockStartDateTime;
+            exchangeData.BlockEndDateTime = entity.BlockEndDateTime;
+            exchangeData.FlightDuration = entity.FlightDuration.GetValueOrDefault();
+
+            if (entity.StartLocation != null)
+            {
+                var location = entity.StartLocation;
+                var locationData = new LocationData();
+                if (location.Country != null)
+                    locationData.CountryCode = location.Country.CountryCodeIso2;
+
+                locationData.IcaoCode = location.IcaoCode;
+                locationData.LocationName = location.LocationName;
+                exchangeData.StartLocation = locationData;
+            }
+
+            if (entity.LdgLocation != null)
+            {
+                var location = entity.LdgLocation;
+                var locationData = new LocationData();
+                if (location.Country != null)
+                    locationData.CountryCode = location.Country.CountryCodeIso2;
+
+                locationData.IcaoCode = location.IcaoCode;
+                locationData.LocationName = location.LocationName;
+                exchangeData.LdgLocation = locationData;
+            }
+
+            exchangeData.FlightCostBalanceTypeId = entity.FlightCostBalanceTypeId;
+            exchangeData.NrOfLdgs = entity.NrOfLdgs;
+            exchangeData.NrOfLdgsOnStartLocation = entity.NrOfLdgsOnStartLocation;
+            exchangeData.IsSoloFlight = entity.IsSoloFlight;
+            exchangeData.OutboundRoute = entity.OutboundRoute;
+            exchangeData.InboundRoute = entity.InboundRoute;
+            exchangeData.NoStartTimeInformation = entity.NoStartTimeInformation;
+            exchangeData.NoLdgTimeInformation = entity.NoLdgTimeInformation;
+            exchangeData.CouponNumber = entity.CouponNumber;
+
+
+            if (entity.TowFlight != null)
+            {
+                var towFlight = entity.TowFlight;
+
+                exchangeData.TowFlightFlightId = towFlight.FlightId;
+                exchangeData.TowFlightAircraftImmatriculation = towFlight.AircraftImmatriculation;
+
+                if (towFlight.Pilot != null && towFlight.Pilot.Person != null)
+                {
+                    exchangeData.TowFlightPilot = towFlight.Pilot.Person.ToFlightCrewData(clubId);
+                }
+                
+                if (towFlight.Instructor != null && towFlight.Instructor.Person != null)
+                {
+                    exchangeData.TowFlightInstructor = towFlight.Instructor.Person.ToFlightCrewData(clubId);
+                }
+                
+                exchangeData.TowFlightEngineStartOperatingCounterInSeconds = towFlight.EngineStartOperatingCounterInSeconds;
+                exchangeData.TowFlightEngineEndOperatingCounterInSeconds = towFlight.EngineEndOperatingCounterInSeconds;
+                exchangeData.TowFlightFlightComment = towFlight.Comment;
+
+                exchangeData.TowFlightAirState = ((FLS.Data.WebApi.Flight.FlightAirState)towFlight.AirStateId).ToFlightAirState();
+                exchangeData.TowFlightValidationState = ((FLS.Data.WebApi.Flight.FlightValidationState)towFlight.ValidationStateId).ToFlightValidationState();
+                exchangeData.TowFlightProcessState = ((FLS.Data.WebApi.Flight.FlightProcessState)towFlight.ProcessStateId).ToFlightProcessState();
+
+                if (towFlight.FlightType != null)
+                {
+                    exchangeData.TowFlightFlightTypeCode = towFlight.FlightType.FlightCode;
+                    exchangeData.TowFlightFlightTypeName = towFlight.FlightType.FlightTypeName;
+                }
+
+                exchangeData.TowFlightLdgDateTime = towFlight.LdgDateTime;
+                exchangeData.TowFlightStartDateTime = towFlight.StartDateTime;
+                exchangeData.TowFlightBlockStartDateTime = towFlight.BlockStartDateTime;
+                exchangeData.TowFlightBlockEndDateTime = towFlight.BlockEndDateTime;
+                exchangeData.TowFlightFlightDuration = towFlight.FlightDuration.GetValueOrDefault();
+
+                if (towFlight.StartLocation != null)
+                {
+                    var location = towFlight.StartLocation;
+                    var locationData = new LocationData();
+                    if (location.Country != null)
+                        locationData.CountryCode = location.Country.CountryCodeIso2;
+
+                    locationData.IcaoCode = location.IcaoCode;
+                    locationData.LocationName = location.LocationName;
+                    exchangeData.TowFlightStartLocation = locationData;
+                }
+
+                if (towFlight.LdgLocation != null)
+                {
+                    var location = towFlight.LdgLocation;
+                    var locationData = new LocationData();
+                    if (location.Country != null)
+                        locationData.CountryCode = location.Country.CountryCodeIso2;
+
+                    locationData.IcaoCode = location.IcaoCode;
+                    locationData.LocationName = location.LocationName;
+                    exchangeData.TowFlightLdgLocation = locationData;
+                }
+
+                exchangeData.TowFlightNrOfLdgs = towFlight.NrOfLdgs;
+                exchangeData.TowFlightOutboundRoute = towFlight.OutboundRoute;
+                exchangeData.TowFlightInboundRoute = towFlight.InboundRoute;
+                exchangeData.TowFlightNoStartTimeInformation = towFlight.NoStartTimeInformation;
+                exchangeData.TowFlightNoLdgTimeInformation = towFlight.NoLdgTimeInformation;
+            }
+
+            return exchangeData;
+        }
+
+        public static RecipientDetails ToRecipientDetails(this Person person, Guid clubId)
+        {
+            var recipientDetails = new RecipientDetails();
+            recipientDetails.PersonId = person.PersonId;
+            recipientDetails.RecipientName = $"{person.Lastname} {person.Firstname}";
+            recipientDetails.Firstname = person.Firstname;
+            recipientDetails.Lastname = person.Lastname;
+            recipientDetails.AddressLine1 = person.AddressLine1;
+            recipientDetails.AddressLine2 = person.AddressLine2;
+            recipientDetails.ZipCode = person.Zip;
+            recipientDetails.City = person.City;
+
+            if (person.Country != null) recipientDetails.CountryName = person.Country.CountryName;
+
+            var personClub = person.PersonClubs.FirstOrDefault(e => e.ClubId == clubId);
+
+            if (personClub != null) recipientDetails.PersonClubMemberNumber = personClub.MemberNumber;
+
+            return recipientDetails;
+        }
         #endregion Flight
+
+        #region FlightCrewData
+        public static FlightCrewData ToFlightCrewData(this Person person, Guid clubId)
+        {
+            var flightCrewData = new FlightCrewData();
+            flightCrewData.PersonId = person.PersonId;
+            flightCrewData.Firstname = person.Firstname;
+            flightCrewData.Lastname = person.Lastname;
+            flightCrewData.AddressLine = person.AddressLine1;
+            flightCrewData.ZipCode = person.Zip;
+            flightCrewData.City = person.City;
+
+            if (person.Country != null) flightCrewData.CountryName = person.Country.CountryName;
+
+            var personClub = person.PersonClubs.FirstOrDefault(e => e.ClubId == clubId);
+
+            if (personClub != null) flightCrewData.PersonClubMemberNumber = personClub.MemberNumber;
+            
+            return flightCrewData;
+        }
+        #endregion FlightCrewData
 
         #region FlightCrew
 
@@ -2462,21 +2671,7 @@ namespace FLS.Server.Data.Mapping
 
             return listItem;
         }
-
-        public static PassengerListItem ToPassengerListItem(this Person entity, PassengerListItem listItem = null)
-        {
-            entity.ArgumentNotNull("entity");
-
-            if (listItem == null)
-            {
-                listItem = new PassengerListItem();
-            }
-
-            entity.ToPersonListItem(listItem);
-
-            return listItem;
-        }
-
+        
         public static PersonOverview ToPersonOverview(this Person entity, Guid clubId, PersonOverview overview = null)
         {
             entity.ArgumentNotNull("entity");
@@ -2539,21 +2734,7 @@ namespace FLS.Server.Data.Mapping
 
             return overview;
         }
-
-        public static PassengerOverview ToPassengerOverview(this Person entity, Guid clubId, PassengerOverview overview = null)
-        {
-            entity.ArgumentNotNull("entity");
-
-            if (overview == null)
-            {
-                overview = new PassengerOverview();
-            }
-
-            entity.ToPersonOverview(clubId, overview);
-
-            return overview;
-        }
-
+        
         public static PersonDetails ToPersonDetails(this Person entity, Guid clubId, PersonDetails details = null)
         {
             entity.ArgumentNotNull("entity");
@@ -2651,21 +2832,7 @@ namespace FLS.Server.Data.Mapping
 
             return details;
         }
-
-        public static PassengerDetails ToPassengerDetails(this Person entity, Guid clubId, PassengerDetails details = null)
-        {
-            entity.ArgumentNotNull("entity");
-
-            if (details == null)
-            {
-                details = new PassengerDetails();
-            }
-
-            entity.ToPersonDetails(clubId, details);
-
-            return details;
-        }
-
+        
         public static Person ToPerson(this PersonDetails details, Guid clubId, Person entity = null, bool overwritePersonId = false)
         {
             details.ArgumentNotNull("details");
@@ -2805,21 +2972,7 @@ namespace FLS.Server.Data.Mapping
 
             return entity;
         }
-
-        public static Person ToPerson(this PassengerDetails details, Guid clubId, Person entity = null, bool overwritePersonId = false)
-        {
-            details.ArgumentNotNull("details");
-
-            if (entity == null)
-            {
-                entity = new Person();
-            }
-
-            ((PersonDetails) details).ToPerson(clubId, entity, overwritePersonId);
-
-            return entity;
-        }
-
+        
         public static Person ToPerson(this PilotPersonFullDetails details, Guid clubId, Person entity = null, bool overwritePersonId = false)
         {
             details.ArgumentNotNull("details");

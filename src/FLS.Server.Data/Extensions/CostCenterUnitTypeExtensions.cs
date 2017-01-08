@@ -2,7 +2,7 @@
 
 namespace FLS.Server.Data.Extensions
 {
-    public static class GuidExtensions
+    public static class CostCenterUnitTypeExtensions
     {
         public static string ToUnitTypeString(this CostCenterUnitType unitType)
         {

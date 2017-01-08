@@ -97,10 +97,12 @@
     <Compile Include="Emails\EmailTemplateOverview.cs" />
     <Compile Include="Emails\EmailTemplateDetails.cs" />
     <Compile Include="Exceptions\FLSServerException.cs" />
+    <Compile Include="Flight\FlightExchangeData.cs" />
     <Compile Include="Flight\FlightOverview.cs" />
     <Compile Include="Flight\FlightAirState.cs" />
     <Compile Include="Flight\FlightProcessState.cs" />
     <Compile Include="Flight\FlightValidationState.cs" />
+    <Compile Include="Flight\FlightCrewData.cs" />
     <Compile Include="FLSBaseData.cs" />
     <Compile Include="Flight\FlightCostBalanceType.cs" />
     <Compile Include="Flight\FlightCostBalanceTypeListItem.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="Location\ElevationUnitType.cs" />
     <Compile Include="Location\LengthUnitType.cs" />
     <Compile Include="Location\LocationDetails.cs" />
+    <Compile Include="Location\LocationData.cs" />
     <Compile Include="Location\LocationListItem.cs" />
     <Compile Include="Location\LocationOverview.cs" />
     <Compile Include="Location\LocationType.cs" />
@@ -146,9 +149,6 @@
     <Compile Include="Person\PersonDetails.cs" />
     <Compile Include="Person\PersonOverview.cs" />
     <Compile Include="Person\PersonListItem.cs" />
-    <Compile Include="Person\PassengerOverview.cs" />
-    <Compile Include="Person\PassengerListItem.cs" />
-    <Compile Include="Person\PassengerDetails.cs" />
     <Compile Include="Person\PilotPersonFullDetails.cs" />
     <Compile Include="Person\PilotPersonDetails.cs" />
     <Compile Include="Person\PilotPersonListItem.cs" />

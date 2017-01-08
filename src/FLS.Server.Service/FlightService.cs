@@ -687,6 +687,45 @@ namespace FLS.Server.Service
                 context.SaveChanges();
             }
         }
+
+        public List<FlightExchangeData> GetFlightsModifiedSince(DateTime modifiedSince)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var flights = context.Flights
+                            .Include(Constants.Aircraft)
+                            .Include(Constants.FlightType)
+                            .Include(Constants.FlightCrews)
+                            .Include(Constants.FlightCrews + "." + Constants.Person)
+                            .Include(Constants.FlightCrews + "." + Constants.Person + "." + Constants.PersonClubs)
+                            .Include(Constants.StartType)
+                            .Include(Constants.StartLocation)
+                            .Include(Constants.LdgLocation)
+                            .Include(Constants.TowFlight)
+                            .Include(Constants.TowFlight + "." + Constants.Aircraft)
+                            .Include(Constants.TowFlight + "." + Constants.FlightType)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person + "." +
+                                     Constants.PersonClubs)
+                            .Include(Constants.TowFlight + "." + Constants.StartLocation)
+                            .Include(Constants.TowFlight + "." + Constants.LdgLocation)
+                    .Where(flight => flight.OwnerId == CurrentAuthenticatedFLSUserClubId &&
+                            (flight.CreatedOn >= modifiedSince
+                                                || (flight.ModifiedOn.HasValue &&
+                                                flight.ModifiedOn.Value >= modifiedSince))
+                                               &&
+                                              (flight.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight
+                                               || flight.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight))
+                    .OrderByDescending(c => c.StartDateTime)
+                    .ToList();
+
+                var flightExchangeDatas = flights.Select(x => x.ToFlightExchangeData(CurrentAuthenticatedFLSUserClubId)).ToList();
+
+                return flightExchangeDatas;
+            }
+        }
+
         #endregion Flight
 
         #region ReportingData

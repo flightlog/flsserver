@@ -78,3 +78,10 @@ GO
 
 ALTER TABLE [dbo].[DeliveryCreationTests] CHECK CONSTRAINT [FK_DeliveryCreationTests_Flight]
 GO
+
+
+PRINT 'Fixing possible FlightAirState issue'
+INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (8, N'Möglicherweise gestartet', N'Keine Startinformationen vorhanden.', SYSUTCDATETIME())
+
+INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (15, N'Möglicherweise gelandet', N'Keine Landeinformationen vorhanden.', SYSUTCDATETIME())
+GO

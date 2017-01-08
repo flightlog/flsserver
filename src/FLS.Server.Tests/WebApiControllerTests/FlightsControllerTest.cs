@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FLS.Common.Extensions;
@@ -684,6 +685,15 @@ namespace FLS.Server.Tests.WebApiControllerTests
                 var lockedFlights2 = context.Flights.Where(q => q.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked);
                 Assert.IsTrue(lockedFlights2.Any());
             }
+        }
+
+        [TestMethod]
+        [TestCategory("WebApi")]
+        public void FlightExchangeWebApiTest()
+        {
+            var dateString = DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd");
+            var response = GetAsync<IEnumerable<FlightExchangeData>>("/api/v1/flights/exchange/modified/" + dateString).Result;
+            Assert.IsTrue(response.Any());
         }
 
         protected override string Uri

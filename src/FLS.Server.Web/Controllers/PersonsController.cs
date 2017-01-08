@@ -181,7 +181,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpGet]
         [Route("passengers/{onlyClubRelatedPassengers:bool}")]
         [Route("passengers/listitems/{onlyClubRelatedPassengers:bool}")]
-        [ResponseType(typeof(List<PassengerListItem>))]
+        [ResponseType(typeof(List<PersonListItem>))]
         public IHttpActionResult GetPassengerListItems(bool onlyClubRelatedPassengers)
         {
             var persons = _personService.GetPassengerListItems(onlyClubRelatedPassengers);
@@ -317,7 +317,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("passengers/overview/{onlyClubRelatedPassengers:bool}")]
-        [ResponseType(typeof(List<PassengerOverview>))]
+        [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetPassengerPersonOverviews(bool onlyClubRelatedPassengers)
         {
             var persons = _personService.GetPassengerOverviews(onlyClubRelatedPassengers);
@@ -394,13 +394,13 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
-        /// Gets the passenger details.
+        /// Gets the person details of a passenger.
         /// </summary>
         /// <param name="personId">The person identifier.</param>
         /// <returns></returns>
         [HttpGet]
         [Route("passengers/{personId}")]
-        [ResponseType(typeof(PassengerDetails))]
+        [ResponseType(typeof(PersonDetails))]
         public IHttpActionResult GetPassengerDetails(Guid personId)
         {
             var personDetails = _personService.GetPassengerDetails(personId);
@@ -488,8 +488,8 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("passengers")]
-        [ResponseType(typeof(PassengerDetails))]
-        public IHttpActionResult InsertPassengerDetails([FromBody] PassengerDetails passengerDetails)
+        [ResponseType(typeof(PersonDetails))]
+        public IHttpActionResult InsertPassengerDetails([FromBody] PersonDetails passengerDetails)
         {
             _personService.InsertPassengerDetails(passengerDetails);
             return Ok(passengerDetails);
@@ -532,8 +532,8 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("passengers/{personId}")]
-        [ResponseType(typeof(PassengerDetails))]
-        public IHttpActionResult UpdatePassengerDetails(Guid personId, [FromBody]PassengerDetails passengerDetails)
+        [ResponseType(typeof(PersonDetails))]
+        public IHttpActionResult UpdatePassengerDetails(Guid personId, [FromBody]PersonDetails passengerDetails)
         {
             _personService.UpdatePassengerDetails(passengerDetails);
             return Ok(passengerDetails);
