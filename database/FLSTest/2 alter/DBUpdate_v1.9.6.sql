@@ -111,3 +111,45 @@ GO
 ALTER TABLE [dbo].[AccountingRuleFilters] CHECK CONSTRAINT [FK_AccountingRuleFilters_AccountingRuleFilterTypes]
 GO
 
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (10,'Recipient invoice rule filter', 'RecipientInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (20,'No landing tax invoice rule filter', 'NoLandingTaxInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (30,'Aircraft invoice rule filter', 'AircraftInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (40,'Instructor fee invoice rule filter', 'InstructorFeeInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (50,'Additional fuel fee invoice rule filter', 'AdditionalFuelFeeInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (60,'Landing tax invoice rule filter', 'LandingTaxInvoiceRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (70,'VSF fee invoice rule filter', 'VsfFeeInvoiceRuleFilter', SYSDATETIME(), null)
+GO
