@@ -44,6 +44,7 @@ DefaultStartType = null,
 DefaultTowFlightTypeId = null,
 HomebaseId = null
 
+DELETE FROM DeliveryCreationTests
 DELETE FROM DeliveryItems
 DELETE FROM Deliveries
 

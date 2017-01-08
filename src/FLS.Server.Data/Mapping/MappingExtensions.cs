@@ -8,6 +8,7 @@ using FLS.Common.Utils;
 using FLS.Common.Validators;
 using FLS.Data.WebApi;
 using FLS.Data.WebApi.Accounting;
+using FLS.Data.WebApi.Accounting.Testing;
 using FLS.Data.WebApi.Aircraft;
 using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.Articles;
@@ -894,6 +895,95 @@ namespace FLS.Server.Data.Mapping
         }
 
         #endregion Delivery
+
+
+        #region DeliveryCreationTest
+
+        public static DeliveryCreationTestDetails ToDeliveryCreationTestDetails(this DeliveryCreationTest entity, DeliveryCreationTestDetails details = null)
+        {
+            entity.ArgumentNotNull("entity");
+
+            if (details == null)
+            {
+                details = new DeliveryCreationTestDetails();
+            }
+
+            details.DeliveryCreationTestId = entity.DeliveryCreationTestId;
+            details.FlightId = entity.FlightId;
+            details.DeliveryCreationTestName = entity.DeliveryCreationTestName;
+            details.Description = entity.Description;
+            details.IsActive = entity.IsActive;
+            details.ExpectedDeliveryDetails = JsonConvert.DeserializeObject<DeliveryDetails>(entity.ExpectedDeliveryDetails);
+            details.ExpectedMatchedAccountingRuleFilterIds =
+                JsonConvert.DeserializeObject<List<Guid>>(entity.ExpectedMatchedAccountingRuleFilterIds);
+            details.MustNotCreateDeliveryForFlight = entity.MustNotCreateDeliveryForFlight;
+            details.IgnoreRecipientName = entity.IgnoreRecipientName;
+            details.IgnoreRecipientAddress = entity.IgnoreRecipientAddress;
+            details.IgnoreRecipientPersonId = entity.IgnoreRecipientPersonId;
+            details.IgnoreRecipientClubMemberNumber = entity.IgnoreRecipientClubMemberNumber;
+            details.IgnoreDeliveryInformation = entity.IgnoreDeliveryInformation;
+            details.IgnoreAdditionalInformation = entity.IgnoreAdditionalInformation;
+            details.IgnoreItemPositioning = entity.IgnoreItemPositioning;
+            details.IgnoreItemText = entity.IgnoreItemText;
+            details.IgnoreItemAdditionalInformation = entity.IgnoreItemAdditionalInformation;
+
+            if (entity.LastTestSuccessful.HasValue && entity.LastTestRunOn.HasValue)
+            {
+                var lastTestResult = new LastDeliveryCreationTestResult();
+                lastTestResult.LastTestRunOn = entity.LastTestRunOn;
+                lastTestResult.LastTestSuccessful = entity.LastTestSuccessful;
+                lastTestResult.LastTestResultMessage = entity.LastTestResultMessage;
+                lastTestResult.LastTestCreatedDeliveryDetails = JsonConvert.DeserializeObject<DeliveryDetails>(entity.LastTestCreatedDeliveryDetails);
+                lastTestResult.LastTestMatchedAccountingRuleFilterIds = JsonConvert.DeserializeObject<List<Guid>>(entity.LastTestMatchedAccountingRuleFilterIds);
+                details.LastDeliveryCreationTestResult = lastTestResult;
+            }
+
+            return details;
+        }
+
+        public static DeliveryCreationTest ToDeliveryCreationTest(this DeliveryCreationTestDetails details, Guid clubId, DeliveryCreationTest entity = null, bool overwriteDeliveryCreationTestId = false)
+        {
+            details.ArgumentNotNull("details");
+
+            if (entity == null)
+            {
+                entity = new DeliveryCreationTest();
+            }
+
+            entity.ClubId = clubId;
+
+            if (overwriteDeliveryCreationTestId) entity.DeliveryCreationTestId = details.DeliveryCreationTestId;
+            entity.FlightId = details.FlightId;
+            entity.DeliveryCreationTestName = details.DeliveryCreationTestName;
+            entity.Description = details.Description;
+            entity.IsActive = details.IsActive;
+            entity.ExpectedDeliveryDetails = JsonConvert.SerializeObject(details.ExpectedDeliveryDetails);
+            entity.ExpectedMatchedAccountingRuleFilterIds =
+                JsonConvert.SerializeObject(details.ExpectedMatchedAccountingRuleFilterIds);
+            entity.MustNotCreateDeliveryForFlight = details.MustNotCreateDeliveryForFlight;
+            entity.IgnoreRecipientName = details.IgnoreRecipientName;
+            entity.IgnoreRecipientAddress = details.IgnoreRecipientAddress;
+            entity.IgnoreRecipientPersonId = details.IgnoreRecipientPersonId;
+            entity.IgnoreRecipientClubMemberNumber = details.IgnoreRecipientClubMemberNumber;
+            entity.IgnoreDeliveryInformation = details.IgnoreDeliveryInformation;
+            entity.IgnoreAdditionalInformation = details.IgnoreAdditionalInformation;
+            entity.IgnoreItemPositioning = details.IgnoreItemPositioning;
+            entity.IgnoreItemText = details.IgnoreItemText;
+            entity.IgnoreItemAdditionalInformation = details.IgnoreItemAdditionalInformation;
+
+            if (details.LastDeliveryCreationTestResult != null)
+            {
+                entity.LastTestRunOn = details.LastDeliveryCreationTestResult.LastTestRunOn;
+                entity.LastTestSuccessful = details.LastDeliveryCreationTestResult.LastTestSuccessful;
+                entity.LastTestResultMessage = details.LastDeliveryCreationTestResult.LastTestResultMessage;
+                entity.LastTestCreatedDeliveryDetails = JsonConvert.SerializeObject(details.LastDeliveryCreationTestResult.LastTestCreatedDeliveryDetails);
+                entity.LastTestMatchedAccountingRuleFilterIds = JsonConvert.SerializeObject(details.LastDeliveryCreationTestResult.LastTestMatchedAccountingRuleFilterIds);
+            }
+
+            return entity;
+        }
+
+        #endregion DeliveryCreationTest
 
         #region ElevationUnitType
 

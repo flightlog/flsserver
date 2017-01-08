@@ -12,6 +12,7 @@ using FLS.Server.Data.Mapping;
 using FLS.Server.Data.Resources;
 using FLS.Server.Interfaces;
 using FLS.Server.Service.Accounting.RuleEngines;
+using Newtonsoft.Json;
 using AccountingRuleFilterType = FLS.Data.WebApi.Accounting.RuleFilters.AccountingRuleFilterType;
 
 namespace FLS.Server.Service.Accounting
@@ -91,7 +92,8 @@ namespace FLS.Server.Service.Accounting
                     Logger.Debug($"Queried Flights for accounting and got {flights.Count} flights back.");
 
 
-                    var accountingRuleFilters = _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(clubId);
+                    var accountingRuleFilters =
+                        _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(clubId);
 
                     if (accountingRuleFilters == null || accountingRuleFilters.Count == 0)
                     {
@@ -103,7 +105,8 @@ namespace FLS.Server.Service.Accounting
                             _accountingRuleService.InsertAccountingRuleFilterDetails(accountingRuleFilterDetails, clubId);
                         }
 
-                        accountingRuleFilters = _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(clubId);
+                        accountingRuleFilters =
+                            _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(clubId);
                     }
 
                     accountingRuleFilters.NotNull("accountingRuleFilters");
@@ -133,7 +136,8 @@ namespace FLS.Server.Service.Accounting
 
                             if (flight.TowFlight != null)
                             {
-                                flight.TowFlight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Delivered;
+                                flight.TowFlight.ProcessStateId =
+                                    (int) FLS.Data.WebApi.Flight.FlightProcessState.Delivered;
                                 flight.TowFlight.DeliveryCreatedOn = DateTime.UtcNow;
                                 flight.TowFlight.DoNotUpdateMetaData = true;
                             }
@@ -172,7 +176,8 @@ namespace FLS.Server.Service.Accounting
             }
         }
 
-        private Delivery CreateDeliveryForFlight(Flight flight, Guid clubId, long batchId, List<RuleBasedAccountingRuleFilterDetails> accountingRuleFilters)
+        private Delivery CreateDeliveryForFlight(Flight flight, Guid clubId, long batchId,
+            List<RuleBasedAccountingRuleFilterDetails> accountingRuleFilters)
         {
             Logger.Debug(
                 $"Start creating accounting for flight: {flight} using {accountingRuleFilters.Count} recipient rule filters and {accountingRuleFilters.Count} accounting line rule filters.");
@@ -196,7 +201,7 @@ namespace FLS.Server.Service.Accounting
                 accountingRuleFilters.Where(
                     x =>
                         x.AccountingRuleFilterTypeId ==
-                        (int)AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
+                        (int) AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
             recipientRulesEngine.Run();
 
             var accountingDetailsRuleEngine = new DeliveryDetailsRulesEngine(ruleBasedDelivery, flight);
@@ -207,7 +212,7 @@ namespace FLS.Server.Service.Accounting
                 accountingRuleFilters.Where(
                     x =>
                         x.AccountingRuleFilterTypeId !=
-                        (int)AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
+                        (int) AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
             accountingLineRulesEngine.Run();
 
             Logger.Info(
@@ -241,8 +246,14 @@ namespace FLS.Server.Service.Accounting
         }
 
         #region DeliveryCreationTesting
-        public DeliveryDetails CreateDeliveryDetailsForTest(Guid flightId)
+
+        public DeliveryCreationResult CreateDeliveryDetailsForTest(Guid flightId)
         {
+            DeliveryCreationResult deliveryCreationResult = new DeliveryCreationResult()
+            {
+                FlightId = flightId
+            };
+
             try
             {
                 using (var context = _dataAccessService.CreateDbContext())
@@ -269,14 +280,29 @@ namespace FLS.Server.Service.Accounting
                             .OrderBy(c => c.StartDateTime)
                             .FirstOrDefault(f => f.FlightId == flightId);
 
-                    var accountingRuleFilters = _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(CurrentAuthenticatedFLSUserClubId);
+                    var accountingRuleFilters =
+                        _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(
+                            CurrentAuthenticatedFLSUserClubId);
 
                     accountingRuleFilters.NotNull("accountingRuleFilters");
 
 
-                    var delivery = CreateDeliveryForFlight(flight, CurrentAuthenticatedFLSUserClubId, 1, accountingRuleFilters);
+                    var delivery = CreateDeliveryForFlight(flight, CurrentAuthenticatedFLSUserClubId, 1,
+                        accountingRuleFilters);
                     var deliveryDetails = delivery.ToDeliveryDetails();
-                    return deliveryDetails;
+                    deliveryCreationResult.CreatedDeliveryDetails = deliveryDetails;
+
+                    var matchedAccountingRuleFilters = accountingRuleFilters.Where(x => x.HasMatched).ToList();
+                    var accountingFilterTypes = context.AccountingRuleFilterTypes.ToList();
+
+                    deliveryCreationResult.MatchedAccountingRuleFilterIds =
+                        matchedAccountingRuleFilters.Select(r => r.AccountingRuleFilterId).ToList();
+
+                    deliveryCreationResult.MatchedAccountingRuleFilters =
+                        matchedAccountingRuleFilters.Select(x => x.ToAccountingRuleFilterOverview(accountingFilterTypes))
+                            .ToList();
+
+                    return deliveryCreationResult;
                 }
 
             }
@@ -292,10 +318,8 @@ namespace FLS.Server.Service.Accounting
         /// </summary>
         /// <param name="deliveryCreationTestId"></param>
         /// <returns>AccountingRuleFilterTestResult</returns>
-        public AccountingRuleFiltersTestResult RunDeliveryCreationTest(Guid deliveryCreationTestId)
+        public void RunDeliveryCreationTest(Guid deliveryCreationTestId)
         {
-            var result = new AccountingRuleFiltersTestResult();
-
             try
             {
                 using (var context = _dataAccessService.CreateDbContext())
@@ -328,40 +352,362 @@ namespace FLS.Server.Service.Accounting
                             .OrderBy(c => c.StartDateTime)
                             .FirstOrDefault(f => f.FlightId == deliveryCreationTest.FlightId);
 
-                    var accountingRuleFilters = _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(CurrentAuthenticatedFLSUserClubId);
-                    
+                    var accountingRuleFilters =
+                        _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(
+                            CurrentAuthenticatedFLSUserClubId);
+
                     accountingRuleFilters.NotNull("accountingRuleFilters");
 
 
-                    var delivery = CreateDeliveryForFlight(flight, CurrentAuthenticatedFLSUserClubId, 1, accountingRuleFilters);
+                    var createdDelivery = CreateDeliveryForFlight(flight, CurrentAuthenticatedFLSUserClubId, 1,
+                        accountingRuleFilters);
                     var accountingFilterTypes = context.AccountingRuleFilterTypes.ToList();
 
-                    var matchedFilters = accountingRuleFilters.Where(x => x.HasMatched).ToList();
-                    result.DeliveryDetails = delivery.ToDeliveryDetails();
-                    result.MatchedAccountingRuleFilters =
-                        matchedFilters.Select(x => x.ToAccountingRuleFilterOverview(accountingFilterTypes)).ToList();
+                    var matchedAccountingRuleFilters = accountingRuleFilters.Where(x => x.HasMatched).ToList();
 
-                    if (result.MatchedAccountingRuleFilters.Any())
+                    // ReSharper disable once PossibleNullReferenceException
+                    deliveryCreationTest.LastTestCreatedDeliveryDetails = JsonConvert.SerializeObject(createdDelivery.ToDeliveryDetails());
+                    deliveryCreationTest.LastTestMatchedAccountingRuleFilterIds =
+                        JsonConvert.SerializeObject(
+                            matchedAccountingRuleFilters.Select(x => x.AccountingRuleFilterId).ToList());
+                    deliveryCreationTest.LastTestRunOn = DateTime.UtcNow;
+                    deliveryCreationTest.LastTestSuccessful = true;
+
+                    try
                     {
-                        result.IsTestSuccessful = true;
+                        // compare delivery with expected delivery and consider flags
+
+                        if (deliveryCreationTest.MustNotCreateDeliveryForFlight)
+                        {
+                            if (createdDelivery == null || createdDelivery.DeliveryItems == null ||
+                                createdDelivery.DeliveryItems.Any() == false)
+                            {
+                                deliveryCreationTest.LastTestSuccessful = true;
+                            }
+                            else
+                            {
+                                deliveryCreationTest.LastTestSuccessful = false;
+                            }
+
+                            deliveryCreationTest.LastTestResultMessage = "Flug erzeugt kein Lieferschein";
+                        }
+                        else
+                        {
+                            var expectedDeliveryDetails =
+                                JsonConvert.DeserializeObject<DeliveryDetails>(
+                                    deliveryCreationTest.ExpectedDeliveryDetails);
+
+                            if (deliveryCreationTest.IgnoreDeliveryInformation == false)
+                            {
+                                if (createdDelivery.DeliveryInformation != expectedDeliveryDetails.DeliveryInformation)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage =
+                                        $"DeliveryInformation doesn't match";
+                                }
+                            }
+
+                            if (deliveryCreationTest.IgnoreAdditionalInformation == false)
+                            {
+                                if (createdDelivery.AdditionalInformation !=
+                                    expectedDeliveryDetails.AdditionalInformation)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}AdditionalInformation doesn't match";
+                                }
+                            }
+
+                            var createdRecipientDetails =
+                                JsonConvert.DeserializeObject<RecipientDetails>(createdDelivery.RecipientDetails);
+
+                            if (deliveryCreationTest.IgnoreRecipientPersonId == false)
+                            {
+                                if (createdRecipientDetails.PersonId !=
+                                    expectedDeliveryDetails.RecipientDetails.PersonId)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}PersonId doesn't match";
+                                }
+                            }
+
+                            if (deliveryCreationTest.IgnoreRecipientClubMemberNumber == false)
+                            {
+                                if (createdRecipientDetails.PersonClubMemberNumber !=
+                                    expectedDeliveryDetails.RecipientDetails.PersonClubMemberNumber)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}PersonClubMemberNumber doesn't match";
+                                }
+                            }
+
+                            if (deliveryCreationTest.IgnoreRecipientName == false)
+                            {
+                                if (createdRecipientDetails.Lastname !=
+                                    expectedDeliveryDetails.RecipientDetails.Lastname)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}Lastname doesn't match";
+                                }
+
+                                if (createdRecipientDetails.Firstname !=
+                                    expectedDeliveryDetails.RecipientDetails.Firstname)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}Firstname doesn't match";
+                                }
+                            }
+
+                            if (deliveryCreationTest.IgnoreRecipientAddress == false)
+                            {
+                                if (createdRecipientDetails.AddressLine1 !=
+                                    expectedDeliveryDetails.RecipientDetails.AddressLine1)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}AddressLine1 doesn't match";
+                                }
+
+                                if (createdRecipientDetails.AddressLine2 !=
+                                    expectedDeliveryDetails.RecipientDetails.AddressLine2)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}AddressLine2 doesn't match";
+                                }
+
+                                if (createdRecipientDetails.ZipCode != expectedDeliveryDetails.RecipientDetails.ZipCode)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}ZipCode doesn't match";
+                                }
+
+                                if (createdRecipientDetails.City != expectedDeliveryDetails.RecipientDetails.City)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}City doesn't match";
+                                }
+
+                                if (createdRecipientDetails.CountryName !=
+                                    expectedDeliveryDetails.RecipientDetails.CountryName)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}CountryName doesn't match";
+                                }
+                            }
+
+                            if (createdDelivery.DeliveryItems.Count != expectedDeliveryDetails.DeliveryItems.Count)
+                            {
+                                deliveryCreationTest.LastTestSuccessful = false;
+                                deliveryCreationTest.LastTestResultMessage +=
+                                    $"{Environment.NewLine}Numbers of delivery items doesn't match";
+                            }
+
+                            foreach (var expectedDeliveryItem in expectedDeliveryDetails.DeliveryItems)
+                            {
+                                DeliveryItem createdItem = null;
+
+                                if (deliveryCreationTest.IgnoreItemPositioning == false)
+                                {
+                                    createdItem =
+                                        createdDelivery.DeliveryItems.FirstOrDefault(
+                                            x => x.Position == expectedDeliveryItem.Position);
+                                }
+                                else
+                                {
+                                    createdItem =
+                                        createdDelivery.DeliveryItems.FirstOrDefault(
+                                            x => x.ArticleNumber == expectedDeliveryItem.ArticleNumber);
+                                }
+
+                                if (createdItem == null)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}Item at position {expectedDeliveryItem.Position} or with ArticleNumber {expectedDeliveryItem.ArticleNumber} not found!";
+                                    continue;
+                                }
+
+                                if (createdItem.ArticleNumber != expectedDeliveryItem.ArticleNumber)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}Expected ArticleNumber {expectedDeliveryItem.ArticleNumber} doesn't match with {createdItem.ArticleNumber} for expected item at position {expectedDeliveryItem.Position}";
+                                }
+
+                                if (createdItem.Quantity != expectedDeliveryItem.Quantity)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}Expected Quantity {expectedDeliveryItem.Quantity} doesn't match with {createdItem.Quantity} for expected item at position {expectedDeliveryItem.Position}";
+                                }
+
+                                if (createdItem.DiscountInPercent != expectedDeliveryItem.DiscountInPercent)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}Expected DiscountInPercent {expectedDeliveryItem.DiscountInPercent} doesn't match with {createdItem.DiscountInPercent} for expected item at position {expectedDeliveryItem.Position}";
+                                }
+
+                                if (createdItem.UnitType != expectedDeliveryItem.UnitType)
+                                {
+                                    deliveryCreationTest.LastTestSuccessful = false;
+                                    deliveryCreationTest.LastTestResultMessage +=
+                                        $"{Environment.NewLine}Expected UnitType {expectedDeliveryItem.UnitType} doesn't match with {createdItem.UnitType} for expected item at position {expectedDeliveryItem.Position}";
+                                }
+
+                                if (deliveryCreationTest.IgnoreItemText == false)
+                                {
+                                    if (createdItem.ItemText != expectedDeliveryItem.ItemText)
+                                    {
+                                        deliveryCreationTest.LastTestSuccessful = false;
+                                        deliveryCreationTest.LastTestResultMessage +=
+                                            $"{Environment.NewLine}Expected ItemText {expectedDeliveryItem.ItemText} doesn't match with {createdItem.ItemText} for expected item at position {expectedDeliveryItem.Position}";
+                                    }
+                                }
+
+                                if (deliveryCreationTest.IgnoreItemAdditionalInformation == false)
+                                {
+                                    if (createdItem.AdditionalInformation != expectedDeliveryItem.AdditionalInformation)
+                                    {
+                                        deliveryCreationTest.LastTestSuccessful = false;
+                                        deliveryCreationTest.LastTestResultMessage +=
+                                            $"{Environment.NewLine}Expected AdditionalInformation {expectedDeliveryItem.AdditionalInformation} doesn't match with {createdItem.AdditionalInformation} for expected item at position {expectedDeliveryItem.Position}";
+                                    }
+                                }
+                            }
+
+                            if (createdDelivery.DeliveryItems.Count > expectedDeliveryDetails.DeliveryItems.Count)
+                            {
+                                foreach (var createdItem in createdDelivery.DeliveryItems)
+                                {
+                                    if (expectedDeliveryDetails.DeliveryItems.Any(
+                                            x => x.ArticleNumber == createdItem.ArticleNumber) == false)
+                                    {
+                                        deliveryCreationTest.LastTestSuccessful = false;
+                                        deliveryCreationTest.LastTestResultMessage +=
+                                            $"{Environment.NewLine}Item with ArticleNumber {createdItem.ArticleNumber} not found in expected delivery items! Created item to much.";
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
                     }
-                    else
+                    catch (Exception exception)
                     {
-                        result.Errors = $"No accounting rule filters has been matched for the flight: {flight}{Environment.NewLine}{result.DeliveryDetails}";
+                        Logger.Error(exception, $"Error while testing the delivery creation. Error-Message: {exception.Message}");
+                        deliveryCreationTest.LastTestSuccessful = false;
+                        deliveryCreationTest.LastTestResultMessage += $"{Environment.NewLine}Error while testing the delivery creation. Error-Message: {exception.Message}";
+                    }
+
+                    if (context.ChangeTracker.HasChanges())
+                    {
+                        context.SaveChanges();
                     }
                 }
-
             }
             catch (Exception ex)
             {
                 var error = $"Error while trying to create accounting for flights. Message: {ex.Message}";
                 Logger.Error(ex, error);
+            }
+        }
 
-                result.IsTestSuccessful = false;
-                result.Errors += $"Exception: {error}";
+        public List<DeliveryCreationTestOverview> GetDeliveryCreationTestOverviews()
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                List<DeliveryCreationTest> deliveryCreationTests = context.DeliveryCreationTests.Where(c => c.ClubId == CurrentAuthenticatedFLSUserClubId).OrderBy(t => t.DeliveryCreationTestName).ToList();
+
+                var overviewList = deliveryCreationTests.Select(x => new DeliveryCreationTestOverview()
+                {
+                    DeliveryCreationTestId = x.DeliveryCreationTestId,
+                    FlightId = x.FlightId,
+                    DeliveryCreationTestName = x.DeliveryCreationTestName,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    LastTestSuccessful = x.LastTestSuccessful,
+                    LastTestResultMessage = x.LastTestResultMessage,
+                    LastTestRunOn = x.LastTestRunOn
+                }).ToList();
+
+                SetDeliveryCreationTestOverviewSecurity(overviewList);
+                return overviewList;
+            }
+        }
+
+        public DeliveryCreationTestDetails GetDeliveryCreationTestDetails(Guid deliveryCreationTestId)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var deliveryCreationTest = context.DeliveryCreationTests.FirstOrDefault(c => c.DeliveryCreationTestId == deliveryCreationTestId && c.ClubId == CurrentAuthenticatedFLSUserClubId);
+
+                var deliveryCreationTestDetails = deliveryCreationTest.ToDeliveryCreationTestDetails();
+                SetDeliveryCreationTestDetailsSecurity(deliveryCreationTestDetails);
+                return deliveryCreationTestDetails;
+            }
+        }
+
+        public void InsertDeliveryCreationTestDetails(DeliveryCreationTestDetails deliveryCreationTestDetails)
+        {
+            var deliveryCreationTest = deliveryCreationTestDetails.ToDeliveryCreationTest(CurrentAuthenticatedFLSUserClubId);
+            deliveryCreationTest.EntityNotNull("DeliveryCreationTest", Guid.Empty);
+
+            if (IsCurrentUserInRoleClubAdministrator == false)
+            {
+                throw new UnauthorizedAccessException("You must be a club administrator to insert a new DeliveryCreationTest!");
             }
 
-            return result;
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                context.DeliveryCreationTests.Add(deliveryCreationTest);
+                context.SaveChanges();
+            }
+
+            //Map it back to details
+            deliveryCreationTest.ToDeliveryCreationTestDetails(deliveryCreationTestDetails);
+        }
+        public void UpdateDeliveryCreationTestDetails(DeliveryCreationTestDetails currentDeliveryCreationTestDetails)
+        {
+            currentDeliveryCreationTestDetails.ArgumentNotNull("currentDeliveryCreationTestDetails");
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var original = context.DeliveryCreationTests.FirstOrDefault(x => x.DeliveryCreationTestId == currentDeliveryCreationTestDetails.DeliveryCreationTestId);
+                original.EntityNotNull("DeliveryCreationTest", currentDeliveryCreationTestDetails.DeliveryCreationTestId);
+
+                currentDeliveryCreationTestDetails.ToDeliveryCreationTest(CurrentAuthenticatedFLSUserClubId, original);
+
+                if (context.ChangeTracker.HasChanges())
+                {
+                    context.SaveChanges();
+                    original.ToDeliveryCreationTestDetails(currentDeliveryCreationTestDetails);
+                }
+            }
+        }
+
+        public void DeleteDeliveryCreationTest(Guid deliveryCreationTestId)
+        {
+            if (IsCurrentUserInRoleClubAdministrator == false)
+            {
+                throw new UnauthorizedAccessException("You must be a club administrator to delete a DeliveryCreationTest!");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var original = context.DeliveryCreationTests.FirstOrDefault(x => x.DeliveryCreationTestId == deliveryCreationTestId);
+                original.EntityNotNull("DeliveryCreationTest", deliveryCreationTestId);
+
+                context.DeliveryCreationTests.Remove(original);
+                context.SaveChanges();
+            }
         }
         #endregion DeliveryCreationTesting
 
@@ -581,7 +927,65 @@ namespace FLS.Server.Service.Accounting
                 details.CanDeleteRecord = false;
             }
         }
+
+        private void SetDeliveryCreationTestOverviewSecurity(List<DeliveryCreationTestOverview> overviewList)
+        {
+            if (CurrentAuthenticatedFLSUser == null)
+            {
+                Logger.Warn(string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
+                foreach (var overview in overviewList)
+                {
+                    overview.CanUpdateRecord = false;
+                    overview.CanDeleteRecord = false;
+                }
+
+                return;
+            }
+
+            foreach (var overview in overviewList)
+            {
+                if (IsCurrentUserInRoleClubAdministrator)
+                {
+                    overview.CanUpdateRecord = true;
+                    overview.CanDeleteRecord = true;
+                }
+                else
+                {
+                    overview.CanUpdateRecord = false;
+                    overview.CanDeleteRecord = false;
+                }
+            }
+        }
+
+        private void SetDeliveryCreationTestDetailsSecurity(DeliveryCreationTestDetails details)
+        {
+            if (details == null)
+            {
+                Logger.Error(string.Format("DeliveryDetails is null while trying to set security properties"));
+                return;
+            }
+
+            if (CurrentAuthenticatedFLSUser == null)
+            {
+                Logger.Warn(string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
+                details.CanUpdateRecord = false;
+                details.CanDeleteRecord = false;
+                return;
+            }
+
+            if (IsCurrentUserInRoleClubAdministrator)
+            {
+                details.CanUpdateRecord = true;
+                details.CanDeleteRecord = true;
+            }
+            else
+            {
+                details.CanUpdateRecord = false;
+                details.CanDeleteRecord = false;
+            }
+        }
         #endregion Security
     }
 
 }
+

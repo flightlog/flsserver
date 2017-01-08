@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Practices.Unity;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Accounting;
+using FLS.Data.WebApi.Accounting.Testing;
 
 namespace FLS.Server.Tests.ServiceTests
 {
@@ -26,7 +27,7 @@ namespace FLS.Server.Tests.ServiceTests
         [DeploymentItem(@"TestData\FlightInvoiceTestdata.csv")]
         [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", @"|DataDirectory|\TestData\FlightInvoiceTestdata.csv", "FlightInvoiceTestdata#csv", 
             DataAccessMethod.Sequential)]
-        public void TestAccountingRuleFilterTest()
+        public void DeliveryCreationTestingTest()
         {
             
             var useCase = TestContext.DataRow["UseCase"].ToString();
@@ -128,26 +129,30 @@ namespace FLS.Server.Tests.ServiceTests
 
             #endregion Flight preparation
 
-            #region accounting rule filter test
+            #region delivery creation test
+            var deliveryCreationTestDetails = new DeliveryCreationTestDetails();
+            deliveryCreationTestDetails.FlightId = flightDetails.FlightId;
+            deliveryCreationTestDetails.DeliveryCreationTestName = "Glider flight delivery creation test";
+            
+            var expectedDelivery = DeliveryService.CreateDeliveryDetailsForTest(flightDetails.FlightId);
+            Assert.IsNotNull(expectedDelivery.CreatedDeliveryDetails);
 
-            var accountingRuleFilters = AccountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(CurrentIdentityUser.ClubId);
+            deliveryCreationTestDetails.ExpectedDeliveryDetails = expectedDelivery.CreatedDeliveryDetails;
+            deliveryCreationTestDetails.ExpectedMatchedAccountingRuleFilterIds =
+                expectedDelivery.MatchedAccountingRuleFilterIds;
 
-            if (accountingRuleFilters == null || accountingRuleFilters.Count == 0)
-            {
-                var accountingRuleFilterDetailsList =
-                    AccountingRuleFilterFactory.CreateAccountingRuleFilterDetails();
+            DeliveryService.InsertDeliveryCreationTestDetails(deliveryCreationTestDetails);
+            DeliveryService.RunDeliveryCreationTest(deliveryCreationTestDetails.DeliveryCreationTestId);
 
-                foreach (var accountingRuleFilterDetails in accountingRuleFilterDetailsList)
-                {
-                    AccountingRuleService.InsertAccountingRuleFilterDetails(accountingRuleFilterDetails, CurrentIdentityUser.ClubId);
-                }
-            }
+            var testResult =
+                DeliveryService.GetDeliveryCreationTestDetails(deliveryCreationTestDetails.DeliveryCreationTestId);
 
-            var testResult = DeliveryService.TestAccountingRuleFilters(flightDetails.FlightId);
+            Assert.IsNotNull(testResult);
+            Assert.IsNotNull(testResult.LastDeliveryCreationTestResult);
+            Assert.IsNotNull(testResult.LastDeliveryCreationTestResult.LastTestSuccessful);
+            Assert.IsTrue(testResult.LastDeliveryCreationTestResult.LastTestSuccessful.Value);
 
-            Assert.IsTrue(testResult.IsTestSuccessful);
-
-            #endregion accounting rule filter test
+            #endregion delivery creation test
         }
 
     }

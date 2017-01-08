@@ -20,15 +20,24 @@ namespace FLS.Server.Data.DbEntities
 
         public bool IsActive { get; set; }
 
+        [StringLength(250)]
         public string DeliveryCreationTestName { get; set; }
 
         public string Description { get; set; }
 
         public string ExpectedDeliveryDetails { get; set; }
 
+        public string ExpectedMatchedAccountingRuleFilterIds { get; set; }
+
+        public bool MustNotCreateDeliveryForFlight { get; set; }
+
         public bool IgnoreRecipientName { get; set; }
 
         public bool IgnoreRecipientAddress { get; set; }
+
+        public bool IgnoreRecipientPersonId { get; set; }
+
+        public bool IgnoreRecipientClubMemberNumber { get; set; }
 
         public bool IgnoreDeliveryInformation { get; set; }
 
@@ -41,6 +50,15 @@ namespace FLS.Server.Data.DbEntities
         public bool IgnoreItemAdditionalInformation { get; set; }
 
         public DateTime? LastTestRunOn { get; set; }
+
+        public bool? LastTestSuccessful { get; set; }
+
+        public string LastTestResultMessage { get; set; }
+
+        public string LastTestCreatedDeliveryDetails { get; set; }
+
+        public string LastTestMatchedAccountingRuleFilterIds { get; set; }
+
 
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }

@@ -56,10 +56,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounting\DeliveryOverview.cs" />
-    <Compile Include="Accounting\Testing\DeliveryCreationTestResultDetails.cs" />
-    <Compile Include="Accounting\Testing\DeliveryCreationTestResultOverview.cs" />
+    <Compile Include="Accounting\Testing\DeliveryCreationResult.cs" />
+    <Compile Include="Accounting\Testing\LastDeliveryCreationTestResult.cs" />
+    <Compile Include="Accounting\Testing\DeliveryCreationTestOverview.cs" />
     <Compile Include="Accounting\Testing\DeliveryCreationTestDetails.cs" />
-    <Compile Include="Accounting\Testing\AccountingRuleFiltersTestResult.cs" />
     <Compile Include="AircraftReservation\AircraftReservationDetails.cs" />
     <Compile Include="AircraftReservation\AircraftReservationOverview.cs" />
     <Compile Include="AircraftReservation\AircraftReservationTypeListItem.cs" />

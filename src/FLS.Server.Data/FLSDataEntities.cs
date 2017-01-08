@@ -825,6 +825,9 @@ namespace FLS.Server.Data
         {
             #region Soft-Delete settings
             //Soft-Delete
+            modelBuilder.Entity<AccountingRuleFilter>()
+                       .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                       .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Aircraft>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
@@ -852,6 +855,9 @@ namespace FLS.Server.Data
             modelBuilder.Entity<DeliveryItem>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<DeliveryCreationTest>()
+                       .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                       .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<EmailTemplate>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
@@ -871,9 +877,6 @@ namespace FLS.Server.Data
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<InOutboundPoint>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<AccountingRuleFilter>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<LanguageTranslation>()
