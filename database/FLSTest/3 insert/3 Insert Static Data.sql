@@ -677,7 +677,11 @@ INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comme
 
 INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (5, N'Flugplan eröffnet', N'Flugplan eröffnet', SYSUTCDATETIME())
 
+INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (8, N'Möglicherweise gestartet', N'Keine Startinformationen vorhanden.', SYSUTCDATETIME())
+
 INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (10, N'Gestartet', N'Flugzeug gestartet / in der Luft', SYSUTCDATETIME())
+
+INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (15, N'Möglicherweise gelandet', N'Keine Landeinformationen vorhanden.', SYSUTCDATETIME())
 
 INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (20, N'Gelandet', N'Flugzeug gelandet', SYSUTCDATETIME())
 
