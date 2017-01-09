@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Location;
 using FLS.Server.Service;
 using FLS.Server.WebApi.ActionFilters;
@@ -39,6 +40,20 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult GetLocationOverviews()
         {
             var locations = _locationService.GetLocationOverviews(false);
+            return Ok(locations);
+        }
+
+        /// <summary>
+        /// Gets the location overviews.
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{pageStart:int}/{pageSize:int}")]
+        [ResponseType(typeof(PagedList<LocationOverview>))]
+        public IHttpActionResult GetPagedLocationOverviews(int pageStart, int pageSize)
+        {
+            var locations = _locationService.GetPagedLocationOverviews(pageStart, pageSize, false);
             return Ok(locations);
         }
 

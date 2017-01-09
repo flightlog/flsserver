@@ -60,6 +60,7 @@
     <Compile Include="Extensions\LinqExtensions.cs" />
     <Compile Include="Extensions\ByteExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Paging\PagedQuery.cs" />
     <Compile Include="Resolvers\DynamicContractResolver.cs" />
     <Compile Include="Utils\AssemblyBuildInfo.cs" />
     <Compile Include="Utils\AssemblyUtil.cs" />

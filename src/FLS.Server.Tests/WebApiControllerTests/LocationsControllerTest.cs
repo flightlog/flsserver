@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using FLS.Common.Extensions;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Location;
 using FLS.Server.TestInfrastructure;
 using FLS.Server.Tests.Helpers;
@@ -22,6 +23,16 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var response = GetAsync<IEnumerable<LocationOverview>>("/api/v1/locations").Result;
 
             Assert.IsTrue(response.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("WebApi")]
+        public void GetPagedLocationOverviewWebApiTest()
+        {
+            var pageSize = 2;
+            var response = GetAsync<PagedList<LocationOverview>>("/api/v1/locations/1/" + pageSize).Result;
+
+            Assert.AreEqual(pageSize, response.Items.Count, 0, "PageSize does not fit with items count in list.");
         }
 
         [TestMethod]

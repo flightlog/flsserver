@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using FLS.Common.Exceptions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Location;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
@@ -147,7 +149,38 @@ namespace FLS.Server.Service
             SetLocationOverviewSecurity(locationOverviews);
             return locationOverviews;
         }
-        
+
+        public PagedList<LocationOverview> GetPagedLocationOverviews(int? pageStart, int? pageSize, bool airfieldsOnly = false)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                IQueryable<Location> locations = context.Locations
+                        .Include(Constants.Country)
+                        .Include(Constants.LocationType)
+                        .Include("LengthUnitType")
+                        .Include("ElevationUnitType")
+                        .OrderBy(l => l.LocationName);
+
+                if (airfieldsOnly)
+                {
+                    locations = locations.Where(l => l.LocationType.IsAirfield);
+                }
+
+                var pagedQuery = new PagedQuery<Location>(locations, pageStart, pageSize);
+
+                var locationOverviews = pagedQuery.Items.ToList().Select(location => location.ToLocationOverview())
+                .Where(loc => loc != null)
+                .ToList();
+
+                SetLocationOverviewSecurity(locationOverviews);
+
+                var pagedList = new PagedList<LocationOverview>(locationOverviews, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
+        }
+
         /// <summary>
         /// Gets the locations including the referenced objects <see cref="Country"/> and <see cref="FLS.Server.Data.DbEntities.LocationType"/>.
         /// </summary>
