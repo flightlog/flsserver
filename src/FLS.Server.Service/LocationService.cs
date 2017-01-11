@@ -151,7 +151,7 @@ namespace FLS.Server.Service
             return locationOverviews;
         }
 
-        public PagedList<LocationOverview> GetPagedLocationOverviews(int? pageStart, int? pageSize, string orderBy, bool airfieldsOnly = false)
+        public PagedList<LocationOverview> GetPagedLocationOverviews(int? pageStart, int? pageSize, string orderBy, LocationSearchFilter searchFilter)
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
@@ -162,10 +162,31 @@ namespace FLS.Server.Service
                     .Include("ElevationUnitType")
                     .OrderByPropertyNames(orderBy);
 
-                if (airfieldsOnly)
+                if (searchFilter != null)
                 {
-                    locations = locations.Where(l => l.LocationType.IsAirfield);
+                    var splittedSearchString = searchFilter.SearchText.Split(' ');
+
+                    foreach (var searchText in splittedSearchString)
+                    {
+                        if (searchFilter.SearchInAirportFrequency)
+                            locations = locations.Where(s => s.AirportFrequency.Contains(searchText));
+                        if (searchFilter.SearchInCountryName)
+                            locations = locations.Where(s => s.Country.CountryName.Contains(searchText));
+                        if (searchFilter.SearchInDescription)
+                            locations = locations.Where(s => s.Description.Contains(searchText));
+                        if (searchFilter.SearchInLocationName)
+                            locations = locations.Where(s => s.LocationName.Contains(searchText));
+                        if (searchFilter.SearchInIcaoCode)
+                            locations = locations.Where(s => s.IcaoCode.Contains(searchText));
+                        
+                    }
+
                 }
+
+                //if (airfieldsOnly)
+                //{
+                //    locations = locations.Where(l => l.LocationType.IsAirfield);
+                //}
 
                 var pagedQuery = new PagedQuery<Location>(locations, pageStart, pageSize);
 

@@ -41,16 +41,26 @@ namespace FLS.Server.Tests.WebApiControllerTests
         {
             var pageSize = 2000;
             var orderBy = "Locationname";
-            var response = GetAsync<PagedList<LocationOverview>>($"/api/v1/locations/1/{pageSize}/{orderBy}").Result;
+            var filter = new LocationSearchFilter()
+            {
+                SearchText = "Speck",
+                SearchInLocationName = true,
+                //SearchInIcaoCode = true
+            };
 
-            Assert.IsTrue(pageSize >= response.Items.Count, "PageSize does not fit with items count in list.");
+            var response = PostAsync<LocationSearchFilter>(filter, $"/api/v1/locations/1/{pageSize}/{orderBy}").Result;
+
+            var result = ConvertToModel<PagedList<LocationOverview>>(response);
+
+            Assert.IsTrue(pageSize >= result.Items.Count, "PageSize does not fit with items count in list.");
 
             orderBy = "LocationShortName:desc,Locationname:desc";
-            var responseDesc = GetAsync<PagedList<LocationOverview>>($"/api/v1/locations/1/{pageSize}/{orderBy}").Result;
+            var responseDesc = PostAsync<LocationSearchFilter>(filter, $"/api/v1/locations/1/{pageSize}/{orderBy}").Result;
 
-            Assert.IsTrue(pageSize >= responseDesc.Items.Count, "PageSize does not fit with items count in list.");
+            var resultDesc = ConvertToModel<PagedList<LocationOverview>>(responseDesc);
+            Assert.IsTrue(pageSize >= resultDesc.Items.Count, "PageSize does not fit with items count in list.");
 
-            Assert.IsTrue(response.Items.First().Id == responseDesc.Items.Last().Id);
+            Assert.IsTrue(result.Items.First().Id == resultDesc.Items.Last().Id);
         }
 
         [TestMethod]
