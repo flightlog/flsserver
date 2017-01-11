@@ -37,6 +37,24 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
         [TestMethod]
         [TestCategory("WebApi")]
+        public void GetPagedOrderByLocationOverviewWebApiTest()
+        {
+            var pageSize = 2000;
+            var orderBy = "Locationname";
+            var response = GetAsync<PagedList<LocationOverview>>($"/api/v1/locations/1/{pageSize}/{orderBy}").Result;
+
+            Assert.IsTrue(pageSize >= response.Items.Count, "PageSize does not fit with items count in list.");
+
+            orderBy = "LocationShortName:desc,Locationname:desc";
+            var responseDesc = GetAsync<PagedList<LocationOverview>>($"/api/v1/locations/1/{pageSize}/{orderBy}").Result;
+
+            Assert.IsTrue(pageSize >= responseDesc.Items.Count, "PageSize does not fit with items count in list.");
+
+            Assert.IsTrue(response.Items.First().Id == responseDesc.Items.Last().Id);
+        }
+
+        [TestMethod]
+        [TestCategory("WebApi")]
         public void GetLocationDetailsWebApiTest()
         {
             var response = GetAsync<IEnumerable<LocationOverview>>("/api/v1/locations").Result;

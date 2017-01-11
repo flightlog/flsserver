@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FLS.Common.Exceptions;
+using FLS.Common.Extensions;
 using FLS.Common.Paging;
 using FLS.Common.Validators;
 using FLS.Data.WebApi;
@@ -150,16 +151,16 @@ namespace FLS.Server.Service
             return locationOverviews;
         }
 
-        public PagedList<LocationOverview> GetPagedLocationOverviews(int? pageStart, int? pageSize, bool airfieldsOnly = false)
+        public PagedList<LocationOverview> GetPagedLocationOverviews(int? pageStart, int? pageSize, string orderBy, bool airfieldsOnly = false)
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
                 IQueryable<Location> locations = context.Locations
-                        .Include(Constants.Country)
-                        .Include(Constants.LocationType)
-                        .Include("LengthUnitType")
-                        .Include("ElevationUnitType")
-                        .OrderBy(l => l.LocationName);
+                    .Include(Constants.Country)
+                    .Include(Constants.LocationType)
+                    .Include("LengthUnitType")
+                    .Include("ElevationUnitType")
+                    .OrderByPropertyNames(orderBy);
 
                 if (airfieldsOnly)
                 {
