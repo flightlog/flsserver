@@ -141,7 +141,7 @@
     <Compile Include="Location\LocationDetails.cs" />
     <Compile Include="Location\LocationData.cs" />
     <Compile Include="Location\LocationListItem.cs" />
-    <Compile Include="Location\LocationSearchFilter.cs" />
+    <Compile Include="Location\LocationOverviewSearchFilter.cs" />
     <Compile Include="Location\LocationOverview.cs" />
     <Compile Include="Location\LocationType.cs" />
     <Compile Include="Location\LocationTypeListItem.cs" />
