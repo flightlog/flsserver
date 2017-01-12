@@ -30,10 +30,11 @@ namespace FLS.Server.Tests.WebApiControllerTests
         public void GetPagedLocationOverviewWebApiTest()
         {
             var pageSize = 2;
-            var filter = new LocationOverviewSearchFilter();
-            filter.Sorting.Add("LocationName", "asc");
+            var searchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
+            searchFilter.SearchFilter = new LocationOverviewSearchFilter();
+            searchFilter.Sorting.Add("LocationName", "asc");
 
-            var response = PostAsync<LocationOverviewSearchFilter>(filter, $"/api/v1/locations/page/1/{pageSize}").Result;
+            var response = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/{pageSize}").Result;
 
             var result = ConvertToModel<PagedList<LocationOverview>>(response);
 
@@ -44,20 +45,21 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void GetPagedOrderByLocationOverviewWebApiTest()
         {
-            var orderBy = "Locationname";
-            var filter = new LocationOverviewSearchFilter();
-            filter.Sorting.Add("LocationName","asc");
+            var searchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
+            searchFilter.SearchFilter = new LocationOverviewSearchFilter();
+            searchFilter.Sorting.Add("LocationName", "asc");
 
-            var response = PostAsync<LocationOverviewSearchFilter>(filter, $"/api/v1/locations/page/1/100").Result;
+            var response = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
 
             var result = ConvertToModel<PagedList<LocationOverview>>(response);
 
             Assert.IsTrue(2 <= result.Items.Count, "PageSize does not fit with items count in list.");
 
-            filter = new LocationOverviewSearchFilter();
-            filter.Sorting.Add("LocationShortName", "asc");
-            filter.Sorting.Add("LocationName", "desc");
-            var responseDesc = PostAsync<LocationOverviewSearchFilter>(filter, $"/api/v1/locations/page/1/100").Result;
+            searchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
+            searchFilter.SearchFilter = new LocationOverviewSearchFilter();
+            searchFilter.Sorting.Add("LocationShortName", "asc");
+            searchFilter.Sorting.Add("LocationName", "desc");
+            var responseDesc = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
 
             var resultDesc = ConvertToModel<PagedList<LocationOverview>>(responseDesc);
             Assert.IsTrue(2 <= resultDesc.Items.Count, "PageSize does not fit with items count in list.");
@@ -69,7 +71,8 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void GetSearchFilterLocationOverviewWebApiTest()
         {
-            var filter = new LocationOverviewSearchFilter()
+            var searchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
+            searchFilter.SearchFilter = new LocationOverviewSearchFilter()
             {
                 LocationName = "Speck",
                 IcaoCode = "LSZK",
@@ -77,38 +80,51 @@ namespace FLS.Server.Tests.WebApiControllerTests
                 IsAirfield = true,
             };
 
-            var response = PostAsync<LocationOverviewSearchFilter>(filter, $"/api/v1/locations/page/1/100").Result;
+            var response = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
 
             var result = ConvertToModel<PagedList<LocationOverview>>(response);
 
-            Assert.AreEqual(1, result.Items.Count, "Search filter returned to many records.");
+            Assert.AreEqual(1, result.Items.Count, "Search filter returned to many records in step 1.");
 
-            filter = new LocationOverviewSearchFilter()
+            searchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
+            searchFilter.SearchFilter = new LocationOverviewSearchFilter()
             {
-                LocationName = "Speck",
+                LocationName = "Speck"
             };
-            var response2 = PostAsync<LocationOverviewSearchFilter>(filter, $"/api/v1/locations/page/1/100").Result;
+            var response2 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
 
             var result2 = ConvertToModel<PagedList<LocationOverview>>(response2);
-            Assert.AreEqual(1, result2.Items.Count, "Search filter returned to many records.");
+            Assert.AreEqual(1, result2.Items.Count, "Search filter returned to many records in step 2.");
 
-            filter = new LocationOverviewSearchFilter()
+            searchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
+            searchFilter.SearchFilter = new LocationOverviewSearchFilter()
             {
-                IcaoCode = "LSZK",
+                IcaoCode = "LSZK"
             };
-            var response3 = PostAsync<LocationOverviewSearchFilter>(filter, $"/api/v1/locations/page/1/100").Result;
+            var response3 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
 
             var result3 = ConvertToModel<PagedList<LocationOverview>>(response3);
-            Assert.AreEqual(1, result3.Items.Count, "Search filter returned to many records.");
+            Assert.AreEqual(1, result3.Items.Count, "Search filter returned to many records in step 3.");
 
-            filter = new LocationOverviewSearchFilter()
+            searchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
+            searchFilter.SearchFilter = new LocationOverviewSearchFilter()
             {
                 IsAirfield = true
             };
-            var response4 = PostAsync<LocationOverviewSearchFilter>(filter, $"/api/v1/locations/page/1/100").Result;
+            var response4 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
 
             var result4 = ConvertToModel<PagedList<LocationOverview>>(response4);
             Assert.IsTrue(result4.Items.Count > 1, "It should have more than 1 airfield in locations table.");
+
+            searchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
+            searchFilter.SearchFilter = new LocationOverviewSearchFilter()
+            {
+                LocationName = "sPECK"
+            };
+            var response5 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
+
+            var result5 = ConvertToModel<PagedList<LocationOverview>>(response5);
+            Assert.AreEqual(1, result5.Items.Count, "Search filter returned to many records in step 5.");
         }
 
         [TestMethod]

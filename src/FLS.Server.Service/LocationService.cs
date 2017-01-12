@@ -151,13 +151,13 @@ namespace FLS.Server.Service
             return locationOverviews;
         }
 
-        public PagedList<LocationOverview> GetPagedLocationOverviews(int? pageStart, int? pageSize, LocationOverviewSearchFilter searchFilter)
+        public PagedList<LocationOverview> GetPagedLocationOverviews(int? pageStart, int? pageSize, PageableSearchFilter<LocationOverviewSearchFilter> pageableSearchFilter)
         {
-            if (searchFilter == null) searchFilter = new LocationOverviewSearchFilter();
-            if (searchFilter.Sorting == null || searchFilter.Sorting.Any() == false)
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
-                searchFilter.Sorting = new Dictionary<string, string>();
-                searchFilter.Sorting.Add("CreatedOn", "asc");
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
             }
 
 
@@ -168,31 +168,32 @@ namespace FLS.Server.Service
                     .Include(Constants.LocationType)
                     .Include("LengthUnitType")
                     .Include("ElevationUnitType")
-                    .OrderByPropertyNames(searchFilter.Sorting);
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
 
-                locations = locations.WhereIf(searchFilter.LocationName,
-                        location => location.LocationName.Contains(searchFilter.LocationName));
-                locations = locations.WhereIf(searchFilter.IcaoCode,
-                    location => location.IcaoCode.Contains(searchFilter.IcaoCode));
-                locations = locations.WhereIf(searchFilter.LocationTypeName,
-                    location => location.LocationType.LocationTypeName.Contains(searchFilter.LocationTypeName));
-                locations = locations.WhereIf(searchFilter.CountryName,
-                    location => location.Country.CountryName.Contains(searchFilter.CountryName));
-                locations = locations.WhereIf(searchFilter.AirportFrequency,
-                    location => location.AirportFrequency.Contains(searchFilter.AirportFrequency));
-                locations = locations.WhereIf(searchFilter.Description,
-                    location => location.Description.Contains(searchFilter.Description));
-                locations = locations.WhereIf(searchFilter.LocationShortName,
-                    location => location.LocationShortName.Contains(searchFilter.LocationShortName));
+                var filter = pageableSearchFilter.SearchFilter;
+                locations = locations.WhereIf(filter.LocationName,
+                        location => location.LocationName.ToLower().Contains(filter.LocationName.ToLower()));
+                locations = locations.WhereIf(filter.IcaoCode,
+                    location => location.IcaoCode.ToLower().Contains(filter.IcaoCode.ToLower()));
+                locations = locations.WhereIf(filter.LocationTypeName,
+                    location => location.LocationType.LocationTypeName.ToLower().Contains(filter.LocationTypeName.ToLower()));
+                locations = locations.WhereIf(filter.CountryName,
+                    location => location.Country.CountryName.ToLower().Contains(filter.CountryName.ToLower()));
+                locations = locations.WhereIf(filter.AirportFrequency,
+                    location => location.AirportFrequency.ToLower().Contains(filter.AirportFrequency.ToLower()));
+                locations = locations.WhereIf(filter.Description,
+                    location => location.Description.ToLower().Contains(filter.Description.ToLower()));
+                locations = locations.WhereIf(filter.LocationShortName,
+                    location => location.LocationShortName.ToLower().Contains(filter.LocationShortName.ToLower()));
 
-                if (searchFilter.IsAirfield.HasValue)
-                    locations = locations.Where(l => l.LocationType.IsAirfield == searchFilter.IsAirfield.Value);
+                if (filter.IsAirfield.HasValue)
+                    locations = locations.Where(l => l.LocationType.IsAirfield == filter.IsAirfield.Value);
 
-                if (searchFilter.IsInboundRouteRequired.HasValue)
-                    locations = locations.Where(l => l.IsInboundRouteRequired == searchFilter.IsInboundRouteRequired.Value);
+                if (filter.IsInboundRouteRequired.HasValue)
+                    locations = locations.Where(l => l.IsInboundRouteRequired == filter.IsInboundRouteRequired.Value);
 
-                if (searchFilter.IsOutboundRouteRequired.HasValue)
-                    locations = locations.Where(l => l.IsOutboundRouteRequired == searchFilter.IsOutboundRouteRequired.Value);
+                if (filter.IsOutboundRouteRequired.HasValue)
+                    locations = locations.Where(l => l.IsOutboundRouteRequired == filter.IsOutboundRouteRequired.Value);
 
                 var pagedQuery = new PagedQuery<Location>(locations, pageStart, pageSize);
 
