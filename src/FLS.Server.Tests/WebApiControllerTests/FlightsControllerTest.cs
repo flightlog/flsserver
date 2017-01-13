@@ -694,6 +694,13 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var dateString = DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd");
             var response = GetAsync<IEnumerable<FlightExchangeData>>("/api/v1/flights/exchange/modified/" + dateString).Result;
             Assert.IsTrue(response.Any());
+            var nrOfRecords = response.Count();
+
+            dateString = new DateTime(2000, 1, 1).ToString("yyyy-MM-dd");
+            response = GetAsync<IEnumerable<FlightExchangeData>>("/api/v1/flights/exchange/modified/" + dateString).Result;
+            Assert.IsTrue(response.Any());
+
+            Assert.AreEqual(nrOfRecords, response.Count(), "Number of records are not equal");
         }
 
         protected override string Uri

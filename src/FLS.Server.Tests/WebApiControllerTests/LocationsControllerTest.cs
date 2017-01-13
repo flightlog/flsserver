@@ -80,7 +80,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
                 IsAirfield = true,
             };
 
-            var response = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
+            var response = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1").Result;
 
             var result = ConvertToModel<PagedList<LocationOverview>>(response);
 
@@ -91,7 +91,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             {
                 LocationName = "Speck"
             };
-            var response2 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
+            var response2 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/").Result;
 
             var result2 = ConvertToModel<PagedList<LocationOverview>>(response2);
             Assert.AreEqual(1, result2.Items.Count, "Search filter returned to many records in step 2.");
@@ -101,7 +101,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             {
                 IcaoCode = "LSZK"
             };
-            var response3 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
+            var response3 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/50").Result;
 
             var result3 = ConvertToModel<PagedList<LocationOverview>>(response3);
             Assert.AreEqual(1, result3.Items.Count, "Search filter returned to many records in step 3.");
@@ -111,7 +111,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             {
                 IsAirfield = true
             };
-            var response4 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
+            var response4 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/20").Result;
 
             var result4 = ConvertToModel<PagedList<LocationOverview>>(response4);
             Assert.IsTrue(result4.Items.Count > 1, "It should have more than 1 airfield in locations table.");
@@ -121,10 +121,15 @@ namespace FLS.Server.Tests.WebApiControllerTests
             {
                 LocationName = "sPECK"
             };
-            var response5 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;
+            var response5 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/80").Result;
 
             var result5 = ConvertToModel<PagedList<LocationOverview>>(response5);
             Assert.AreEqual(1, result5.Items.Count, "Search filter returned to many records in step 5.");
+
+            var response6 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page?pageStart=1&pageSize=44").Result;
+
+            var result6 = ConvertToModel<PagedList<LocationOverview>>(response6);
+            Assert.AreEqual(1, result6.Items.Count, "Search filter returned to many records in step 6.");
         }
 
         [TestMethod]

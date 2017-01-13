@@ -49,9 +49,9 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("page/{pageStart:int}/{pageSize:int?}")]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<LocationOverview>))]
-        public IHttpActionResult GetPagedLocationOverviews(int pageStart, int? pageSize, [FromBody]PageableSearchFilter<LocationOverviewSearchFilter> pageableSearchFilter)
+        public IHttpActionResult GetPagedLocationOverviews([FromBody]PageableSearchFilter<LocationOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
         {
             var locations = _locationService.GetPagedLocationOverviews(pageStart, pageSize, pageableSearchFilter);
             return Ok(locations);
