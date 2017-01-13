@@ -130,6 +130,12 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             var result6 = ConvertToModel<PagedList<LocationOverview>>(response6);
             Assert.AreEqual(1, result6.Items.Count, "Search filter returned to many records in step 6.");
+
+            var response7 = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page").Result;
+
+            var result7 = ConvertToModel<PagedList<LocationOverview>>(response7);
+            Assert.AreEqual(1, result7.Items.Count, "Search filter returned to many records in step 7.");
+
         }
 
         [TestMethod]
