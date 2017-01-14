@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
+using FLS.Data.WebApi.Articles;
 using FLS.Data.WebApi.Emails;
 using FLS.Data.WebApi.Exceptions;
 using FLS.Server.Data.DbEntities;
@@ -32,7 +36,51 @@ namespace FLS.Server.Service
 
             return items;
         }
-        
+
+
+        public PagedList<EmailTemplateOverview> GetPagedEmailTemplateOverview(int? pageStart, int? pageSize, PageableSearchFilter<EmailTemplateOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<EmailTemplateOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new EmailTemplateOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var emailTemplates = GetEmailTemplates().AsQueryable()
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                emailTemplates = emailTemplates.WhereIf(filter.EmailTemplateName,
+                        template => template.EmailTemplateName.ToLower().Contains(filter.EmailTemplateName.ToLower()));
+                emailTemplates = emailTemplates.WhereIf(filter.Description,
+                    template => template.Description.ToLower().Contains(filter.Description.ToLower()));
+
+                if (filter.IsSystemTemplate.HasValue)
+                    emailTemplates = emailTemplates.WhereIf(filter.IsSystemTemplate.Value,
+                        template => template.IsSystemTemplate == filter.IsSystemTemplate.Value);
+
+                if (filter.IsCustomizable.HasValue)
+                    emailTemplates = emailTemplates.WhereIf(filter.IsCustomizable.Value,
+                        template => template.IsCustomizable == filter.IsCustomizable.Value);
+
+                var pagedQuery = new PagedQuery<EmailTemplate>(emailTemplates, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToEmailTemplateOverview()).ToList();
+
+                SetEmailTemplateOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<EmailTemplateOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
+        }
+
+
         public EmailTemplateDetails GetEmailTemplateDetails(Guid emailTemplateId)
         {
             var emailTemplate = GetEmailTemplate(emailTemplateId);

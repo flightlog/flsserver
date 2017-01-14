@@ -101,6 +101,7 @@
     <Compile Include="Dashboard\GliderLicenceStateDetails.cs" />
     <Compile Include="Dashboard\SafetyDashboardDetails.cs" />
     <Compile Include="Dashboard\PersonDashboardDetails.cs" />
+    <Compile Include="Emails\EmailTemplateOverviewSearchFilter.cs" />
     <Compile Include="Emails\EmailTemplateOverview.cs" />
     <Compile Include="Emails\EmailTemplateDetails.cs" />
     <Compile Include="Exceptions\FLSServerException.cs" />

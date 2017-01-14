@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Emails;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Service;
@@ -38,7 +39,20 @@ namespace FLS.Server.WebApi.Controllers
             var emailTemplates = _templateService.GetEmailTemplateOverviews();
             return Ok(emailTemplates);
         }
-        
+
+        /// <summary>
+        /// Gets the emailTemplate overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<EmailTemplateOverview>))]
+        public IHttpActionResult GetPagedEmailTemplateOverview([FromBody]PageableSearchFilter<EmailTemplateOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var emailTemplates = _templateService.GetPagedEmailTemplateOverview(pageStart, pageSize, pageableSearchFilter);
+            return Ok(emailTemplates);
+        }
+
         /// <summary>
         /// Gets the emailTemplate details.
         /// </summary>
