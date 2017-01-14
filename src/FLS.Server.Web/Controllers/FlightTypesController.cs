@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Club;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Service;
@@ -82,73 +83,19 @@ namespace FLS.Server.WebApi.Controllers
             return Ok(flightTypes);
         }
 
-        #region future implementation for sys-admins
-        ///// <summary>
-        ///// Gets the flight type overviews of a defined club.
-        ///// <remarks>Method is only available for Sys-Admins</remarks>
-        ///// </summary>
-        ///// <param name="clubId">The club identifier.</param>
-        ///// <returns></returns>
-        //[Authorize(Roles = RoleApplicationKeyStrings.SystemAdministrator)]
-        //[HttpGet]
-        //[Route("club/{clubId}")]
-        //[Route("overview/club/{clubId}")]
-        //[ResponseType(typeof(List<FlightTypeOverview>))]
-        //public IHttpActionResult GetFlightTypeOverviews(Guid clubId)
-        //{
-        //    var flightTypes = _clubService.GetFlightTypeOverviews(clubId);
-        //    return Ok(flightTypes);
-        //}
-
-        ///// <summary>
-        ///// Gets the glider flight type overviews.
-        ///// </summary>
-        ///// <param name="clubId">The club identifier.</param>
-        ///// <returns></returns>
-        //[Authorize(Roles = RoleApplicationKeyStrings.SystemAdministrator)]
-        //[HttpGet]
-        //[Route("gliders/club/{clubId}")]
-        //[Route("gliders/overview/club/{clubId}")]
-        //[ResponseType(typeof(List<FlightTypeOverview>))]
-        //public IHttpActionResult GetGliderFlightTypeOverviews(Guid clubId)
-        //{
-        //    var flightTypes = _clubService.GetGliderFlightTypeOverviews(clubId);
-        //    return Ok(flightTypes);
-        //}
-
-        ///// <summary>
-        ///// Gets the towing flight type overviews.
-        ///// </summary>
-        ///// <param name="clubId">The club identifier.</param>
-        ///// <returns></returns>
-        //[Authorize(Roles = RoleApplicationKeyStrings.SystemAdministrator)]
-        //[HttpGet]
-        //[Route("towing/club/{clubId}")]
-        //[Route("towing/overview/club/{clubId}")]
-        //[ResponseType(typeof(List<FlightTypeOverview>))]
-        //public IHttpActionResult GetTowingFlightTypeOverviews(Guid clubId)
-        //{
-        //    var flightTypes = _clubService.GetTowingFlightTypeOverviews(clubId);
-        //    return Ok(flightTypes);
-        //}
-
-        ///// <summary>
-        ///// Gets the motor flight type overviews.
-        ///// </summary>
-        ///// <param name="clubId">The club identifier.</param>
-        ///// <returns></returns>
-        //[Authorize(Roles = RoleApplicationKeyStrings.SystemAdministrator)]
-        //[HttpGet]
-        //[Route("motor/club/{clubId}")]
-        //[Route("motor/overview/club/{clubId}")]
-        //[ResponseType(typeof(List<FlightTypeOverview>))]
-        //public IHttpActionResult GetMotorFlightTypeOverviews(Guid clubId)
-        //{
-        //    var flightTypes = _clubService.GetMotorFlightTypeOverviews(clubId);
-        //    return Ok(flightTypes);
-        //}
-        #endregion future implementation for sys-admins
-
+        /// <summary>
+        /// Gets the flight type overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<FlightTypeOverview>))]
+        public IHttpActionResult GetPagedFlightTypeOverview([FromBody]PageableSearchFilter<FlightTypeOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var flightTypes = _clubService.GetPagedFlightTypeOverview(pageStart, pageSize, pageableSearchFilter);
+            return Ok(flightTypes);
+        }
+        
         /// <summary>
         /// Gets the flight type details.
         /// </summary>

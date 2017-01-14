@@ -312,6 +312,83 @@ namespace FLS.Server.Service
             return PrepareFlightTypeOverviews(flightTypes);
         }
 
+        public PagedList<FlightTypeOverview> GetPagedFlightTypeOverview(int? pageStart, int? pageSize, PageableSearchFilter<FlightTypeOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<FlightTypeOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new FlightTypeOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var flightTypes = context.FlightTypes
+                    .Where(c => c.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+                
+                var filter = pageableSearchFilter.SearchFilter;
+                flightTypes = flightTypes.WhereIf(filter.FlightTypeName,
+                        club => club.FlightTypeName.ToLower().Contains(filter.FlightTypeName.ToLower()));
+                flightTypes = flightTypes.WhereIf(filter.FlightCode,
+                        club => club.FlightCode.ToLower().Contains(filter.FlightCode.ToLower()));
+                flightTypes = flightTypes.WhereIf(filter.MinNrOfAircraftSeatsRequired,
+                        club => club.MinNrOfAircraftSeatsRequired.ToString().ToLower().Contains(filter.MinNrOfAircraftSeatsRequired.ToLower()));
+
+                if (filter.InstructorRequired.HasValue)
+                    flightTypes = flightTypes.WhereIf(filter.InstructorRequired.Value,
+                        club => club.InstructorRequired == filter.InstructorRequired.Value);
+                
+                if (filter.ObserverPilotOrInstructorRequired.HasValue)
+                    flightTypes = flightTypes.WhereIf(filter.ObserverPilotOrInstructorRequired.Value,
+                        club => club.ObserverPilotOrInstructorRequired == filter.ObserverPilotOrInstructorRequired.Value);
+
+                if (filter.IsCheckFlight.HasValue)
+                    flightTypes = flightTypes.WhereIf(filter.IsCheckFlight.Value,
+                        club => club.IsCheckFlight == filter.IsCheckFlight.Value);
+
+                if (filter.IsPassengerFlight.HasValue)
+                    flightTypes = flightTypes.WhereIf(filter.IsPassengerFlight.Value,
+                        club => club.IsPassengerFlight == filter.IsPassengerFlight.Value);
+
+                if (filter.IsForGliderFlights.HasValue)
+                    flightTypes = flightTypes.WhereIf(filter.IsForGliderFlights.Value,
+                        club => club.IsForGliderFlights == filter.IsForGliderFlights.Value);
+
+                if (filter.IsForTowFlights.HasValue)
+                    flightTypes = flightTypes.WhereIf(filter.IsForTowFlights.Value,
+                        club => club.IsForTowFlights == filter.IsForTowFlights.Value);
+
+                if (filter.IsForMotorFlights.HasValue)
+                    flightTypes = flightTypes.WhereIf(filter.IsForMotorFlights.Value,
+                        club => club.IsForMotorFlights == filter.IsForMotorFlights.Value);
+
+                if (filter.IsFlightCostBalanceSelectable.HasValue)
+                    flightTypes = flightTypes.WhereIf(filter.IsFlightCostBalanceSelectable.Value,
+                        club => club.IsFlightCostBalanceSelectable == filter.IsFlightCostBalanceSelectable.Value);
+
+                if (filter.IsSoloFlight.HasValue)
+                    flightTypes = flightTypes.WhereIf(filter.IsSoloFlight.Value,
+                        club => club.IsSoloFlight == filter.IsSoloFlight.Value);
+
+                if (filter.IsCouponNumberRequired.HasValue)
+                    flightTypes = flightTypes.WhereIf(filter.IsCouponNumberRequired.Value,
+                        club => club.IsCouponNumberRequired == filter.IsCouponNumberRequired.Value);
+
+                var pagedQuery = new PagedQuery<FlightType>(flightTypes, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(e => e.ToFlightTypeOverview()).ToList();
+
+                SetFlightTypeOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<FlightTypeOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
+        }
+
         public FlightTypeDetails GetFlightTypeDetails(Guid flightTypeId)
         {
             var flightType = GetFlightType(flightTypeId);

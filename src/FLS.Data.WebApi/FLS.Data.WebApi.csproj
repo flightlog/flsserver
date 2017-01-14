@@ -88,6 +88,7 @@
     <Compile Include="Club\ClubOverview.cs" />
     <Compile Include="Club\ClubState.cs" />
     <Compile Include="Club\FlightTypeDetails.cs" />
+    <Compile Include="Club\FlightTypeOverviewSearchFilter.cs" />
     <Compile Include="Club\FlightTypeOverview.cs" />
     <Compile Include="Club\MemberStateDetails.cs" />
     <Compile Include="Club\MemberStateOverview.cs" />
