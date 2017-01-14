@@ -79,6 +79,7 @@
     <Compile Include="Aircraft\CounterUnitType.cs" />
     <Compile Include="Aircraft\CounterUnitTypeListItem.cs" />
     <Compile Include="Articles\ArticleDetails.cs" />
+    <Compile Include="Articles\ArticleOverviewSearchFilter.cs" />
     <Compile Include="Articles\ArticleOverview.cs" />
     <Compile Include="Audit\PropertyChangeLogDetails.cs" />
     <Compile Include="Audit\AuditLogOverview.cs" />

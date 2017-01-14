@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
+using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.Articles;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Service;
@@ -36,6 +38,19 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult GetArticleOverviews()
         {
             var articles = _articleService.GetArticleOverviews();
+            return Ok(articles);
+        }
+
+        /// <summary>
+        /// Gets the article overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<ArticleOverview>))]
+        public IHttpActionResult GetPagedAircraftReservationOverview([FromBody]PageableSearchFilter<ArticleOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var articles = _articleService.GetPagedArticleOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(articles);
         }
 

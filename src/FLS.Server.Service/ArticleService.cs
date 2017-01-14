@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
+using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.Articles;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
@@ -38,6 +42,51 @@ namespace FLS.Server.Service
 
                 SetArticleOverviewSecurity(overviewList);
                 return overviewList;
+            }
+        }
+
+        public PagedList<ArticleOverview> GetPagedArticleOverview(int? pageStart, int? pageSize, PageableSearchFilter<ArticleOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<ArticleOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new ArticleOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var articles = context.Articles.Where(c => c.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                articles = articles.WhereIf(filter.ArticleNumber,
+                        reservation => reservation.ArticleNumber.ToLower().Contains(filter.ArticleNumber.ToLower()));
+                articles = articles.WhereIf(filter.ArticleName,
+                    reservation => reservation.ArticleName.ToLower().Contains(filter.ArticleName.ToLower()));
+
+                if (filter.IsActive.HasValue)
+                    articles = articles.WhereIf(filter.IsActive.Value,
+                        reservation => reservation.IsActive == filter.IsActive.Value);
+
+                var pagedQuery = new PagedQuery<Article>(articles, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => new ArticleOverview()
+                {
+                    ArticleId = x.ArticleId,
+                    ArticleNumber = x.ArticleNumber,
+                    ArticleName = x.ArticleName,
+                    IsActive = x.IsActive
+                })
+                .ToList();
+
+                SetArticleOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<ArticleOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
             }
         }
 
