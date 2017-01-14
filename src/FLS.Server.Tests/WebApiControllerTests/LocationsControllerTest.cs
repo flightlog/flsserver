@@ -47,6 +47,8 @@ namespace FLS.Server.Tests.WebApiControllerTests
         {
             var searchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
             searchFilter.SearchFilter = new LocationOverviewSearchFilter();
+            searchFilter.Sorting.Add("CountryName", "asc");
+            searchFilter.Sorting.Add("LocationTypeName", "asc");
             searchFilter.Sorting.Add("LocationName", "asc");
 
             var response = PostAsync<PageableSearchFilter<LocationOverviewSearchFilter>>(searchFilter, $"/api/v1/locations/page/1/100").Result;

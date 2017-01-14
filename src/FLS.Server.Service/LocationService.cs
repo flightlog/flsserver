@@ -160,6 +160,21 @@ namespace FLS.Server.Service
                 pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
             }
 
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "CountryName")
+                {
+                    pageableSearchFilter.Sorting.Add("Country.CountryName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "LocationTypeName")
+                {
+                    pageableSearchFilter.Sorting.Add("LocationType.LocationTypeName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
 
             using (var context = _dataAccessService.CreateDbContext())
             {
