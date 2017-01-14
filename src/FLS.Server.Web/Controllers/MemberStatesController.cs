@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Club;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Service;
@@ -38,7 +39,20 @@ namespace FLS.Server.WebApi.Controllers
             var memberStates = _clubService.GetMemberStateOverviews();
             return Ok(memberStates);
         }
-        
+
+        /// <summary>
+        /// Gets the memberState overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<MemberStateOverview>))]
+        public IHttpActionResult GetPagedMemberStateOverview([FromBody]PageableSearchFilter<MemberStateOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var memberStates = _clubService.GetPagedMemberStateOverview(pageStart, pageSize, pageableSearchFilter);
+            return Ok(memberStates);
+        }
+
         /// <summary>
         /// Gets the memberState details.
         /// </summary>

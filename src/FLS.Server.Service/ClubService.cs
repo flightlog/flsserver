@@ -511,15 +511,53 @@ namespace FLS.Server.Service
         #region MemberState
         public List<MemberStateOverview> GetMemberStateOverviews()
         {
-            var memberStates = GetMemberStates();
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var memberStates = context.MemberStates
+                    .Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderBy(name => name.MemberStateName).ToList();
 
-            var memberStateOverviewResult = memberStates.Select(e => e.ToMemberStateOverview()).ToList();
+                var memberStateOverviewResult = memberStates.Select(e => e.ToMemberStateOverview()).ToList();
 
-            SetMemberStateOverviewSecurity(memberStateOverviewResult);
+                SetMemberStateOverviewSecurity(memberStateOverviewResult);
 
-            return memberStateOverviewResult;
+                return memberStateOverviewResult;
+            }
         }
-        
+
+        public PagedList<MemberStateOverview> GetPagedMemberStateOverview(int? pageStart, int? pageSize, PageableSearchFilter<MemberStateOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<MemberStateOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new MemberStateOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var memberStates = context.MemberStates
+                    .Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                memberStates = memberStates.WhereIf(filter.MemberStateName,
+                        club => club.MemberStateName.ToLower().Contains(filter.MemberStateName.ToLower()));
+
+                var pagedQuery = new PagedQuery<MemberState>(memberStates, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(e => e.ToMemberStateOverview()).ToList();
+
+                SetMemberStateOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<MemberStateOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
+        }
+
         public MemberStateDetails GetMemberStateDetails(Guid memberStateId)
         {
             var memberState = GetMemberState(memberStateId);
@@ -530,16 +568,6 @@ namespace FLS.Server.Service
             return memberStateDetails;
         }
         
-        internal List<MemberState> GetMemberStates()
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var memberStates = context.MemberStates
-                        .OrderBy(name => name.MemberStateName).ToList();
-                return memberStates;
-            }
-        }
-
         internal MemberState GetMemberState(Guid memberStateId)
         {
             using (var context = _dataAccessService.CreateDbContext())
