@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Aircraft;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
@@ -118,6 +121,96 @@ namespace FLS.Server.Service
             var aircrafts = GetAircrafts();
 
             return PrepareAircraftOverviews(aircrafts);
+        }
+
+        public PagedList<AircraftOverview> GetPagedAircraftOverviews(int? pageStart, int? pageSize, PageableSearchFilter<AircraftOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<AircraftOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new AircraftOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("Immatriculation", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var aircrafts = context.Aircrafts
+                    .Include(Constants.AircraftAircraftStates)
+                    .Include(Constants.AircraftAircraftStatesAircraftStateRelation)
+                    .Include("AircraftOwnerPerson")
+                    .Include("AircraftOwnerClub")
+                    .Include("AircraftType")
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                aircrafts = aircrafts.WhereIf(filter.Immatriculation,
+                        aircraft => aircraft.Immatriculation.Replace("-", "").ToLower().Contains(filter.Immatriculation.Replace("-", "").ToLower()));
+                aircrafts = aircrafts.WhereIf(filter.AircraftModel,
+                    aircraft => aircraft.AircraftModel.ToLower().Contains(filter.AircraftModel.ToLower()));
+                aircrafts = aircrafts.WhereIf(filter.CompetitionSign,
+                    aircraft => aircraft.CompetitionSign.ToLower().Contains(filter.CompetitionSign.ToLower()));
+                aircrafts = aircrafts.WhereIf(filter.ManufacturerName,
+                    aircraft => aircraft.ManufacturerName.ToLower().Contains(filter.ManufacturerName.ToLower()));
+                aircrafts = aircrafts.WhereIf(filter.NrOfSeats,
+                    aircraft => aircraft.NrOfSeats.ToString().ToLower().Contains(filter.NrOfSeats.ToLower()));
+                aircrafts = aircrafts.WhereIf(filter.AircraftTypeName,
+                    aircraft => aircraft.AircraftType.AircraftTypeName.ToLower().Contains(filter.AircraftTypeName.ToLower()));
+                aircrafts = aircrafts.WhereIf(filter.AircraftOwnerName,
+                    aircraft => aircraft.AircraftOwnerClub.Clubname.ToLower().Contains(filter.AircraftOwnerName.ToLower())
+                    || aircraft.AircraftOwnerPerson.Lastname.ToLower().Contains(filter.AircraftOwnerName.ToLower())
+                    || aircraft.AircraftOwnerPerson.Firstname.ToLower().Contains(filter.AircraftOwnerName.ToLower()));
+
+                if (filter.HasEngine.HasValue)
+                {
+                    if (filter.HasEngine.Value)
+                    {
+                        aircrafts =
+                            aircrafts.Where(
+                                aircraft =>
+                                    aircraft.AircraftTypeId >=
+                                    (int) FLS.Data.WebApi.Aircraft.AircraftType.GliderWithMotor);
+                    }
+                    else
+                    {
+                        aircrafts =
+                            aircrafts.Where(
+                                aircraft =>
+                                    aircraft.AircraftTypeId <
+                                    (int)FLS.Data.WebApi.Aircraft.AircraftType.GliderWithMotor);
+                    }
+                }
+
+                if (filter.IsTowingAircraft.HasValue)
+                    aircrafts = aircrafts.Where(aircraft => aircraft.IsTowingAircraft == filter.IsTowingAircraft.Value);
+
+                if (filter.IsTowingOrWinchRequired.HasValue)
+                    aircrafts = aircrafts.Where(aircraft => aircraft.IsTowingOrWinchRequired == filter.IsTowingOrWinchRequired.Value);
+
+                if (filter.IsTowingstartAllowed.HasValue)
+                    aircrafts = aircrafts.Where(aircraft => aircraft.IsTowingstartAllowed == filter.IsTowingstartAllowed.Value);
+
+                if (filter.IsWinchstartAllowed.HasValue)
+                    aircrafts = aircrafts.Where(aircraft => aircraft.IsWinchstartAllowed == filter.IsWinchstartAllowed.Value);
+
+                if (filter.CurrentAircraftState.HasValue)
+                    aircrafts = aircrafts.Where(aircraft => aircraft.AircraftAircraftStates.OrderByDescending(o => o.ValidFrom)
+                        .FirstOrDefault(x => x.ValidTo.HasValue == false || x.ValidTo.Value >= DateTime.UtcNow)
+                            .AircraftStateId == filter.CurrentAircraftState.Value);
+
+                var pagedQuery = new PagedQuery<Aircraft>(aircrafts, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToAircraftOverview())
+                .Where(obj => obj != null)
+                .ToList();
+
+                SetAircraftOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<AircraftOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
         }
 
         public List<AircraftOverview> GetAircraftOverviews(int aircraftType)

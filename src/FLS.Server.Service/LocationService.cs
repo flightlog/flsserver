@@ -154,6 +154,7 @@ namespace FLS.Server.Service
         public PagedList<LocationOverview> GetPagedLocationOverviews(int? pageStart, int? pageSize, PageableSearchFilter<LocationOverviewSearchFilter> pageableSearchFilter)
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<LocationOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new LocationOverviewSearchFilter();
             if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();

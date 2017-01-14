@@ -102,15 +102,11 @@ namespace FLS.Server.Service
         public PagedList<PlanningDayOverview> GetPagedPlanningDayOverview(int? pageStart, int? pageSize, PageableSearchFilter<PlanningDayOverviewSearchFilter> pageableSearchFilter)
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<PlanningDayOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new PlanningDayOverviewSearchFilter();
             if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
                 pageableSearchFilter.Sorting.Add("Day", "asc");
-            }
-
-            if (pageableSearchFilter.SearchFilter == null)
-            {
-                pageableSearchFilter.SearchFilter = new PlanningDayOverviewSearchFilter();
             }
 
             List<PlanningDayOverview> overviewList = null;

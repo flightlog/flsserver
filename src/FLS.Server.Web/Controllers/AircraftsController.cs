@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Aircraft;
+using FLS.Data.WebApi.PlanningDay;
 using FLS.Server.Service;
 
 namespace FLS.Server.WebApi.Controllers
@@ -78,6 +80,19 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult GetAircraftOverviews()
         {
             var aircrafts = _aircraftService.GetAircraftOverviews();
+            return Ok(aircrafts);
+        }
+
+        /// <summary>
+        /// Gets the aircraft overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<AircraftOverview>))]
+        public IHttpActionResult GetPagedLocationOverviews([FromBody]PageableSearchFilter<AircraftOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var aircrafts = _aircraftService.GetPagedAircraftOverviews(pageStart, pageSize, pageableSearchFilter);
             return Ok(aircrafts);
         }
 

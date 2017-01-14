@@ -68,6 +68,7 @@
     <Compile Include="Aircraft\AircraftListItem.cs" />
     <Compile Include="Aircraft\AircraftOperatingCounterOverview.cs" />
     <Compile Include="Aircraft\AircraftOperatingCounterDetails.cs" />
+    <Compile Include="Aircraft\AircraftOverviewSearchFilter.cs" />
     <Compile Include="Aircraft\AircraftOverview.cs" />
     <Compile Include="Aircraft\AircraftStateData.cs" />
     <Compile Include="Aircraft\AircraftStateListItem.cs" />
