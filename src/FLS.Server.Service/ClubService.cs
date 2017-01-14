@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
+using FLS.Data.WebApi.Articles;
 using FLS.Data.WebApi.Club;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Exceptions;
@@ -34,6 +38,59 @@ namespace FLS.Server.Service
             SetClubOverviewSecurity(clubOverviewResult);
 
             return clubOverviewResult;
+        }
+
+        public PagedList<ClubOverview> GetPagedClubOverview(int? pageStart, int? pageSize, PageableSearchFilter<ClubOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<ClubOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new ClubOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var clubs = context.Clubs.Include(Constants.Country)
+                        .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                if (IsCurrentUserInRoleSystemAdministrator == false)
+                {
+                    //don't return system club to normal users, workflows, etc. as it is just used for the system admin user
+                    clubs = clubs.Where(q => q.ClubStateId != (int) FLS.Data.WebApi.Club.ClubState.System);
+                }
+
+                var filter = pageableSearchFilter.SearchFilter;
+                clubs = clubs.WhereIf(filter.ClubName,
+                        club => club.Clubname.ToLower().Contains(filter.ClubName.ToLower()));
+                clubs = clubs.WhereIf(filter.Address,
+                        club => club.Address.ToLower().Contains(filter.Address.ToLower()));
+                clubs = clubs.WhereIf(filter.City,
+                        club => club.City.ToLower().Contains(filter.City.ToLower()));
+                clubs = clubs.WhereIf(filter.CountryName,
+                        club => club.Country.CountryName.ToLower().Contains(filter.CountryName.ToLower()));
+                clubs = clubs.WhereIf(filter.EmailAddress,
+                        club => club.Email.ToLower().Contains(filter.EmailAddress.ToLower()));
+                clubs = clubs.WhereIf(filter.PhoneNumber,
+                        club => club.Phone.ToLower().Contains(filter.PhoneNumber.ToLower()));
+                clubs = clubs.WhereIf(filter.ZipCode,
+                        club => club.Zip.ToLower().Contains(filter.ZipCode.ToLower()));
+                clubs = clubs.WhereIf(filter.HomebaseName,
+                        club => club.Homebase.LocationName.ToLower().Contains(filter.HomebaseName.ToLower()));
+
+
+                var pagedQuery = new PagedQuery<Club>(clubs, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(e => e.ToClubOverview()).ToList();
+
+                SetClubOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<ClubOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
         }
 
         public ClubDetails GetMyClubDetails()

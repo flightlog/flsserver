@@ -84,6 +84,7 @@
     <Compile Include="Audit\PropertyChangeLogDetails.cs" />
     <Compile Include="Audit\AuditLogOverview.cs" />
     <Compile Include="Club\ClubDetails.cs" />
+    <Compile Include="Club\ClubOverviewSearchFilter.cs" />
     <Compile Include="Club\ClubOverview.cs" />
     <Compile Include="Club\ClubState.cs" />
     <Compile Include="Club\FlightTypeDetails.cs" />

@@ -48,7 +48,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<ArticleOverview>))]
-        public IHttpActionResult GetPagedAircraftReservationOverview([FromBody]PageableSearchFilter<ArticleOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedArticleOverview([FromBody]PageableSearchFilter<ArticleOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
         {
             var articles = _articleService.GetPagedArticleOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(articles);

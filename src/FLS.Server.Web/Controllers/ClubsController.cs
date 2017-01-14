@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
+using FLS.Data.WebApi.Articles;
 using FLS.Data.WebApi.Club;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Service;
@@ -37,6 +39,19 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult GetClubOverviews()
         {
             var clubs = _clubService.GetClubOverviews();
+            return Ok(clubs);
+        }
+
+        /// <summary>
+        /// Gets the club overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<ClubOverview>))]
+        public IHttpActionResult GetPagedClubOverview([FromBody]PageableSearchFilter<ClubOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var clubs = _clubService.GetPagedClubOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(clubs);
         }
 
