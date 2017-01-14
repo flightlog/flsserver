@@ -94,6 +94,7 @@
     <Compile Include="Club\MemberStateOverviewSearchFilter.cs" />
     <Compile Include="Club\MemberStateOverview.cs" />
     <Compile Include="Club\PersonCategoryDetails.cs" />
+    <Compile Include="Club\PersonCategoryOverviewSearchFilter.cs" />
     <Compile Include="Club\PersonCategoryOverview.cs" />
     <Compile Include="Dashboard\DashboardDetails.cs" />
     <Compile Include="Dashboard\FlightStatisticDashboardDetails.cs" />

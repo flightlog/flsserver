@@ -656,6 +656,39 @@ namespace FLS.Server.Service
             return personCategoryOverviewResult;
         }
 
+        public PagedList<PersonCategoryOverview> GetPagedPersonCategoryOverview(int? pageStart, int? pageSize, PageableSearchFilter<PersonCategoryOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<PersonCategoryOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new PersonCategoryOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var personCategories = context.PersonCategories
+                    .Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                personCategories = personCategories.WhereIf(filter.CategoryName,
+                        club => club.CategoryName.ToLower().Contains(filter.CategoryName.ToLower()));
+
+                var pagedQuery = new PagedQuery<PersonCategory>(personCategories, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(e => e.ToPersonCategoryOverview()).ToList();
+
+                SetPersonCategoryOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<PersonCategoryOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
+        }
+
         public PersonCategoryDetails GetPersonCategoryDetails(Guid personCategoryId)
         {
             var personCategory = GetPersonCategory(personCategoryId);
@@ -671,6 +704,7 @@ namespace FLS.Server.Service
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var personCategories = context.PersonCategories
+                    .Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId)
                         .OrderBy(name => name.CategoryName).ToList();
                 return personCategories;
             }

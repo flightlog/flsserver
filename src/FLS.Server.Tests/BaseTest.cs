@@ -80,6 +80,7 @@ namespace FLS.Server.Tests
         protected AccountingRuleService AccountingRuleService { get; set; }
         protected AccountingRuleFilterFactory AccountingRuleFilterFactory { get; set; }
         protected LocationService LocationService { get; set; }
+        protected ClubService ClubService { get; set; }
         protected SystemService SystemService { get; set; }
         protected WorkflowService WorkflowService { get; set; }
         protected UserAccountEmailBuildService PasswordEmailService { get; set; }
@@ -168,6 +169,7 @@ namespace FLS.Server.Tests
             AircraftReportEmailService = UnityContainer.Resolve<AircraftReportEmailBuildService>();
             AccountingRuleService = UnityContainer.Resolve<AccountingRuleService>();
             AccountingRuleFilterFactory = UnityContainer.Resolve<AccountingRuleFilterFactory>();
+            ClubService = UnityContainer.Resolve<ClubService>();
         }
 
         [TestCleanup]
