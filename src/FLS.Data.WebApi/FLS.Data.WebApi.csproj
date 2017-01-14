@@ -158,6 +158,7 @@
     <Compile Include="Person\PilotPersonOverview.cs" />
     <Compile Include="PlanningDay\PlanningDayCreatorRule.cs" />
     <Compile Include="PlanningDay\PlanningDayDetails.cs" />
+    <Compile Include="PlanningDay\PlanningDayOverviewSearchFilter.cs" />
     <Compile Include="PlanningDay\PlanningDayOverview.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reporting\AircraftFlightReport.cs" />

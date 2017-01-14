@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
+using FLS.Data.WebApi.Location;
 using FLS.Data.WebApi.PlanningDay;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
@@ -57,7 +61,101 @@ namespace FLS.Server.Service
             SetPlanningDayOverviewSecurity(overviewList);
             return overviewList;
         }
-        
+
+        /// <summary>
+        /// Test implementation to get overview object without using includes and other related services.
+        /// </summary>
+        /// <param name="fromDate"></param>
+        /// <param name="clubId"></param>
+        /// <returns></returns>
+        public List<PlanningDayOverview> GetPlanningDayOverviewWithDirectSelection(DateTime fromDate, Guid? clubId = null)
+        {
+            if (clubId.HasValue == false)
+            {
+                clubId = CurrentAuthenticatedFLSUserClubId;
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var entities = context.PlanningDays
+                    .Where(q => q.ClubId == clubId && DbFunctions.TruncateTime(q.Day) >= fromDate.Date)
+                    .OrderBy(pe => pe.Day)
+                    .Select(p => new PlanningDayOverview()
+                    {
+                        PlanningDayId   = p.PlanningDayId,
+                        Day = p.Day,
+                        Remarks = p.Remarks,
+                        LocationName = p.Location.LocationName,
+                        TowingPilotName = p.PlanningDayAssignments.FirstOrDefault(t=> t.AssignmentType.AssignmentTypeName == "Schlepppilot").AssignedPerson.Lastname + " " + p.PlanningDayAssignments.FirstOrDefault(t => t.AssignmentType.AssignmentTypeName == "Schlepppilot").AssignedPerson.Firstname,
+                        InstructorName = p.PlanningDayAssignments.FirstOrDefault(t => t.AssignmentType.AssignmentTypeName == "Fluglehrer").AssignedPerson.Lastname + " " + p.PlanningDayAssignments.FirstOrDefault(t => t.AssignmentType.AssignmentTypeName == "Fluglehrer").AssignedPerson.Firstname,
+                        FlightOperatorName = p.PlanningDayAssignments.FirstOrDefault(t => t.AssignmentType.AssignmentTypeName == "Segelflugleiter").AssignedPerson.Lastname + " " + p.PlanningDayAssignments.FirstOrDefault(t => t.AssignmentType.AssignmentTypeName == "Segelflugleiter").AssignedPerson.Firstname,
+                        NumberOfAircraftReservations = context.AircraftReservations.Count(ar => ar.ClubId == clubId 
+                        && ar.LocationId == p.LocationId && DbFunctions.TruncateTime(ar.Start) == DbFunctions.TruncateTime(p.Day))
+
+                    }).ToList();
+
+                SetPlanningDayOverviewSecurity(entities);
+                return entities;
+            }
+        }
+
+        public PagedList<PlanningDayOverview> GetPagedPlanningDayOverview(int? pageStart, int? pageSize, PageableSearchFilter<PlanningDayOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<PlanningDayOverviewSearchFilter>();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("Day", "asc");
+            }
+
+            if (pageableSearchFilter.SearchFilter == null)
+            {
+                pageableSearchFilter.SearchFilter = new PlanningDayOverviewSearchFilter();
+            }
+
+            List<PlanningDayOverview> overviewList = null;
+
+            if (pageableSearchFilter.SearchFilter.OnlyPlanningDaysInFuture)
+            {
+                overviewList = GetPlanningDayOverview(DateTime.Now.Date);
+            }
+            else
+            {
+                overviewList = GetPlanningDayOverview();
+            }
+
+            var planningDays = overviewList.AsQueryable().OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+            var filter = pageableSearchFilter.SearchFilter;
+            planningDays = planningDays.WhereIf(filter.LocationName,
+                    x => x.LocationName.ToLower().Contains(filter.LocationName.ToLower()));
+
+            planningDays = planningDays.WhereIf(filter.FlightOperatorName,
+                x => x.FlightOperatorName.ToLower().Contains(filter.FlightOperatorName.ToLower()));
+            planningDays = planningDays.WhereIf(filter.TowingPilotName,
+                x => x.TowingPilotName.ToLower().Contains(filter.TowingPilotName.ToLower()));
+            planningDays = planningDays.WhereIf(filter.InstructorName,
+                x => x.InstructorName.ToLower().Contains(filter.InstructorName.ToLower()));
+            
+            planningDays = planningDays.WhereIf(filter.Remarks,
+                x => x.Remarks.ToLower().Contains(filter.Remarks.ToLower()));
+
+            planningDays = planningDays.WhereIf(filter.Day,
+                x => x.Day.ContainsSearchText(filter.Day));
+
+            planningDays = planningDays.WhereIf(filter.NumberOfAircraftReservations,
+                x => x.NumberOfAircraftReservations.ToString().Contains(filter.NumberOfAircraftReservations.ToLower()));
+
+            var pagedQuery = new PagedQuery<PlanningDayOverview>(planningDays, pageStart, pageSize);
+
+            var result = pagedQuery.Items.ToList();
+
+            var pagedList = new PagedList<PlanningDayOverview>(result, pagedQuery.PageStart,
+                pagedQuery.PageSize, pagedQuery.TotalRows);
+
+            return pagedList;
+        }
+
         public PlanningDayDetails GetPlanningDayDetails(Guid planningDayId)
         {
             var planningDay = GetPlanningDay(planningDayId);

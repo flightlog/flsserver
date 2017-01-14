@@ -5,6 +5,7 @@ using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using FLS.Data.WebApi.PlanningDay;
 using FLS.Server.Service;
+using FLS.Data.WebApi;
 
 namespace FLS.Server.WebApi.Controllers
 {
@@ -50,6 +51,19 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult GetFuturePlanningDayOverviews()
         {
             var planningDays = _planningDayService.GetPlanningDayOverview(DateTime.Now.Date);
+            return Ok(planningDays);
+        }
+
+        /// <summary>
+        /// Gets the planning day overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<PlanningDayOverview>))]
+        public IHttpActionResult GetPagedLocationOverviews([FromBody]PageableSearchFilter<PlanningDayOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var planningDays = _planningDayService.GetPagedPlanningDayOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(planningDays);
         }
 

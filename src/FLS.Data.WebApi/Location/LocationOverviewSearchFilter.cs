@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 
 namespace FLS.Data.WebApi.Location
 {
     public class LocationOverviewSearchFilter
     {
-        public LocationOverviewSearchFilter()
-        {
-            Sorting = new Dictionary<string, string>();
-        }
-
-        public Dictionary<string, string> Sorting { get; set; }
-
         public string AirportFrequency { get; set; }
 
         public string CountryName { get; set; }
@@ -37,5 +32,24 @@ namespace FLS.Data.WebApi.Location
         public bool? IsInboundRouteRequired { get; set; }
 
         public bool? IsOutboundRouteRequired { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            Type type = GetType();
+            sb.Append("[");
+            sb.Append(type.Name);
+            sb.Append(" -> ");
+            foreach (FieldInfo info in type.GetFields())
+                sb.Append($"{info.Name}: {info.GetValue(this)}, ");
+
+            foreach (PropertyInfo info in type.GetProperties())
+                sb.Append($"{info.Name}: {info.GetValue(this, null)}, ");
+            sb.Append(" <- ");
+            sb.Append(type.Name);
+            sb.AppendLine("]");
+
+            return sb.ToString();
+        }
     }
 }
