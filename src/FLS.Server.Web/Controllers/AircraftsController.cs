@@ -90,7 +90,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<AircraftOverview>))]
-        public IHttpActionResult GetPagedLocationOverviews([FromBody]PageableSearchFilter<AircraftOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedAircraftOverviews([FromBody]PageableSearchFilter<AircraftOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
         {
             var aircrafts = _aircraftService.GetPagedAircraftOverviews(pageStart, pageSize, pageableSearchFilter);
             return Ok(aircrafts);

@@ -126,7 +126,7 @@ namespace FLS.Server.Tests.ServiceTests
 
 
             planningDays = planningDays.WhereIf(filter.Day,
-                x => x.Day.ContainsSearchText(filter.Day));
+                x => x.Day.DateContainsSearchText(filter.Day));
 
             var pagedQuery = new PagedQuery<PlanningDayOverview>(planningDays, 1, 100);
 

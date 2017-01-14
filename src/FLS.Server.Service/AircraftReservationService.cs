@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
+using FLS.Data.WebApi.Aircraft;
 using FLS.Data.WebApi.AircraftReservation;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
@@ -46,6 +50,62 @@ namespace FLS.Server.Service
             var overviewList = entities.Select(entity => entity.ToAircraftReservationOverview()).ToList();
             SetAircraftReservationOverviewSecurity(overviewList);
             return overviewList;
+        }
+
+        public PagedList<AircraftReservationOverview> GetPagedAircraftReservationOverview(int? pageStart, int? pageSize, PageableSearchFilter<AircraftReservationOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<AircraftReservationOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new AircraftReservationOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var reservations = context.AircraftReservations
+                    .Include(Constants.Aircraft)
+                    .Include("PilotPerson")
+                    .Include("Location")
+                    .Include("InstructorPerson")
+                    .Include("ReservationType")
+                    .Where(r => r.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                reservations = reservations.WhereIf(filter.Immatriculation,
+                        reservation => reservation.Aircraft.Immatriculation.Replace("-", "").ToLower().Contains(filter.Immatriculation.Replace("-", "").ToLower()));
+                reservations = reservations.WhereIf(filter.Start,
+                    reservation => reservation.Start.DateTimeContainsSearchText(filter.Start));
+                reservations = reservations.WhereIf(filter.End,
+                    reservation => reservation.End.DateTimeContainsSearchText(filter.End));
+                reservations = reservations.WhereIf(filter.LocationName,
+                    reservation => reservation.Location.LocationName.ToLower().Contains(filter.LocationName.ToLower()));
+                reservations = reservations.WhereIf(filter.PilotName,
+                    reservation => reservation.PilotPerson.Lastname.ToLower().Contains(filter.PilotName.ToLower())
+                                   || reservation.PilotPerson.Firstname.ToLower().Contains(filter.PilotName.ToLower()));
+                reservations = reservations.WhereIf(filter.InstructorName,
+                    reservation => reservation.InstructorPerson.Lastname.ToLower().Contains(filter.InstructorName.ToLower())
+                                   || reservation.InstructorPerson.Firstname.ToLower().Contains(filter.InstructorName.ToLower()));
+                reservations = reservations.WhereIf(filter.Remarks,
+                    reservation => reservation.Remarks.ToLower().Contains(filter.Remarks.ToLower()));
+                reservations = reservations.WhereIf(filter.ReservationTypeName,
+                    reservation => reservation.ReservationType.AircraftReservationTypeName.ToLower().Contains(filter.ReservationTypeName.ToLower()));
+                
+                var pagedQuery = new PagedQuery<AircraftReservation>(reservations, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToAircraftReservationOverview())
+                .Where(obj => obj != null)
+                .ToList();
+
+                SetAircraftReservationOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<AircraftReservationOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
         }
 
         public AircraftReservationDetails GetAircraftReservationDetails(Guid aircraftReservationId)

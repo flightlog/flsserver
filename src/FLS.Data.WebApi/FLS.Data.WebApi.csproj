@@ -61,6 +61,7 @@
     <Compile Include="Accounting\Testing\DeliveryCreationTestOverview.cs" />
     <Compile Include="Accounting\Testing\DeliveryCreationTestDetails.cs" />
     <Compile Include="AircraftReservation\AircraftReservationDetails.cs" />
+    <Compile Include="AircraftReservation\AircraftReservationOverviewSearchFilter.cs" />
     <Compile Include="AircraftReservation\AircraftReservationOverview.cs" />
     <Compile Include="AircraftReservation\AircraftReservationTypeListItem.cs" />
     <Compile Include="Aircraft\AircraftDetails.cs" />

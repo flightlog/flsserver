@@ -137,7 +137,7 @@ namespace FLS.Server.Service
                 x => x.Remarks.ToLower().Contains(filter.Remarks.ToLower()));
 
             planningDays = planningDays.WhereIf(filter.Day,
-                x => x.Day.ContainsSearchText(filter.Day));
+                x => x.Day.DateContainsSearchText(filter.Day));
 
             planningDays = planningDays.WhereIf(filter.NumberOfAircraftReservations,
                 x => x.NumberOfAircraftReservations.ToString().Contains(filter.NumberOfAircraftReservations.ToLower()));

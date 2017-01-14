@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
+using FLS.Data.WebApi.Aircraft;
 using FLS.Data.WebApi.AircraftReservation;
 using FLS.Server.Service;
 
@@ -63,8 +65,21 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(List<AircraftReservationOverview>))]
         public IHttpActionResult GetAircraftReservationOverviewsOfDay(DateTime day)
         {
-            var planningDays = _aircraftReservationService.GetAircraftReservationOverviewOfDay(day);
-            return Ok(planningDays);
+            var aircraftReservations = _aircraftReservationService.GetAircraftReservationOverviewOfDay(day);
+            return Ok(aircraftReservations);
+        }
+
+        /// <summary>
+        /// Gets the aircraft reservation overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<AircraftReservationOverview>))]
+        public IHttpActionResult GetPagedAircraftReservationOverview([FromBody]PageableSearchFilter<AircraftReservationOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var aircraftReservations = _aircraftReservationService.GetPagedAircraftReservationOverview(pageStart, pageSize, pageableSearchFilter);
+            return Ok(aircraftReservations);
         }
 
         /// <summary>

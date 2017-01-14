@@ -43,14 +43,14 @@ namespace FLS.Common.Extensions
             }
         }
 
-        public static bool ContainsSearchText(this DateTime? datetime, string searchText)
+        public static bool DateContainsSearchText(this DateTime? datetime, string searchText)
         {
             if (datetime.HasValue == false) return false;
 
-            return datetime.Value.ContainsSearchText(searchText);
+            return datetime.Value.DateContainsSearchText(searchText);
         }
 
-        public static bool ContainsSearchText(this DateTime datetime, string searchText)
+        public static bool DateContainsSearchText(this DateTime datetime, string searchText)
         {
             var loweredSearchText = searchText.ToLower();
 
@@ -67,5 +67,21 @@ namespace FLS.Common.Extensions
 
         }
 
+        public static bool DateTimeContainsSearchText(this DateTime datetime, string searchText)
+        {
+            var loweredSearchText = searchText.ToLower();
+
+            return datetime.ToString("yyyy-MM-dd hh:mm:ss").Contains(loweredSearchText)
+                || datetime.ToString("yyyy-M-d h:mm:ss").Contains(loweredSearchText)
+                || datetime.ToString("dd.MM.yyyy hh:mm:ss").Contains(loweredSearchText)
+                || datetime.ToString("d.M.yyyy h:mm:ss").Contains(loweredSearchText)
+                || datetime.ToString("dd.M.yyyy hh:mm:ss").Contains(loweredSearchText)
+                || datetime.ToString("d.MM.yyyy hh:mm:ss").Contains(loweredSearchText)
+                || datetime.ToString("dd.MM.yy hh:mm:ss").Contains(loweredSearchText)
+                || datetime.ToString("d.M.yy hh:mm:ss").Contains(loweredSearchText)
+                || datetime.ToString("dd.M.yy hh:mm:ss").Contains(loweredSearchText)
+                || datetime.ToString("d.MM.yy hh:mm:ss").Contains(loweredSearchText);
+
+        }
     }
 }
