@@ -10,7 +10,7 @@
   <Class Name="FLS.Data.WebApi.Person.PersonDetails">
     <Position X="6.25" Y="2.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAICQEAAgAEAIAAMAAAAAAAAAAAYIAABAAAAABAYCAA=</HashCode>
+      <HashCode>AAICQEAAgAEAIAAMIAAAAAAAAAAYIAABAAAAABEYCAA=</HashCode>
       <FileName>Person\PersonDetails.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -20,7 +20,7 @@
   <Class Name="FLS.Data.WebApi.Person.ClubRelatedPersonDetails">
     <Position X="2" Y="2.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAQCAAIEBIAgAAAAAQAAAEBgACAgAAAAAgAAAAAAAAA=</HashCode>
+      <HashCode>AEACAAAEBMAgAAAAAAAAAEBgECAAAAAAAgAAAAgAAAA=</HashCode>
       <FileName>Person\ClubRelatedPersonDetails.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -39,23 +39,23 @@
     </TypeIdentifier>
   </Class>
   <Class Name="FLS.Data.WebApi.Person.PassengerOverview">
-    <Position X="10.25" Y="4" Width="1.75" />
+    <Position X="9.25" Y="4" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Person\PassengerOverview.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="FLS.Data.WebApi.Person.PersonOverview" Collapsed="true">
-    <Position X="11.75" Y="2.5" Width="1.5" />
+  <Class Name="FLS.Data.WebApi.Person.PersonOverview">
+    <Position X="11.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAACAEAAAAAAAAAMAAAAAAAAAAAAAAABAAAAAAAQAAA=</HashCode>
+      <HashCode>IAICAEAAAAAAAAAMAAAAAAAAAAAAAgABAAAAAAAQCAA=</HashCode>
       <FileName>Person\PersonOverview.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="FLS.Data.WebApi.Person.PilotPersonDetails">
     <Position X="7.75" Y="8" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIACAkCAAAQABAAAAAAAGAAAAJAAQICAAAAAAADAACA=</HashCode>
+      <HashCode>AIBCAkDABAQAAAAABAAAGAIAIAAAAAAAAQAgAADAACA=</HashCode>
       <FileName>Person\PilotPersonDetails.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -70,14 +70,14 @@
   <Class Name="FLS.Data.WebApi.Person.PilotPersonListItem">
     <Position X="13.5" Y="11" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAIAAQICAAAAAAAAAACA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Person\PilotPersonListItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="FLS.Data.WebApi.Person.PilotPersonOverview">
     <Position X="12.75" Y="4" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AIAAAgCAAAQABAAAAAAAGAAAAJAAQICAAAAAAADAACA=</HashCode>
+      <HashCode>AIAAAgCAAAQAAAAABAAAGAAAAAAAAAAAAAAAAADAACA=</HashCode>
       <FileName>Person\PilotPersonOverview.cs</FileName>
     </TypeIdentifier>
   </Class>

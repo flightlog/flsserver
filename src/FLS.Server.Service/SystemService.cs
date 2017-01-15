@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Utils;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
+using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.Audit;
 using FLS.Data.WebApi.System;
 using FLS.Server.Data.DbEntities;
@@ -148,42 +151,69 @@ namespace FLS.Server.Service
 
         public List<SystemLogOverview> GetSystemLogOverviews()
         {
-            var dbEntityList = GetSystemLogs();
-
-            var systemLogOverviewResult = dbEntityList.Select(systemLog => systemLog.ToSystemLogOverview()).ToList();
-
-            return systemLogOverviewResult;
-        }
-
-        public SystemLogDetails GetSystemLogDetails(long logId)
-        {
-            var entity = GetSystemLog(logId);
-
-            var systemLogDetails = entity.ToSystemLogDetails();
-
-            return systemLogDetails;
-        }
-
-        internal List<SystemLog> GetSystemLogs()
-        {
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var list = context.SystemLogs.OrderByDescending(c => c.LogId).Take(2000).ToList();
 
-                return list;
+                var systemLogOverviewResult = list.Select(systemLog => systemLog.ToSystemLogOverview()).ToList();
+
+                return systemLogOverviewResult;
             }
         }
 
-        internal SystemLog GetSystemLog(long logId)
+        public PagedList<SystemLogOverview> GetPagedSystemLogOverview(int? pageStart, int? pageSize, PageableSearchFilter<SystemLogOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<SystemLogOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new SystemLogOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("LogId", "desc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var systemLogs = context.SystemLogs
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                systemLogs = systemLogs.WhereIf(filter.Logger,
+                        systemLog => systemLog.Logger.ToLower().Contains(filter.Logger.ToLower()));
+                systemLogs = systemLogs.WhereIf(filter.EventDateTime,
+                    systemLog => systemLog.EventDateTime.DateTimeContainsSearchText(filter.EventDateTime));
+                systemLogs = systemLogs.WhereIf(filter.EventType,
+                    systemLog => systemLog.EventType.ToString().ToLower().Contains(filter.EventType.ToLower()));
+                systemLogs = systemLogs.WhereIf(filter.LogLevel,
+                        systemLog => systemLog.LogLevel.ToLower().Contains(filter.LogLevel.ToLower()));
+                systemLogs = systemLogs.WhereIf(filter.Message,
+                        systemLog => systemLog.Message.ToLower().Contains(filter.Message.ToLower()));
+                systemLogs = systemLogs.WhereIf(filter.UserName,
+                        systemLog => systemLog.UserName.ToLower().Contains(filter.UserName.ToLower()));
+
+                var pagedQuery = new PagedQuery<SystemLog>(systemLogs, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToSystemLogOverview())
+                .Where(obj => obj != null)
+                .ToList();
+                
+                var pagedList = new PagedList<SystemLogOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
+        }
+
+        public SystemLogDetails GetSystemLogDetails(long logId)
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var systemLog = context.SystemLogs.FirstOrDefault(q => q.LogId == logId);
 
-                return systemLog;
+                var systemLogDetails = systemLog.ToSystemLogDetails();
+
+                return systemLogDetails;
             }
         }
-
         #endregion SystemLog
 
         #region SystemVersionInfo

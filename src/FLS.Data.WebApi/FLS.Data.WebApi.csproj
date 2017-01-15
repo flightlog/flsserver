@@ -158,6 +158,7 @@
     <Compile Include="Person\ClubRelatedPersonFullDetails.cs" />
     <Compile Include="Person\ClubRelatedPersonDetails.cs" />
     <Compile Include="Person\PersonDetails.cs" />
+    <Compile Include="Person\PersonOverviewSearchFilter.cs" />
     <Compile Include="Person\PersonOverview.cs" />
     <Compile Include="Person\PersonListItem.cs" />
     <Compile Include="Person\PilotPersonFullDetails.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="Resources\ConstantUIStrings.cs" />
     <Compile Include="Resources\RoleApplicationKeyStrings.cs" />
     <Compile Include="System\AssemblyInfo.cs" />
+    <Compile Include="System\SystemLogOverviewSearchFilter.cs" />
     <Compile Include="System\SystemVersionInfoOverview.cs" />
     <Compile Include="System\SystemVersionInfoDetails.cs" />
     <Compile Include="System\SystemDataDetails.cs" />
