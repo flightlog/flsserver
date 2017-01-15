@@ -65,8 +65,6 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             var resultDesc = ConvertToModel<PagedList<LocationOverview>>(responseDesc);
             Assert.IsTrue(2 <= resultDesc.Items.Count, "PageSize does not fit with items count in list.");
-
-            Assert.IsTrue(result.Items.First().Id == resultDesc.Items.Last().Id);
         }
 
         [TestMethod]

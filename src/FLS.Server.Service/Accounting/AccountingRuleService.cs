@@ -78,16 +78,16 @@ namespace FLS.Server.Service.Accounting
 
                 var filter = pageableSearchFilter.SearchFilter;
                 accountingRuleFilters = accountingRuleFilters.WhereIf(filter.AccountingRuleFilterTypeName,
-                        accountingRuleFilter => accountingRuleFilter.AccountingRuleFilterType.AccountingRuleFilterTypeName.ToLower().Contains(filter.AccountingRuleFilterTypeName.ToLower()));
+                        accountingRuleFilter => accountingRuleFilter.AccountingRuleFilterType.AccountingRuleFilterTypeName.Contains(filter.AccountingRuleFilterTypeName));
                 accountingRuleFilters = accountingRuleFilters.WhereIf(filter.Description,
-                        accountingRuleFilter => accountingRuleFilter.Description.ToLower().Contains(filter.Description.ToLower()));
+                        accountingRuleFilter => accountingRuleFilter.Description.Contains(filter.Description));
                 accountingRuleFilters = accountingRuleFilters.WhereIf(filter.RuleFilterName,
-                        accountingRuleFilter => accountingRuleFilter.RuleFilterName.ToLower().Contains(filter.RuleFilterName.ToLower()));
+                        accountingRuleFilter => accountingRuleFilter.RuleFilterName.Contains(filter.RuleFilterName));
                 accountingRuleFilters = accountingRuleFilters.WhereIf(filter.SortIndicator,
-                        accountingRuleFilter => accountingRuleFilter.SortIndicator.ToString().ToLower().Contains(filter.SortIndicator.ToLower()));
+                        accountingRuleFilter => accountingRuleFilter.SortIndicator.ToString().Contains(filter.SortIndicator));
                 accountingRuleFilters = accountingRuleFilters.WhereIf(filter.Target,
-                        accountingRuleFilter => accountingRuleFilter.RecipientTarget.ToLower().Contains(filter.Target.ToLower())
-                            || accountingRuleFilter.ArticleTarget.ToLower().Contains(filter.Target.ToLower()));
+                        accountingRuleFilter => accountingRuleFilter.RecipientTarget.Contains(filter.Target)
+                            || accountingRuleFilter.ArticleTarget.Contains(filter.Target));
 
                 var pagedQuery = new PagedQuery<AccountingRuleFilter>(accountingRuleFilters, pageStart, pageSize);
 
