@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace FLS.Common.Extensions
@@ -105,10 +106,10 @@ namespace FLS.Common.Extensions
         /// <param name="condition"></param>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public static IQueryable<TSource> WhereIf<TSource>(this IQueryable<TSource> source, bool condition, Func<TSource, bool> predicate)
+        public static IQueryable<TSource> WhereIf<TSource>(this IQueryable<TSource> source, bool condition, Expression<Func<TSource, bool>> predicate)
         {
             if (condition)
-                return source.Where(predicate).AsQueryable();
+                return source.Where(predicate);
             else
                 return source;
         }
@@ -122,12 +123,12 @@ namespace FLS.Common.Extensions
         /// <param name="searchText"></param>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public static IQueryable<TSource> WhereIf<TSource>(this IQueryable<TSource> source, string searchText, Func<TSource, bool> predicate)
+        public static IQueryable<TSource> WhereIf<TSource>(this IQueryable<TSource> source, string searchText, Expression<Func<TSource, bool>> predicate)
         {
             if (string.IsNullOrWhiteSpace(searchText))
                 return source;
             else
-                return source.Where(predicate).AsQueryable();
+                return source.Where(predicate);
         }
     }
 }
