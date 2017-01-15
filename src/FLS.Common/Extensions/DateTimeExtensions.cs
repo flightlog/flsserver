@@ -67,6 +67,13 @@ namespace FLS.Common.Extensions
 
         }
 
+        public static bool DateTimeContainsSearchText(this DateTime? datetime, string searchText)
+        {
+            if (datetime.HasValue == false) return false;
+
+            return datetime.Value.DateTimeContainsSearchText(searchText);
+        }
+
         public static bool DateTimeContainsSearchText(this DateTime datetime, string searchText)
         {
             var loweredSearchText = searchText.ToLower();

@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Accounting;
+using FLS.Data.WebApi.Accounting.RuleFilters;
 using FLS.Data.WebApi.Accounting.Testing;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
@@ -640,6 +643,59 @@ namespace FLS.Server.Service.Accounting
 
                 SetDeliveryCreationTestOverviewSecurity(overviewList);
                 return overviewList;
+            }
+        }
+
+        public PagedList<DeliveryCreationTestOverview> GetPagedDeliveryCreationTestOverview(int? pageStart, int? pageSize, PageableSearchFilter<DeliveryCreationTestOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<DeliveryCreationTestOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new DeliveryCreationTestOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("DeliveryCreationTestName", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var deliveryCreationTests = context.DeliveryCreationTests
+                    .Where(q => q.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                deliveryCreationTests = deliveryCreationTests.WhereIf(filter.DeliveryCreationTestName,
+                        test => test.DeliveryCreationTestName.Contains(filter.DeliveryCreationTestName));
+                deliveryCreationTests = deliveryCreationTests.WhereIf(filter.Description,
+                        test => test.Description.Contains(filter.Description));
+                deliveryCreationTests = deliveryCreationTests.WhereIf(filter.LastTestResultMessage,
+                        test => test.LastTestResultMessage.Contains(filter.LastTestResultMessage));
+                deliveryCreationTests = deliveryCreationTests.WhereIf(filter.LastTestRunOn,
+                        test => test.LastTestRunOn.DateTimeContainsSearchText(filter.LastTestRunOn));
+
+                if (filter.IsActive.HasValue)
+                    deliveryCreationTests = deliveryCreationTests.Where(test => test.IsActive == filter.IsActive.Value);
+
+                if (filter.LastTestSuccessful.HasValue)
+                    deliveryCreationTests = deliveryCreationTests.Where(test => test.LastTestSuccessful == filter.LastTestSuccessful.Value);
+                
+                var pagedQuery = new PagedQuery<DeliveryCreationTest>(deliveryCreationTests, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => new DeliveryCreationTestOverview()
+                {
+                    DeliveryCreationTestId = x.DeliveryCreationTestId,
+                    FlightId = x.FlightId,
+                    DeliveryCreationTestName = x.DeliveryCreationTestName,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    LastTestSuccessful = x.LastTestSuccessful,
+                    LastTestResultMessage = x.LastTestResultMessage,
+                    LastTestRunOn = x.LastTestRunOn
+                }).ToList();
+
+                var pagedList = new PagedList<DeliveryCreationTestOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
             }
         }
 

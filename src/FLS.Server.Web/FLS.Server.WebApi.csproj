@@ -274,6 +274,7 @@
     <Compile Include="Controllers\AuditLogsController.cs" />
     <Compile Include="Controllers\DashboardsController.cs" />
     <Compile Include="Controllers\CounterUnitTypesController.cs" />
+    <Compile Include="Controllers\DeliveryCreationTestsController.cs" />
     <Compile Include="Controllers\EmailTemplatesController.cs" />
     <Compile Include="Controllers\ArticlesController.cs" />
     <Compile Include="Controllers\PersonCategoriesController.cs" />
