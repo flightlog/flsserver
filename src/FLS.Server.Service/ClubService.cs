@@ -63,21 +63,21 @@ namespace FLS.Server.Service
 
                 var filter = pageableSearchFilter.SearchFilter;
                 clubs = clubs.WhereIf(filter.ClubName,
-                        club => club.Clubname.ToLower().Contains(filter.ClubName.ToLower()));
+                        club => club.Clubname.Contains(filter.ClubName));
                 clubs = clubs.WhereIf(filter.Address,
-                        club => club.Address.ToLower().Contains(filter.Address.ToLower()));
+                        club => club.Address.Contains(filter.Address));
                 clubs = clubs.WhereIf(filter.City,
-                        club => club.City.ToLower().Contains(filter.City.ToLower()));
+                        club => club.City.Contains(filter.City));
                 clubs = clubs.WhereIf(filter.CountryName,
-                        club => club.Country.CountryName.ToLower().Contains(filter.CountryName.ToLower()));
+                        club => club.Country.CountryName.Contains(filter.CountryName));
                 clubs = clubs.WhereIf(filter.EmailAddress,
-                        club => club.Email.ToLower().Contains(filter.EmailAddress.ToLower()));
+                        club => club.Email.Contains(filter.EmailAddress));
                 clubs = clubs.WhereIf(filter.PhoneNumber,
-                        club => club.Phone.ToLower().Contains(filter.PhoneNumber.ToLower()));
+                        club => club.Phone.Contains(filter.PhoneNumber));
                 clubs = clubs.WhereIf(filter.ZipCode,
-                        club => club.Zip.ToLower().Contains(filter.ZipCode.ToLower()));
+                        club => club.Zip.Contains(filter.ZipCode));
                 clubs = clubs.WhereIf(filter.HomebaseName,
-                        club => club.Homebase.LocationName.ToLower().Contains(filter.HomebaseName.ToLower()));
+                        club => club.Homebase.LocationName.Contains(filter.HomebaseName));
 
 
                 var pagedQuery = new PagedQuery<Club>(clubs, pageStart, pageSize);
@@ -330,11 +330,11 @@ namespace FLS.Server.Service
                 
                 var filter = pageableSearchFilter.SearchFilter;
                 flightTypes = flightTypes.WhereIf(filter.FlightTypeName,
-                        club => club.FlightTypeName.ToLower().Contains(filter.FlightTypeName.ToLower()));
+                        club => club.FlightTypeName.Contains(filter.FlightTypeName));
                 flightTypes = flightTypes.WhereIf(filter.FlightCode,
-                        club => club.FlightCode.ToLower().Contains(filter.FlightCode.ToLower()));
+                        club => club.FlightCode.Contains(filter.FlightCode));
                 flightTypes = flightTypes.WhereIf(filter.MinNrOfAircraftSeatsRequired,
-                        club => club.MinNrOfAircraftSeatsRequired.ToString().ToLower().Contains(filter.MinNrOfAircraftSeatsRequired.ToLower()));
+                        club => club.MinNrOfAircraftSeatsRequired.ToString().Contains(filter.MinNrOfAircraftSeatsRequired));
 
                 if (filter.InstructorRequired.HasValue)
                     flightTypes = flightTypes.WhereIf(filter.InstructorRequired.Value,
@@ -543,7 +543,7 @@ namespace FLS.Server.Service
 
                 var filter = pageableSearchFilter.SearchFilter;
                 memberStates = memberStates.WhereIf(filter.MemberStateName,
-                        club => club.MemberStateName.ToLower().Contains(filter.MemberStateName.ToLower()));
+                        club => club.MemberStateName.Contains(filter.MemberStateName));
 
                 var pagedQuery = new PagedQuery<MemberState>(memberStates, pageStart, pageSize);
 
@@ -674,7 +674,7 @@ namespace FLS.Server.Service
 
                 var filter = pageableSearchFilter.SearchFilter;
                 personCategories = personCategories.WhereIf(filter.CategoryName,
-                        club => club.CategoryName.ToLower().Contains(filter.CategoryName.ToLower()));
+                        club => club.CategoryName.Contains(filter.CategoryName));
 
                 var pagedQuery = new PagedQuery<PersonCategory>(personCategories, pageStart, pageSize);
 

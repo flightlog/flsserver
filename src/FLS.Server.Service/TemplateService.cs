@@ -55,9 +55,9 @@ namespace FLS.Server.Service
 
                 var filter = pageableSearchFilter.SearchFilter;
                 emailTemplates = emailTemplates.WhereIf(filter.EmailTemplateName,
-                        template => template.EmailTemplateName.ToLower().Contains(filter.EmailTemplateName.ToLower()));
+                        template => template.EmailTemplateName.Contains(filter.EmailTemplateName));
                 emailTemplates = emailTemplates.WhereIf(filter.Description,
-                    template => template.Description.ToLower().Contains(filter.Description.ToLower()));
+                    template => template.Description.Contains(filter.Description));
 
                 if (filter.IsSystemTemplate.HasValue)
                     emailTemplates = emailTemplates.WhereIf(filter.IsSystemTemplate.Value,

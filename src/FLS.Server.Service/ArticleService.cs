@@ -62,9 +62,9 @@ namespace FLS.Server.Service
 
                 var filter = pageableSearchFilter.SearchFilter;
                 articles = articles.WhereIf(filter.ArticleNumber,
-                        reservation => reservation.ArticleNumber.ToLower().Contains(filter.ArticleNumber.ToLower()));
+                        reservation => reservation.ArticleNumber.Contains(filter.ArticleNumber));
                 articles = articles.WhereIf(filter.ArticleName,
-                    reservation => reservation.ArticleName.ToLower().Contains(filter.ArticleName.ToLower()));
+                    reservation => reservation.ArticleName.Contains(filter.ArticleName));
 
                 if (filter.IsActive.HasValue)
                     articles = articles.WhereIf(filter.IsActive.Value,

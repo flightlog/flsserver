@@ -145,21 +145,21 @@ namespace FLS.Server.Service
 
                 var filter = pageableSearchFilter.SearchFilter;
                 aircrafts = aircrafts.WhereIf(filter.Immatriculation,
-                        aircraft => aircraft.Immatriculation.Replace("-", "").ToLower().Contains(filter.Immatriculation.Replace("-", "").ToLower()));
+                        aircraft => aircraft.Immatriculation.Contains(filter.Immatriculation));
                 aircrafts = aircrafts.WhereIf(filter.AircraftModel,
-                    aircraft => aircraft.AircraftModel.ToLower().Contains(filter.AircraftModel.ToLower()));
+                    aircraft => aircraft.AircraftModel.Contains(filter.AircraftModel));
                 aircrafts = aircrafts.WhereIf(filter.CompetitionSign,
-                    aircraft => aircraft.CompetitionSign.ToLower().Contains(filter.CompetitionSign.ToLower()));
+                    aircraft => aircraft.CompetitionSign.Contains(filter.CompetitionSign));
                 aircrafts = aircrafts.WhereIf(filter.ManufacturerName,
-                    aircraft => aircraft.ManufacturerName.ToLower().Contains(filter.ManufacturerName.ToLower()));
+                    aircraft => aircraft.ManufacturerName.Contains(filter.ManufacturerName));
                 aircrafts = aircrafts.WhereIf(filter.NrOfSeats,
-                    aircraft => aircraft.NrOfSeats.ToString().ToLower().Contains(filter.NrOfSeats.ToLower()));
+                    aircraft => aircraft.NrOfSeats.ToString().Contains(filter.NrOfSeats));
                 aircrafts = aircrafts.WhereIf(filter.AircraftTypeName,
-                    aircraft => aircraft.AircraftType.AircraftTypeName.ToLower().Contains(filter.AircraftTypeName.ToLower()));
+                    aircraft => aircraft.AircraftType.AircraftTypeName.Contains(filter.AircraftTypeName));
                 aircrafts = aircrafts.WhereIf(filter.AircraftOwnerName,
-                    aircraft => aircraft.AircraftOwnerClub.Clubname.ToLower().Contains(filter.AircraftOwnerName.ToLower())
-                    || aircraft.AircraftOwnerPerson.Lastname.ToLower().Contains(filter.AircraftOwnerName.ToLower())
-                    || aircraft.AircraftOwnerPerson.Firstname.ToLower().Contains(filter.AircraftOwnerName.ToLower()));
+                    aircraft => aircraft.AircraftOwnerClub.Clubname.Contains(filter.AircraftOwnerName)
+                    || aircraft.AircraftOwnerPerson.Lastname.Contains(filter.AircraftOwnerName)
+                    || aircraft.AircraftOwnerPerson.Firstname.Contains(filter.AircraftOwnerName));
 
                 if (filter.HasEngine.HasValue)
                 {

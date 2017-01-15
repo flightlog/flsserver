@@ -124,23 +124,23 @@ namespace FLS.Server.Service
 
             var filter = pageableSearchFilter.SearchFilter;
             planningDays = planningDays.WhereIf(filter.LocationName,
-                    x => x.LocationName.ToLower().Contains(filter.LocationName.ToLower()));
+                    x => x.LocationName.Contains(filter.LocationName));
 
             planningDays = planningDays.WhereIf(filter.FlightOperatorName,
-                x => x.FlightOperatorName.ToLower().Contains(filter.FlightOperatorName.ToLower()));
+                x => x.FlightOperatorName.Contains(filter.FlightOperatorName));
             planningDays = planningDays.WhereIf(filter.TowingPilotName,
-                x => x.TowingPilotName.ToLower().Contains(filter.TowingPilotName.ToLower()));
+                x => x.TowingPilotName.Contains(filter.TowingPilotName));
             planningDays = planningDays.WhereIf(filter.InstructorName,
-                x => x.InstructorName.ToLower().Contains(filter.InstructorName.ToLower()));
+                x => x.InstructorName.Contains(filter.InstructorName));
             
             planningDays = planningDays.WhereIf(filter.Remarks,
-                x => x.Remarks.ToLower().Contains(filter.Remarks.ToLower()));
+                x => x.Remarks.Contains(filter.Remarks));
 
             planningDays = planningDays.WhereIf(filter.Day,
                 x => x.Day.DateContainsSearchText(filter.Day));
 
             planningDays = planningDays.WhereIf(filter.NumberOfAircraftReservations,
-                x => x.NumberOfAircraftReservations.ToString().Contains(filter.NumberOfAircraftReservations.ToLower()));
+                x => x.NumberOfAircraftReservations.ToString().Contains(filter.NumberOfAircraftReservations));
 
             var pagedQuery = new PagedQuery<PlanningDayOverview>(planningDays, pageStart, pageSize);
 

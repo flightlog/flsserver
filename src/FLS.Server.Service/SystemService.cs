@@ -178,17 +178,17 @@ namespace FLS.Server.Service
 
                 var filter = pageableSearchFilter.SearchFilter;
                 systemLogs = systemLogs.WhereIf(filter.Logger,
-                        systemLog => systemLog.Logger.ToLower().Contains(filter.Logger.ToLower()));
+                        systemLog => systemLog.Logger.Contains(filter.Logger));
                 systemLogs = systemLogs.WhereIf(filter.EventDateTime,
                     systemLog => systemLog.EventDateTime.DateTimeContainsSearchText(filter.EventDateTime));
                 systemLogs = systemLogs.WhereIf(filter.EventType,
-                    systemLog => systemLog.EventType.ToString().ToLower().Contains(filter.EventType.ToLower()));
+                    systemLog => systemLog.EventType.ToString().Contains(filter.EventType));
                 systemLogs = systemLogs.WhereIf(filter.LogLevel,
-                        systemLog => systemLog.LogLevel.ToLower().Contains(filter.LogLevel.ToLower()));
+                        systemLog => systemLog.LogLevel.Contains(filter.LogLevel));
                 systemLogs = systemLogs.WhereIf(filter.Message,
-                        systemLog => systemLog.Message.ToLower().Contains(filter.Message.ToLower()));
+                        systemLog => systemLog.Message.Contains(filter.Message));
                 systemLogs = systemLogs.WhereIf(filter.UserName,
-                        systemLog => systemLog.UserName.ToLower().Contains(filter.UserName.ToLower()));
+                        systemLog => systemLog.UserName.Contains(filter.UserName));
 
                 var pagedQuery = new PagedQuery<SystemLog>(systemLogs, pageStart, pageSize);
 

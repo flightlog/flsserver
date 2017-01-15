@@ -188,19 +188,19 @@ namespace FLS.Server.Service
 
                 var filter = pageableSearchFilter.SearchFilter;
                 locations = locations.WhereIf(filter.LocationName,
-                        location => location.LocationName.ToLower().Contains(filter.LocationName.ToLower()));
+                        location => location.LocationName.Contains(filter.LocationName));
                 locations = locations.WhereIf(filter.IcaoCode,
-                    location => location.IcaoCode.ToLower().Contains(filter.IcaoCode.ToLower()));
+                    location => location.IcaoCode.Contains(filter.IcaoCode));
                 locations = locations.WhereIf(filter.LocationTypeName,
-                    location => location.LocationType.LocationTypeName.ToLower().Contains(filter.LocationTypeName.ToLower()));
+                    location => location.LocationType.LocationTypeName.Contains(filter.LocationTypeName));
                 locations = locations.WhereIf(filter.CountryName,
-                    location => location.Country.CountryName.ToLower().Contains(filter.CountryName.ToLower()));
+                    location => location.Country.CountryName.Contains(filter.CountryName));
                 locations = locations.WhereIf(filter.AirportFrequency,
-                    location => location.AirportFrequency.ToLower().Contains(filter.AirportFrequency.ToLower()));
+                    location => location.AirportFrequency.Contains(filter.AirportFrequency));
                 locations = locations.WhereIf(filter.Description,
-                    location => location.Description.ToLower().Contains(filter.Description.ToLower()));
+                    location => location.Description.Contains(filter.Description));
                 locations = locations.WhereIf(filter.LocationShortName,
-                    location => location.LocationShortName.ToLower().Contains(filter.LocationShortName.ToLower()));
+                    location => location.LocationShortName.Contains(filter.LocationShortName));
 
                 if (filter.IsAirfield.HasValue)
                     locations = locations.Where(l => l.LocationType.IsAirfield == filter.IsAirfield.Value);

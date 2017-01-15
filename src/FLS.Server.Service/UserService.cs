@@ -193,20 +193,20 @@ namespace FLS.Server.Service
                 
                 var filter = pageableSearchFilter.SearchFilter;
                 users = users.WhereIf(filter.UserName,
-                        user => user.UserName.ToLower().Contains(filter.UserName.ToLower()));
+                        user => user.UserName.Contains(filter.UserName));
                 users = users.WhereIf(filter.AccountState,
-                        user => user.UserAccountState.UserAccountStateName.ToLower().Contains(filter.AccountState.ToLower()));
+                        user => user.UserAccountState.UserAccountStateName.Contains(filter.AccountState));
                 users = users.WhereIf(filter.ClubName,
-                        user => user.Club.Clubname.ToLower().Contains(filter.ClubName.ToLower()));
+                        user => user.Club.Clubname.Contains(filter.ClubName));
                 users = users.WhereIf(filter.FriendlyName,
-                        user => user.FriendlyName.ToLower().Contains(filter.FriendlyName.ToLower()));
+                        user => user.FriendlyName.Contains(filter.FriendlyName));
                 users = users.WhereIf(filter.NotificationEmail,
-                        user => user.NotificationEmail.ToLower().Contains(filter.NotificationEmail.ToLower()));
+                        user => user.NotificationEmail.Contains(filter.NotificationEmail));
                 users = users.WhereIf(filter.PersonName,
-                        user => user.Person.Lastname.ToLower().Contains(filter.PersonName.ToLower())
-                            || user.Person.Firstname.ToLower().Contains(filter.PersonName.ToLower()));
+                        user => user.Person.Lastname.Contains(filter.PersonName)
+                            || user.Person.Firstname.Contains(filter.PersonName));
                 users = users.WhereIf(filter.UserRoles,
-                        user => user.UserRoles.Any(x => x.Role.RoleName.ToLower().Contains(filter.UserRoles.ToLower())));
+                        user => user.UserRoles.Any(x => x.Role.RoleName.Contains(filter.UserRoles)));
 
                 var pagedQuery = new PagedQuery<User>(users, pageStart, pageSize);
 

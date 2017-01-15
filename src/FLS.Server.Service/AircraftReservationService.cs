@@ -75,23 +75,23 @@ namespace FLS.Server.Service
 
                 var filter = pageableSearchFilter.SearchFilter;
                 reservations = reservations.WhereIf(filter.Immatriculation,
-                        reservation => reservation.Aircraft.Immatriculation.Replace("-", "").ToLower().Contains(filter.Immatriculation.Replace("-", "").ToLower()));
+                        reservation => reservation.Aircraft.Immatriculation.Contains(filter.Immatriculation));
                 reservations = reservations.WhereIf(filter.Start,
                     reservation => reservation.Start.DateTimeContainsSearchText(filter.Start));
                 reservations = reservations.WhereIf(filter.End,
                     reservation => reservation.End.DateTimeContainsSearchText(filter.End));
                 reservations = reservations.WhereIf(filter.LocationName,
-                    reservation => reservation.Location.LocationName.ToLower().Contains(filter.LocationName.ToLower()));
+                    reservation => reservation.Location.LocationName.Contains(filter.LocationName));
                 reservations = reservations.WhereIf(filter.PilotName,
-                    reservation => reservation.PilotPerson.Lastname.ToLower().Contains(filter.PilotName.ToLower())
-                                   || reservation.PilotPerson.Firstname.ToLower().Contains(filter.PilotName.ToLower()));
+                    reservation => reservation.PilotPerson.Lastname.Contains(filter.PilotName)
+                                   || reservation.PilotPerson.Firstname.Contains(filter.PilotName));
                 reservations = reservations.WhereIf(filter.InstructorName,
-                    reservation => reservation.InstructorPerson.Lastname.ToLower().Contains(filter.InstructorName.ToLower())
-                                   || reservation.InstructorPerson.Firstname.ToLower().Contains(filter.InstructorName.ToLower()));
+                    reservation => reservation.InstructorPerson.Lastname.Contains(filter.InstructorName)
+                                   || reservation.InstructorPerson.Firstname.Contains(filter.InstructorName));
                 reservations = reservations.WhereIf(filter.Remarks,
-                    reservation => reservation.Remarks.ToLower().Contains(filter.Remarks.ToLower()));
+                    reservation => reservation.Remarks.Contains(filter.Remarks));
                 reservations = reservations.WhereIf(filter.ReservationTypeName,
-                    reservation => reservation.ReservationType.AircraftReservationTypeName.ToLower().Contains(filter.ReservationTypeName.ToLower()));
+                    reservation => reservation.ReservationType.AircraftReservationTypeName.Contains(filter.ReservationTypeName));
                 
                 var pagedQuery = new PagedQuery<AircraftReservation>(reservations, pageStart, pageSize);
 
