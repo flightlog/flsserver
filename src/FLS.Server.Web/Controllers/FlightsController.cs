@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Flight;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Service;
@@ -72,6 +73,19 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
+        /// Gets the flight overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<FlightOverview>))]
+        public IHttpActionResult GetPagedFlightOverview([FromBody]PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var flights = _flightService.GetPagedFlightOverview(pageStart, pageSize, pageableSearchFilter);
+            return Ok(flights);
+        }
+
+        /// <summary>
         /// Gets the glider flight overviews with referenced tow flights.
         /// </summary>
         /// <returns></returns>
@@ -117,6 +131,19 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
+        /// Gets the glider flight overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("gliderflights/page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<GliderFlightOverview>))]
+        public IHttpActionResult GetPagedGliderFlightOverview([FromBody]PageableSearchFilter<GliderFlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var flights = _flightService.GetPagedGliderFlightOverview(pageStart, pageSize, pageableSearchFilter);
+            return Ok(flights);
+        }
+
+        /// <summary>
         /// Gets the motor flight overviews of all flights and flight types.
         /// </summary>
         /// <returns></returns>
@@ -158,6 +185,19 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult GetMotorFlightOverviews(DateTime fromDate, DateTime toDate)
         {
             var flights = _flightService.GetMotorFlightOverviews(fromDate, toDate);
+            return Ok(flights);
+        }
+
+        /// <summary>
+        /// Gets the motor flight overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("motorflights/page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<FlightOverview>))]
+        public IHttpActionResult GetPagedMotorFlightOverview([FromBody]PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var flights = _flightService.GetPagedMotorFlightOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(flights);
         }
 

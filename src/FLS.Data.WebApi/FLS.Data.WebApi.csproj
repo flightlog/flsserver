@@ -108,11 +108,13 @@
     <Compile Include="Emails\EmailTemplateDetails.cs" />
     <Compile Include="Exceptions\FLSServerException.cs" />
     <Compile Include="Flight\FlightExchangeData.cs" />
+    <Compile Include="Flight\FlightOverviewSearchFilter.cs" />
     <Compile Include="Flight\FlightOverview.cs" />
     <Compile Include="Flight\FlightAirState.cs" />
     <Compile Include="Flight\FlightProcessState.cs" />
     <Compile Include="Flight\FlightValidationState.cs" />
     <Compile Include="Flight\FlightCrewData.cs" />
+    <Compile Include="Flight\GliderFlightOverviewSearchFilter.cs" />
     <Compile Include="FLSBaseData.cs" />
     <Compile Include="Flight\FlightCostBalanceType.cs" />
     <Compile Include="Flight\FlightCostBalanceTypeListItem.cs" />

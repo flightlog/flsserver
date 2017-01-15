@@ -41,7 +41,5 @@ namespace FLS.Data.WebApi.Flight
             get { return FlightId; }
             set { FlightId = value; }
         }
-
-        public string WinchOperatorName { get; set; }
     }
 }

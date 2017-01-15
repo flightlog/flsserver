@@ -5,7 +5,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using FLS.Common.Exceptions;
 using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Aircraft;
 using FLS.Data.WebApi.Flight;
 using FLS.Data.WebApi.Reporting;
@@ -318,6 +320,108 @@ namespace FLS.Server.Service
             return PrepareFlightOverviews(flights);
         }
 
+        public PagedList<FlightOverview> GetPagedMotorFlightOverview(int? pageStart, int? pageSize,
+            PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter)
+        {
+            return GetPagedFlightOverview(pageStart, pageSize, pageableSearchFilter, true);
+        }
+
+        public PagedList<FlightOverview> GetPagedFlightOverview(int? pageStart, int? pageSize,
+            PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter)
+        {
+            return GetPagedFlightOverview(pageStart, pageSize, pageableSearchFilter, false);
+        }
+
+        private PagedList<FlightOverview> GetPagedFlightOverview(int? pageStart, int? pageSize, PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, bool motorFlightsOnly)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<FlightOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new FlightOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var flights = context.Flights
+                    .Include(Constants.Aircraft)
+                    .Include(Constants.FlightType)
+                    .Include(Constants.FlightCrews)
+                    .Include(Constants.FlightCrews + "." + Constants.Person)
+                    .Include(Constants.StartType)
+                    .Include(Constants.StartLocation)
+                    .Include(Constants.LdgLocation)
+                    .Where(flight => flight.OwnerId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                if (motorFlightsOnly)
+                {
+                    flights =
+                        flights.Where(flight => flight.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight);
+                }
+
+
+                var filter = pageableSearchFilter.SearchFilter;
+                flights = flights.WhereIf(filter.Immatriculation,
+                        flight => flight.Aircraft.Immatriculation.Contains(filter.Immatriculation));
+                flights = flights.WhereIf(filter.PilotName,
+                    flight => flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname.Contains(filter.PilotName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname.Contains(filter.PilotName));
+                flights = flights.WhereIf(filter.SecondCrewName,
+                    flight => flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Lastname.Contains(filter.PilotName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Firstname.Contains(filter.PilotName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Lastname.Contains(filter.PilotName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Firstname.Contains(filter.PilotName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Lastname.Contains(filter.PilotName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Firstname.Contains(filter.PilotName));
+
+                flights = flights.WhereIf(filter.FlightComment,
+                    flight => flight.Comment.Contains(filter.FlightComment));
+                flights = flights.WhereIf(filter.AirState,
+                    flight => flight.FlightAirState.FlightAirStateName.Contains(filter.AirState));
+                flights = flights.WhereIf(filter.ValidationState,
+                    flight => flight.FlightValidationState.FlightValidationStateName.Contains(filter.ValidationState));
+                flights = flights.WhereIf(filter.ProcessState,
+                    flight => flight.FlightProcessState.FlightProcessStateName.Contains(filter.ProcessState));
+                flights = flights.WhereIf(filter.FlightCode,
+                    flight => flight.FlightType.FlightCode.Contains(filter.FlightCode));
+
+                flights = flights.WhereIf(filter.LdgDateTime,
+                    flight => flight.LdgDateTime.DateTimeContainsSearchText(filter.LdgDateTime));
+                flights = flights.WhereIf(filter.StartDateTime,
+                    flight => flight.StartDateTime.DateTimeContainsSearchText(filter.StartDateTime));
+
+                if (filter.IsSoloFlight.HasValue)
+                    flights = flights.Where(flight => flight.IsSoloFlight == filter.IsSoloFlight.Value);
+
+                flights = flights.WhereIf(filter.StartType,
+                    flight => flight.StartType.StartTypeName.Contains(filter.StartType));
+                flights = flights.WhereIf(filter.StartLocation,
+                    flight => flight.StartLocation.LocationName.Contains(filter.StartLocation));
+                flights = flights.WhereIf(filter.LdgLocation,
+                    flight => flight.LdgLocation.LocationName.Contains(filter.LdgLocation));
+
+                //TODO: Search for flight duration
+                //flights = flights.WhereIf(filter.FlightDuration,
+                //    flight => flight.FlightDuration.LocationName.Contains(filter.FlightDuration));
+
+                var pagedQuery = new PagedQuery<Flight>(flights, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToFlightOverview())
+                .Where(obj => obj != null)
+                .ToList();
+
+                SetFlightOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<FlightOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
+        }
+
+        #region MotorFlights
         public List<FlightOverview> GetMotorFlightOverviews()
         {
             var flights = GetFlights(flight => flight.OwnerId == CurrentAuthenticatedFLSUserClubId 
@@ -365,6 +469,7 @@ namespace FLS.Server.Service
 
             return PrepareFlightOverviews(flights);
         }
+        #endregion MotorFlights
 
         private List<FlightOverview> PrepareFlightOverviews(List<Flight> flights)
         {
@@ -419,6 +524,130 @@ namespace FLS.Server.Service
                                               && flight.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight);
 
             return PrepareGliderFlightOverviews(flights);
+        }
+
+        public PagedList<GliderFlightOverview> GetPagedGliderFlightOverview(int? pageStart, int? pageSize, PageableSearchFilter<GliderFlightOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<GliderFlightOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new GliderFlightOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var flights = context.Flights
+                    .Include(Constants.Aircraft)
+                    .Include(Constants.FlightType)
+                    .Include(Constants.FlightCrews)
+                    .Include(Constants.FlightCrews + "." + Constants.Person)
+                    .Include(Constants.StartType)
+                    .Include(Constants.StartLocation)
+                    .Include(Constants.LdgLocation)
+                    .Include(Constants.TowFlight)
+                        .Include(Constants.TowFlight + "." + Constants.Aircraft)
+                        .Include(Constants.TowFlight + "." + Constants.FlightType)
+                        .Include(Constants.TowFlight + "." + Constants.FlightCrews)
+                        .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person)
+                        .Include(Constants.TowFlight + "." + Constants.StartLocation)
+                        .Include(Constants.TowFlight + "." + Constants.LdgLocation)
+                    .Where(flight => flight.OwnerId == CurrentAuthenticatedFLSUserClubId
+                        && flight.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+                
+                var filter = pageableSearchFilter.SearchFilter;
+                flights = flights.WhereIf(filter.Immatriculation,
+                        flight => flight.Aircraft.Immatriculation.Contains(filter.Immatriculation));
+                flights = flights.WhereIf(filter.PilotName,
+                    flight => flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname.Contains(filter.PilotName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname.Contains(filter.PilotName));
+                flights = flights.WhereIf(filter.SecondCrewName,
+                    flight => flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Lastname.Contains(filter.SecondCrewName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Firstname.Contains(filter.SecondCrewName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Lastname.Contains(filter.SecondCrewName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Firstname.Contains(filter.SecondCrewName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Lastname.Contains(filter.SecondCrewName)
+                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Firstname.Contains(filter.SecondCrewName));
+
+                flights = flights.WhereIf(filter.FlightComment,
+                    flight => flight.Comment.Contains(filter.FlightComment));
+                flights = flights.WhereIf(filter.AirState,
+                    flight => flight.FlightAirState.FlightAirStateName.Contains(filter.AirState));
+                flights = flights.WhereIf(filter.ValidationState,
+                    flight => flight.FlightValidationState.FlightValidationStateName.Contains(filter.ValidationState));
+                flights = flights.WhereIf(filter.ProcessState,
+                    flight => flight.FlightProcessState.FlightProcessStateName.Contains(filter.ProcessState));
+                flights = flights.WhereIf(filter.FlightCode,
+                    flight => flight.FlightType.FlightCode.Contains(filter.FlightCode));
+
+                flights = flights.WhereIf(filter.LdgDateTime,
+                    flight => flight.LdgDateTime.DateTimeContainsSearchText(filter.LdgDateTime));
+                flights = flights.WhereIf(filter.StartDateTime,
+                    flight => flight.StartDateTime.DateTimeContainsSearchText(filter.StartDateTime));
+
+                if (filter.IsSoloFlight.HasValue)
+                    flights = flights.Where(flight => flight.IsSoloFlight == filter.IsSoloFlight.Value);
+
+                flights = flights.WhereIf(filter.StartType,
+                    flight => flight.StartType.StartTypeName.Contains(filter.StartType));
+                flights = flights.WhereIf(filter.StartLocation,
+                    flight => flight.StartLocation.LocationName.Contains(filter.StartLocation));
+                flights = flights.WhereIf(filter.LdgLocation,
+                    flight => flight.LdgLocation.LocationName.Contains(filter.LdgLocation));
+
+                //TODO: Search for flight duration
+                //flights = flights.WhereIf(filter.GliderFlightDuration,
+                //    flight => flight.FlightDuration.LocationName.Contains(filter.GliderFlightDuration));
+
+                flights = flights.WhereIf(filter.WinchOperatorName,
+                    flight => flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator).Person.Lastname.Contains(filter.WinchOperatorName)
+                        || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator).Person.Firstname.Contains(filter.WinchOperatorName));
+
+
+                //TowFlight filtering
+                flights = flights.WhereIf(filter.TowAircraftImmatriculation,
+                        flight => flight.TowFlight.Aircraft.Immatriculation.Contains(filter.TowAircraftImmatriculation));
+                flights = flights.WhereIf(filter.TowPilotName,
+                    flight => flight.TowFlight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname.Contains(filter.TowPilotName)
+                    || flight.TowFlight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname.Contains(filter.TowPilotName));
+
+                flights = flights.WhereIf(filter.TowFlightAirState,
+                    flight => flight.TowFlight.FlightAirState.FlightAirStateName.Contains(filter.TowFlightAirState));
+                flights = flights.WhereIf(filter.TowFlightValidationState,
+                    flight => flight.TowFlight.FlightValidationState.FlightValidationStateName.Contains(filter.TowFlightValidationState));
+                flights = flights.WhereIf(filter.TowFlightProcessState,
+                    flight => flight.TowFlight.FlightProcessState.FlightProcessStateName.Contains(filter.TowFlightProcessState));
+
+                flights = flights.WhereIf(filter.TowFlightLdgDateTime,
+                    flight => flight.TowFlight.LdgDateTime.DateTimeContainsSearchText(filter.TowFlightLdgDateTime));
+                flights = flights.WhereIf(filter.TowFlightStartDateTime,
+                    flight => flight.TowFlight.StartDateTime.DateTimeContainsSearchText(filter.TowFlightStartDateTime));
+
+                flights = flights.WhereIf(filter.TowFlightStartLocation,
+                    flight => flight.TowFlight.StartLocation.LocationName.Contains(filter.TowFlightStartLocation));
+                flights = flights.WhereIf(filter.TowFlightLdgLocation,
+                    flight => flight.TowFlight.LdgLocation.LocationName.Contains(filter.TowFlightLdgLocation));
+
+                //TODO: Search for flight duration
+                //flights = flights.WhereIf(filter.TowFlightDuration,
+                //    flight => flight.TowFlight.FlightDuration.LocationName.Contains(filter.TowFlightDuration));
+
+
+                var pagedQuery = new PagedQuery<Flight>(flights, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToGliderFlightOverview())
+                .Where(obj => obj != null)
+                .ToList();
+
+                SetGliderFlightOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<GliderFlightOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
         }
 
         private List<GliderFlightOverview> PrepareGliderFlightOverviews(List<Flight> flights)
