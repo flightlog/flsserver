@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Accounting.RuleFilters;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Service.Accounting;
@@ -36,6 +37,19 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult GetAccountingRuleFilterOverviews()
         {
             var accountingRuleFilters = _accountingRuleService.GetAccountingRuleFilterOverview();
+            return Ok(accountingRuleFilters);
+        }
+
+        /// <summary>
+        /// Gets the accounting rule filter overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<AccountingRuleFilterOverview>))]
+        public IHttpActionResult GetPagedAccountingRuleFilterOverview([FromBody]PageableSearchFilter<AccountingRuleFilterOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var accountingRuleFilters = _accountingRuleService.GetPagedAccountingRuleFilterOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(accountingRuleFilters);
         }
 

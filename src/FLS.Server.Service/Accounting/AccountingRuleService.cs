@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Accounting.RuleFilters;
 using FLS.Data.WebApi.Aircraft;
 using FLS.Data.WebApi.Location;
+using FLS.Data.WebApi.System;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
 using FLS.Server.Interfaces;
@@ -54,6 +58,51 @@ namespace FLS.Server.Service.Accounting
             SetAccountingRuleFilterOverviewSecurity(filters);
 
             return filters;
+        }
+
+        public PagedList<AccountingRuleFilterOverview> GetPagedAccountingRuleFilterOverview(int? pageStart, int? pageSize, PageableSearchFilter<AccountingRuleFilterOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<AccountingRuleFilterOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new AccountingRuleFilterOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("SortIndicator", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var accountingRuleFilters = context.AccountingRuleFilters.Include("AccountingRuleFilterType")
+                    .Where(q => q.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                accountingRuleFilters = accountingRuleFilters.WhereIf(filter.AccountingRuleFilterTypeName,
+                        accountingRuleFilter => accountingRuleFilter.AccountingRuleFilterType.AccountingRuleFilterTypeName.ToLower().Contains(filter.AccountingRuleFilterTypeName.ToLower()));
+                accountingRuleFilters = accountingRuleFilters.WhereIf(filter.Description,
+                        accountingRuleFilter => accountingRuleFilter.Description.ToLower().Contains(filter.Description.ToLower()));
+                accountingRuleFilters = accountingRuleFilters.WhereIf(filter.RuleFilterName,
+                        accountingRuleFilter => accountingRuleFilter.RuleFilterName.ToLower().Contains(filter.RuleFilterName.ToLower()));
+                accountingRuleFilters = accountingRuleFilters.WhereIf(filter.SortIndicator,
+                        accountingRuleFilter => accountingRuleFilter.SortIndicator.ToString().ToLower().Contains(filter.SortIndicator.ToLower()));
+                accountingRuleFilters = accountingRuleFilters.WhereIf(filter.Target,
+                        accountingRuleFilter => accountingRuleFilter.RecipientTarget.ToLower().Contains(filter.Target.ToLower())
+                            || accountingRuleFilter.ArticleTarget.ToLower().Contains(filter.Target.ToLower()));
+
+                var pagedQuery = new PagedQuery<AccountingRuleFilter>(accountingRuleFilters, pageStart, pageSize);
+
+                var aicrafts = _aircraftService.GetAircraftListItems();
+                var locations = _locationService.GetLocationListItems(airfieldsOnly: true);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToAccountingRuleFilterOverview(aicrafts, locations))
+                .Where(obj => obj != null)
+                .ToList();
+
+                var pagedList = new PagedList<AccountingRuleFilterOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
         }
 
         internal List<AccountingRuleFilterDetails> GetAccountingRuleFilterDetailsListByClubId(Guid clubId)
