@@ -15,6 +15,7 @@ using FLS.Server.Service;
 using FLS.Server.WebApi.Identity;
 using FLS.Common.Extensions;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
 using FLS.Server.Data.Exceptions;
 using FLS.Server.Data.Resources;
 using FLS.Server.Service.Email;
@@ -92,6 +93,19 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult GetUserOverviews(Guid clubId)
         {
             var users = _userService.GetUserOverviews(clubId);
+            return Ok(users);
+        }
+
+        /// <summary>
+        /// Gets the user overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<UserOverview>))]
+        public IHttpActionResult GetPagedUserOverview([FromBody]PageableSearchFilter<UserOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var users = _userService.GetPagedUserOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(users);
         }
 

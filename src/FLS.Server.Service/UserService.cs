@@ -4,8 +4,12 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Security;
+using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Exceptions;
+using FLS.Data.WebApi.System;
 using FLS.Data.WebApi.User;
 using FLS.Server.Data;
 using FLS.Server.Data.DbEntities;
@@ -63,37 +67,16 @@ namespace FLS.Server.Service
         /// <returns></returns>
         public List<RoleOverview> GetRoleOverviews()
         {
-            var roles = GetRoles();
-
-            var items = roles.Select(r => r.ToRoleOverview()).ToList();
-
-            return items;
-        }
-
-        internal List<Role> GetRoles()
-        {
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var roles = context.Roles.OrderBy(r => r.RoleApplicationKeyString).ToList();
 
-                return roles;
+                var items = roles.Select(r => r.ToRoleOverview()).ToList();
+
+                return items;
             }
         }
-
-        internal Role GetRole(Guid roleId)
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var role = context.Roles.FirstOrDefault(r => r.RoleId == roleId);
-                Logger.Debug(
-                    string.Format(
-                        "Requested Role with ID: {0} and got role {1} from database.",
-                        roleId, role));
-
-                return role;
-            }
-        }
-
+        
         internal Role GetRole(string roleName)
         {
             if (string.IsNullOrWhiteSpace(roleName))
@@ -177,6 +160,65 @@ namespace FLS.Server.Service
             }
 
             return PrepareUserOverviews(users);
+        }
+
+        public PagedList<UserOverview> GetPagedUserOverview(int? pageStart, int? pageSize, PageableSearchFilter<UserOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<UserOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new UserOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("UserName", "asc");
+            }
+            
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var users = context.Users.Include(Constants.UserRoles).Include(Constants.UserRolesRole)
+                    .Include(Constants.Club).Include(Constants.Person)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                if (IsCurrentUserInRoleSystemAdministrator)
+                {
+                    //we don't have to filter for club related users, return all users
+                }
+                else if (IsCurrentUserInRoleClubAdministrator)
+                {
+                    users = users.Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId);
+                }
+                else
+                {
+                    throw new UnauthorizedAccessException("User is not allowed to get users");
+                }
+                
+                var filter = pageableSearchFilter.SearchFilter;
+                users = users.WhereIf(filter.UserName,
+                        user => user.UserName.ToLower().Contains(filter.UserName.ToLower()));
+                users = users.WhereIf(filter.AccountState,
+                        user => user.UserAccountState.UserAccountStateName.ToLower().Contains(filter.AccountState.ToLower()));
+                users = users.WhereIf(filter.ClubName,
+                        user => user.Club.Clubname.ToLower().Contains(filter.ClubName.ToLower()));
+                users = users.WhereIf(filter.FriendlyName,
+                        user => user.FriendlyName.ToLower().Contains(filter.FriendlyName.ToLower()));
+                users = users.WhereIf(filter.NotificationEmail,
+                        user => user.NotificationEmail.ToLower().Contains(filter.NotificationEmail.ToLower()));
+                users = users.WhereIf(filter.PersonName,
+                        user => user.Person.Lastname.ToLower().Contains(filter.PersonName.ToLower())
+                            || user.Person.Firstname.ToLower().Contains(filter.PersonName.ToLower()));
+                users = users.WhereIf(filter.UserRoles,
+                        user => user.UserRoles.Any(x => x.Role.RoleName.ToLower().Contains(filter.UserRoles.ToLower())));
+
+                var pagedQuery = new PagedQuery<User>(users, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToUserOverview())
+                .Where(obj => obj != null)
+                .ToList();
+
+                var pagedList = new PagedList<UserOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
         }
 
         public List<UserOverview> GetMyClubUserOverviews()
