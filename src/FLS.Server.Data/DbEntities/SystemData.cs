@@ -11,6 +11,11 @@ namespace FLS.Server.Data.DbEntities
     [Table("SystemData")]
     public partial class SystemData
     {
+        public SystemData()
+        {
+            
+        }
+
         [Key]
         public Guid SystemId { get; set; }
 

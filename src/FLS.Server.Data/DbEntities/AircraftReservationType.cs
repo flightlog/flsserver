@@ -10,6 +10,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public class AircraftReservationType
     {
+        public AircraftReservationType()
+        {
+            AircraftReservations = new HashSet<AircraftReservation>();
+        }
+
         public int AircraftReservationTypeId { get; set; }
 
         [Required]

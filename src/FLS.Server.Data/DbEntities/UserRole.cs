@@ -11,6 +11,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public partial class UserRole
     {
+        public UserRole()
+        {
+            
+        }
+
         [Key]
         [Column(Order = 0)]
         public Guid UserId { get; set; }

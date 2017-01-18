@@ -48,7 +48,26 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             Assert.IsTrue(deliveries.Any());
         }
-        
+
+        [TestMethod]
+        [TestCategory("WebApi")]
+        public void CreateDeliveriesWebApiTest2()
+        {
+            var validateFlights = GetAsync("/api/v1/flights/validate").Result;
+
+            var responseLock = GetAsync("/api/v1/flights/lock/force").Result;
+
+            Assert.IsTrue(responseLock.IsSuccessStatusCode);
+
+            var response = GetAsync("/api/v1/deliveries/create").Result;
+
+            Assert.IsTrue(response.IsSuccessStatusCode);
+
+            var deliveries = GetAsync<List<DeliveryDetails>>("/api/v1/deliveries/notprocessed").Result;
+
+            Assert.IsTrue(deliveries.Any());
+        }
+
         protected override string Uri
         {
             get { return RoutePrefix; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FLS.Server.Service;
 using FLS.Server.Service.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -65,6 +66,15 @@ namespace FLS.Server.Tests.ServiceTests
             }
         }
 
+        [TestMethod]
+        [TestCategory("Service")]
+        public void FlightExchangeServiceTest()
+        {
+            var fromDate = new DateTime(2000,1,1);
+            var flights = FlightService.GetFlightsModifiedSince(fromDate);
+            Assert.IsTrue(flights.Any());
+            Logger.Debug($"Number of flights to export {flights.Count} since {fromDate}");
+        }
 
     }
 }

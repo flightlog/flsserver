@@ -11,6 +11,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public partial class ExtensionValue : IFLSMetaData
     {
+        public ExtensionValue()
+        {
+            
+        }
+
         public Guid ExtensionValueId { get; set; }
 
         [Required]

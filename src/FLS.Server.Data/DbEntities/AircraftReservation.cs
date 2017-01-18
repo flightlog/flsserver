@@ -10,6 +10,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public class AircraftReservation : IFLSMetaData
     {
+        public AircraftReservation()
+        {
+            
+        }
+
         public Guid AircraftReservationId { get; set; }
 
         [Column(TypeName = "datetime2")]

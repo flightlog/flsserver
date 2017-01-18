@@ -21,11 +21,14 @@ namespace FLS.Server.Data.DbEntities
             PersonCategories = new HashSet<PersonCategory>();
             ClubPersons = new HashSet<PersonClub>();
             Users = new HashSet<User>();
+            PlanningDays = new HashSet<PlanningDay>();
+            PlanningDayAssignmentTypes = new HashSet<PlanningDayAssignmentType>();
             AircraftReservations = new HashSet<AircraftReservation>();
             EmailTemplates = new HashSet<EmailTemplate>();
             AccountingRuleFilters = new HashSet<AccountingRuleFilter>();
             Articles = new HashSet<Article>();
             Deliveries = new HashSet<Delivery>();
+            DeliveryCreationTests = new HashSet<DeliveryCreationTest>();
         }
 
         public Guid ClubId { get; set; }

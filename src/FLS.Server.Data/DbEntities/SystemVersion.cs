@@ -11,6 +11,11 @@ namespace FLS.Server.Data.DbEntities
     [Table("SystemVersion")]
     public partial class SystemVersion
     {
+        public SystemVersion()
+        {
+            
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long VersionId { get; set; }

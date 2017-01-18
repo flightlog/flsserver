@@ -11,6 +11,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public partial class InOutboundPoint : IFLSMetaData
     {
+        public InOutboundPoint()
+        {
+            
+        }
+
         public Guid InOutboundPointId { get; set; }
 
         public Guid LocationId { get; set; }

@@ -12,6 +12,11 @@ namespace FLS.Server.Data.DbEntities
     [Table("PersonClub")]
     public partial class PersonClub : IFLSMetaData
     {
+        public PersonClub()
+        {
+            
+        }
+
         [Key]
         [Column(Order = 0)]
         public Guid PersonId { get; set; }

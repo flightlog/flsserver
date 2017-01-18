@@ -11,6 +11,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public class PlanningDayAssignment : IFLSMetaData
     {
+        public PlanningDayAssignment()
+        {
+            
+        }
+
         public Guid PlanningDayAssignmentId { get; set; }
         public Guid AssignedPlanningDayId { get; set; }
         public Guid AssignedPersonId { get; set; }
