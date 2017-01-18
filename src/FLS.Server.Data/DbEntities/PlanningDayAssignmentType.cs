@@ -11,6 +11,11 @@ namespace FLS.Server.Data.DbEntities
     [Table("PlanningDayAssignmentTypes")]
     public class PlanningDayAssignmentType : IFLSMetaData
     {
+        public PlanningDayAssignmentType()
+        {
+            PlanningDayAssignments = new HashSet<PlanningDayAssignment>();
+        }
+
         public Guid PlanningDayAssignmentTypeId { get; set; }
         public string AssignmentTypeName { get; set; }
         public Guid ClubId { get; set; }

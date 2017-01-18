@@ -17,6 +17,8 @@ namespace FLS.Server.Data.DbEntities
             LandedFlights = new HashSet<Flight>();
             StartedFlights = new HashSet<Flight>();
             InOutboundPoints = new HashSet<InOutboundPoint>();
+            PlanningDays = new HashSet<PlanningDay>();
+            AircraftReservations = new HashSet<AircraftReservation>();
         }
 
         public Guid LocationId { get; set; }

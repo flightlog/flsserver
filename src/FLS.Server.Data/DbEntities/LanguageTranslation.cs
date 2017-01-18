@@ -10,6 +10,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public partial class LanguageTranslation
     {
+        public LanguageTranslation()
+        {
+            
+        }
+
         public Guid LanguageTranslationId { get; set; }
 
         [Required]

@@ -16,6 +16,7 @@ namespace FLS.Server.Data.DbEntities
             FlightCrews = new HashSet<FlightCrew>();
             TowedFlights = new HashSet<Flight>();
             Deliveries = new HashSet<Delivery>();
+            DeliveryCreationTests = new HashSet<DeliveryCreationTest>();
             ValidationStateId = (int) FLS.Data.WebApi.Flight.FlightValidationState.NotValidated;
             ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.NotProcessed;
         }

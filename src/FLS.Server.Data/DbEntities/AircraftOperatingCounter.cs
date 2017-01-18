@@ -10,6 +10,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public class AircraftOperatingCounter : IFLSMetaData
     {
+        public AircraftOperatingCounter()
+        {
+            
+        }
+
         public Guid AircraftOperatingCounterId { get; set; }
 
         public Guid AircraftId { get; set; }

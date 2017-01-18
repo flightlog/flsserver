@@ -10,6 +10,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public partial class ClubExtension
     {
+        public ClubExtension()
+        {
+            
+        }
+
         [Key]
         [Column(Order = 0)]
         public Guid ClubId { get; set; }

@@ -12,6 +12,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public partial class AccountingRuleFilter : IFLSMetaData
     {
+        public AccountingRuleFilter()
+        {
+            
+        }
+
         public Guid AccountingRuleFilterId { get; set; }
 
         public Guid ClubId { get; set; }

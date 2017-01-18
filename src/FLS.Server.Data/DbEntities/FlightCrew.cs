@@ -12,6 +12,11 @@ namespace FLS.Server.Data.DbEntities
     [Table("FlightCrew")]
     public partial class FlightCrew : IFLSMetaData
     {
+        public FlightCrew()
+        {
+            
+        }
+
         public Guid FlightCrewId { get; set; }
 
         public Guid FlightId { get; set; }

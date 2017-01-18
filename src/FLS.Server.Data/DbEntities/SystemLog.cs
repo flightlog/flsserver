@@ -10,6 +10,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public partial class SystemLog
     {
+        public SystemLog()
+        {
+            
+        }
+
         [Key]
         public long LogId { get; set; }
 

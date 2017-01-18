@@ -11,6 +11,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public partial class AircraftAircraftState : IFLSMetaData
     {
+        public AircraftAircraftState()
+        {
+            
+        }
+
         [Key]
         [Column(Order = 0)]
         public Guid AircraftId { get; set; }

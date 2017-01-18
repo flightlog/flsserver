@@ -19,6 +19,8 @@ namespace FLS.Server.Data.DbEntities
         {
             AircraftAircraftStates = new HashSet<AircraftAircraftState>();
             Flights = new HashSet<Flight>();
+            AircraftReservations = new HashSet<AircraftReservation>();
+            AircraftOperatingCounters = new HashSet<AircraftOperatingCounter>();
         }
 
         public Guid AircraftId { get; set; }
