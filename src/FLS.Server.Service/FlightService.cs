@@ -14,6 +14,7 @@ using FLS.Server.Data.Enums;
 using FLS.Server.Data.Exceptions;
 using FLS.Server.Data.Mapping;
 using FLS.Server.Data.Resources;
+using LinqKit;
 using NLog;
 
 namespace FLS.Server.Service
@@ -687,29 +688,30 @@ namespace FLS.Server.Service
                 context.SaveChanges();
             }
         }
+        
 
         public List<FlightExchangeData> GetFlightsModifiedSince(DateTime modifiedSince)
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var flights = context.Flights
-                            .Include(Constants.Aircraft)
-                            .Include(Constants.FlightType)
-                            .Include(Constants.FlightCrews)
-                            .Include(Constants.FlightCrews + "." + Constants.Person)
-                            .Include(Constants.FlightCrews + "." + Constants.Person + "." + Constants.PersonClubs)
-                            .Include(Constants.StartType)
-                            .Include(Constants.StartLocation)
-                            .Include(Constants.LdgLocation)
-                            .Include(Constants.TowFlight)
-                            .Include(Constants.TowFlight + "." + Constants.Aircraft)
-                            .Include(Constants.TowFlight + "." + Constants.FlightType)
-                            .Include(Constants.TowFlight + "." + Constants.FlightCrews)
-                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person)
+                var flights = context.Flights.AsNoTracking()
+                            .Include(Constants.Aircraft).AsNoTracking()
+                            .Include(Constants.FlightType).AsNoTracking()
+                            .Include(Constants.FlightCrews).AsNoTracking()
+                            .Include(Constants.FlightCrews + "." + Constants.Person).AsNoTracking()
+                            .Include(Constants.FlightCrews + "." + Constants.Person + "." + Constants.PersonClubs).AsNoTracking()
+                            .Include(Constants.StartType).AsNoTracking()
+                            .Include(Constants.StartLocation).AsNoTracking()
+                            .Include(Constants.LdgLocation).AsNoTracking()
+                            .Include(Constants.TowFlight).AsNoTracking()
+                            .Include(Constants.TowFlight + "." + Constants.Aircraft).AsNoTracking()
+                            .Include(Constants.TowFlight + "." + Constants.FlightType).AsNoTracking()
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews).AsNoTracking()
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person).AsNoTracking()
                             .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person + "." +
-                                     Constants.PersonClubs)
-                            .Include(Constants.TowFlight + "." + Constants.StartLocation)
-                            .Include(Constants.TowFlight + "." + Constants.LdgLocation)
+                                     Constants.PersonClubs).AsNoTracking()
+                            .Include(Constants.TowFlight + "." + Constants.StartLocation).AsNoTracking()
+                            .Include(Constants.TowFlight + "." + Constants.LdgLocation).AsNoTracking()
                     .Where(flight => flight.OwnerId == CurrentAuthenticatedFLSUserClubId &&
                             (flight.CreatedOn >= modifiedSince
                                                 || (flight.ModifiedOn.HasValue &&
@@ -719,7 +721,7 @@ namespace FLS.Server.Service
                                                || flight.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight))
                     .OrderByDescending(c => c.StartDateTime)
                     .ToList();
-
+                
                 var flightExchangeDatas = flights.Select(x => x.ToFlightExchangeData(CurrentAuthenticatedFLSUserClubId)).ToList();
 
                 return flightExchangeDatas;
