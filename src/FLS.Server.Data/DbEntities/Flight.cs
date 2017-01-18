@@ -27,6 +27,9 @@ namespace FLS.Server.Data.DbEntities
 
         public int? StartPosition { get; set; }
 
+        [Column(TypeName = "Date")]
+        public DateTime? FlightDate { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime? StartDateTime { get; set; }
 
@@ -451,19 +454,6 @@ namespace FLS.Server.Data.DbEntities
             get
             {
                 return StartDateTime.HasValue && LdgDateTime.HasValue == false;
-            }
-        }
-
-        public DateTime? FlightDate
-        {
-            get
-            {
-                if (StartDateTime.HasValue)
-                {
-                    return StartDateTime.Value.Date;
-                }
-
-                return null;
             }
         }
         

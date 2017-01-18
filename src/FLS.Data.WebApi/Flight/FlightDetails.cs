@@ -8,6 +8,8 @@ namespace FLS.Data.WebApi.Flight
 
         public Nullable<int> StartType { get; set; }
 
+        public Nullable<DateTime> FlightDate { get; set; }
+
         public GliderFlightDetailsData GliderFlightDetailsData { get; set; }
 
         public TowFlightDetailsData TowFlightDetailsData { get; set; }

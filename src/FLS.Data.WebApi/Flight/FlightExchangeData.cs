@@ -13,6 +13,8 @@ namespace FLS.Data.WebApi.Flight
 
         public string StartType { get; set; }
 
+        public DateTime? FlightDate { get; set; }
+
         public string AircraftImmatriculation { get; set; }
 
         public FlightCrewData Pilot { get; set; }

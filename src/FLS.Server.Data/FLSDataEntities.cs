@@ -136,7 +136,6 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Flight>().Ignore(t => t.PassengerDisplayName);
             modelBuilder.Entity<Flight>().Ignore(t => t.AircraftImmatriculation);
             modelBuilder.Entity<Flight>().Ignore(t => t.IsStarted);
-            modelBuilder.Entity<Flight>().Ignore(t => t.FlightDate);
             modelBuilder.Entity<Flight>().Ignore(t => t.DoNotUpdateMetaData);
 
             modelBuilder.Entity<FlightCrew>().Ignore(t => t.Id);

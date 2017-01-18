@@ -1124,16 +1124,20 @@ namespace FLS.Server.Data.Mapping
 
             if (entity.StartType != null) overview.StartType = entity.StartTypeId;
 
-            if (entity.StartDateTime.HasValue)
-            {
-                overview.StartDateTime = entity.StartDateTime.Value.SetAsUtc();
-            }
+            overview.FlightDate = entity.FlightDate;
 
             if (entity.LdgDateTime.HasValue)
             {
                 overview.LdgDateTime = entity.LdgDateTime.Value.SetAsUtc();
+                if (overview.FlightDate == null) overview.FlightDate = overview.LdgDateTime.Value.Date;
             }
 
+            if (entity.StartDateTime.HasValue)
+            {
+                overview.StartDateTime = entity.StartDateTime.Value.SetAsUtc();
+                if (overview.FlightDate == null) overview.FlightDate = overview.StartDateTime.Value.Date;
+            }
+            
             if (entity.StartLocationId.HasValue && entity.StartLocation != null)
             {
                 overview.StartLocation = entity.StartLocation.LocationName;
@@ -1197,14 +1201,18 @@ namespace FLS.Server.Data.Mapping
 
             if (entity.StartType != null) overview.StartType = entity.StartTypeId;
 
-            if (entity.StartDateTime.HasValue)
-            {
-                overview.StartDateTime = entity.StartDateTime.Value.SetAsUtc();
-            }
+            overview.FlightDate = entity.FlightDate;
 
             if (entity.LdgDateTime.HasValue)
             {
                 overview.LdgDateTime = entity.LdgDateTime.Value.SetAsUtc();
+                if (overview.FlightDate == null) overview.FlightDate = overview.LdgDateTime.Value.Date;
+            }
+
+            if (entity.StartDateTime.HasValue)
+            {
+                overview.StartDateTime = entity.StartDateTime.Value.SetAsUtc();
+                if (overview.FlightDate == null) overview.FlightDate = overview.StartDateTime.Value.Date;
             }
 
             if (entity.StartLocationId.HasValue && entity.StartLocation != null)
@@ -1262,6 +1270,7 @@ namespace FLS.Server.Data.Mapping
 
             details.FlightId = entity.FlightId;
             details.StartType = entity.StartTypeId;
+            details.FlightDate = entity.FlightDate;
 
             if (entity.IsGliderFlight)
             {
@@ -1271,12 +1280,24 @@ namespace FLS.Server.Data.Mapping
 
                 details.GliderFlightDetailsData = gliderFlightDetailsData;
 
+                if (details.FlightDate.HasValue == false)
+                {
+                    if (entity.StartDateTime.HasValue) details.FlightDate = entity.StartDateTime.Value.Date;
+                    else if (entity.LdgDateTime.HasValue) details.FlightDate = entity.LdgDateTime.Value.Date;
+                }
+
                 if (entity.IsTowed.HasValue && entity.IsTowed.Value)
                 {
                     var towFlightDetailsData = new TowFlightDetailsData();
                     if (entity.TowFlight != null)
                     {
                         entity.TowFlight.ToTowFlightDetailsData(towFlightDetailsData);
+
+                        if (details.FlightDate.HasValue == false)
+                        {
+                            if (entity.TowFlight.StartDateTime.HasValue) details.FlightDate = entity.TowFlight.StartDateTime.Value.Date;
+                            else if (entity.TowFlight.LdgDateTime.HasValue) details.FlightDate = entity.TowFlight.LdgDateTime.Value.Date;
+                        }
                     }
                     details.TowFlightDetailsData = towFlightDetailsData;
                 }
@@ -1287,6 +1308,12 @@ namespace FLS.Server.Data.Mapping
                 entity.ToTowFlightDetailsData(towFlightDetailsData);
 
                 details.TowFlightDetailsData = towFlightDetailsData;
+
+                if (details.FlightDate.HasValue == false)
+                {
+                    if (entity.StartDateTime.HasValue) details.FlightDate = entity.StartDateTime.Value.Date;
+                    else if (entity.LdgDateTime.HasValue) details.FlightDate = entity.LdgDateTime.Value.Date;
+                }
             }
             else if (entity.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight)
             {
@@ -1294,8 +1321,14 @@ namespace FLS.Server.Data.Mapping
                 entity.ToMotorFlightDetailsData(motorFlightDetailsData);
 
                 details.MotorFlightDetailsData = motorFlightDetailsData;
-            }
 
+                if (details.FlightDate.HasValue == false)
+                {
+                    if (entity.StartDateTime.HasValue) details.FlightDate = entity.StartDateTime.Value.Date;
+                    else if (entity.LdgDateTime.HasValue) details.FlightDate = entity.LdgDateTime.Value.Date;
+                }
+            }
+            
             return details;
         }
 
@@ -1432,6 +1465,7 @@ namespace FLS.Server.Data.Mapping
 
             if (overwriteFlightId) entity.FlightId = details.FlightId;
             entity.StartTypeId = details.StartType;
+            entity.FlightDate = details.FlightDate;
 
             if (details.GliderFlightDetailsData != null && (details.StartType.HasValue == false || details.StartType.Value == (int) AircraftStartType.TowingByAircraft || details.StartType.Value == (int) AircraftStartType.WinchLaunch || details.StartType.Value == (int) AircraftStartType.SelfStart || details.StartType.Value == (int) AircraftStartType.ExternalStart))
             {
@@ -1439,7 +1473,11 @@ namespace FLS.Server.Data.Mapping
                 {
                     //it is a towed glider flight
                     entity.StartTypeId = (int) AircraftStartType.TowingByAircraft;
-                    if (entity.TowFlight == null) entity.TowFlight = new Flight();
+                    if (entity.TowFlight == null)
+                        entity.TowFlight = new Flight()
+                        {
+                            FlightDate = details.FlightDate
+                        };
 
                     relatedAircraft = GetRelatedAircraft(detailsRelatedAircrafts, details.TowFlightDetailsData);
                     relatedFlightType = GetRelatedFlightType(detailsRelatedFlightTypes, details.TowFlightDetailsData);
@@ -1561,6 +1599,13 @@ namespace FLS.Server.Data.Mapping
             entity.LdgDateTime = details.LdgDateTime;
             entity.LdgLocationId = details.LdgLocationId.GetNullableGuid();
             entity.StartDateTime = details.StartDateTime;
+
+            if (entity.FlightDate.HasValue == false)
+            {
+                if (details.StartDateTime.HasValue) entity.FlightDate = details.StartDateTime.Value.Date;
+                else if (details.LdgDateTime.HasValue) entity.FlightDate = details.LdgDateTime.Value.Date;
+            }
+
             entity.StartLocationId = details.StartLocationId.GetNullableGuid();
             entity.NrOfLdgs = details.NrOfLdgs;
             entity.FlightCostBalanceTypeId = details.FlightCostBalanceType;
@@ -1653,6 +1698,12 @@ namespace FLS.Server.Data.Mapping
             //Convert Flightcrews
             details.ToFlightCrewsInFlight(entity, AircraftStartType.MotorFlightStart, detailsRelatedAircraft, detailsRelatedFlightType);
 
+            if (entity.FlightDate.HasValue == false)
+            {
+                if (details.BlockStartDateTime.HasValue) entity.FlightDate = details.BlockStartDateTime.Value.Date;
+                else if (details.BlockEndDateTime.HasValue) entity.FlightDate = details.BlockEndDateTime.Value.Date;
+            }
+
             return entity;
         }
 
@@ -1688,6 +1739,8 @@ namespace FLS.Server.Data.Mapping
             var exchangeData = new FlightExchangeData();
 
             exchangeData.FlightId = entity.FlightId;
+
+            exchangeData.FlightDate = entity.FlightDate;
 
             if (entity.StartType != null) exchangeData.StartType = entity.StartType.StartTypeName;
 

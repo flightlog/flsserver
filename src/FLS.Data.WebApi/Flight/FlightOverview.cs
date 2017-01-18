@@ -5,7 +5,9 @@ namespace FLS.Data.WebApi.Flight
     public class FlightOverview : FLSBaseData
     {
         public Guid FlightId { get; set; }
-        
+
+        public Nullable<DateTime> FlightDate { get; set; }
+
         public string Immatriculation { get; set; }
 
         public string PilotName { get; set; }
