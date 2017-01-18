@@ -12,6 +12,11 @@ namespace FLS.Server.Data.DbEntities
 {
     public partial class DeliveryCreationTest : IFLSMetaData
     {
+        public DeliveryCreationTest()
+        {
+            
+        }
+
         public Guid DeliveryCreationTestId { get; set; }
 
         public Guid ClubId { get; set; }
