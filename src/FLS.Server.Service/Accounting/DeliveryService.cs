@@ -163,7 +163,11 @@ namespace FLS.Server.Service.Accounting
                             $"Total {numberOfExceptions} error(s) while trying to create accounting details for flights. Last exception message: {lastException.Message}");
                     }
 
-                    var deliveries = context.Deliveries.Where(x => x.BatchId == batchId).ToList();
+                    var deliveries = context.Deliveries
+                            .Include("Flight")
+                            .Include("Flight." + Constants.Aircraft)
+                            .Include("Flight." + Constants.FlightType)
+                        .Where(x => x.BatchId == batchId).ToList();
 
                     var deliveryDetailsList = deliveries.Select(x => x.ToDeliveryDetails()).ToList();
                     Logger.Debug(
@@ -810,7 +814,10 @@ namespace FLS.Server.Service.Accounting
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var query = context.Deliveries.Include("DeliveryItems")
-                    .Where(c => c.ClubId == CurrentAuthenticatedFLSUserClubId);
+                            .Include("Flight")
+                            .Include("Flight." + Constants.Aircraft)
+                            .Include("Flight." + Constants.FlightType)
+                            .Where(c => c.ClubId == CurrentAuthenticatedFLSUserClubId);
 
                 if (furtherProcessed.HasValue)
                 {

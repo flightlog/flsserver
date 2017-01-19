@@ -38,7 +38,7 @@ namespace FLS.Data.WebApi.Flight
         /// Gets or sets the engine operating counter after engine shutdown in seconds
         /// </summary>
         public Nullable<long> EngineEndOperatingCounterInSeconds { get; set; }
-        
+
 
         public string FlightComment { get; set; }
 
@@ -53,7 +53,7 @@ namespace FLS.Data.WebApi.Flight
         public string FlightTypeCode { get; set; }
 
         public Nullable<DateTime> LdgDateTime { get; set; }
-        
+
         public Nullable<DateTime> StartDateTime { get; set; }
 
         public Nullable<DateTime> BlockStartDateTime { get; set; }
@@ -138,5 +138,10 @@ namespace FLS.Data.WebApi.Flight
         public bool TowFlightNoStartTimeInformation { get; set; }
 
         public bool TowFlightNoLdgTimeInformation { get; set; }
+
+        public DateTime CreatedOn { get; set; }
+
+        public DateTime? ModifiedOn { get; set; }
+
     }
 }

@@ -775,17 +775,17 @@ namespace FLS.Server.Data.Mapping
 
             details.DeliveryId = entity.DeliveryId;
 
-            if (entity.Flight == null)
+            if (entity.Flight == null && entity.FlightId.HasValue == false)
             {
                 details.FlightInformation = null;
             }
             else
             {
-                details.FlightInformation.AircraftImmatriculation = entity.Flight.AircraftImmatriculation;
-                details.FlightInformation.FlightDate = entity.Flight.StartDateTime.Value;
-                details.FlightInformation.FlightId = entity.Flight.FlightId;
+                if (entity.Flight != null) details.FlightInformation.AircraftImmatriculation = entity.Flight.AircraftImmatriculation;
+                if (entity.Flight != null && entity.Flight.FlightDate.HasValue) details.FlightInformation.FlightDate = entity.Flight.FlightDate.Value;
+                if (entity.FlightId.HasValue) details.FlightInformation.FlightId = entity.FlightId.Value;
 
-                if (entity.Flight.FlightType != null)
+                if (entity.Flight != null && entity.Flight.FlightType != null)
                 {
                     details.FlightInformation.FlightTypeName = entity.Flight.FlightType.FlightTypeName;
                 }
@@ -1829,6 +1829,8 @@ namespace FLS.Server.Data.Mapping
             exchangeData.NoStartTimeInformation = entity.NoStartTimeInformation;
             exchangeData.NoLdgTimeInformation = entity.NoLdgTimeInformation;
             exchangeData.CouponNumber = entity.CouponNumber;
+            exchangeData.CreatedOn = entity.CreatedOn;
+            exchangeData.ModifiedOn = entity.ModifiedOn;    
 
 
             if (entity.TowFlight != null)
@@ -1897,6 +1899,13 @@ namespace FLS.Server.Data.Mapping
                 exchangeData.TowFlightInboundRoute = towFlight.InboundRoute;
                 exchangeData.TowFlightNoStartTimeInformation = towFlight.NoStartTimeInformation;
                 exchangeData.TowFlightNoLdgTimeInformation = towFlight.NoLdgTimeInformation;
+
+                if (exchangeData.CreatedOn > towFlight.CreatedOn) exchangeData.CreatedOn = towFlight.CreatedOn;
+                if (exchangeData.ModifiedOn.HasValue == false && towFlight.ModifiedOn.HasValue)
+                    exchangeData.ModifiedOn = towFlight.ModifiedOn;
+                else if (towFlight.ModifiedOn.HasValue &&
+                         (exchangeData.ModifiedOn.HasValue && exchangeData.ModifiedOn < towFlight.ModifiedOn))
+                    exchangeData.ModifiedOn = towFlight.ModifiedOn;
             }
 
             return exchangeData;
