@@ -47,6 +47,8 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var deliveries = GetAsync<List<DeliveryDetails>>("/api/v1/deliveries/notprocessed").Result;
 
             Assert.IsTrue(deliveries.Any());
+
+            deliveries.ForEach(d => Logger.Debug($"Delivery: {d.ToString()}"));
         }
 
         [TestMethod]
@@ -63,6 +65,15 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             Assert.IsTrue(response.IsSuccessStatusCode);
 
+            var deliveries = GetAsync<List<DeliveryDetails>>("/api/v1/deliveries/notprocessed").Result;
+
+            Assert.IsTrue(deliveries.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("WebApi")]
+        public void GetNotProcessedDeliveriesWebApiTest2()
+        {
             var deliveries = GetAsync<List<DeliveryDetails>>("/api/v1/deliveries/notprocessed").Result;
 
             Assert.IsTrue(deliveries.Any());
