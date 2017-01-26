@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -717,6 +718,17 @@ namespace FLS.Server.Service
                 var original = context.Persons.Include(Constants.PersonClubs).FirstOrDefault(l => l.PersonId == personId);
                 original.EntityNotNull("Person", personId);
 
+                if (context.FlightCrews.Any(x => x.PersonId == original.PersonId)
+                    ||
+                    context.AircraftReservations.Any(
+                        x =>
+                            x.PilotPersonId == original.PersonId ||
+                            (x.InstructorPersonId.HasValue && x.InstructorPersonId == original.PersonId))
+                    || context.PlanningDayAssignments.Any(x => x.AssignedPersonId == original.PersonId))
+                {
+                    throw new ConstraintException($"The person {original.DisplayName} has some related active data records and can not be deleted!");
+                }
+
                 context.Persons.Remove(original);
                 context.SaveChanges();
             }
@@ -732,6 +744,17 @@ namespace FLS.Server.Service
                 if (original.CreatedOn.SetAsUtc() > deletedOn.SetAsUtc())
                 {
                     throw new BadRequestException("Deleted on date is before created on date.");
+                }
+
+                if (context.FlightCrews.Any(x => x.PersonId == original.PersonId)
+                    ||
+                    context.AircraftReservations.Any(
+                        x =>
+                            x.PilotPersonId == original.PersonId ||
+                            (x.InstructorPersonId.HasValue && x.InstructorPersonId == original.PersonId))
+                    || context.PlanningDayAssignments.Any(x => x.AssignedPersonId == original.PersonId))
+                {
+                    throw new ConstraintException($"The person {original.DisplayName} has some related active data records and can not be deleted!");
                 }
 
                 original.SetPropertyValue("DeletedOn", deletedOn.SetAsUtc());
