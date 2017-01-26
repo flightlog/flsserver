@@ -42,7 +42,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedPersons">if set to <c>true</c> only club related persons will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonListItem> GetPilotPersonListItems(bool onlyClubRelatedPersons)
+        public List<PersonListItem> GetPilotPersonListItems(bool onlyClubRelatedPersons)
         {
             var persons = GetPersons(onlyClubRelatedPersons);
             return PreparePersonListItems(persons);
@@ -54,7 +54,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonListItem> GetGliderPilotPersonListItems(bool onlyClubRelatedPilots)
+        public List<PersonListItem> GetGliderPilotPersonListItems(bool onlyClubRelatedPilots)
         {
             return GetPilotPersonListItemInternal(onlyClubRelatedPilots, person => person.HasGliderPilotLicence || person.HasGliderTraineeLicence);
         }
@@ -65,7 +65,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonListItem> GetGliderObserverPilotPersonListItems(bool onlyClubRelatedPilots)
+        public List<PersonListItem> GetGliderObserverPilotPersonListItems(bool onlyClubRelatedPilots)
         {
             return GetPilotPersonListItemInternal(onlyClubRelatedPilots, person => person.HasGliderPilotLicence);
         }
@@ -76,7 +76,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedInstuctors">if set to <c>true</c> only club related instructors will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonListItem> GetGliderInstructorPersonListItems(bool onlyClubRelatedInstuctors)
+        public List<PersonListItem> GetGliderInstructorPersonListItems(bool onlyClubRelatedInstuctors)
         {
             return GetPilotPersonListItemInternal(onlyClubRelatedInstuctors, person => person.HasGliderInstructorLicence);
         }
@@ -87,7 +87,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonListItem> GetTowingPilotPersonListItems(bool onlyClubRelatedPilots)
+        public List<PersonListItem> GetTowingPilotPersonListItems(bool onlyClubRelatedPilots)
         {
             return GetPilotPersonListItemInternal(onlyClubRelatedPilots, person => person.HasTowPilotLicence);
         }
@@ -98,12 +98,12 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonListItem> GetMotorPilotPersonListItems(bool onlyClubRelatedPilots)
+        public List<PersonListItem> GetMotorPilotPersonListItems(bool onlyClubRelatedPilots)
         {
             return GetPilotPersonListItemInternal(onlyClubRelatedPilots, person => person.HasMotorPilotLicence || person.HasTMGLicence);
         }
 
-        public List<PilotPersonListItem> GetMotorInstructorPersonListItems(bool onlyClubRelatedInstuctors)
+        public List<PersonListItem> GetMotorInstructorPersonListItems(bool onlyClubRelatedInstuctors)
         {
             return GetPilotPersonListItemInternal(onlyClubRelatedInstuctors, person => person.HasMotorInstructorLicence);
         }
@@ -114,7 +114,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedTrainees">if set to <c>true</c> only club related trainees will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonListItem> GetGliderTraineePersonListItems(bool onlyClubRelatedTrainees)
+        public List<PersonListItem> GetGliderTraineePersonListItems(bool onlyClubRelatedTrainees)
         {
             return GetPilotPersonListItemInternal(onlyClubRelatedTrainees, person => person.HasGliderTraineeLicence);
         }
@@ -125,7 +125,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedWinchOperators">if set to <c>true</c> [only club related winch operators].</param>
         /// <returns></returns>
-        public List<PilotPersonListItem> GetWinchOperatorPersonListItems(bool onlyClubRelatedWinchOperators)
+        public List<PersonListItem> GetWinchOperatorPersonListItems(bool onlyClubRelatedWinchOperators)
         {
             return GetPilotPersonListItemInternal(onlyClubRelatedWinchOperators, person => person.HasWinchOperatorLicence);
         }
@@ -236,7 +236,7 @@ namespace FLS.Server.Service
             return personOverviewList.ToList();
         }
 
-        private List<PilotPersonListItem> GetPilotPersonListItemInternal(bool onlyClubPersons,
+        private List<PersonListItem> GetPilotPersonListItemInternal(bool onlyClubPersons,
                                                                       Expression<Func<Person, bool>> personTypeFilter)
         {
             var persons = GetPersons(onlyClubPersons, personTypeFilter);
@@ -252,9 +252,9 @@ namespace FLS.Server.Service
             return personOverviewList.ToList();
         }
         
-        private List<PilotPersonListItem> PreparePersonListItems(List<Person> persons)
+        private List<PersonListItem> PreparePersonListItems(List<Person> persons)
         {
-            return persons.Select(p => p.ToPilotPersonListItem()).ToList();
+            return persons.Select(p => p.ToPersonListItem()).ToList();
         }
         
         internal PilotPersonDetails GetPilotPersonDetailsInternal(Guid personId, Guid clubId, bool controlAccess = true)

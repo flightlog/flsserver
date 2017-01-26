@@ -2719,20 +2719,6 @@ namespace FLS.Server.Data.Mapping
 
             return listItem;
         }
-
-        public static PilotPersonListItem ToPilotPersonListItem(this Person entity, PilotPersonListItem listItem = null)
-        {
-            entity.ArgumentNotNull("entity");
-
-            if (listItem == null)
-            {
-                listItem = new PilotPersonListItem();
-            }
-
-            entity.ToPersonListItem(listItem);
-
-            return listItem;
-        }
         
         public static PersonOverview ToPersonOverview(this Person entity, Guid clubId, PersonOverview overview = null)
         {
