@@ -155,7 +155,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedPersons">if set to <c>true</c> only club related persons will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonOverview> GetPilotPersonOverviews(bool onlyClubRelatedPersons)
+        public List<PersonOverview> GetPilotPersonOverviews(bool onlyClubRelatedPersons)
         {
             return GetPersonOverviewsInternal(onlyClubRelatedPersons, person => true);
         }
@@ -166,7 +166,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonOverview> GetGliderPilotPersonOverviews(bool onlyClubRelatedPilots)
+        public List<PersonOverview> GetGliderPilotPersonOverviews(bool onlyClubRelatedPilots)
         {
             return GetPersonOverviewsInternal(onlyClubRelatedPilots, person => person.HasGliderPilotLicence || person.HasGliderTraineeLicence);
         }
@@ -177,7 +177,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonOverview> GetGliderObserverPilotPersonOverviews(bool onlyClubRelatedPilots)
+        public List<PersonOverview> GetGliderObserverPilotPersonOverviews(bool onlyClubRelatedPilots)
         {
             return GetPersonOverviewsInternal(onlyClubRelatedPilots, person => person.HasGliderPilotLicence);
         }
@@ -188,7 +188,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedInstuctors">if set to <c>true</c> only club related instructors will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonOverview> GetGliderInstructorPersonOverviews(bool onlyClubRelatedInstuctors)
+        public List<PersonOverview> GetGliderInstructorPersonOverviews(bool onlyClubRelatedInstuctors)
         {
             return GetPersonOverviewsInternal(onlyClubRelatedInstuctors, person => person.HasGliderInstructorLicence);
         }
@@ -199,7 +199,7 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonOverview> GetTowingPilotPersonOverviews(bool onlyClubRelatedPilots)
+        public List<PersonOverview> GetTowingPilotPersonOverviews(bool onlyClubRelatedPilots)
         {
             return GetPersonOverviewsInternal(onlyClubRelatedPilots, person => person.HasTowPilotLicence);
         }
@@ -210,12 +210,12 @@ namespace FLS.Server.Service
         /// </summary>
         /// <param name="onlyClubRelatedTrainees">if set to <c>true</c> only club related trainees will be returned.</param>
         /// <returns></returns>
-        public List<PilotPersonOverview> GetGliderTraineePilotPersonOverviews(bool onlyClubRelatedTrainees)
+        public List<PersonOverview> GetGliderTraineePilotPersonOverviews(bool onlyClubRelatedTrainees)
         {
             return GetPersonOverviewsInternal(onlyClubRelatedTrainees, person => person.HasGliderTraineeLicence);
         }
 
-        public List<PilotPersonOverview> GetWinchOperatorPilotPersonOverviews(bool onlyClubRelatedWinchOperators)
+        public List<PersonOverview> GetWinchOperatorPilotPersonOverviews(bool onlyClubRelatedWinchOperators)
         {
             return GetPersonOverviewsInternal(onlyClubRelatedWinchOperators, person => person.HasWinchOperatorLicence);
         }
@@ -243,11 +243,11 @@ namespace FLS.Server.Service
             return PreparePersonListItems(persons);
         }
         
-        private List<PilotPersonOverview> GetPersonOverviewsInternal(bool onlyClubPersons,
+        private List<PersonOverview> GetPersonOverviewsInternal(bool onlyClubPersons,
                                                                       Expression<Func<Person, bool>> personTypeFilter)
         {
             var persons = GetPersons(onlyClubPersons, personTypeFilter);
-            var personOverviewList = persons.Select(p => p.ToPilotPersonOverview(CurrentAuthenticatedFLSUserClubId)).ToList();
+            var personOverviewList = persons.Select(p => p.ToPersonOverview(CurrentAuthenticatedFLSUserClubId)).ToList();
             SetPersonOverviewSecurity(personOverviewList);
             return personOverviewList.ToList();
         }

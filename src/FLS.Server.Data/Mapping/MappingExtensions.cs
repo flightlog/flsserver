@@ -2745,6 +2745,17 @@ namespace FLS.Server.Data.Mapping
             overview.MobilePhoneNumber = entity.MobilePhone;
             overview.PrivateEmail = entity.EmailPrivate;
 
+            overview.HasGliderInstructorLicence = entity.HasGliderInstructorLicence;
+            overview.HasGliderPassengerLicence = entity.HasGliderPAXLicence;
+            overview.HasGliderPilotLicence = entity.HasGliderPilotLicence;
+            overview.HasGliderTraineeLicence = entity.HasGliderTraineeLicence;
+            overview.HasMotorPilotLicence = entity.HasMotorPilotLicence;
+            overview.HasTowPilotLicence = entity.HasTowPilotLicence;
+            overview.HasWinchOperatorLicence = entity.HasWinchOperatorLicence;
+            overview.HasMotorInstructorLicence = entity.HasMotorInstructorLicence;
+            overview.HasTMGLicence = entity.HasTMGLicence;
+            overview.LicenceNumber = entity.LicenceNumber;
+
             var personClub = entity.PersonClubs.FirstOrDefault(e => e.ClubId == clubId);
 
             if (personClub != null)
@@ -2756,31 +2767,6 @@ namespace FLS.Server.Data.Mapping
 
                 overview.IsActive = personClub.IsActive;
             }
-
-            return overview;
-        }
-
-        public static PilotPersonOverview ToPilotPersonOverview(this Person entity, Guid clubId, PilotPersonOverview overview = null)
-        {
-            entity.ArgumentNotNull("entity");
-
-            if (overview == null)
-            {
-                overview = new PilotPersonOverview();
-            }
-
-            entity.ToPersonOverview(clubId, overview);
-
-            overview.HasGliderInstructorLicence = entity.HasGliderInstructorLicence;
-            overview.HasGliderPassengerLicence = entity.HasGliderPAXLicence;
-            overview.HasGliderPilotLicence = entity.HasGliderPilotLicence;
-            overview.HasGliderTraineeLicence = entity.HasGliderTraineeLicence;
-            overview.HasMotorPilotLicence = entity.HasMotorPilotLicence;
-            overview.HasTowPilotLicence = entity.HasTowPilotLicence;
-            overview.HasWinchOperatorLicence = entity.HasWinchOperatorLicence;
-            overview.HasMotorInstructorLicence = entity.HasMotorInstructorLicence;
-            overview.HasTMGLicence = entity.HasTMGLicence;
-            overview.LicenceNumber = entity.LicenceNumber;
 
             return overview;
         }

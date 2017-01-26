@@ -167,7 +167,6 @@
     <Compile Include="Person\PersonListItem.cs" />
     <Compile Include="Person\PilotPersonFullDetails.cs" />
     <Compile Include="Person\PilotPersonDetails.cs" />
-    <Compile Include="Person\PilotPersonOverview.cs" />
     <Compile Include="PlanningDay\PlanningDayCreatorRule.cs" />
     <Compile Include="PlanningDay\PlanningDayDetails.cs" />
     <Compile Include="PlanningDay\PlanningDayOverviewSearchFilter.cs" />

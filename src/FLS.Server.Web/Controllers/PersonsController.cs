@@ -196,7 +196,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("overview/{onlyClubRelatedPersons:bool}")]
-        [ResponseType(typeof(List<PilotPersonOverview>))]
+        [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetPersonOverviews(bool onlyClubRelatedPersons)
         {
             var persons = _personService.GetPilotPersonOverviews(onlyClubRelatedPersons);
@@ -211,7 +211,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("gliderpilots/overview/{onlyClubRelatedPilots:bool}")]
-        [ResponseType(typeof(List<PilotPersonOverview>))]
+        [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetGliderPilotPersonOverviews(bool onlyClubRelatedPilots)
         {
             var persons = _personService.GetGliderPilotPersonOverviews(onlyClubRelatedPilots);
@@ -242,7 +242,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("gliderobserverpilots/overview/{onlyClubRelatedPilots:bool}")]
-        [ResponseType(typeof(List<PilotPersonOverview>))]
+        [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetGliderObserverPilotPersonOverviews(bool onlyClubRelatedPilots)
         {
             var persons = _personService.GetGliderObserverPilotPersonOverviews(onlyClubRelatedPilots);
@@ -257,7 +257,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("gliderinstructors/overview/{onlyClubRelatedInstuctors:bool}")]
-        [ResponseType(typeof(List<PilotPersonOverview>))]
+        [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetGliderInstructorPersonOverviews(bool onlyClubRelatedInstuctors)
         {
             var persons = _personService.GetGliderInstructorPersonOverviews(onlyClubRelatedInstuctors);
@@ -272,7 +272,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("towingpilots/overview/{onlyClubRelatedPilots:bool}")]
-        [ResponseType(typeof(List<PilotPersonOverview>))]
+        [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetTowingPilotPersonOverviews(bool onlyClubRelatedPilots)
         {
             var persons = _personService.GetTowingPilotPersonOverviews(onlyClubRelatedPilots);
@@ -287,7 +287,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("glidertrainees/overview/{onlyClubRelatedTrainees:bool}")]
-        [ResponseType(typeof(List<PilotPersonOverview>))]
+        [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetGliderTraineePersonOverviews(bool onlyClubRelatedTrainees)
         {
             var persons = _personService.GetGliderTraineePilotPersonOverviews(onlyClubRelatedTrainees);
@@ -302,7 +302,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("winchoperators/overview/{onlyClubRelatedWinchOperators:bool}")]
-        [ResponseType(typeof(List<PilotPersonOverview>))]
+        [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetWinchOperatorPersonOverviews(bool onlyClubRelatedWinchOperators)
         {
             var persons = _personService.GetWinchOperatorPilotPersonOverviews(onlyClubRelatedWinchOperators);

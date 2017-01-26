@@ -31,7 +31,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void GetPersonOverviewWebApiTest()
         {
-            var response = GetAsync<IEnumerable<PilotPersonOverview>>("/api/v1/persons/overview/true").Result;
+            var response = GetAsync<IEnumerable<PersonOverview>>("/api/v1/persons/overview/true").Result;
 
             Assert.IsTrue(response.Any());
         }
@@ -209,7 +209,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void DeletePersonDetailsWebApiTest()
         {
-            var response = GetAsync<IEnumerable<PilotPersonOverview>>("/api/v1/persons").Result;
+            var response = GetAsync<IEnumerable<PersonOverview>>("/api/v1/persons").Result;
 
             Assert.IsTrue(response.Any());
 
