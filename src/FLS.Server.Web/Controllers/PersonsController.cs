@@ -35,7 +35,6 @@ namespace FLS.Server.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("")]
         [Route("listitems")]
         [ResponseType(typeof(List<PersonListItem>))]
         public IHttpActionResult GetPersonListItems()
@@ -51,7 +50,6 @@ namespace FLS.Server.WebApi.Controllers
         /// <param name="onlyClubRelatedPersons">if set to <c>true</c> only club related persons will be returned.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{onlyClubRelatedPersons:bool}")]
         [Route("listitems/{onlyClubRelatedPersons:bool}")]
         [ResponseType(typeof(List<PersonListItem>))]
         public IHttpActionResult GetPersonListItems(bool onlyClubRelatedPersons)
@@ -67,7 +65,6 @@ namespace FLS.Server.WebApi.Controllers
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("gliderpilots/{onlyClubRelatedPilots:bool}")]
         [Route("gliderpilots/listitems/{onlyClubRelatedPilots:bool}")]
         [ResponseType(typeof(List<PersonListItem>))]
         public IHttpActionResult GetGliderPilotPersonListItems(bool onlyClubRelatedPilots)
@@ -83,7 +80,6 @@ namespace FLS.Server.WebApi.Controllers
         /// <param name="onlyClubRelatedInstuctors">if set to <c>true</c> only club related instructors will be returned.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("gliderinstructors/{onlyClubRelatedInstuctors:bool}")]
         [Route("gliderinstructors/listitems/{onlyClubRelatedInstuctors:bool}")]
         [ResponseType(typeof(List<PersonListItem>))]
         public IHttpActionResult GetGliderInstructorPersonListItems(bool onlyClubRelatedInstuctors)
@@ -99,133 +95,6 @@ namespace FLS.Server.WebApi.Controllers
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("towingpilots/{onlyClubRelatedPilots:bool}")]
-        [Route("towingpilots/listitems/{onlyClubRelatedPilots:bool}")]
-        [ResponseType(typeof(List<PersonListItem>))]
-        public IHttpActionResult GetTowingPilotPersonListItems(bool onlyClubRelatedPilots)
-        {
-            var persons = _personService.GetTowingPilotPersonListItems(onlyClubRelatedPilots);
-            return Ok(persons);
-        }
-
-        /// <summary>
-        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
-        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
-        /// </summary>
-        /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("motorpilots/{onlyClubRelatedPilots:bool}")]
-        [Route("motorpilots/listitems/{onlyClubRelatedPilots:bool}")]
-        [ResponseType(typeof(List<PersonListItem>))]
-        public IHttpActionResult GetMotorPilotPersonListItems(bool onlyClubRelatedPilots)
-        {
-            var persons = _personService.GetMotorPilotPersonListItems(onlyClubRelatedPilots);
-            return Ok(persons);
-        }
-
-        /// <summary>
-        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
-        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
-        /// </summary>
-        /// <param name="onlyClubRelatedInstuctors">if set to <c>true</c> only club related instructors will be returned.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("motorinstructors/{onlyClubRelatedInstuctors:bool}")]
-        [Route("motorinstructors/listitems/{onlyClubRelatedInstuctors:bool}")]
-        [ResponseType(typeof(List<PersonListItem>))]
-        public IHttpActionResult GetMotorInstructorPersonListItems(bool onlyClubRelatedInstuctors)
-        {
-            var persons = _personService.GetMotorInstructorPersonListItems(onlyClubRelatedInstuctors);
-            return Ok(persons);
-        }
-
-        /// <summary>
-        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
-        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
-        /// </summary>
-        /// <param name="onlyClubRelatedTrainees">if set to <c>true</c> only club related trainees will be returned.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("glidertrainees/{onlyClubRelatedTrainees:bool}")]
-        [Route("glidertrainees/listitems/{onlyClubRelatedTrainees:bool}")]
-        [ResponseType(typeof(List<PersonListItem>))]
-        public IHttpActionResult GetGliderTraineePersonListItems(bool onlyClubRelatedTrainees)
-        {
-            var persons = _personService.GetGliderTraineePersonListItems(onlyClubRelatedTrainees);
-            return Ok(persons);
-        }
-
-        /// <summary>
-        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
-        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
-        /// </summary>
-        /// <param name="onlyClubRelatedWinchOperators">if set to <c>true</c> only club related winch operators will be returned.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("winchoperators/{onlyClubRelatedWinchOperators:bool}")]
-        [Route("winchoperators/listitems/{onlyClubRelatedWinchOperators:bool}")]
-        [ResponseType(typeof(List<PersonListItem>))]
-        public IHttpActionResult GetWinchOperatorPersonListItems(bool onlyClubRelatedWinchOperators)
-        {
-            var persons = _personService.GetWinchOperatorPersonListItems(onlyClubRelatedWinchOperators);
-            return Ok(persons);
-        }
-
-        /// <summary>
-        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
-        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
-        /// </summary>
-        /// <param name="onlyClubRelatedPassengers">if set to <c>true</c> only club related passengers will be returned.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("passengers/{onlyClubRelatedPassengers:bool}")]
-        [Route("passengers/listitems/{onlyClubRelatedPassengers:bool}")]
-        [ResponseType(typeof(List<PersonListItem>))]
-        public IHttpActionResult GetPassengerListItems(bool onlyClubRelatedPassengers)
-        {
-            var persons = _personService.GetPassengerListItems(onlyClubRelatedPassengers);
-            return Ok(persons);
-        }
-
-        /// <summary>
-        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
-        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
-        /// </summary>
-        /// <param name="onlyClubRelatedPersons">if set to <c>true</c> only club related persons will be returned.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("overview/{onlyClubRelatedPersons:bool}")]
-        [ResponseType(typeof(List<PersonOverview>))]
-        public IHttpActionResult GetPersonOverviews(bool onlyClubRelatedPersons)
-        {
-            var persons = _personService.GetPilotPersonOverviews(onlyClubRelatedPersons);
-            return Ok(persons);
-        }
-
-        /// <summary>
-        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
-        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
-        /// </summary>
-        /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("gliderpilots/overview/{onlyClubRelatedPilots:bool}")]
-        [ResponseType(typeof(List<PersonOverview>))]
-        public IHttpActionResult GetGliderPilotPersonOverviews(bool onlyClubRelatedPilots)
-        {
-            var persons = _personService.GetGliderPilotPersonOverviews(onlyClubRelatedPilots);
-            return Ok(persons);
-        }
-
-        /// <summary>
-        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
-        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
-        /// </summary>
-        /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("gliderobserverpilots/{onlyClubRelatedPilots:bool}")]
         [Route("gliderobserverpilots/listitems/{onlyClubRelatedPilots:bool}")]
         [ResponseType(typeof(List<PersonListItem>))]
         public IHttpActionResult GetGliderObserverPilotPersonListItems(bool onlyClubRelatedPilots)
@@ -241,7 +110,127 @@ namespace FLS.Server.WebApi.Controllers
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("gliderobserverpilots/overview/{onlyClubRelatedPilots:bool}")]
+        [Route("towingpilots/listitems/{onlyClubRelatedPilots:bool}")]
+        [ResponseType(typeof(List<PersonListItem>))]
+        public IHttpActionResult GetTowingPilotPersonListItems(bool onlyClubRelatedPilots)
+        {
+            var persons = _personService.GetTowingPilotPersonListItems(onlyClubRelatedPilots);
+            return Ok(persons);
+        }
+
+        /// <summary>
+        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
+        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
+        /// </summary>
+        /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("motorpilots/listitems/{onlyClubRelatedPilots:bool}")]
+        [ResponseType(typeof(List<PersonListItem>))]
+        public IHttpActionResult GetMotorPilotPersonListItems(bool onlyClubRelatedPilots)
+        {
+            var persons = _personService.GetMotorPilotPersonListItems(onlyClubRelatedPilots);
+            return Ok(persons);
+        }
+
+        /// <summary>
+        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
+        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
+        /// </summary>
+        /// <param name="onlyClubRelatedInstuctors">if set to <c>true</c> only club related instructors will be returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("motorinstructors/listitems/{onlyClubRelatedInstuctors:bool}")]
+        [ResponseType(typeof(List<PersonListItem>))]
+        public IHttpActionResult GetMotorInstructorPersonListItems(bool onlyClubRelatedInstuctors)
+        {
+            var persons = _personService.GetMotorInstructorPersonListItems(onlyClubRelatedInstuctors);
+            return Ok(persons);
+        }
+
+        /// <summary>
+        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
+        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
+        /// </summary>
+        /// <param name="onlyClubRelatedTrainees">if set to <c>true</c> only club related trainees will be returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("glidertrainees/listitems/{onlyClubRelatedTrainees:bool}")]
+        [ResponseType(typeof(List<PersonListItem>))]
+        public IHttpActionResult GetGliderTraineePersonListItems(bool onlyClubRelatedTrainees)
+        {
+            var persons = _personService.GetGliderTraineePersonListItems(onlyClubRelatedTrainees);
+            return Ok(persons);
+        }
+
+        /// <summary>
+        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
+        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
+        /// </summary>
+        /// <param name="onlyClubRelatedWinchOperators">if set to <c>true</c> only club related winch operators will be returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("winchoperators/listitems/{onlyClubRelatedWinchOperators:bool}")]
+        [ResponseType(typeof(List<PersonListItem>))]
+        public IHttpActionResult GetWinchOperatorPersonListItems(bool onlyClubRelatedWinchOperators)
+        {
+            var persons = _personService.GetWinchOperatorPersonListItems(onlyClubRelatedWinchOperators);
+            return Ok(persons);
+        }
+
+        /// <summary>
+        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
+        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
+        /// </summary>
+        /// <param name="onlyClubRelatedPassengers">if set to <c>true</c> only club related passengers will be returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("passengers/listitems/{onlyClubRelatedPassengers:bool}")]
+        [ResponseType(typeof(List<PersonListItem>))]
+        public IHttpActionResult GetPassengerListItems(bool onlyClubRelatedPassengers)
+        {
+            var persons = _personService.GetPassengerListItems(onlyClubRelatedPassengers);
+            return Ok(persons);
+        }
+
+        /// <summary>
+        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
+        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
+        /// </summary>
+        /// <param name="onlyClubRelatedPersons">if set to <c>true</c> only club related persons will be returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{onlyClubRelatedPersons:bool?}")]
+        [ResponseType(typeof(List<PersonOverview>))]
+        public IHttpActionResult GetPersonOverviews(bool onlyClubRelatedPersons = true)
+        {
+            var persons = _personService.GetPilotPersonOverviews(onlyClubRelatedPersons);
+            return Ok(persons);
+        }
+
+        /// <summary>
+        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
+        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
+        /// </summary>
+        /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("gliderpilots/{onlyClubRelatedPilots:bool}")]
+        [ResponseType(typeof(List<PersonOverview>))]
+        public IHttpActionResult GetGliderPilotPersonOverviews(bool onlyClubRelatedPilots)
+        {
+            var persons = _personService.GetGliderPilotPersonOverviews(onlyClubRelatedPilots);
+            return Ok(persons);
+        }
+        
+        /// <summary>
+        /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
+        /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
+        /// </summary>
+        /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("gliderobserverpilots/{onlyClubRelatedPilots:bool}")]
         [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetGliderObserverPilotPersonOverviews(bool onlyClubRelatedPilots)
         {
@@ -256,7 +245,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <param name="onlyClubRelatedInstuctors">if set to <c>true</c> only club related instructors will be returned.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("gliderinstructors/overview/{onlyClubRelatedInstuctors:bool}")]
+        [Route("gliderinstructors/{onlyClubRelatedInstuctors:bool}")]
         [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetGliderInstructorPersonOverviews(bool onlyClubRelatedInstuctors)
         {
@@ -271,7 +260,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <param name="onlyClubRelatedPilots">if set to <c>true</c> only club related pilots will be returned.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("towingpilots/overview/{onlyClubRelatedPilots:bool}")]
+        [Route("towingpilots/{onlyClubRelatedPilots:bool}")]
         [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetTowingPilotPersonOverviews(bool onlyClubRelatedPilots)
         {
@@ -286,7 +275,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <param name="onlyClubRelatedTrainees">if set to <c>true</c> only club related trainees will be returned.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("glidertrainees/overview/{onlyClubRelatedTrainees:bool}")]
+        [Route("glidertrainees/{onlyClubRelatedTrainees:bool}")]
         [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetGliderTraineePersonOverviews(bool onlyClubRelatedTrainees)
         {
@@ -301,7 +290,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <param name="onlyClubRelatedWinchOperators">if set to <c>true</c> only club related winch operators will be returned.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("winchoperators/overview/{onlyClubRelatedWinchOperators:bool}")]
+        [Route("winchoperators/{onlyClubRelatedWinchOperators:bool}")]
         [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetWinchOperatorPersonOverviews(bool onlyClubRelatedWinchOperators)
         {
@@ -316,7 +305,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <param name="onlyClubRelatedPassengers">if set to <c>true</c> only club related passengers will be returned.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("passengers/overview/{onlyClubRelatedPassengers:bool}")]
+        [Route("passengers/{onlyClubRelatedPassengers:bool}")]
         [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetPassengerPersonOverviews(bool onlyClubRelatedPassengers)
         {
@@ -392,21 +381,7 @@ namespace FLS.Server.WebApi.Controllers
             var personDetails = _personService.GetPilotPersonFullDetails(memberNumber);
             return Ok(personDetails);
         }
-
-        /// <summary>
-        /// Gets the person details of a passenger.
-        /// </summary>
-        /// <param name="personId">The person identifier.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("passengers/{personId}")]
-        [ResponseType(typeof(PersonDetails))]
-        public IHttpActionResult GetPassengerDetails(Guid personId)
-        {
-            var personDetails = _personService.GetPassengerDetails(personId);
-            return Ok(personDetails);
-        }
-
+        
         /// <summary>
         /// Gets the person details which are new modified since.
         /// </summary>

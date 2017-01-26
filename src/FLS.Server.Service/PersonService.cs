@@ -316,17 +316,7 @@ namespace FLS.Server.Service
 
             return personFullDetails;
         }
-
-        public PersonDetails GetPassengerDetails(Guid personId)
-        {
-            var person = GetPerson(personId);
-
-            var passengerDetails = person.ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
-            SetPersonDetailsSecurity(passengerDetails, person);
-
-            return passengerDetails;
-        }
-
+        
         public List<PersonDetails> GetPersonDetailsModifiedSince(DateTime modifiedSince)
         {
             List<Person> personResult = null;
