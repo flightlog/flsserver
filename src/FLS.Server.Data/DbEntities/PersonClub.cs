@@ -52,6 +52,8 @@ namespace FLS.Server.Data.DbEntities
 
         public bool ReceivePlanningDayRoleReminder { get; set; }
 
+        public bool IsActive { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 

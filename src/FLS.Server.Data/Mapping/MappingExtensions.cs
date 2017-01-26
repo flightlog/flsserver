@@ -2767,6 +2767,8 @@ namespace FLS.Server.Data.Mapping
                 {
                     overview.MemberStateName = personClub.MemberState.MemberStateName;
                 }
+
+                overview.IsActive = personClub.IsActive;
             }
 
             return overview;
@@ -2850,6 +2852,7 @@ namespace FLS.Server.Data.Mapping
                 details.ClubRelatedPersonDetails.ReceiveFlightReports = personClub.ReceiveFlightReports;
                 details.ClubRelatedPersonDetails.ReceiveAircraftReservationNotifications = personClub.ReceiveAircraftReservationNotifications;
                 details.ClubRelatedPersonDetails.ReceivePlanningDayRoleReminder = personClub.ReceivePlanningDayRoleReminder;
+                details.ClubRelatedPersonDetails.IsActive = personClub.IsActive;
 
                 foreach (var entityPersonCategory in entity.PersonPersonCategories.Where(entityPersonCategory => entityPersonCategory.PersonCategory.ClubId == clubId))
                 {
@@ -2950,6 +2953,7 @@ namespace FLS.Server.Data.Mapping
                 personClub.ReceiveFlightReports = details.ClubRelatedPersonDetails.ReceiveFlightReports;
                 personClub.ReceiveAircraftReservationNotifications = details.ClubRelatedPersonDetails.ReceiveAircraftReservationNotifications;
                 personClub.ReceivePlanningDayRoleReminder = details.ClubRelatedPersonDetails.ReceivePlanningDayRoleReminder;
+                personClub.IsActive = details.ClubRelatedPersonDetails.IsActive;
 
                 //Handle person categories
                 if (details.ClubRelatedPersonDetails.PersonCategoryIds != null && details.ClubRelatedPersonDetails.PersonCategoryIds.Any())

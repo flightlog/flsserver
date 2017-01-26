@@ -28,6 +28,7 @@ namespace FLS.Data.WebApi.Person
             ReceiveAircraftReservationNotifications = clubRelatedPersonDetails.ReceiveAircraftReservationNotifications;
             ReceiveFlightReports = clubRelatedPersonDetails.ReceiveFlightReports;
             ReceivePlanningDayRoleReminder = clubRelatedPersonDetails.ReceivePlanningDayRoleReminder;
+            IsActive = clubRelatedPersonDetails.IsActive;
         }
         
         public List<Guid> PersonCategoryIds { get; set; }
@@ -57,5 +58,7 @@ namespace FLS.Data.WebApi.Person
         public bool ReceiveAircraftReservationNotifications { get; set; }
 
         public bool ReceivePlanningDayRoleReminder { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }
