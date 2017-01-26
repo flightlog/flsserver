@@ -28,7 +28,7 @@ namespace FLS.Server.Service.Accounting.Rules
 
         public override RuleBasedDeliveryDetails Apply(RuleBasedDeliveryDetails ruleBasedDelivery)
         {
-            var personDetails = _personService.GetPilotPersonDetails(_flight.Pilot.PersonId, ruleBasedDelivery.ClubId);
+            var personDetails = _personService.GetPersonDetails(_flight.Pilot.PersonId, ruleBasedDelivery.ClubId);
 
             if (personDetails != null)
             {

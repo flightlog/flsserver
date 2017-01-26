@@ -2802,6 +2802,27 @@ namespace FLS.Server.Data.Mapping
             details.ReceiveOwnedAircraftStatisticReports = entity.ReceiveOwnedAircraftStatisticReports;
             details.EnableAddress = entity.EnableAddress;
 
+            details.HasGliderInstructorLicence = entity.HasGliderInstructorLicence;
+            details.HasGliderPilotLicence = entity.HasGliderPilotLicence;
+            details.HasGliderTraineeLicence = entity.HasGliderTraineeLicence;
+            details.HasMotorPilotLicence = entity.HasMotorPilotLicence;
+            details.HasTowPilotLicence = entity.HasTowPilotLicence;
+            details.HasGliderPassengerLicence = entity.HasGliderPAXLicence;
+            details.HasTMGLicence = entity.HasTMGLicence;
+            details.HasWinchOperatorLicence = entity.HasWinchOperatorLicence;
+            details.HasMotorInstructorLicence = entity.HasMotorInstructorLicence;
+            details.LicenceNumber = entity.LicenceNumber;
+            details.GliderInstructorLicenceExpireDate = entity.GliderInstructorLicenceExpireDate.SetAsUtc();
+            details.MedicalClass1ExpireDate = entity.MedicalClass1ExpireDate.SetAsUtc();
+            details.MedicalClass2ExpireDate = entity.MedicalClass2ExpireDate.SetAsUtc();
+            details.MedicalLaplExpireDate = entity.MedicalLaplExpireDate.SetAsUtc();
+            details.HasGliderTowingStartPermission = entity.HasGliderTowingStartPermission;
+            details.HasGliderSelfStartPermission = entity.HasGliderSelfStartPermission;
+            details.HasGliderWinchStartPermission = entity.HasGliderWinchStartPermission;
+
+            details.ReceiveOwnedAircraftStatisticReports = entity.ReceiveOwnedAircraftStatisticReports;
+            details.SpotLink = entity.SpotLink;
+
             var personClub = entity.PersonClubs.FirstOrDefault(e => e.ClubId == clubId);
 
             if (personClub != null)
@@ -2831,41 +2852,6 @@ namespace FLS.Server.Data.Mapping
                     details.ClubRelatedPersonDetails.PersonCategoryIds.Add(entityPersonCategory.PersonCategoryId);
                 }
             }
-
-            return details;
-        }
-
-        public static PilotPersonDetails ToPilotPersonDetails(this Person entity, Guid clubId, PilotPersonDetails details = null)
-        {
-            entity.ArgumentNotNull("entity");
-
-            if (details == null)
-            {
-                details = new PilotPersonDetails();
-            }
-
-            entity.ToPersonDetails(clubId, details);
-
-            details.HasGliderInstructorLicence = entity.HasGliderInstructorLicence;
-            details.HasGliderPilotLicence = entity.HasGliderPilotLicence;
-            details.HasGliderTraineeLicence = entity.HasGliderTraineeLicence;
-            details.HasMotorPilotLicence = entity.HasMotorPilotLicence;
-            details.HasTowPilotLicence = entity.HasTowPilotLicence;
-            details.HasGliderPassengerLicence = entity.HasGliderPAXLicence;
-            details.HasTMGLicence = entity.HasTMGLicence;
-            details.HasWinchOperatorLicence = entity.HasWinchOperatorLicence;
-            details.HasMotorInstructorLicence = entity.HasMotorInstructorLicence;
-            details.LicenceNumber = entity.LicenceNumber;
-            details.GliderInstructorLicenceExpireDate = entity.GliderInstructorLicenceExpireDate.SetAsUtc();
-            details.MedicalClass1ExpireDate = entity.MedicalClass1ExpireDate.SetAsUtc();
-            details.MedicalClass2ExpireDate = entity.MedicalClass2ExpireDate.SetAsUtc();
-            details.MedicalLaplExpireDate = entity.MedicalLaplExpireDate.SetAsUtc();
-            details.HasGliderTowingStartPermission = entity.HasGliderTowingStartPermission;
-            details.HasGliderSelfStartPermission = entity.HasGliderSelfStartPermission;
-            details.HasGliderWinchStartPermission = entity.HasGliderWinchStartPermission;
-
-            details.ReceiveOwnedAircraftStatisticReports = entity.ReceiveOwnedAircraftStatisticReports;
-            details.SpotLink = entity.SpotLink;
 
             return details;
         }
@@ -2901,6 +2887,27 @@ namespace FLS.Server.Data.Mapping
             entity.FaxNumber = details.FaxNumber;
             entity.ReceiveOwnedAircraftStatisticReports = details.ReceiveOwnedAircraftStatisticReports;
             entity.EnableAddress = details.EnableAddress;
+
+            entity.HasGliderInstructorLicence = details.HasGliderInstructorLicence;
+            entity.HasGliderPilotLicence = details.HasGliderPilotLicence;
+            entity.HasGliderTraineeLicence = details.HasGliderTraineeLicence;
+            entity.HasMotorPilotLicence = details.HasMotorPilotLicence;
+            entity.HasTowPilotLicence = details.HasTowPilotLicence;
+            entity.HasGliderPAXLicence = details.HasGliderPassengerLicence;
+            entity.HasTMGLicence = details.HasTMGLicence;
+            entity.HasWinchOperatorLicence = details.HasWinchOperatorLicence;
+            entity.LicenceNumber = details.LicenceNumber;
+            entity.GliderInstructorLicenceExpireDate = details.GliderInstructorLicenceExpireDate;
+            entity.MedicalClass1ExpireDate = details.MedicalClass1ExpireDate;
+            entity.MedicalClass2ExpireDate = details.MedicalClass2ExpireDate;
+            entity.MedicalLaplExpireDate = details.MedicalLaplExpireDate;
+            entity.HasGliderTowingStartPermission = details.HasGliderTowingStartPermission;
+            entity.HasGliderSelfStartPermission = details.HasGliderSelfStartPermission;
+            entity.HasGliderWinchStartPermission = details.HasGliderWinchStartPermission;
+            entity.HasMotorInstructorLicence = details.HasMotorInstructorLicence;
+
+            entity.SpotLink = details.SpotLink;
+            entity.ReceiveOwnedAircraftStatisticReports = details.ReceiveOwnedAircraftStatisticReports;
 
             if (details.ClubRelatedPersonDetails != null)
             {
@@ -2975,8 +2982,8 @@ namespace FLS.Server.Data.Mapping
 
             return entity;
         }
-
-        public static Person ToPerson(this PilotPersonDetails details, Guid clubId, Person entity = null, bool overwritePersonId = false)
+        
+        public static Person ToPerson(this PersonFullDetails details, Guid clubId, Person entity = null, bool overwritePersonId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -2986,41 +2993,6 @@ namespace FLS.Server.Data.Mapping
             }
 
             ((PersonDetails) details).ToPerson(clubId, entity, overwritePersonId);
-
-            entity.HasGliderInstructorLicence = details.HasGliderInstructorLicence;
-            entity.HasGliderPilotLicence = details.HasGliderPilotLicence;
-            entity.HasGliderTraineeLicence = details.HasGliderTraineeLicence;
-            entity.HasMotorPilotLicence = details.HasMotorPilotLicence;
-            entity.HasTowPilotLicence = details.HasTowPilotLicence;
-            entity.HasGliderPAXLicence = details.HasGliderPassengerLicence;
-            entity.HasTMGLicence = details.HasTMGLicence;
-            entity.HasWinchOperatorLicence = details.HasWinchOperatorLicence;
-            entity.LicenceNumber = details.LicenceNumber;
-            entity.GliderInstructorLicenceExpireDate = details.GliderInstructorLicenceExpireDate;
-            entity.MedicalClass1ExpireDate = details.MedicalClass1ExpireDate;
-            entity.MedicalClass2ExpireDate = details.MedicalClass2ExpireDate;
-            entity.MedicalLaplExpireDate = details.MedicalLaplExpireDate;
-            entity.HasGliderTowingStartPermission = details.HasGliderTowingStartPermission;
-            entity.HasGliderSelfStartPermission = details.HasGliderSelfStartPermission;
-            entity.HasGliderWinchStartPermission = details.HasGliderWinchStartPermission;
-            entity.HasMotorInstructorLicence = details.HasMotorInstructorLicence;
-
-            entity.SpotLink = details.SpotLink;
-            entity.ReceiveOwnedAircraftStatisticReports = details.ReceiveOwnedAircraftStatisticReports;
-
-            return entity;
-        }
-        
-        public static Person ToPerson(this PilotPersonFullDetails details, Guid clubId, Person entity = null, bool overwritePersonId = false)
-        {
-            details.ArgumentNotNull("details");
-
-            if (entity == null)
-            {
-                entity = new Person();
-            }
-
-            ((PilotPersonDetails) details).ToPerson(clubId, entity, overwritePersonId);
 
             //only map timestamps back to the server data entity
             details.MapTimeStampsMetaData(entity);
@@ -3040,16 +3012,16 @@ namespace FLS.Server.Data.Mapping
             return entity;
         }
 
-        public static PilotPersonFullDetails ToPilotPersonFullDetails(this Person entity, Guid clubId, PilotPersonFullDetails details = null)
+        public static PersonFullDetails ToPersonFullDetails(this Person entity, Guid clubId, PersonFullDetails details = null)
         {
             entity.ArgumentNotNull("entity");
 
             if (details == null)
             {
-                details = new PilotPersonFullDetails();
+                details = new PersonFullDetails();
             }
 
-            entity.ToPilotPersonDetails(clubId, details);
+            entity.ToPersonDetails(clubId, details);
 
             entity.MapMetaData(details);
 

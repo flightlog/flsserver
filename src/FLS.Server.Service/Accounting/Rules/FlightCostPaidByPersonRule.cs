@@ -30,7 +30,7 @@ namespace FLS.Server.Service.Accounting.Rules
 
             if (invoiceRecipient != null)
             {
-                var personDetails = _personService.GetPilotPersonDetails(invoiceRecipient.PersonId, ruleBasedDelivery.ClubId);
+                var personDetails = _personService.GetPersonDetails(invoiceRecipient.PersonId, ruleBasedDelivery.ClubId);
 
                 if (personDetails != null)
                 {

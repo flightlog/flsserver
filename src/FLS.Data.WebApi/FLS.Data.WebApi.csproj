@@ -165,8 +165,7 @@
     <Compile Include="Person\PersonOverviewSearchFilter.cs" />
     <Compile Include="Person\PersonOverview.cs" />
     <Compile Include="Person\PersonListItem.cs" />
-    <Compile Include="Person\PilotPersonFullDetails.cs" />
-    <Compile Include="Person\PilotPersonDetails.cs" />
+    <Compile Include="Person\PersonFullDetails.cs" />
     <Compile Include="PlanningDay\PlanningDayCreatorRule.cs" />
     <Compile Include="PlanningDay\PlanningDayDetails.cs" />
     <Compile Include="PlanningDay\PlanningDayOverviewSearchFilter.cs" />

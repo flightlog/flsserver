@@ -46,7 +46,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             var id = response.First().PersonId;
 
-            var result = GetAsync<PilotPersonDetails>("/api/v1/persons/" + id).Result;
+            var result = GetAsync<PersonDetails>("/api/v1/persons/" + id).Result;
 
             Assert.AreEqual(id, result.Id);
         }
@@ -61,7 +61,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var response = PostAsync(personDetails, "/api/v1/persons").Result;
 
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
-            var responseDetails = ConvertToModel<PilotPersonDetails>(response);
+            var responseDetails = ConvertToModel<PersonDetails>(response);
             Assert.IsTrue(responseDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", responseDetails));
         }
 
@@ -75,10 +75,10 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var response = PostAsync(personDetails, "/api/v1/persons").Result;
 
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
-            var responseDetails = ConvertToModel<PilotPersonDetails>(response);
+            var responseDetails = ConvertToModel<PersonDetails>(response);
             Assert.IsTrue(responseDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", responseDetails));
 
-            var personDetailsResponse = GetAsync<PilotPersonDetails>("/api/v1/persons/membernumber/" + personDetails.ClubRelatedPersonDetails.MemberNumber).Result;
+            var personDetailsResponse = GetAsync<PersonDetails>("/api/v1/persons/membernumber/" + personDetails.ClubRelatedPersonDetails.MemberNumber).Result;
 
             Assert.IsNotNull(personDetailsResponse);
 
@@ -97,7 +97,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             var id = response.First().PersonId;
 
-            var result = GetAsync<PilotPersonFullDetails>("/api/v1/persons/fulldetails/" + id).Result;
+            var result = GetAsync<PersonFullDetails>("/api/v1/persons/fulldetails/" + id).Result;
 
             Assert.AreEqual(id, result.Id);
         }
@@ -109,7 +109,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             InsertPersonFullDetailsWebApi();
         }
 
-        private PilotPersonFullDetails InsertPersonFullDetailsWebApi()
+        private PersonFullDetails InsertPersonFullDetailsWebApi()
         {
             var country = GetCountry("CH");
             var personFullDetails = CreatePersonFullDetails(ClubId, country.CountryId);
@@ -120,7 +120,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var response = PostAsync(personFullDetails, "/api/v1/persons/fulldetails").Result;
 
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
-            var responseDetails = ConvertToModel<PilotPersonFullDetails>(response);
+            var responseDetails = ConvertToModel<PersonFullDetails>(response);
             Assert.IsTrue(responseDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", responseDetails));
             Assert.IsTrue(responseDetails.CreatedByUserId == MyUserDetails.UserId);
             Assert.IsTrue(responseDetails.CreatedOn.SetAsUtc() == timeStamp.SetAsUtc());
@@ -138,7 +138,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             var id = response.First().PersonId;
 
-            var result = GetAsync<PilotPersonDetails>("/api/v1/persons/" + id).Result;
+            var result = GetAsync<PersonDetails>("/api/v1/persons/" + id).Result;
 
             Assert.AreEqual(id, result.Id);
 
@@ -159,7 +159,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             var id = response.First().PersonId;
 
-            var result = GetAsync<PilotPersonDetails>("/api/v1/persons/" + id).Result;
+            var result = GetAsync<PersonDetails>("/api/v1/persons/" + id).Result;
 
             Assert.AreEqual(id, result.Id);
 
@@ -173,7 +173,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             Assert.IsTrue(putResult.IsSuccessStatusCode);
 
-            var updatedPilotDetails = ConvertToModel<PilotPersonDetails>(putResult);
+            var updatedPilotDetails = ConvertToModel<PersonDetails>(putResult);
 
             Assert.IsTrue(updatedPilotDetails.ClubRelatedPersonDetails.IsGliderInstructor);
             Assert.AreEqual(result.ClubRelatedPersonDetails.MemberNumber, updatedPilotDetails.ClubRelatedPersonDetails.MemberNumber, "MemberNumber does not match");
@@ -189,7 +189,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             var id = response.First().PersonId;
 
-            var result = GetAsync<PilotPersonFullDetails>("/api/v1/persons/fulldetails/" + id).Result;
+            var result = GetAsync<PersonFullDetails>("/api/v1/persons/fulldetails/" + id).Result;
 
             Assert.AreEqual(id, result.Id);
 
@@ -197,10 +197,10 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var timeStamp = DateTime.UtcNow.AddMinutes(1);
             result.ModifiedOn = timeStamp;
 
-            var putResult = PutAsync<PilotPersonFullDetails>(result, "/api/v1/persons/fulldetails/" + id).Result;
+            var putResult = PutAsync<PersonFullDetails>(result, "/api/v1/persons/fulldetails/" + id).Result;
 
             Assert.IsTrue(putResult.IsSuccessStatusCode);
-            var personFullDetails = ConvertToModel<PilotPersonFullDetails>(putResult);
+            var personFullDetails = ConvertToModel<PersonFullDetails>(putResult);
             Assert.IsTrue(personFullDetails.ModifiedByUserId == MyUserDetails.UserId);
             Assert.IsTrue(personFullDetails.ModifiedOn.SetAsUtc() == timeStamp.SetAsUtc());
         }
@@ -256,7 +256,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
             Assert.IsTrue(delResult.IsSuccessStatusCode);
 
-            var deletedRecords = GetAsync<IEnumerable<PilotPersonFullDetails>>("/api/v1/persons/fulldetails/deleted/" + deletedOn.AddDays(-1).ToString("yyyy-MM-dd")).Result;
+            var deletedRecords = GetAsync<IEnumerable<PersonFullDetails>>("/api/v1/persons/fulldetails/deleted/" + deletedOn.AddDays(-1).ToString("yyyy-MM-dd")).Result;
 
             Assert.IsTrue(deletedRecords.Any());
         }
@@ -277,10 +277,10 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var timeStamp = DateTime.Now;
             personDetails.ModifiedOn = timeStamp;
 
-            var putResult = PutAsync<PilotPersonFullDetails>(personDetails, "/api/v1/persons/fulldetails/" + personDetails.PersonId).Result;
+            var putResult = PutAsync<PersonFullDetails>(personDetails, "/api/v1/persons/fulldetails/" + personDetails.PersonId).Result;
 
             Assert.IsTrue(putResult.IsSuccessStatusCode);
-            var personFullDetails = ConvertToModel<PilotPersonFullDetails>(putResult);
+            var personFullDetails = ConvertToModel<PersonFullDetails>(putResult);
             Assert.IsTrue(personFullDetails.ModifiedByUserId == MyUserDetails.UserId);
             Assert.IsTrue(personFullDetails.ModifiedOn.SetAsUtc() == timeStamp.SetAsUtc());
         }

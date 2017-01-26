@@ -327,7 +327,7 @@ namespace FLS.Server.Service.Exporting
             }
         }
 
-        public static byte[] GetPersonExcelPackage(List<PilotPersonDetails> personDetailList, string title)
+        public static byte[] GetPersonExcelPackage(List<PersonDetails> personDetailList, string title)
         {
             using (ExcelPackage package = new ExcelPackage())
             {

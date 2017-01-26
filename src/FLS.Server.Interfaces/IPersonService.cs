@@ -11,8 +11,8 @@ namespace FLS.Server.Interfaces
 {
     public interface IPersonService
     {
-        PilotPersonDetails GetPilotPersonDetails(Guid personId);
+        PersonDetails GetPersonDetails(Guid personId);
 
-        PilotPersonDetails GetPilotPersonDetails(Guid personId, Guid clubId);
+        PersonDetails GetPersonDetails(Guid personId, Guid clubId);
     }
 }

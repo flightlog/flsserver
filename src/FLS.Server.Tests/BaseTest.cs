@@ -883,9 +883,9 @@ namespace FLS.Server.Tests
             }
         }
 
-        public PilotPersonDetails CreateGliderPilotPersonDetails(Guid countryId)
+        public PersonDetails CreateGliderPilotPersonDetails(Guid countryId)
         {
-            var personDetails = new PilotPersonDetails()
+            var personDetails = new PersonDetails()
             {
                 CountryId = countryId,
                 Lastname = "Huter-Pilot",
@@ -913,9 +913,9 @@ namespace FLS.Server.Tests
             return personDetails;
         }
 
-        public PilotPersonDetails CreateGliderInstructorPersonDetails(Guid countryId)
+        public PersonDetails CreateGliderInstructorPersonDetails(Guid countryId)
         {
-            var personDetails = new PilotPersonDetails()
+            var personDetails = new PersonDetails()
             {
                 CountryId = countryId,
                 Lastname = "Ingold-Instructor",
@@ -945,9 +945,9 @@ namespace FLS.Server.Tests
             return personDetails;
         }
         
-        public PilotPersonDetails CreatePersonDetails(Guid countryId)
+        public PersonDetails CreatePersonDetails(Guid countryId)
         {
-            var hydrator = new Hydrator<PilotPersonDetails>();
+            var hydrator = new Hydrator<PersonDetails>();
             var personDetails = hydrator.GetSingle();
 
             personDetails.CountryId = countryId;
@@ -965,9 +965,9 @@ namespace FLS.Server.Tests
             return personDetails;
         }
 
-        public PilotPersonFullDetails CreatePersonFullDetails(Guid clubId, Guid countryId)
+        public PersonFullDetails CreatePersonFullDetails(Guid clubId, Guid countryId)
         {
-            var hydrator = new Hydrator<PilotPersonFullDetails>();
+            var hydrator = new Hydrator<PersonFullDetails>();
             var personDetails = hydrator.GetSingle();
 
             personDetails.CountryId = countryId;

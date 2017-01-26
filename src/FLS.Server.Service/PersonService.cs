@@ -257,61 +257,61 @@ namespace FLS.Server.Service
             return persons.Select(p => p.ToPersonListItem()).ToList();
         }
         
-        internal PilotPersonDetails GetPilotPersonDetailsInternal(Guid personId, Guid clubId, bool controlAccess = true)
+        internal PersonDetails GetPilotPersonDetailsInternal(Guid personId, Guid clubId, bool controlAccess = true)
         {
             var person = GetPerson(personId, controlAccess);
 
-            var personDetails = person.ToPilotPersonDetails(clubId);
+            var personDetails = person.ToPersonDetails(clubId);
             SetPersonDetailsSecurity(personDetails, person);
 
             return personDetails;
         }
 
-        public PilotPersonDetails GetPilotPersonDetails(Guid personId)
+        public PersonDetails GetPersonDetails(Guid personId)
         {
             var person = GetPerson(personId);
 
-            var personDetails = person.ToPilotPersonDetails(CurrentAuthenticatedFLSUserClubId);
+            var personDetails = person.ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
             SetPersonDetailsSecurity(personDetails, person);
 
             return personDetails;
         }
 
-        public PilotPersonDetails GetPilotPersonDetails(Guid personId, Guid clubId)
+        public PersonDetails GetPersonDetails(Guid personId, Guid clubId)
         {
             var person = GetPerson(personId, false);
 
-            var personDetails = person.ToPilotPersonDetails(clubId);
+            var personDetails = person.ToPersonDetails(clubId);
             SetPersonDetailsSecurity(personDetails, person);
 
             return personDetails;
         }
 
-        public PilotPersonDetails GetPilotPersonDetails(string memberNumber)
+        public PersonDetails GetPilotPersonDetails(string memberNumber)
         {
             var person = GetPerson(memberNumber);
 
-            var personDetails = person.ToPilotPersonDetails(CurrentAuthenticatedFLSUserClubId);
+            var personDetails = person.ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
             SetPersonDetailsSecurity(personDetails, person);
 
             return personDetails;
         }
 
-        public PilotPersonFullDetails GetPilotPersonFullDetails(string memberNumber)
+        public PersonFullDetails GetPilotPersonFullDetails(string memberNumber)
         {
             var person = GetPerson(memberNumber);
 
-            var personFullDetails = person.ToPilotPersonFullDetails(CurrentAuthenticatedFLSUserClubId);
+            var personFullDetails = person.ToPersonFullDetails(CurrentAuthenticatedFLSUserClubId);
             SetPersonDetailsSecurity(personFullDetails, person);
 
             return personFullDetails;
         }
 
-        public PilotPersonFullDetails GetPilotPersonFullDetails(Guid personId)
+        public PersonFullDetails GetPilotPersonFullDetails(Guid personId)
         {
             var person = GetPerson(personId);
 
-            var personFullDetails = person.ToPilotPersonFullDetails(CurrentAuthenticatedFLSUserClubId);
+            var personFullDetails = person.ToPersonFullDetails(CurrentAuthenticatedFLSUserClubId);
             SetPersonDetailsSecurity(personFullDetails, person);
 
             return personFullDetails;
@@ -327,7 +327,7 @@ namespace FLS.Server.Service
             return passengerDetails;
         }
 
-        public List<PilotPersonDetails> GetPersonDetailsModifiedSince(DateTime modifiedSince)
+        public List<PersonDetails> GetPersonDetailsModifiedSince(DateTime modifiedSince)
         {
             List<Person> personResult = null;
 
@@ -343,7 +343,7 @@ namespace FLS.Server.Service
             return PreparePersonDetailsList(personResult);
         }
 
-        public List<PilotPersonFullDetails> GetPersonFullDetailsModifiedSince(DateTime modifiedSince)
+        public List<PersonFullDetails> GetPersonFullDetailsModifiedSince(DateTime modifiedSince)
         {
             List<Person> personResult = null;
 
@@ -359,7 +359,7 @@ namespace FLS.Server.Service
             return PreparePersonFullDetailsList(personResult);
         }
 
-        public List<PilotPersonDetails> GetPersonDetailsDeletedSince(DateTime deletedSince)
+        public List<PersonDetails> GetPersonDetailsDeletedSince(DateTime deletedSince)
         {
             List<Person> personResult = null;
 
@@ -375,7 +375,7 @@ namespace FLS.Server.Service
             return PreparePersonDetailsList(personResult);
         }
 
-        public List<PilotPersonFullDetails> GetPersonFullDetailsDeletedSince(DateTime deletedSince)
+        public List<PersonFullDetails> GetPersonFullDetailsDeletedSince(DateTime deletedSince)
         {
             List<Person> personResult = null;
 
@@ -391,20 +391,20 @@ namespace FLS.Server.Service
             return PreparePersonFullDetailsList(personResult);
         }
 
-        public List<PilotPersonDetails> GetClubsPilotPersonDetailsList()
+        public List<PersonDetails> GetClubsPilotPersonDetailsList()
         {
             var persons = GetPersons(true, person => person.PersonClubs.Any(q => q.IsPassenger == false));
 
             return PreparePersonDetailsList(persons);
         }
 
-        private List<PilotPersonDetails> PreparePersonDetailsList(List<Person> persons)
+        private List<PersonDetails> PreparePersonDetailsList(List<Person> persons)
         {
-            var resultList = new List<PilotPersonDetails>();
+            var resultList = new List<PersonDetails>();
 
             foreach (var person in persons)
             {
-                var personDetail = person.ToPilotPersonDetails(CurrentAuthenticatedFLSUserClubId);
+                var personDetail = person.ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
 
                 personDetail.NotNull("PersonDetail");
                 SetPersonDetailsSecurity(personDetail, person);
@@ -414,13 +414,13 @@ namespace FLS.Server.Service
             return resultList.ToList();
         }
 
-        private List<PilotPersonFullDetails> PreparePersonFullDetailsList(List<Person> persons)
+        private List<PersonFullDetails> PreparePersonFullDetailsList(List<Person> persons)
         {
-            var resultList = new List<PilotPersonFullDetails>();
+            var resultList = new List<PersonFullDetails>();
 
             foreach (var person in persons)
             {
-                var personDetail = person.ToPilotPersonFullDetails(CurrentAuthenticatedFLSUserClubId);
+                var personDetail = person.ToPersonFullDetails(CurrentAuthenticatedFLSUserClubId);
 
                 personDetail.NotNull("PersonDetail");
                 SetPersonDetailsSecurity(personDetail, person);
@@ -580,7 +580,7 @@ namespace FLS.Server.Service
             }
         }
         
-        public void InsertPersonDetails(PilotPersonDetails personDetails)
+        public void InsertPersonDetails(PersonDetails personDetails)
         {
             personDetails.ArgumentNotNull("personDetails");
 
@@ -591,10 +591,10 @@ namespace FLS.Server.Service
             InsertPerson(person);
 
             //Map it back to details
-            person.ToPilotPersonDetails(CurrentAuthenticatedFLSUserClubId, personDetails);
+            person.ToPersonDetails(CurrentAuthenticatedFLSUserClubId, personDetails);
         }
 
-        public void InsertPersonFullDetails(PilotPersonFullDetails personFullDetails)
+        public void InsertPersonFullDetails(PersonFullDetails personFullDetails)
         {
             personFullDetails.ArgumentNotNull("personFullDetails");
 
@@ -605,7 +605,7 @@ namespace FLS.Server.Service
             InsertPerson(person);
 
             //Map it back to details
-            person.ToPilotPersonFullDetails(CurrentAuthenticatedFLSUserClubId, personFullDetails);
+            person.ToPersonFullDetails(CurrentAuthenticatedFLSUserClubId, personFullDetails);
         }
 
         public void InsertPassengerDetails(PersonDetails passengerDetails)
@@ -633,7 +633,7 @@ namespace FLS.Server.Service
             }
         }
 
-        public void UpdatePersonDetails(PilotPersonDetails currentPersonDetails)
+        public void UpdatePersonDetails(PersonDetails currentPersonDetails)
         {
             currentPersonDetails.ArgumentNotNull("currentPersonDetails");
             var original = GetPerson(currentPersonDetails.PersonId);
@@ -649,12 +649,12 @@ namespace FLS.Server.Service
                     context.SaveChanges();
 
                     //Map it back to details
-                    original.ToPilotPersonDetails(CurrentAuthenticatedFLSUserClubId, currentPersonDetails);
+                    original.ToPersonDetails(CurrentAuthenticatedFLSUserClubId, currentPersonDetails);
                 }
             }
         }
 
-        public void UpdatePersonFullDetails(PilotPersonFullDetails currentPersonFullDetails)
+        public void UpdatePersonFullDetails(PersonFullDetails currentPersonFullDetails)
         {
             currentPersonFullDetails.ArgumentNotNull("currentPersonFullDetails");
             var original = GetPerson(currentPersonFullDetails.PersonId);
@@ -685,7 +685,7 @@ namespace FLS.Server.Service
                     context.SaveChanges();
 
                     //Map it back to details
-                    original.ToPilotPersonFullDetails(CurrentAuthenticatedFLSUserClubId, currentPersonFullDetails);
+                    original.ToPersonFullDetails(CurrentAuthenticatedFLSUserClubId, currentPersonFullDetails);
                 }
             }
         }
@@ -838,11 +838,11 @@ namespace FLS.Server.Service
         }
         #endregion Security
 
-        public PilotPersonDetails GetMyPersonDetails()
+        public PersonDetails GetMyPersonDetails()
         {
             if (_identityService.CurrentAuthenticatedFLSUser.PersonId.HasValue)
             {
-                return GetPilotPersonDetails(_identityService.CurrentAuthenticatedFLSUser.PersonId.Value);
+                return GetPersonDetails(_identityService.CurrentAuthenticatedFLSUser.PersonId.Value);
             }
 
             return null;

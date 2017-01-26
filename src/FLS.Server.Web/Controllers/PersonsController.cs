@@ -331,10 +331,10 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{personId}")]
-        [ResponseType(typeof(PilotPersonDetails))]
+        [ResponseType(typeof(PersonDetails))]
         public IHttpActionResult GetPersonDetails(Guid personId)
         {
-            var personDetails = _personService.GetPilotPersonDetails(personId);
+            var personDetails = _personService.GetPersonDetails(personId);
             return Ok(personDetails);
         }
 
@@ -344,7 +344,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("my")]
-        [ResponseType(typeof(PilotPersonDetails))]
+        [ResponseType(typeof(PersonDetails))]
         public IHttpActionResult GetMyPersonDetails()
         {
             var personDetails = _personService.GetMyPersonDetails();
@@ -358,7 +358,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("fulldetails/{personId}")]
-        [ResponseType(typeof(PilotPersonFullDetails))]
+        [ResponseType(typeof(PersonFullDetails))]
         public IHttpActionResult GetPersonFullDetails(Guid personId)
         {
             var personDetails = _personService.GetPilotPersonFullDetails(personId);
@@ -372,7 +372,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("membernumber/{memberNumber}")]
-        [ResponseType(typeof(PilotPersonDetails))]
+        [ResponseType(typeof(PersonDetails))]
         public IHttpActionResult GetPersonDetailsByMemberNumber(string memberNumber)
         {
             var personDetails = _personService.GetPilotPersonDetails(memberNumber);
@@ -386,7 +386,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("fulldetails/membernumber/{memberNumber}")]
-        [ResponseType(typeof(PilotPersonFullDetails))]
+        [ResponseType(typeof(PersonFullDetails))]
         public IHttpActionResult GetPersonFullDetailsByMemberNumber(string memberNumber)
         {
             var personDetails = _personService.GetPilotPersonFullDetails(memberNumber);
@@ -415,7 +415,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpGet]
         [Route("modified/{modifiedSince:datetime:regex(\\d{4}-\\d{2}-\\d{2})}")]
         [Route("modified/{*modifiedSince:datetime:regex(\\d{4}/\\d{2}/\\d{2})}")]
-        [ResponseType(typeof(List<PilotPersonDetails>))]
+        [ResponseType(typeof(List<PersonDetails>))]
         public IHttpActionResult GetPersonDetailsModifiedSince(DateTime modifiedSince)
         {
             var personDetails = _personService.GetPersonDetailsModifiedSince(modifiedSince);
@@ -430,7 +430,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpGet]
         [Route("deleted/{deletedSince:datetime:regex(\\d{4}-\\d{2}-\\d{2})}")]
         [Route("deleted/{*deletedSince:datetime:regex(\\d{4}/\\d{2}/\\d{2})}")]
-        [ResponseType(typeof(List<PilotPersonDetails>))]
+        [ResponseType(typeof(List<PersonDetails>))]
         public IHttpActionResult GetPersonDetailsDeletedSince(DateTime deletedSince)
         {
             var personDetails = _personService.GetPersonDetailsDeletedSince(deletedSince);
@@ -445,7 +445,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpGet]
         [Route("fulldetails/modified/{modifiedSince:datetime:regex(\\d{4}-\\d{2}-\\d{2})}")]
         [Route("fulldetails/modified/{*modifiedSince:datetime:regex(\\d{4}/\\d{2}/\\d{2})}")]
-        [ResponseType(typeof(List<PilotPersonFullDetails>))]
+        [ResponseType(typeof(List<PersonFullDetails>))]
         public IHttpActionResult GetPersonFullDetailsModifiedSince(DateTime modifiedSince)
         {
             var personDetails = _personService.GetPersonFullDetailsModifiedSince(modifiedSince);
@@ -460,7 +460,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpGet]
         [Route("fulldetails/deleted/{deletedSince:datetime:regex(\\d{4}-\\d{2}-\\d{2})}")]
         [Route("fulldetails/deleted/{*deletedSince:datetime:regex(\\d{4}/\\d{2}/\\d{2})}")]
-        [ResponseType(typeof(List<PilotPersonFullDetails>))]
+        [ResponseType(typeof(List<PersonFullDetails>))]
         public IHttpActionResult GetPersonFullDetailsDeletedSince(DateTime deletedSince)
         {
             var personDetails = _personService.GetPersonFullDetailsDeletedSince(deletedSince);
@@ -474,8 +474,8 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        [ResponseType(typeof(PilotPersonDetails))]
-        public IHttpActionResult InsertPersonDetails([FromBody] PilotPersonDetails personDetails)
+        [ResponseType(typeof(PersonDetails))]
+        public IHttpActionResult InsertPersonDetails([FromBody] PersonDetails personDetails)
         {
             _personService.InsertPersonDetails(personDetails);
             return Ok(personDetails);
@@ -502,8 +502,8 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("fulldetails")]
-        [ResponseType(typeof(PilotPersonFullDetails))]
-        public IHttpActionResult InsertPersonFullDetails([FromBody] PilotPersonFullDetails personFullDetails)
+        [ResponseType(typeof(PersonFullDetails))]
+        public IHttpActionResult InsertPersonFullDetails([FromBody] PersonFullDetails personFullDetails)
         {
             _personService.InsertPersonFullDetails(personFullDetails);
             return Ok(personFullDetails);
@@ -517,8 +517,8 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("{personId}")]
-        [ResponseType(typeof(PilotPersonDetails))]
-        public IHttpActionResult UpdatePersonDetails(Guid personId, [FromBody]PilotPersonDetails personDetails)
+        [ResponseType(typeof(PersonDetails))]
+        public IHttpActionResult UpdatePersonDetails(Guid personId, [FromBody]PersonDetails personDetails)
         {
             _personService.UpdatePersonDetails(personDetails);
             return Ok(personDetails);
@@ -547,8 +547,8 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("fulldetails/{personId}")]
-        [ResponseType(typeof(PilotPersonFullDetails))]
-        public IHttpActionResult UpdatePersonFullDetails(Guid personId, [FromBody]PilotPersonFullDetails personFullDetails)
+        [ResponseType(typeof(PersonFullDetails))]
+        public IHttpActionResult UpdatePersonFullDetails(Guid personId, [FromBody]PersonFullDetails personFullDetails)
         {
             _personService.UpdatePersonFullDetails(personFullDetails);
             return Ok(personFullDetails);

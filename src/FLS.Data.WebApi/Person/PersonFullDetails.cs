@@ -2,7 +2,7 @@
 
 namespace FLS.Data.WebApi.Person
 {
-    public class PilotPersonFullDetails : PilotPersonDetails, IFLSMetaData
+    public class PersonFullDetails : PersonDetails, IFLSMetaData
     {
         public DateTime? DeletedOn { get; set; }
         public Guid? DeletedByUserId { get; set; }
