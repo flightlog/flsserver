@@ -98,6 +98,27 @@ namespace FLS.Common.Extensions
         }
 
         /// <summary>
+        /// http://tahirhassan.blogspot.ch/2010/06/linq-to-sql-order-by-nulls-last.html
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="keySelector"></param>
+        /// <returns></returns>
+        public static IQueryable<TSource> OrderByNullsLast<TSource, TKey>(this IQueryable<TSource> query, Expression<Func<TSource, TKey>> keySelector)
+        {
+            return query.OrderBy(keySelector).NullsLast(keySelector);
+        }
+
+        public static IQueryable<TSource> NullsLast<TSource, TKey>(this IQueryable<TSource> query, Expression<Func<TSource, TKey>> keySelector)
+        {
+            var nullExpr = Expression.Constant(null, typeof(TKey));
+            var equalExpr = Expression.Equal(keySelector.Body, nullExpr);
+            var lambda = Expression.Lambda<Func<TSource, bool>>(equalExpr, keySelector.Parameters);
+            return query.OrderBy(lambda);
+        }
+
+        /// <summary>
         /// Adds a where-clause if condition is true to a query. Usage: .WhereIf(batchNumber != null, s => s.Number == batchNumber)
         /// http://stackoverflow.com/questions/33153932/filter-search-using-multiple-fields-asp-net-mvc
         /// </summary>
