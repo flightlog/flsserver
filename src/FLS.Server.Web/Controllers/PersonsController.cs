@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Person;
 using FLS.Server.Service;
 
@@ -310,6 +311,19 @@ namespace FLS.Server.WebApi.Controllers
         public IHttpActionResult GetPassengerPersonOverviews(bool onlyClubRelatedPassengers)
         {
             var persons = _personService.GetPassengerOverviews(onlyClubRelatedPassengers);
+            return Ok(persons);
+        }
+
+        /// <summary>
+        /// Gets the person overviews.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<PersonOverview>))]
+        public IHttpActionResult GetPagedPersonOverview([FromBody]PageableSearchFilter<PersonOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        {
+            var persons = _personService.GetPagedPersonOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(persons);
         }
 

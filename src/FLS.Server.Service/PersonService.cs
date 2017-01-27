@@ -6,8 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using FLS.Common.Extensions;
+using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Person;
+using FLS.Data.WebApi.User;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Exceptions;
 using FLS.Server.Data.Mapping;
@@ -234,6 +237,83 @@ namespace FLS.Server.Service
             var personOverviewList = persons.Select(p => p.ToPersonOverview(CurrentAuthenticatedFLSUserClubId)).ToList();
             SetPersonOverviewSecurity(personOverviewList);
             return personOverviewList.ToList();
+        }
+
+        public PagedList<PersonOverview> GetPagedPersonOverview(int? pageStart, int? pageSize, PageableSearchFilter<PersonOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<PersonOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new PersonOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("Lastname", "asc");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var persons = context.Persons.Include(Constants.Country).Include(Constants.PersonClubs)
+                        .Include($"{Constants.PersonClubs}.MemberState")
+                        .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                persons = persons.WhereIf(filter.Lastname,
+                        person => person.Lastname.Contains(filter.Lastname));
+                persons = persons.WhereIf(filter.Firstname,
+                        person => person.Firstname.Contains(filter.Firstname));
+                persons = persons.WhereIf(filter.AddressLine,
+                        person => person.AddressLine1.Contains(filter.AddressLine)
+                            || person.AddressLine2.Contains(filter.AddressLine));
+                persons = persons.WhereIf(filter.ZipCode,
+                        person => person.Zip.Contains(filter.ZipCode));
+                persons = persons.WhereIf(filter.City,
+                        person => person.City.Contains(filter.City));
+                persons = persons.WhereIf(filter.CountryName,
+                        person => person.Country.CountryName.Contains(filter.CountryName));
+                persons = persons.WhereIf(filter.PrivateEmail,
+                        person => person.EmailPrivate.Contains(filter.PrivateEmail));
+                persons = persons.WhereIf(filter.MobilePhoneNumber,
+                        person => person.MobilePhone.Contains(filter.MobilePhoneNumber));
+                persons = persons.WhereIf(filter.MemberStateName,
+                        person => person.PersonClubs.Any(x => x.MemberState.MemberStateName.Contains(filter.MemberStateName)));
+                persons = persons.WhereIf(filter.LicenceNumber,
+                        person => person.LicenceNumber.Contains(filter.LicenceNumber));
+
+                if (filter.HasGliderInstructorLicence.HasValue)
+                    persons = persons.Where(person => person.HasGliderInstructorLicence == filter.HasGliderInstructorLicence.Value);
+                if (filter.HasGliderPilotLicence.HasValue)
+                    persons = persons.Where(person => person.HasGliderPilotLicence == filter.HasGliderPilotLicence.Value);
+                if (filter.HasGliderTraineeLicence.HasValue)
+                    persons = persons.Where(person => person.HasGliderTraineeLicence == filter.HasGliderTraineeLicence.Value);
+                if (filter.HasMotorPilotLicence.HasValue)
+                    persons = persons.Where(person => person.HasMotorPilotLicence == filter.HasMotorPilotLicence.Value);
+                if (filter.HasTMGLicence.HasValue)
+                    persons = persons.Where(person => person.HasTMGLicence == filter.HasTMGLicence.Value);
+                if (filter.HasTowPilotLicence.HasValue)
+                    persons = persons.Where(person => person.HasTowPilotLicence == filter.HasTowPilotLicence.Value);
+                if (filter.HasGliderPassengerLicence.HasValue)
+                    persons = persons.Where(person => person.HasGliderPAXLicence == filter.HasGliderPassengerLicence.Value);
+                if (filter.HasWinchOperatorLicence.HasValue)
+                    persons = persons.Where(person => person.HasWinchOperatorLicence == filter.HasWinchOperatorLicence.Value);
+                if (filter.HasMotorInstructorLicence.HasValue)
+                    persons = persons.Where(person => person.HasMotorInstructorLicence == filter.HasMotorInstructorLicence.Value);
+
+                if (filter.OnlyClubRelatedPersons.HasValue == false || filter.OnlyClubRelatedPersons.Value)
+                {
+                    persons =
+                        persons.Where(p => p.PersonClubs.Any(ppc => ppc.ClubId == CurrentAuthenticatedFLSUserClubId));
+                }
+
+                var pagedQuery = new PagedQuery<Person>(persons, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToPersonOverview(CurrentAuthenticatedFLSUserClubId))
+                .Where(obj => obj != null)
+                .ToList();
+
+                var pagedList = new PagedList<PersonOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
         }
 
         private List<PersonListItem> GetPilotPersonListItemInternal(bool onlyClubPersons,
