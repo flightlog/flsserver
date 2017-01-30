@@ -9,7 +9,7 @@ namespace FLS.Common.Paging
     /// <typeparam name="T"></typeparam>
     public class PagedQuery<T>
     {
-        private const int MaxTotalRowsServersideAllowed = 500;
+        private const int MaxTotalRowsServersideAllowed = 100;
 
         private readonly IQueryable<T> _items;
         private readonly int? _pageStart;
@@ -30,7 +30,7 @@ namespace FLS.Common.Paging
             get
             {
                 if (_items == null) return null;
-                return _items.Skip((PageStart - 1) * PageSize).Take(PageSize);
+                return _items.Skip(PageStart).Take(PageSize);
             }
         }
 
