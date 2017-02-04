@@ -124,6 +124,38 @@ namespace FLS.Server.Service
 
             using (var context = _dataAccessService.CreateDbContext())
             {
+                // **************************************************************************************************************************
+                // SQL Query
+                // **************************************************************************************************************************
+                //DECLARE @clubId as uniqueidentifier
+                //SET @clubId = (SELECT TOP 1 ClubId FROM Clubs WHERE ClubKey = 'FGZO')
+
+                //SELECT PlanningDays.PlanningDayId, PlanningDays.Day, Locations.LocationName, PlanningDays.Remarks, 
+                //				Persons.Lastname, Persons.Firstname, 
+                //				PlanningDayAssignmentTypes.AssignmentTypeName,                          
+                //						 COUNT(AircraftReservations.AircraftId) AS NrOfReservations
+                //FROM PlanningDayAssignmentTypes INNER JOIN
+                //                         PlanningDayAssignments ON PlanningDayAssignmentTypes.PlanningDayAssignmentTypeId = PlanningDayAssignments.AssignmentTypeId INNER JOIN
+                //                         PlanningDays ON PlanningDayAssignments.AssignedPlanningDayId = PlanningDays.PlanningDayId INNER JOIN
+                //                         Persons ON PlanningDayAssignments.AssignedPersonId = Persons.PersonId INNER JOIN
+                //                         Locations ON PlanningDays.LocationId = Locations.LocationId
+
+                //                         LEFT JOIN AircraftReservations ON AircraftReservations.ClubId = @clubId
+
+                //                            AND AircraftReservations.LocationId = PlanningDays.LocationId
+
+                //                            AND CAST(AircraftReservations.Start AS date) = PlanningDays.Day
+
+                //where PlanningDays.ClubId = @clubId
+                //and PlanningDays.Day < '2017-01-01'
+                //GROUP by PlanningDays.PlanningDayId, PlanningDays.Day, Locations.LocationName, PlanningDays.Remarks, 
+                //				Persons.Lastname, Persons.Firstname, 
+                //				PlanningDayAssignmentTypes.AssignmentTypeName
+                //HAVING COUNT(AircraftReservations.AircraftId) > 0
+                // **************************************************************************************************************************
+                // SQL Query END
+                // **************************************************************************************************************************
+                
 
                 //var planningDays = context.PlanningDays
                 //    .Include("Location")
