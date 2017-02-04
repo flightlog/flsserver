@@ -343,6 +343,86 @@ namespace FLS.Server.Service
                 pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
             }
 
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                //TODO: Add sorting for second child relations and calculated relations
+                if (sort == "AirState" || sort == "ValidationState" || sort == "ProcessState" || sort == "GliderFlightDuration"
+                    || sort == "TowFlightAirState" || sort == "TowFlightValidationState" || sort == "TowFlightProcessState"
+                    || sort == "TowFlightLdgDateTime" || sort == "TowFlightDuration" || sort == "_combinedAirState")
+                {
+                    pageableSearchFilter.Sorting.Remove(sort);
+                    continue;
+                }
+
+                if (sort == "Immatriculation")
+                {
+                    pageableSearchFilter.Sorting.Add("Aircraft.Immatriculation", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "PilotName")
+                {
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "SecondCrewName")
+                {
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "FlightComment")
+                {
+                    pageableSearchFilter.Sorting.Add("Comment", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "LdgLocation")
+                {
+                    pageableSearchFilter.Sorting.Add("LdgLocation.LocationName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "StartLocation")
+                {
+                    pageableSearchFilter.Sorting.Add("StartLocation.LocationName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowAircraftImmatriculation")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlight.Aircraft.Immatriculation", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowPilotName")
+                {
+                    //pageableSearchFilter.Sorting.Add("TowFlight.FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
+                    //pageableSearchFilter.Sorting.Add("TowFlight.FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowFlightStartLocation")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlight.StartLocation.LocationName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowFlightLdgLocation")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlight.LdgLocation.LocationName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "WinchOperatorName")
+                {
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
+            }
+
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var flights = context.Flights
@@ -531,6 +611,86 @@ namespace FLS.Server.Service
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<GliderFlightOverviewSearchFilter>();
             if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new GliderFlightOverviewSearchFilter();
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
+            }
+
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                //TODO: Add sorting for second child relations and calculated relations
+                if (sort == "AirState" || sort == "ValidationState" || sort == "ProcessState" || sort == "GliderFlightDuration"
+                    || sort == "TowFlightAirState" || sort == "TowFlightValidationState" || sort == "TowFlightProcessState"
+                    || sort == "TowFlightLdgDateTime" || sort == "TowFlightDuration" || sort == "_combinedAirState")
+                {
+                    pageableSearchFilter.Sorting.Remove(sort);
+                    continue;
+                }
+
+                if (sort == "Immatriculation")
+                {
+                    pageableSearchFilter.Sorting.Add("Aircraft.Immatriculation", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "PilotName")
+                {
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "SecondCrewName")
+                {
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "FlightComment")
+                {
+                    pageableSearchFilter.Sorting.Add("Comment", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "LdgLocation")
+                {
+                    pageableSearchFilter.Sorting.Add("LdgLocation.LocationName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "StartLocation")
+                {
+                    pageableSearchFilter.Sorting.Add("StartLocation.LocationName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowAircraftImmatriculation")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlight.Aircraft.Immatriculation", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowPilotName")
+                {
+                    //pageableSearchFilter.Sorting.Add("TowFlight.FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
+                    //pageableSearchFilter.Sorting.Add("TowFlight.FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowFlightStartLocation")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlight.StartLocation.LocationName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowFlightLdgLocation")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlight.LdgLocation.LocationName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "WinchOperatorName")
+                {
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
+                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
             if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
