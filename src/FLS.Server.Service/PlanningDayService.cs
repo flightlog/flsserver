@@ -113,14 +113,14 @@ namespace FLS.Server.Service
 
             List<PlanningDayOverview> overviewList = new List<PlanningDayOverview>();
 
-            if (pageableSearchFilter.SearchFilter.OnlyPlanningDaysInFuture)
-            {
-                overviewList = GetPlanningDayOverview(DateTime.Now.Date);
-            }
-            else
-            {
-                overviewList = GetPlanningDayOverview();
-            }
+            //if (pageableSearchFilter.SearchFilter.OnlyPlanningDaysInFuture)
+            //{
+            //    overviewList = GetPlanningDayOverview(DateTime.Now.Date);
+            //}
+            //else
+            //{
+            //    overviewList = GetPlanningDayOverview();
+            //}
 
             using (var context = _dataAccessService.CreateDbContext())
             {
