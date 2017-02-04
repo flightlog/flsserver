@@ -32,6 +32,7 @@ namespace FLS.Server.Service.Accounting.Rules
 
             if (personDetails != null)
             {
+                ruleBasedDelivery.RecipientDetails.PersonId = personDetails.PersonId;
                 ruleBasedDelivery.RecipientDetails.RecipientName = personDetails.Lastname + " " +
                                                                       personDetails.Firstname;
                 ruleBasedDelivery.RecipientDetails.Lastname = personDetails.Lastname;

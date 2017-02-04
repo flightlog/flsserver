@@ -15,6 +15,7 @@ namespace FLS.Server.Service.Accounting.Rules
         {
             if (AccountingRuleFilter != null && AccountingRuleFilter.RecipientTarget != null)
             {
+                ruleBasedDelivery.RecipientDetails.PersonId = AccountingRuleFilter.RecipientTarget.PersonId;
                 ruleBasedDelivery.RecipientDetails.RecipientName = AccountingRuleFilter.RecipientTarget.RecipientName;
                 ruleBasedDelivery.RecipientDetails.PersonClubMemberNumber = AccountingRuleFilter.RecipientTarget.PersonClubMemberNumber;
 
