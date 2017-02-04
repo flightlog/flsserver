@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,89 @@ namespace FLS.Server.Tests.ServiceTests
     [TestClass]
     public class PlanningDayServiceTest : BaseTest
     {
+        [TestMethod]
+        [TestCategory("Service")]
+        public void PlanningDayTest()
+        {
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                //DECLARE @clubId as uniqueidentifier
+                //SET @clubId = (SELECT TOP 1 ClubId FROM Clubs WHERE ClubKey = 'FGZO')
+
+                //SELECT PlanningDays.PlanningDayId, PlanningDays.Day, Locations.LocationName, PlanningDays.Remarks, 
+                //				Persons.Lastname, Persons.Firstname, 
+                //				PlanningDayAssignmentTypes.AssignmentTypeName,                          
+                //						 COUNT(AircraftReservations.AircraftId) AS NrOfReservations
+                //FROM PlanningDayAssignmentTypes INNER JOIN
+                //                         PlanningDayAssignments ON PlanningDayAssignmentTypes.PlanningDayAssignmentTypeId = PlanningDayAssignments.AssignmentTypeId INNER JOIN
+                //                         PlanningDays ON PlanningDayAssignments.AssignedPlanningDayId = PlanningDays.PlanningDayId INNER JOIN
+                //                         Persons ON PlanningDayAssignments.AssignedPersonId = Persons.PersonId INNER JOIN
+                //                         Locations ON PlanningDays.LocationId = Locations.LocationId
+
+                //                         LEFT JOIN AircraftReservations ON AircraftReservations.ClubId = @clubId
+
+                //                            AND AircraftReservations.LocationId = PlanningDays.LocationId
+
+                //                            AND CAST(AircraftReservations.Start AS date) = PlanningDays.Day
+
+                //where PlanningDays.ClubId = @clubId
+                //and PlanningDays.Day < '2017-01-01'
+                //GROUP by PlanningDays.PlanningDayId, PlanningDays.Day, Locations.LocationName, PlanningDays.Remarks, 
+                //				Persons.Lastname, Persons.Firstname, 
+                //				PlanningDayAssignmentTypes.AssignmentTypeName
+                //HAVING COUNT(AircraftReservations.AircraftId) > 0
+
+                //var planningDays = context.PlanningDays
+                //    .Include("Location")
+                //    .Include("PlanningDayAssignments")
+                //    .Include("PlanningDayAssignments.AssignmentType")
+                //    .Include("PlanningDayAssignments.AssignedPerson")
+                //    .Where(q => q.ClubId == clubId && DbFunctions.TruncateTime(q.Day) >= fromDate.Date)
+                //    .OrderBy(pe => pe.Day)
+                //    .ToList();
+
+                //var reservations = context.AircraftReservations
+                //    .Include(Constants.Aircraft)
+                //    .Include("PilotPerson")
+                //    .Include("Location")
+                //    .Include("InstructorPerson")
+                //    .Include("ReservationType")
+                //    .Where(r => r.ClubId == planningDay.ClubId
+                //        && DbFunctions.TruncateTime(r.Start) == planningDay.Day.Date
+                //        && r.LocationId == planningDay.LocationId)
+                //    .OrderBy(pe => pe.Start)
+                //    .ToList();
+
+                var club = context.Clubs.FirstOrDefault(x => x.ClubStateId != 0); //select club which is not a system club
+
+                //var planningDays = context.PlanningDays
+                //    .Include("Location")
+                //    .Include("PlanningDayAssignments")
+                //    .Include("PlanningDayAssignments.AssignmentType")
+                //    .Include("PlanningDayAssignments.AssignedPerson")
+                //    .Where(x => x.ClubId == club.ClubId)
+                //    .LeftJoin(context.AircraftReservations,
+                //        planningDay => new { planningDay.ClubId, planningDay.LocationId, planningDay.Day },
+                //        reservation =>
+                //            new
+                //            {
+                //                reservation.ClubId,
+                //                reservation.LocationId,
+                //                Day = (DbFunctions.TruncateTime(reservation.Start)).Value
+                //            }
+                //        , (planningDay, reservation) => new
+                //        {
+                //            PlanningDay = planningDay,
+                //            Reservation = reservation
+                //        })
+                //    .GroupBy(x => new { x.PlanningDay.Day, x.PlanningDay.LocationId })
+                //    .Select(x => new { PlanningDay = x.Key, NrOfRes = x.Count() });
+
+                //.OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+            }
+        }
+
         [TestMethod]
         [TestCategory("Service")]
         public void PlanningDayOverviewTest()
