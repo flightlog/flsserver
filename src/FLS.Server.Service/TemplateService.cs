@@ -45,7 +45,7 @@ namespace FLS.Server.Service
             if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
-                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
+                pageableSearchFilter.Sorting.Add("EmailTemplateName", "asc");
             }
 
             using (var context = _dataAccessService.CreateDbContext())

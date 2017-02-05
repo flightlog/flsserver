@@ -69,6 +69,29 @@ namespace FLS.Server.Service.Accounting
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
                 pageableSearchFilter.Sorting.Add("SortIndicator", "asc");
             }
+            
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "AccountingRuleFilterTypeName")
+                {
+                    pageableSearchFilter.Sorting.Add("AccountingRuleFilterType.AccountingRuleFilterTypeName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "Target")
+                {
+                    pageableSearchFilter.Sorting.Add("RecipientTarget", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Add("ArticleTarget", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("SortIndicator", "asc");
+            }
 
             using (var context = _dataAccessService.CreateDbContext())
             {

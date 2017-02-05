@@ -171,7 +171,40 @@ namespace FLS.Server.Service
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
                 pageableSearchFilter.Sorting.Add("UserName", "asc");
             }
-            
+
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "PersonName")
+                {
+                    pageableSearchFilter.Sorting.Add("Person.Lastname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Add("Person.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "ClubName")
+                {
+                    pageableSearchFilter.Sorting.Add("Club.Clubname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "AccountState")
+                {
+                    pageableSearchFilter.Sorting.Add("UserAccountState.UserAccountStateName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "UserRoles")
+                {
+                    //TODO: Add ability to sort for user roles
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("UserName", "asc");
+            }
+
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var users = context.Users.Include(Constants.UserRoles).Include(Constants.UserRolesRole)

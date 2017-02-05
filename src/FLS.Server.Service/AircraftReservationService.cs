@@ -62,6 +62,45 @@ namespace FLS.Server.Service
                 pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
             }
 
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "Immatriculation")
+                {
+                    pageableSearchFilter.Sorting.Add("Aircraft.Immatriculation", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "PilotName")
+                {
+                    pageableSearchFilter.Sorting.Add("PilotPerson.Lastname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Add("PilotPerson.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "LocationName")
+                {
+                    pageableSearchFilter.Sorting.Add("Location.LocationName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "InstructorName")
+                {
+                    pageableSearchFilter.Sorting.Add("InstructorPerson.Lastname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Add("InstructorPerson.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "ReservationTypeName")
+                {
+                    pageableSearchFilter.Sorting.Add("ReservationType.AircraftReservationTypeName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
+            }
+
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var reservations = context.AircraftReservations

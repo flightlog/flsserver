@@ -111,6 +111,28 @@ namespace FLS.Server.Service
                 pageableSearchFilter.Sorting.Add("Day", "asc");
             }
 
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "LocationName")
+                {
+                    pageableSearchFilter.Sorting.Add("Location.LocationName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowingPilotName" || sort == "FlightOperatorName" || sort == "InstructorName" || sort == "NumberOfAircraftReservations" || sort == "OnlyPlanningDaysInFuture")
+                {
+                    //TODO: Add ability to sort for conditional columns
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("Day", "asc");
+            }
+
             List<PlanningDayOverview> overviewList = new List<PlanningDayOverview>();
 
             //if (pageableSearchFilter.SearchFilter.OnlyPlanningDaysInFuture)

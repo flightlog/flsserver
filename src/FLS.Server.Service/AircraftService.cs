@@ -133,6 +133,35 @@ namespace FLS.Server.Service
                 pageableSearchFilter.Sorting.Add("Immatriculation", "asc");
             }
 
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "AircraftTypeName")
+                {
+                    pageableSearchFilter.Sorting.Add("AircraftType.AircraftTypeName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "AircraftOwnerName")
+                {
+                    pageableSearchFilter.Sorting.Add("AircraftOwnerClub.Clubname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Add("AircraftOwnerPerson.Lastname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Add("AircraftOwnerPerson.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "CurrentAircraftState")
+                {
+                    //TODO: Add sorting ability for current aircraft state
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("Immatriculation", "asc");
+            }
+
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var aircrafts = context.Aircrafts

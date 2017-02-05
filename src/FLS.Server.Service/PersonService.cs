@@ -247,6 +247,51 @@ namespace FLS.Server.Service
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
                 pageableSearchFilter.Sorting.Add("Lastname", "asc");
+                pageableSearchFilter.Sorting.Add("Firstname", "asc");
+            }
+
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "CountryName")
+                {
+                    pageableSearchFilter.Sorting.Add("Country.CountryName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "AddressLine")
+                {
+                    pageableSearchFilter.Sorting.Add("AddressLine1", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Add("AddressLine2", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "ZipCode")
+                {
+                    pageableSearchFilter.Sorting.Add("Zip", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "PrivateEmail")
+                {
+                    pageableSearchFilter.Sorting.Add("EmailPrivate", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "MobilePhoneNumber")
+                {
+                    pageableSearchFilter.Sorting.Add("MobilePhone", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "MemberStateName")
+                {
+                    //TODO: Add ability to sort for member state name
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("Lastname", "asc");
+                pageableSearchFilter.Sorting.Add("Firstname", "asc");
             }
 
             using (var context = _dataAccessService.CreateDbContext())

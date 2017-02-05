@@ -158,9 +158,9 @@ namespace FLS.Server.Service
             if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
-                pageableSearchFilter.Sorting.Add("CreatedOn", "asc");
+                pageableSearchFilter.Sorting.Add("LocationName", "asc");
             }
-
+            
             //needs to remap related table columns for correct sorting
             //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
             foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
@@ -175,6 +175,12 @@ namespace FLS.Server.Service
                     pageableSearchFilter.Sorting.Add("LocationType.LocationTypeName", pageableSearchFilter.Sorting[sort]);
                     pageableSearchFilter.Sorting.Remove(sort);
                 }
+            }
+
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("LocationName", "asc");
             }
 
             using (var context = _dataAccessService.CreateDbContext())
