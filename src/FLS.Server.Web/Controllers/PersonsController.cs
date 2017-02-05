@@ -202,6 +202,7 @@ namespace FLS.Server.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{onlyClubRelatedPersons:bool?}")]
+        [Route("overview/{onlyClubRelatedPersons:bool?}")]
         [ResponseType(typeof(List<PersonOverview>))]
         public IHttpActionResult GetPersonOverviews(bool onlyClubRelatedPersons = true)
         {

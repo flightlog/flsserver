@@ -743,11 +743,42 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.FlightCode,
                     flight => flight.FlightType.FlightCode.Contains(filter.FlightCode));
 
-                flights = flights.WhereIf(filter.LdgDateTime,
-                    flight => flight.LdgDateTime.DateTimeContainsSearchText(filter.LdgDateTime));
-                flights = flights.WhereIf(filter.StartDateTime,
-                    flight => flight.StartDateTime.DateTimeContainsSearchText(filter.StartDateTime));
+                if (filter.StartDateTime != null)
+                {
+                    var dateTimeFilter = filter.StartDateTime;
 
+                    if (dateTimeFilter.Fixed.HasValue)
+                    {
+                        flights = flights.Where(flight => flight.StartDateTime.HasValue && DbFunctions.TruncateTime(flight.StartDateTime) == dateTimeFilter.Fixed.Value.Date);
+                    }
+                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        flights = flights.Where(flight => flight.StartDateTime.HasValue && DbFunctions.TruncateTime(flight.StartDateTime) >= from.Date
+                            && DbFunctions.TruncateTime(flight.StartDateTime) <= to.Date);
+                    }
+                }
+
+                if (filter.LdgDateTime != null)
+                {
+                    var dateTimeFilter = filter.LdgDateTime;
+
+                    if (dateTimeFilter.Fixed.HasValue)
+                    {
+                        flights = flights.Where(flight => flight.LdgDateTime.HasValue && DbFunctions.TruncateTime(flight.LdgDateTime) == dateTimeFilter.Fixed.Value.Date);
+                    }
+                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        flights = flights.Where(flight => flight.LdgDateTime.HasValue && DbFunctions.TruncateTime(flight.LdgDateTime) >= from.Date
+                            && DbFunctions.TruncateTime(flight.LdgDateTime) <= to.Date);
+                    }
+                }
+                
                 if (filter.IsSoloFlight.HasValue)
                     flights = flights.Where(flight => flight.IsSoloFlight == filter.IsSoloFlight.Value);
 
@@ -781,11 +812,42 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.TowFlightProcessState,
                     flight => flight.TowFlight.FlightProcessState.FlightProcessStateName.Contains(filter.TowFlightProcessState));
 
-                flights = flights.WhereIf(filter.TowFlightLdgDateTime,
-                    flight => flight.TowFlight.LdgDateTime.DateTimeContainsSearchText(filter.TowFlightLdgDateTime));
-                flights = flights.WhereIf(filter.TowFlightStartDateTime,
-                    flight => flight.TowFlight.StartDateTime.DateTimeContainsSearchText(filter.TowFlightStartDateTime));
+                if (filter.TowFlightStartDateTime != null)
+                {
+                    var dateTimeFilter = filter.TowFlightStartDateTime;
 
+                    if (dateTimeFilter.Fixed.HasValue)
+                    {
+                        flights = flights.Where(flight => flight.TowFlight.StartDateTime.HasValue && DbFunctions.TruncateTime(flight.TowFlight.StartDateTime) == dateTimeFilter.Fixed.Value.Date);
+                    }
+                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        flights = flights.Where(flight => flight.TowFlight.StartDateTime.HasValue && DbFunctions.TruncateTime(flight.TowFlight.StartDateTime) >= from.Date
+                            && DbFunctions.TruncateTime(flight.TowFlight.StartDateTime) <= to.Date);
+                    }
+                }
+
+                if (filter.TowFlightLdgDateTime != null)
+                {
+                    var dateTimeFilter = filter.TowFlightLdgDateTime;
+
+                    if (dateTimeFilter.Fixed.HasValue)
+                    {
+                        flights = flights.Where(flight => flight.TowFlight.LdgDateTime.HasValue && DbFunctions.TruncateTime(flight.TowFlight.LdgDateTime) == dateTimeFilter.Fixed.Value.Date);
+                    }
+                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        flights = flights.Where(flight => flight.TowFlight.LdgDateTime.HasValue && DbFunctions.TruncateTime(flight.TowFlight.LdgDateTime) >= from.Date
+                            && DbFunctions.TruncateTime(flight.TowFlight.LdgDateTime) <= to.Date);
+                    }
+                }
+                
                 flights = flights.WhereIf(filter.TowFlightStartLocation,
                     flight => flight.TowFlight.StartLocation.LocationName.Contains(filter.TowFlightStartLocation));
                 flights = flights.WhereIf(filter.TowFlightLdgLocation,

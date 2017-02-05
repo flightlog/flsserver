@@ -121,6 +121,7 @@
     <Compile Include="Extensions\FlightAirStateExtensions.cs" />
     <Compile Include="Extensions\EntityTrackerExtensions.cs" />
     <Compile Include="Extensions\CostCenterUnitTypeExtensions.cs" />
+    <Compile Include="Extensions\LinqExtensions.cs" />
     <Compile Include="Mapping\AccountingRuleFilterMappingExtensions.cs" />
     <Compile Include="Mapping\CounterUnitExtensions.cs" />
     <Compile Include="Mapping\AircraftOperatingCounterMappingExtensions.cs" />

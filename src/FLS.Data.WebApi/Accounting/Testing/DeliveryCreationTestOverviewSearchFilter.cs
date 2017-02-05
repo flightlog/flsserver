@@ -21,6 +21,6 @@ namespace FLS.Data.WebApi.Accounting.Testing
 
         public string LastTestResultMessage { get; set; }
 
-        public string LastTestRunOn { get; set; }
+        public DateTimeFilter LastTestRunOn { get; set; }
     }
 }

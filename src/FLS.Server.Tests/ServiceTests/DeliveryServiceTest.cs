@@ -12,8 +12,11 @@ using FLS.Server.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Practices.Unity;
 using FLS.Common.Extensions;
+using FLS.Common.Paging;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Accounting;
 using FLS.Data.WebApi.Accounting.Testing;
+using FLS.Server.Data.Extensions;
 
 namespace FLS.Server.Tests.ServiceTests
 {
@@ -25,16 +28,18 @@ namespace FLS.Server.Tests.ServiceTests
         [TestMethod]
         [DeploymentItem(@"TestData\schema.ini")]
         [DeploymentItem(@"TestData\FlightInvoiceTestdata.csv")]
-        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", @"|DataDirectory|\TestData\FlightInvoiceTestdata.csv", "FlightInvoiceTestdata#csv", 
-            DataAccessMethod.Sequential)]
+        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV",
+             @"|DataDirectory|\TestData\FlightInvoiceTestdata.csv", "FlightInvoiceTestdata#csv",
+             DataAccessMethod.Sequential)]
         public void DeliveryCreationTestingTest()
         {
-            
+
             var useCase = TestContext.DataRow["UseCase"].ToString();
 
             if (string.IsNullOrWhiteSpace(useCase))
             {
-                Logger.Debug($"Use case number is not set, so expect use case is not described correctly. Exit test for this use case.");
+                Logger.Debug(
+                    $"Use case number is not set, so expect use case is not described correctly. Exit test for this use case.");
                 return;
             }
 
@@ -50,9 +55,10 @@ namespace FLS.Server.Tests.ServiceTests
             }
 
             #region Flight preparation
+
             var startTime = DateTime.Today.AddDays(-34).AddHours(10);
             var flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
+            flightDetails.StartType = (int) AircraftStartType.TowingByAircraft;
 
             flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData();
             flightDetails.GliderFlightDetailsData.AircraftId =
@@ -106,7 +112,7 @@ namespace FLS.Server.Tests.ServiceTests
                 }
             }
 
-            if (Convert.ToInt32(TestContext.DataRow["StartType"]) == (int)AircraftStartType.TowingByAircraft)
+            if (Convert.ToInt32(TestContext.DataRow["StartType"]) == (int) AircraftStartType.TowingByAircraft)
             {
                 flightDetails.TowFlightDetailsData = new TowFlightDetailsData();
                 flightDetails.TowFlightDetailsData.AircraftId =
@@ -130,10 +136,11 @@ namespace FLS.Server.Tests.ServiceTests
             #endregion Flight preparation
 
             #region delivery creation test
+
             var deliveryCreationTestDetails = new DeliveryCreationTestDetails();
             deliveryCreationTestDetails.FlightId = flightDetails.FlightId;
             deliveryCreationTestDetails.DeliveryCreationTestName = "Glider flight delivery creation test";
-            
+
             var expectedDelivery = DeliveryService.CreateDeliveryDetailsForTest(flightDetails.FlightId);
             Assert.IsNotNull(expectedDelivery.CreatedDeliveryDetails);
 
@@ -155,5 +162,39 @@ namespace FLS.Server.Tests.ServiceTests
             #endregion delivery creation test
         }
 
+
+        [TestMethod]
+        public void WhereDateTimeFilterTest()
+        {
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                var flights = context.Flights
+                    .OrderByPropertyNames("StartDateTime:asc");
+
+                var dateTimeFilter = new DateTimeFilter()
+                {
+                    From = DateTime.MinValue,
+                    To = DateTime.Now
+                };
+
+
+                flights = flights.WhereDateTimeFilter(x => x.StartDateTime, dateTimeFilter);
+
+                var filteredFlights = flights.ToList();
+
+                var flights2 = context.Flights
+                    .OrderByPropertyNames("StartDateTime:asc");
+
+                var dateTimeFilter2 = new DateTimeFilter()
+                {
+                    Fixed = DateTime.Now
+                };
+
+
+                flights2 = flights2.WhereDateTimeFilter(x => x.StartDateTime, dateTimeFilter2);
+
+                var filteredFlights2 = flights2.ToList();
+            }
+        }
     }
 }

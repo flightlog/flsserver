@@ -20,11 +20,11 @@ namespace FLS.Data.WebApi.Flight
 
         public string FlightCode { get; set; }
         
-        public string LdgDateTime { get; set; }
+        public DateTimeFilter LdgDateTime { get; set; }
 
         public bool? IsSoloFlight { get; set; }
         
-        public string StartDateTime { get; set; }
+        public DateTimeFilter StartDateTime { get; set; }
         
         public string StartType { get; set; }
 
@@ -45,9 +45,9 @@ namespace FLS.Data.WebApi.Flight
 
         public string TowPilotName { get; set; }
 
-        public string TowFlightStartDateTime { get; set; }
+        public DateTimeFilter TowFlightStartDateTime { get; set; }
 
-        public string TowFlightLdgDateTime { get; set; }
+        public DateTimeFilter TowFlightLdgDateTime { get; set; }
 
         public string TowFlightStartLocation { get; set; }
 

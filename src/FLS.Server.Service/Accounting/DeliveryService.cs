@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using FLS.Common.Extensions;
@@ -673,8 +674,24 @@ namespace FLS.Server.Service.Accounting
                         test => test.Description.Contains(filter.Description));
                 deliveryCreationTests = deliveryCreationTests.WhereIf(filter.LastTestResultMessage,
                         test => test.LastTestResultMessage.Contains(filter.LastTestResultMessage));
-                deliveryCreationTests = deliveryCreationTests.WhereIf(filter.LastTestRunOn,
-                        test => test.LastTestRunOn.DateTimeContainsSearchText(filter.LastTestRunOn));
+
+                if (filter.LastTestRunOn != null)
+                {
+                    var dateTimeFilter = filter.LastTestRunOn;
+
+                    if (dateTimeFilter.Fixed.HasValue)
+                    {
+                        deliveryCreationTests = deliveryCreationTests.Where(test => DbFunctions.TruncateTime(test.LastTestRunOn) == dateTimeFilter.Fixed.Value.Date);
+                    }
+                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        deliveryCreationTests = deliveryCreationTests.Where(test => DbFunctions.TruncateTime(test.LastTestRunOn) >= from.Date
+                            && DbFunctions.TruncateTime(test.LastTestRunOn) <= to.Date);
+                    }
+                }
 
                 if (filter.IsActive.HasValue)
                     deliveryCreationTests = deliveryCreationTests.Where(test => test.IsActive == filter.IsActive.Value);
