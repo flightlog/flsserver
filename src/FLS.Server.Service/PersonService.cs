@@ -773,27 +773,12 @@ namespace FLS.Server.Service
         {
             currentPersonFullDetails.ArgumentNotNull("currentPersonFullDetails");
             var original = GetPerson(currentPersonFullDetails.PersonId);
-            bool isDeleted = false;
-
-            if (original == null)
-            {
-                //we didn't find the original record (may be it was deleted earlier)
-                isDeleted = true;
-                original = new Person();
-            }
+            original.EntityNotNull("Person", currentPersonFullDetails.PersonId);
 
             using (var context = _dataAccessService.CreateDbContext())
             {
-                if (isDeleted)
-                {
-                    currentPersonFullDetails.ToPerson(CurrentAuthenticatedFLSUserClubId, original);
-                    context.Persons.Add(original);
-                }
-                else
-                {
-                    context.Persons.Attach(original);
-                    currentPersonFullDetails.ToPerson(CurrentAuthenticatedFLSUserClubId, original);
-                }
+                context.Persons.Attach(original);
+                currentPersonFullDetails.ToPerson(CurrentAuthenticatedFLSUserClubId, original);
 
                 if (context.ChangeTracker.HasChanges())
                 {
