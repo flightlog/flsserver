@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace FLS.Data.WebApi.PlanningDay
 {
@@ -8,6 +9,9 @@ namespace FLS.Data.WebApi.PlanningDay
         public Guid PlanningDayId { get; set; }
 
         public DateTime Day { get; set; }
+
+        [JsonIgnore]
+        public Guid LocationId { get; set; }
 
         public string LocationName { get; set; }
 

@@ -82,31 +82,32 @@ namespace FLS.Server.Tests.ServiceTests
 
                 var club = context.Clubs.FirstOrDefault(x => x.ClubStateId != 0); //select club which is not a system club
 
-                //var planningDays = context.PlanningDays
-                //    .Include("Location")
-                //    .Include("PlanningDayAssignments")
-                //    .Include("PlanningDayAssignments.AssignmentType")
-                //    .Include("PlanningDayAssignments.AssignedPerson")
-                //    .Where(x => x.ClubId == club.ClubId)
-                //    .LeftJoin(context.AircraftReservations,
-                //        planningDay => new { planningDay.ClubId, planningDay.LocationId, planningDay.Day },
-                //        reservation =>
-                //            new
-                //            {
-                //                reservation.ClubId,
-                //                reservation.LocationId,
-                //                Day = (DbFunctions.TruncateTime(reservation.Start)).Value
-                //            }
-                //        , (planningDay, reservation) => new
-                //        {
-                //            PlanningDay = planningDay,
-                //            Reservation = reservation
-                //        })
-                //    .GroupBy(x => new { x.PlanningDay.Day, x.PlanningDay.LocationId })
-                //    .Select(x => new { PlanningDay = x.Key, NrOfRes = x.Count() });
+                var planningDays = context.PlanningDays
+                    .Include("Location")
+                    .Include("PlanningDayAssignments")
+                    .Include("PlanningDayAssignments.AssignmentType")
+                    .Include("PlanningDayAssignments.AssignedPerson")
+                    .Where(x => x.ClubId == club.ClubId)
+                    .Select(p => new PlanningDayOverview
+                    {
+                        Day = p.Day,
+                        PlanningDayId = p.PlanningDayId,
+                        LocationId = p.LocationId,
+                        LocationName = p.Location.LocationName,
+                        FlightOperatorName = p.PlanningDayAssignments.Where(x => x.AssignmentType.AssignmentTypeName.ToLower() == "segelflugleiter" && x.AssignedPerson != null).Select(ap => ap.AssignedPerson.Firstname + " " + ap.AssignedPerson.Lastname).FirstOrDefault(),
+                        TowingPilotName = p.PlanningDayAssignments.Where(x => x.AssignmentType.AssignmentTypeName.ToLower() == "schlepppilot" && x.AssignedPerson != null).Select(ap => ap.AssignedPerson.Firstname + " " + ap.AssignedPerson.Lastname).FirstOrDefault(),
+                        InstructorName = p.PlanningDayAssignments.Where(x => x.AssignmentType.AssignmentTypeName.ToLower() == "fluglehrer" && x.AssignedPerson != null).Select(ap => ap.AssignedPerson.Firstname + " " + ap.AssignedPerson.Lastname).FirstOrDefault()
+                    }).ToList();
 
-                //.OrderByPropertyNames(pageableSearchFilter.Sorting);
+                var reservations = context.AircraftReservations.Where(r => r.ClubId == club.ClubId).GroupBy(r => new { r.LocationId, Day = DbFunctions.TruncateTime(r.Start) }).Select(r => new { r.Key, Count = r.Count() }).ToList();
 
+                foreach (var planningDay in planningDays)
+                {
+                    var countInfo = reservations.FirstOrDefault(r => r.Key.Day == planningDay.Day.Date && r.Key.LocationId == planningDay.LocationId);
+                    planningDay.NumberOfAircraftReservations = countInfo?.Count ?? 0;
+                }
+
+                planningDays.ForEach(x => Logger.Debug($"{x.ToString()}"));
             }
         }
 

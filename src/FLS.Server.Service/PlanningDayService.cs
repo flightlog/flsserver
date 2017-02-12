@@ -132,18 +132,7 @@ namespace FLS.Server.Service
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
                 pageableSearchFilter.Sorting.Add("Day", "asc");
             }
-
-            List<PlanningDayOverview> overviewList = new List<PlanningDayOverview>();
-
-            //if (pageableSearchFilter.SearchFilter.OnlyPlanningDaysInFuture)
-            //{
-            //    overviewList = GetPlanningDayOverview(DateTime.Now.Date);
-            //}
-            //else
-            //{
-            //    overviewList = GetPlanningDayOverview();
-            //}
-
+            
             using (var context = _dataAccessService.CreateDbContext())
             {
                 // **************************************************************************************************************************
@@ -177,64 +166,87 @@ namespace FLS.Server.Service
                 // **************************************************************************************************************************
                 // SQL Query END
                 // **************************************************************************************************************************
-                
 
-                //var planningDays = context.PlanningDays
-                //    .Include("Location")
-                //    .Include("PlanningDayAssignments")
-                //    .Include("PlanningDayAssignments.AssignmentType")
-                //    .Include("PlanningDayAssignments.AssignedPerson")
-                //    .LeftJoin(context.AircraftReservations,
-                //        planningDay => new { planningDay.ClubId, planningDay.LocationId, planningDay.Day },
-                //        reservation => new { reservation.ClubId, reservation.LocationId, Day = reservation.Start.Date }
-                //        , (planningDay, reservation) => new
-                //    {
-                //        PlanningDay = planningDay,
-                //        NrOfReservations = reservation
-                //    })
-                //    .Where(
-                //        q =>
-                //            q.PlanningDay.ClubId == CurrentAuthenticatedFLSUserClubId)
-                //    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+                var planningDays = context.PlanningDays
+                    .Include("Location")
+                    .Include("PlanningDayAssignments")
+                    .Include("PlanningDayAssignments.AssignmentType")
+                    .Include("PlanningDayAssignments.AssignedPerson")
+                    .Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId);
 
-                //var filter = pageableSearchFilter.SearchFilter;
-                //planningDays = planningDays.WhereIf(filter.LocationName,
-                //    x => x.Location.LocationName.Contains(filter.LocationName));
+                var filter = pageableSearchFilter.SearchFilter;
+                planningDays = planningDays.WhereIf(filter.LocationName,
+                    x => x.Location.LocationName.Contains(filter.LocationName));
 
-                //planningDays = planningDays.WhereIf(filter.FlightOperatorName,
-                //    x => x.PlanningDayAssignments.Any(y => (y.AssignedPerson.Lastname.Contains(filter.FlightOperatorName)
-                //    || y.AssignedPerson.Firstname.Contains(filter.FlightOperatorName))
-                //    && y.AssignmentType.AssignmentTypeName == "Segelflugleiter"));
-                //planningDays = planningDays.WhereIf(filter.TowingPilotName,
-                //    x => x.PlanningDayAssignments.Any(y => (y.AssignedPerson.Lastname.Contains(filter.TowingPilotName)
-                //    || y.AssignedPerson.Firstname.Contains(filter.TowingPilotName))
-                //    && y.AssignmentType.AssignmentTypeName == "Schlepppilot"));
-                //planningDays = planningDays.WhereIf(filter.InstructorName,
-                //    x => x.PlanningDayAssignments.Any(y => (y.AssignedPerson.Lastname.Contains(filter.InstructorName)
-                //    || y.AssignedPerson.Firstname.Contains(filter.InstructorName))
-                //    && y.AssignmentType.AssignmentTypeName == "Fluglehrer"));
+                planningDays = planningDays.WhereIf(filter.FlightOperatorName,
+                    x => x.PlanningDayAssignments.Any(y => (y.AssignedPerson.Lastname.Contains(filter.FlightOperatorName)
+                    || y.AssignedPerson.Firstname.Contains(filter.FlightOperatorName))
+                    && y.AssignmentType.AssignmentTypeName.ToLower() == "segelflugleiter"));
+                planningDays = planningDays.WhereIf(filter.TowingPilotName,
+                    x => x.PlanningDayAssignments.Any(y => (y.AssignedPerson.Lastname.Contains(filter.TowingPilotName)
+                    || y.AssignedPerson.Firstname.Contains(filter.TowingPilotName))
+                    && y.AssignmentType.AssignmentTypeName.ToLower() == "schlepppilot"));
+                planningDays = planningDays.WhereIf(filter.InstructorName,
+                    x => x.PlanningDayAssignments.Any(y => (y.AssignedPerson.Lastname.Contains(filter.InstructorName)
+                    || y.AssignedPerson.Firstname.Contains(filter.InstructorName))
+                    && y.AssignmentType.AssignmentTypeName.ToLower() == "fluglehrer"));
 
-                //planningDays = planningDays.WhereIf(filter.Remarks,
-                //    x => x.Remarks.Contains(filter.Remarks));
+                planningDays = planningDays.WhereIf(filter.Remarks,
+                    x => x.Remarks.Contains(filter.Remarks));
 
+                //TODO: Filter for date
                 //planningDays = planningDays.WhereIf(filter.Day,
                 //    x => x.Day.DateContainsSearchText(filter.Day));
 
-                ////planningDays = planningDays.WhereIf(filter.NumberOfAircraftReservations,
-                ////    x => x.NumberOfAircraftReservations.ToString().Contains(filter.NumberOfAircraftReservations));
+                planningDays = planningDays.OrderByPropertyNames(pageableSearchFilter.Sorting);
 
-                ////planningDays = planningDays.GroupBy(g => g.PlanningDayId).Select(y =>  )
+                var planningDayOverviews = planningDays.Select(p => new PlanningDayOverview
+                {
+                    Day = p.Day,
+                    PlanningDayId = p.PlanningDayId,
+                    LocationId = p.LocationId,
+                    LocationName = p.Location.LocationName,
+                    FlightOperatorName =
+                        p.PlanningDayAssignments.Where(
+                                x =>
+                                    x.AssignmentType.AssignmentTypeName.ToLower() == "segelflugleiter" &&
+                                    x.AssignedPerson != null)
+                            .Select(ap => ap.AssignedPerson.Firstname + " " + ap.AssignedPerson.Lastname)
+                            .FirstOrDefault(),
+                    TowingPilotName =
+                        p.PlanningDayAssignments.Where(
+                                x =>
+                                    x.AssignmentType.AssignmentTypeName.ToLower() == "schlepppilot" &&
+                                    x.AssignedPerson != null)
+                            .Select(ap => ap.AssignedPerson.Firstname + " " + ap.AssignedPerson.Lastname)
+                            .FirstOrDefault(),
+                    InstructorName =
+                        p.PlanningDayAssignments.Where(
+                                x =>
+                                    x.AssignmentType.AssignmentTypeName.ToLower() == "fluglehrer" &&
+                                    x.AssignedPerson != null)
+                            .Select(ap => ap.AssignedPerson.Firstname + " " + ap.AssignedPerson.Lastname)
+                            .FirstOrDefault()
+                }).ToList();
 
-                //var pagedQuery = new PagedQuery<PlanningDay>(planningDays, pageStart, pageSize);
+                var reservations = context.AircraftReservations.Where(r => r.ClubId == CurrentAuthenticatedFLSUserClubId).GroupBy(r => new { r.LocationId, Day = DbFunctions.TruncateTime(r.Start) }).Select(r => new { r.Key, Count = r.Count() }).ToList();
 
-                //var result = pagedQuery.Items.ToList().Select(x => new PlanningDayOverview()
-                //)
-                //.ToList();
+                foreach (var planningDay in planningDayOverviews)
+                {
+                    var countInfo = reservations.FirstOrDefault(r => r.Key.Day == planningDay.Day.Date && r.Key.LocationId == planningDay.LocationId);
+                    planningDay.NumberOfAircraftReservations = countInfo?.Count ?? 0;
+                }
 
-                //SetPlanningDayOverviewSecurity(overviewList);
+                var planningDayOverviewQuery = planningDayOverviews.AsQueryable();
+                planningDayOverviewQuery = planningDayOverviewQuery.WhereIf(filter.NumberOfAircraftReservations,
+                    x => x.NumberOfAircraftReservations.ToString().Contains(filter.NumberOfAircraftReservations));
 
-                var pagedList = new PagedList<PlanningDayOverview>(overviewList, 1,
-                    10, 0);
+                var pagedQuery = new PagedQuery<PlanningDayOverview>(planningDayOverviewQuery, pageStart, pageSize);
+                
+                var pagedList = new PagedList<PlanningDayOverview>(pagedQuery.Items.ToList(), pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                SetPlanningDayOverviewSecurity(pagedList.Items);
 
                 return pagedList;
             }
