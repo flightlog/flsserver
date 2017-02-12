@@ -115,10 +115,11 @@ namespace FLS.Server.Service
                 var filter = pageableSearchFilter.SearchFilter;
                 reservations = reservations.WhereIf(filter.Immatriculation,
                         reservation => reservation.Aircraft.Immatriculation.Contains(filter.Immatriculation));
-                reservations = reservations.WhereIf(filter.Start,
-                    reservation => reservation.Start.DateTimeContainsSearchText(filter.Start));
-                reservations = reservations.WhereIf(filter.End,
-                    reservation => reservation.End.DateTimeContainsSearchText(filter.End));
+                //TODO: Filter for whole day and/or for time
+                //reservations = reservations.WhereIf(filter.Start,
+                //    reservation => reservation.Start.DateTimeContainsSearchText(filter.Start));
+                //reservations = reservations.WhereIf(filter.End,
+                //    reservation => reservation.End.DateTimeContainsSearchText(filter.End));
                 reservations = reservations.WhereIf(filter.LocationName,
                     reservation => reservation.Location.LocationName.Contains(filter.LocationName));
                 reservations = reservations.WhereIf(filter.PilotName,
