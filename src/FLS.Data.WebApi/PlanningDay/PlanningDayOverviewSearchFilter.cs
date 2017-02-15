@@ -7,7 +7,7 @@ namespace FLS.Data.WebApi.PlanningDay
 {
     public class PlanningDayOverviewSearchFilter
     {
-        public string Day { get; set; }
+        public DateTimeFilter Day { get; set; }
 
         public string LocationName { get; set; }
 

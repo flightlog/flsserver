@@ -172,7 +172,7 @@ namespace FLS.Server.Tests.ServiceTests
             filter.SearchFilter.OnlyPlanningDaysInFuture = true;
             filter.SearchFilter.NumberOfAircraftReservations = "0";
             var day = DateTime.Now.AddDays(1).AddYears(-1);
-            filter.SearchFilter.Day = $"{day.Day}.{day.Month}";
+            //filter.SearchFilter.Day = $"{day.Day}.{day.Month}";
 
             Logger.Debug($"Filter: {filter}");
 
@@ -200,7 +200,7 @@ namespace FLS.Server.Tests.ServiceTests
             pageableSearchFilter.Sorting.Add("Day", "desc");
             pageableSearchFilter.SearchFilter.OnlyPlanningDaysInFuture = true;
 
-            pageableSearchFilter.SearchFilter.Day = "15.1.";
+            pageableSearchFilter.SearchFilter.Day = new DateTimeFilter() {Fixed = new DateTime(2017, 1, 15)};
 
             Logger.Debug($"Filter: {pageableSearchFilter}");
 
@@ -210,8 +210,8 @@ namespace FLS.Server.Tests.ServiceTests
             //var searchResult = overview.Search(y => y.Day.ToString("dd.MM.yyyy")).Containing(filter.Day.ToLower());
 
 
-            planningDays = planningDays.WhereIf(filter.Day,
-                x => x.Day.DateContainsSearchText(filter.Day));
+            //planningDays = planningDays.WhereIf(filter.Day,
+            //    x => x.Day.DateContainsSearchText(filter.Day));
 
             var pagedQuery = new PagedQuery<PlanningDayOverview>(planningDays, 1, 100);
 
