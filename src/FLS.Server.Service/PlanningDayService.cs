@@ -194,9 +194,27 @@ namespace FLS.Server.Service
                 planningDays = planningDays.WhereIf(filter.Remarks,
                     x => x.Remarks.Contains(filter.Remarks));
 
-                //TODO: Filter for date
-                //planningDays = planningDays.WhereIf(filter.Day,
-                //    x => x.Day.DateContainsSearchText(filter.Day));
+                if (filter.Day != null)
+                {
+                    var dateTimeFilter = filter.Day;
+
+                    if (dateTimeFilter.Fixed.HasValue)
+                    {
+                        planningDays =
+                            planningDays.Where(
+                                planningDay =>
+                                        DbFunctions.TruncateTime(planningDay.Day) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
+                    }
+                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        planningDays =
+                            planningDays.Where(planningDay => DbFunctions.TruncateTime(planningDay.Day) >= DbFunctions.TruncateTime(from)
+                                                              && DbFunctions.TruncateTime(planningDay.Day) <= DbFunctions.TruncateTime(to));
+                    }
+                }
 
                 planningDays = planningDays.OrderByPropertyNames(pageableSearchFilter.Sorting);
 
