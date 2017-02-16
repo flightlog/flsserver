@@ -4,6 +4,8 @@ namespace FLS.Data.WebApi.Flight
 {
     public class GliderFlightOverviewSearchFilter
     {
+        public DateTimeFilter FlightDate { get; set; }
+
         public string Immatriculation { get; set; }
 
         public string PilotName { get; set; }
@@ -20,11 +22,11 @@ namespace FLS.Data.WebApi.Flight
 
         public string FlightCode { get; set; }
         
-        public DateTimeFilter LdgDateTime { get; set; }
+        public string LdgTime { get; set; }
 
         public bool? IsSoloFlight { get; set; }
         
-        public DateTimeFilter StartDateTime { get; set; }
+        public string StartTime { get; set; }
         
         public string StartType { get; set; }
 
@@ -45,9 +47,9 @@ namespace FLS.Data.WebApi.Flight
 
         public string TowPilotName { get; set; }
 
-        public DateTimeFilter TowFlightStartDateTime { get; set; }
+        public string TowFlightStartTime { get; set; }
 
-        public DateTimeFilter TowFlightLdgDateTime { get; set; }
+        public string TowFlightLdgTime { get; set; }
 
         public string TowFlightStartLocation { get; set; }
 
