@@ -30,9 +30,7 @@ namespace FLS.Common.Paging
             get
             {
                 if (_items == null) return null;
-                var skip = PageStart - 1;
-                if (skip < 0) skip = 0;
-                return _items.Skip(skip).Take(PageSize);
+                return _items.Skip(PageStart).Take(PageSize);
             }
         }
 
@@ -45,7 +43,7 @@ namespace FLS.Common.Paging
             {
                 if (_pageStart.HasValue) return _pageStart.Value;
 
-                return 1;
+                return 0;
             }
         }
 
