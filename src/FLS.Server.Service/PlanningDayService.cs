@@ -224,6 +224,7 @@ namespace FLS.Server.Service
                     PlanningDayId = p.PlanningDayId,
                     LocationId = p.LocationId,
                     LocationName = p.Location.LocationName,
+                    Remarks = p.Remarks,
                     FlightOperatorName =
                         p.PlanningDayAssignments.Where(
                                 x =>
