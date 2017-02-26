@@ -35,6 +35,24 @@ namespace FLS.Server.Service.Accounting
             _locationService = locationService;
         }
 
+        #region AccountingRuleFilterType
+        public List<AccountingRuleFilterTypeListItem> GetAccountingRuleFilterTypeListItems()
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var entities = context.AccountingRuleFilterTypes.OrderBy(l => l.AccountingRuleFilterTypeName).ToList();
+
+                var items = entities.Select(x => new AccountingRuleFilterTypeListItem()
+                {
+                    AccountingRuleFilterTypeId = x.AccountingRuleFilterTypeId,
+                    AccountingRuleFilterTypeName = x.AccountingRuleFilterTypeName
+                }).ToList();
+
+                return items;
+            }
+        }
+        #endregion AccountingRuleFilterType
+
         #region AccountingRuleFilter
         public List<AccountingRuleFilterOverview> GetAccountingRuleFilterOverview()
         {

@@ -269,6 +269,7 @@
     <Compile Include="ActionFilters\UserInitActionFilter.cs" />
     <Compile Include="ActionFilters\ValidateModelStateAttribute.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="Controllers\AccountingRuleFilterTypesController.cs" />
     <Compile Include="Controllers\AircraftOperatingCountersController.cs" />
     <Compile Include="Controllers\AccountingRuleFiltersController.cs" />
     <Compile Include="Controllers\AuditLogsController.cs" />
