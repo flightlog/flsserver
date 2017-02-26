@@ -182,6 +182,7 @@
     <Compile Include="ServiceTests\ClubServiceTest.cs" />
     <Compile Include="ServiceTests\PlanningDayServiceTest.cs" />
     <Compile Include="ServiceTests\DeliveryServiceTest.cs" />
+    <Compile Include="ServiceTests\SGNProffixInvoiceServiceTest.cs" />
     <Compile Include="ServiceTests\SystemServiceTest.cs" />
     <Compile Include="ServiceTests\ProffixInvoiceServiceTest.cs" />
     <Compile Include="ServiceTests\WorkflowServiceTest.cs" />
@@ -256,6 +257,9 @@
     </None>
     <None Include="packages.config" />
     <None Include="TestData\FlightInvoiceTestdata.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\FlightInvoiceTestdata_SGN.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestData\schema.ini">
