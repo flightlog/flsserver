@@ -41,7 +41,15 @@ namespace FLS.Server.Service.Accounting.Rules
                 ruleBasedDelivery.RecipientDetails.AddressLine2 = personDetails.AddressLine2;
                 ruleBasedDelivery.RecipientDetails.ZipCode = personDetails.ZipCode;
                 ruleBasedDelivery.RecipientDetails.City = personDetails.City;
-                ruleBasedDelivery.RecipientDetails.PersonClubMemberNumber = personDetails.ClubRelatedPersonDetails.MemberNumber;
+
+                if (personDetails.ClubRelatedPersonDetails == null)
+                {
+                    Logger.Warn($"Person {personDetails.Lastname} {personDetails.Firstname} has no club related details. Could not assign club member number to recipient details!");
+                }
+                else
+                {
+                    ruleBasedDelivery.RecipientDetails.PersonClubMemberNumber = personDetails.ClubRelatedPersonDetails.MemberNumber;
+                }
             }
 
             return base.Apply(ruleBasedDelivery);
