@@ -4,9 +4,9 @@ namespace FLS.Data.WebApi.AircraftReservation
 {
     public class AircraftReservationOverviewSearchFilter
     {
-        public string Start { get; set; }
+        public DateTimeFilter Start { get; set; }
 
-        public string End { get; set; }
+        public DateTimeFilter End { get; set; }
 
         public bool? IsAllDayReservation { get; set; }
         public string Immatriculation { get; set; }

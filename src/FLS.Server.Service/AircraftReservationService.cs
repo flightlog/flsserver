@@ -115,11 +115,43 @@ namespace FLS.Server.Service
                 var filter = pageableSearchFilter.SearchFilter;
                 reservations = reservations.WhereIf(filter.Immatriculation,
                         reservation => reservation.Aircraft.Immatriculation.Contains(filter.Immatriculation));
-                //TODO: Filter for whole day and/or for time
-                //reservations = reservations.WhereIf(filter.Start,
-                //    reservation => reservation.Start.DateTimeContainsSearchText(filter.Start));
-                //reservations = reservations.WhereIf(filter.End,
-                //    reservation => reservation.End.DateTimeContainsSearchText(filter.End));
+
+                if (filter.Start != null)
+                {
+                    var dateTimeFilter = filter.Start;
+
+                    if (dateTimeFilter.Fixed.HasValue)
+                    {
+                        reservations = reservations.Where(reservation => DbFunctions.TruncateTime(reservation.Start) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
+                    }
+                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        reservations = reservations.Where(reservation => DbFunctions.TruncateTime(reservation.Start) >= DbFunctions.TruncateTime(from)
+                            && DbFunctions.TruncateTime(reservation.Start) <= DbFunctions.TruncateTime(to));
+                    }
+                }
+
+                if (filter.End != null)
+                {
+                    var dateTimeFilter = filter.End;
+
+                    if (dateTimeFilter.Fixed.HasValue)
+                    {
+                        reservations = reservations.Where(reservation => DbFunctions.TruncateTime(reservation.End) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
+                    }
+                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        reservations = reservations.Where(reservation => DbFunctions.TruncateTime(reservation.End) >= DbFunctions.TruncateTime(from)
+                            && DbFunctions.TruncateTime(reservation.End) <= DbFunctions.TruncateTime(to));
+                    }
+                }
+                
                 reservations = reservations.WhereIf(filter.LocationName,
                     reservation => reservation.Location.LocationName.Contains(filter.LocationName));
                 reservations = reservations.WhereIf(filter.PilotName,
