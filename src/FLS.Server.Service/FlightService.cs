@@ -468,6 +468,24 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.FlightCode,
                     flight => flight.FlightType.FlightCode.Contains(filter.FlightCode));
 
+                if (filter.FlightDate != null)
+                {
+                    var dateTimeFilter = filter.FlightDate;
+
+                    if (dateTimeFilter.Fixed.HasValue)
+                    {
+                        flights = flights.Where(flight => flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
+                    }
+                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        flights = flights.Where(flight => flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) >= DbFunctions.TruncateTime(from)
+                            && DbFunctions.TruncateTime(flight.FlightDate) <= DbFunctions.TruncateTime(to));
+                    }
+                }
+
                 flights = flights.WhereIf(filter.LdgDateTime,
                     flight => flight.LdgDateTime.DateTimeContainsSearchText(filter.LdgDateTime));
                 flights = flights.WhereIf(filter.StartDateTime,

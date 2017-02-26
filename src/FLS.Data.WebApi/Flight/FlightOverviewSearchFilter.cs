@@ -4,6 +4,8 @@ namespace FLS.Data.WebApi.Flight
 {
     public class FlightOverviewSearchFilter
     {
+        public DateTimeFilter FlightDate { get; set; }
+
         public string Immatriculation { get; set; }
 
         public string PilotName { get; set; }
