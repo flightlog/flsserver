@@ -882,16 +882,34 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'FLIGHT_DURATION', 'Flugdauer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
-     VALUES (NEWID(), 'ACCOUNTINGRULEFILTER_NAME', 'Flugdauer', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'ACCOUNTING_RULE_FILTER_TARGET', 'Verrechnungsregel Ziel', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
-     VALUES (NEWID(), 'ACCOUNTINGRULEFILTER_TARGET', 'Buchungsfilter Ziel', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'ACCOUNTING_RULE_FILTER_TYPE', 'Regel-Typ', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
-     VALUES (NEWID(), 'ACCOUNTINGRULEFILTER_TYPE', 'Bunchungsfilter Typ', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'ACCOUNTING_RULE_FILTER_NAME', 'Filter-Name', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
-     VALUES (NEWID(), 'ACCOUNTING_RULE_FILTERS', 'Buchungsfilter', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'ARTICLE', 'Artikel', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'ACCOUNTING_RULE_FILTERS', 'Verrechnungs-Regeln', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'FOR_SELF_STARTER_GLIDER_FLIGHTS', 'Für Selbstarter-Segelflugzeug Flüge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'FOR_GLIDER_FLIGHTS', 'Für Segelflüge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'FOR_TOWING_FLIGHTS', 'Für Schleppflüge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'FOR_MOTOR_FLIGHTS', 'Für Motorflüge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'ACCOUNTING_RULE_FILTER_ACTIVE', 'Aktiv', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 GO
 
