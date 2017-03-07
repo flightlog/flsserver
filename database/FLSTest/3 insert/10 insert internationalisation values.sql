@@ -911,6 +911,12 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'ACCOUNTING_RULE_FILTER_ACTIVE', 'Aktiv', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'START_LOCATIONS', 'Startplätze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'LANDING_LOCATIONS', 'Landeplätze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
 GO
 
 
