@@ -44,22 +44,58 @@ namespace FLS.Server.Data.Mapping
             switch (entity.AccountingRuleFilterTypeId)
             {
                 case (int)AccountingRuleFilterType.RecipientAccountingRuleFilter:
-                    var recipient = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientTarget);
-                    overview.Target = recipient.ToString();
+                    if (entity.RecipientTarget != null)
+                    {
+                        var recipient = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientTarget);
+                        if (recipient != null)
+                        {
+                            overview.Target =
+                                $"{recipient.RecipientName} ({recipient.PersonClubMemberNumber}){Environment.NewLine}{recipient.Lastname} {recipient.Firstname}{Environment.NewLine}{recipient.AddressLine1}{Environment.NewLine}{recipient.AddressLine2}{Environment.NewLine}{recipient.ZipCode} {recipient.City}";
+                        }
+                        else
+                        {
+                            overview.Target = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        overview.Target = string.Empty;
+                    }
                     break;
                 case (int)AccountingRuleFilterType.AircraftAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
-                     var articleTarget = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
-                    overview.Target = $"{articleTarget.ArticleNumber} ({articleTarget.DeliveryLineText})";
+                    if (entity.ArticleTarget != null)
+                    {
+                        var articleTarget = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
+                        if (articleTarget != null)
+                        {
+                            overview.Target = $"{articleTarget.ArticleNumber} ({articleTarget.DeliveryLineText})";
+                        }
+                        else
+                        {
+                            overview.Target = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        overview.Target = string.Empty;
+                    }
                     break;
                 case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
-                    var target = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
-                    if (target != null)
+                    if (entity.ArticleTarget != null)
                     {
-                        overview.Target = $"{target.ArticleNumber} ({target.DeliveryLineText})";
+                        var target = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
+                        if (target != null)
+                        {
+                            overview.Target = $"{target.ArticleNumber} ({target.DeliveryLineText})";
+                        }
+                        else
+                        {
+                            overview.Target = string.Empty;
+                        }
                     }
                     else
                     {
@@ -103,14 +139,38 @@ namespace FLS.Server.Data.Mapping
             switch (details.AccountingRuleFilterTypeId)
             {
                 case (int)AccountingRuleFilterType.RecipientAccountingRuleFilter:
-                    overview.Target = details.RecipientTarget.ToString();
+                    if (details.RecipientTarget != null)
+                    {
+                        var recipient = details.RecipientTarget;
+                        if (recipient != null)
+                        {
+                            overview.Target =
+                                $"{recipient.RecipientName} ({recipient.PersonClubMemberNumber}){Environment.NewLine}{recipient.Lastname} {recipient.Firstname}{Environment.NewLine}{recipient.AddressLine1}{Environment.NewLine}{recipient.AddressLine2}{Environment.NewLine}{recipient.ZipCode} {recipient.City}";
+                        }
+                        else
+                        {
+                            overview.Target = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        overview.Target = string.Empty;
+                    }
                     break;
                 case (int)AccountingRuleFilterType.AircraftAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
-                    overview.Target = $"{details.ArticleTarget.ArticleNumber} ({details.ArticleTarget.DeliveryLineText})";
+                    if (details.ArticleTarget != null)
+                    {
+                        overview.Target =
+                            $"{details.ArticleTarget.ArticleNumber} ({details.ArticleTarget.DeliveryLineText})";
+                    }
+                    else
+                    {
+                        overview.Target = string.Empty;
+                    }
                     break;
                 case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
                     if (details.ArticleTarget != null)
@@ -163,18 +223,18 @@ namespace FLS.Server.Data.Mapping
                 entity.UseRuleForAllStartLocationsExceptListed;
 
             //Deserialize JSON lists to properties
-            details.MatchedAircraftImmatriculations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedAircraftImmatriculations);
-            details.MatchedStartLocations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedStartLocations);
-            details.MatchedLdgLocations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedLdgLocations);
-            details.MatchedFlightTypeCodes = JsonConvert.DeserializeObject<List<string>>(entity.MatchedFlightTypeCodesAsJson);
-            details.MatchedClubMemberNumbers = JsonConvert.DeserializeObject<List<string>>(entity.MatchedClubMemberNumbersAsJson);
-            details.MatchedFlightCrewTypes = JsonConvert.DeserializeObject<List<int>>(entity.MatchedFlightCrewTypesAsJson);
+            if (entity.MatchedAircraftImmatriculations != null) details.MatchedAircraftImmatriculations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedAircraftImmatriculations);
+            if (entity.MatchedStartLocations != null) details.MatchedStartLocations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedStartLocations);
+            if (entity.MatchedLdgLocations != null) details.MatchedLdgLocations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedLdgLocations);
+            if (entity.MatchedFlightTypeCodesAsJson != null) details.MatchedFlightTypeCodes = JsonConvert.DeserializeObject<List<string>>(entity.MatchedFlightTypeCodesAsJson);
+            if (entity.MatchedClubMemberNumbersAsJson != null) details.MatchedClubMemberNumbers = JsonConvert.DeserializeObject<List<string>>(entity.MatchedClubMemberNumbersAsJson);
+            if (entity.MatchedFlightCrewTypesAsJson != null) details.MatchedFlightCrewTypes = JsonConvert.DeserializeObject<List<int>>(entity.MatchedFlightCrewTypesAsJson);
             
             switch (entity.AccountingRuleFilterTypeId)
             {
                 case (int)AccountingRuleFilterType.RecipientAccountingRuleFilter:
 
-                    details.RecipientTarget = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientTarget);
+                    if (entity.RecipientTarget != null) details.RecipientTarget = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientTarget);
                     details.ArticleTarget = null;
                     details.IsChargedToClubInternal = entity.IsChargedToClubInternal;
                     break;
@@ -185,7 +245,7 @@ namespace FLS.Server.Data.Mapping
                 case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
 
-                    details.ArticleTarget = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
+                    if (entity.ArticleTarget != null) details.ArticleTarget = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
                     details.RecipientTarget = null;
                     details.MinFlightTimeMatchingValue = entity.MinFlightTimeMatchingValue;
                     details.MaxFlightTimeMatchingValue = entity.MaxFlightTimeMatchingValue;
