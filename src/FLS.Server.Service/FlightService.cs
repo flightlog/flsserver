@@ -472,11 +472,7 @@ namespace FLS.Server.Service
                 {
                     var dateTimeFilter = filter.FlightDate;
 
-                    if (dateTimeFilter.Fixed.HasValue)
-                    {
-                        flights = flights.Where(flight => flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
-                    }
-                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
                     {
                         var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
                         var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
@@ -765,11 +761,7 @@ namespace FLS.Server.Service
                 {
                     var dateTimeFilter = filter.FlightDate;
 
-                    if (dateTimeFilter.Fixed.HasValue)
-                    {
-                        flights = flights.Where(flight => flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
-                    }
-                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
                     {
                         var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
                         var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);

@@ -120,11 +120,7 @@ namespace FLS.Server.Service
                 {
                     var dateTimeFilter = filter.Start;
 
-                    if (dateTimeFilter.Fixed.HasValue)
-                    {
-                        reservations = reservations.Where(reservation => DbFunctions.TruncateTime(reservation.Start) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
-                    }
-                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
                     {
                         var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
                         var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
@@ -138,11 +134,7 @@ namespace FLS.Server.Service
                 {
                     var dateTimeFilter = filter.End;
 
-                    if (dateTimeFilter.Fixed.HasValue)
-                    {
-                        reservations = reservations.Where(reservation => DbFunctions.TruncateTime(reservation.End) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
-                    }
-                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
                     {
                         var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
                         var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);

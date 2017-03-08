@@ -20,7 +20,7 @@ namespace FLS.Server.Data.Extensions
         public static IQueryable<TSource> WhereDateTimeFilter<TSource, TKey>(this IQueryable<TSource> source, Expression<Func<TSource, TKey>> keySelector, DateTimeFilter filter)
         {
             if (filter == null ||
-                (filter.Fixed.HasValue == false && filter.From.HasValue == false && filter.To.HasValue == false))
+                (filter.From.HasValue == false && filter.To.HasValue == false))
             {
                 return source;
             }
@@ -29,15 +29,7 @@ namespace FLS.Server.Data.Extensions
             //var equalExpr = Expression.Equal(keySelector.Body, nullExpr);
             //var lambda = Expression.Lambda<Func<TSource, bool>>(equalExpr, keySelector.Parameters);
             //return source.Where(lambda);
-
-            if (filter.Fixed.HasValue)
-            {
-                var constExpression = Expression.Constant(filter.Fixed.Value, typeof(TKey));
-                var equalExpr = Expression.Equal(keySelector.Body, constExpression);
-                var lambda = Expression.Lambda<Func<TSource, bool>>(equalExpr, keySelector.Parameters);
-                return source.Where(lambda);
-            }
-
+            
             //(flight.ModifiedOn.HasValue && flight.ValidatedOn.HasValue && (flight.ModifiedOn >= flight.ValidatedOn))))
 
             var nullExpr = Expression.Constant(null, typeof(TKey));

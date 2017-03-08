@@ -200,7 +200,11 @@ namespace FLS.Server.Tests.ServiceTests
             pageableSearchFilter.Sorting.Add("Day", "desc");
             pageableSearchFilter.SearchFilter.OnlyPlanningDaysInFuture = true;
 
-            pageableSearchFilter.SearchFilter.Day = new DateTimeFilter() {Fixed = new DateTime(2017, 1, 15)};
+            pageableSearchFilter.SearchFilter.Day = new DateTimeFilter()
+            {
+                To = new DateTime(2017, 1, 15),
+                From = new DateTime(2017, 1, 15)
+            };
 
             Logger.Debug($"Filter: {pageableSearchFilter}");
 

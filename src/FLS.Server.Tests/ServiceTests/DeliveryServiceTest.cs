@@ -187,7 +187,8 @@ namespace FLS.Server.Tests.ServiceTests
 
                 var dateTimeFilter2 = new DateTimeFilter()
                 {
-                    Fixed = DateTime.Now
+                    To = DateTime.Now,
+                    From = DateTime.Now
                 };
 
 

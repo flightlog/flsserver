@@ -198,14 +198,7 @@ namespace FLS.Server.Service
                 {
                     var dateTimeFilter = filter.Day;
 
-                    if (dateTimeFilter.Fixed.HasValue)
-                    {
-                        planningDays =
-                            planningDays.Where(
-                                planningDay =>
-                                        DbFunctions.TruncateTime(planningDay.Day) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
-                    }
-                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
                     {
                         var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
                         var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);

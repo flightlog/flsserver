@@ -679,11 +679,7 @@ namespace FLS.Server.Service.Accounting
                 {
                     var dateTimeFilter = filter.LastTestRunOn;
 
-                    if (dateTimeFilter.Fixed.HasValue)
-                    {
-                        deliveryCreationTests = deliveryCreationTests.Where(test => DbFunctions.TruncateTime(test.LastTestRunOn) == dateTimeFilter.Fixed.Value.Date);
-                    }
-                    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
                     {
                         var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
                         var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
