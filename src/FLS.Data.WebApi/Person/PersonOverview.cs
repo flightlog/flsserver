@@ -24,6 +24,8 @@ namespace FLS.Data.WebApi.Person
 
         public string MemberStateName { get; set; }
 
+        public string MemberNumber { get; set; }
+
         public bool IsActive { get; set; }
 
 

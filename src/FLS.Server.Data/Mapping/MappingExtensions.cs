@@ -2765,6 +2765,7 @@ namespace FLS.Server.Data.Mapping
                     overview.MemberStateName = personClub.MemberState.MemberStateName;
                 }
 
+                overview.MemberNumber = personClub.MemberNumber;
                 overview.IsActive = personClub.IsActive;
             }
 
