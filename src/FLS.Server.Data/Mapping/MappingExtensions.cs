@@ -1509,6 +1509,12 @@ namespace FLS.Server.Data.Mapping
             entity.CouponNumber = details.CouponNumber;
             entity.NrOfLdgsOnStartLocation = details.NrOfLdgsOnStartLocation;
 
+            if (details.StartLocationId.HasValue && details.LdgLocationId.HasValue &&
+                details.StartLocationId.Value == details.LdgLocationId.Value)
+            {
+                entity.NrOfLdgsOnStartLocation = null;
+            }
+
             //converts the base flight stuff to the flight entity
             ((FlightDetailsData) details).ToFlight(entity, AircraftStartType.MotorFlightStart, detailsRelatedAircraft, detailsRelatedFlightType);
 
