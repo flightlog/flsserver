@@ -57,7 +57,7 @@ namespace FLS.Server.WebApi.Identity
                 this.UserTokenProvider = new DataProtectorTokenProvider<User, Guid>(dataProtector)
                 {
                     //Code for email confirmation and reset password life time
-                    TokenLifespan = TimeSpan.FromHours(6)
+                    TokenLifespan = TimeSpan.FromHours(24)
                 };
             }
         }
