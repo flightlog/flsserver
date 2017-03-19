@@ -1,9 +1,12 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace FLS.Data.WebApi.Flight
 {
     public class FlightOverview : FLSBaseData
     {
+        private int? _flightDurationInSeconds;
+
         public Guid FlightId { get; set; }
 
         public Nullable<DateTime> FlightDate { get; set; }
@@ -43,5 +46,25 @@ namespace FLS.Data.WebApi.Flight
             get { return FlightId; }
             set { FlightId = value; }
         }
+
+        #region Helper Properties with JsonIgnore
+        [JsonIgnore]
+        public int? FlightDurationInSeconds
+        {
+            get { return _flightDurationInSeconds; }
+            set
+            {
+                _flightDurationInSeconds = value;
+                if (value != null)
+                {
+                    FlightDuration = TimeSpan.FromSeconds(value.Value);
+                }
+                else if (StartDateTime.HasValue && LdgDateTime.HasValue == false)
+                {
+                    FlightDuration = DateTime.UtcNow - StartDateTime.Value;
+                }
+            }
+        }
+        #endregion Helper Properties with JsonIgnore
     }
 }
