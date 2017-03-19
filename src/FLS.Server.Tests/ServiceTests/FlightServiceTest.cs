@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using FLS.Common.Comparer;
+using FLS.Data.WebApi;
+using FLS.Data.WebApi.Flight;
 using FLS.Server.Service;
 using FLS.Server.Service.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -74,6 +78,40 @@ namespace FLS.Server.Tests.ServiceTests
             var flights = FlightService.GetFlightsModifiedSince(fromDate);
             Assert.IsTrue(flights.Any());
             Logger.Debug($"Number of flights to export {flights.Count} since {fromDate}");
+        }
+
+        [TestMethod]
+        [TestCategory("Service")]
+        public void GetCompareOrderedFlightsTest()
+        {
+            var filter = new PageableSearchFilter<GliderFlightOverviewSearchFilter>();
+
+            var entities = FlightService.GetPagedGliderFlightOverview(0, 10000, filter);
+            Assert.IsNotNull(entities);
+            Logger.Debug($"Number of flights to {entities.Items.Count}");
+
+            filter = new PageableSearchFilter<GliderFlightOverviewSearchFilter>()
+            {
+                Sorting = new Dictionary<string, string>()
+            };
+
+            filter.Sorting.Add("PilotName", "asc");
+
+            var entitiesNew = FlightService.GetPagedGliderFlightOverview(0, 10000, filter);
+            Assert.IsNotNull(entitiesNew);
+            Logger.Debug($"Number of flightsNew to {entitiesNew.Items.Count} and total available in DB: {entitiesNew.TotalRows}");
+            Assert.AreEqual(entities.Items.Count, entitiesNew.Items.Count, "Number of flights does not match between the two service methods");
+
+            var ignorePropertyList = new string [] { "GliderFlightDurationInSeconds", "TowFlightDurationInSeconds" };
+
+            foreach (var entity in entities.Items)
+            {
+                var flight = entitiesNew.Items.FirstOrDefault(x => x.FlightId == entity.FlightId);
+
+                var compareResult = ObjectComparer.AreObjectsEqual(entity, flight, true, ignorePropertyList);
+                Assert.IsTrue(compareResult, "Flight property values does not match");
+            }
+
         }
 
     }
