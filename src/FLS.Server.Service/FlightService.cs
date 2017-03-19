@@ -620,7 +620,7 @@ namespace FLS.Server.Service
 
             return PrepareGliderFlightOverviews(flights);
         }
-
+        
         public PagedList<GliderFlightOverview> GetPagedGliderFlightOverview(int? pageStart, int? pageSize, PageableSearchFilter<GliderFlightOverviewSearchFilter> pageableSearchFilter)
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<GliderFlightOverviewSearchFilter>();
@@ -630,108 +630,40 @@ namespace FLS.Server.Service
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
                 pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
             }
-
-            //needs to remap related table columns for correct sorting
-            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
-            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
-            {
-                //TODO: Add sorting for second child relations and calculated relations
-                if (sort == "AirState" || sort == "ValidationState" || sort == "ProcessState" || sort == "GliderFlightDuration"
-                    || sort == "TowFlightAirState" || sort == "TowFlightValidationState" || sort == "TowFlightProcessState"
-                    || sort == "TowFlightLdgDateTime" || sort == "TowFlightDuration" || sort == "_combinedAirState")
-                {
-                    pageableSearchFilter.Sorting.Remove(sort);
-                    continue;
-                }
-
-                if (sort == "Immatriculation")
-                {
-                    pageableSearchFilter.Sorting.Add("Aircraft.Immatriculation", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "PilotName")
-                {
-                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
-                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "SecondCrewName")
-                {
-                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
-                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "FlightComment")
-                {
-                    pageableSearchFilter.Sorting.Add("Comment", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "LdgLocation")
-                {
-                    pageableSearchFilter.Sorting.Add("LdgLocation.LocationName", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "StartLocation")
-                {
-                    pageableSearchFilter.Sorting.Add("StartLocation.LocationName", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "TowAircraftImmatriculation")
-                {
-                    pageableSearchFilter.Sorting.Add("TowFlight.Aircraft.Immatriculation", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "TowPilotName")
-                {
-                    //pageableSearchFilter.Sorting.Add("TowFlight.FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
-                    //pageableSearchFilter.Sorting.Add("TowFlight.FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "TowFlightStartLocation")
-                {
-                    pageableSearchFilter.Sorting.Add("TowFlight.StartLocation.LocationName", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "TowFlightLdgLocation")
-                {
-                    pageableSearchFilter.Sorting.Add("TowFlight.LdgLocation.LocationName", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "WinchOperatorName")
-                {
-                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Lastname", pageableSearchFilter.Sorting[sort]);
-                    //pageableSearchFilter.Sorting.Add("FlightCrews.Person.Firstname", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-            }
-
-            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
-            {
-                pageableSearchFilter.Sorting = new Dictionary<string, string>();
-                pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
-            }
-
+            
             using (var context = _dataAccessService.CreateDbContext())
             {
+                var includedFlightCrewTypes = new int[]
+                {
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent,
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot,
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor,
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger,
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator
+                };
+
+                var flightCrews = context
+                    .FlightCrews
+                    .Include("Person")
+                    .Where(fc => includedFlightCrewTypes.Contains(fc.FlightCrewTypeId))
+                    .GroupBy(fc => fc.FlightId)
+                    .Select(fc => new
+                    {
+                        FlightId = fc.Key,
+                        Pilot = fc.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent),
+                        SecondCrew = fc.OrderBy(ffc => ffc.FlightCrewTypeId).FirstOrDefault(ffc => 
+                                                        ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot
+                                                        || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor
+                                                        || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger),
+                        WinchOperator = fc.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator)
+                    });
+
                 var flights = context.Flights
-                    .Include(Constants.Aircraft)
-                    .Include(Constants.FlightType)
-                    .Include(Constants.FlightCrews)
-                    .Include(Constants.FlightCrews + "." + Constants.Person)
-                    .Include(Constants.StartType)
-                    .Include(Constants.StartLocation)
-                    .Include(Constants.LdgLocation)
-                    .Include(Constants.TowFlight)
-                        .Include(Constants.TowFlight + "." + Constants.Aircraft)
-                        .Include(Constants.TowFlight + "." + Constants.FlightType)
-                        .Include(Constants.TowFlight + "." + Constants.FlightCrews)
-                        .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person)
-                        .Include(Constants.TowFlight + "." + Constants.StartLocation)
-                        .Include(Constants.TowFlight + "." + Constants.LdgLocation)
-                    .Where(flight => flight.OwnerId == CurrentAuthenticatedFLSUserClubId
-                        && flight.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight)
-                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
-                
+                    .Include(x => x.FlightType)
+                    .Where(f => f.OwnerId == CurrentAuthenticatedFLSUserClubId
+                                && f.FlightAircraftType == (int) FlightAircraftTypeValue.GliderFlight);
+
+
                 var filter = pageableSearchFilter.SearchFilter;
                 flights = flights.WhereIf(filter.Immatriculation,
                         flight => flight.Aircraft.Immatriculation.Contains(filter.Immatriculation));
@@ -788,7 +720,7 @@ namespace FLS.Server.Service
                 //            && DbFunctions.TruncateTime(flight.LdgDateTime) <= DbFunctions.TruncateTime(to));
                 //    }
                 //}
-                
+
                 if (filter.IsSoloFlight.HasValue)
                     flights = flights.Where(flight => flight.IsSoloFlight == filter.IsSoloFlight.Value);
 
@@ -857,7 +789,7 @@ namespace FLS.Server.Service
                 //            && DbFunctions.TruncateTime(flight.TowFlight.LdgDateTime) <= DbFunctions.TruncateTime(to));
                 //    }
                 //}
-                
+
                 flights = flights.WhereIf(filter.TowFlightStartLocation,
                     flight => flight.TowFlight.StartLocation.LocationName.Contains(filter.TowFlightStartLocation));
                 flights = flights.WhereIf(filter.TowFlightLdgLocation,
@@ -867,12 +799,45 @@ namespace FLS.Server.Service
                 //flights = flights.WhereIf(filter.TowFlightDuration,
                 //    flight => flight.TowFlight.FlightDuration.LocationName.Contains(filter.TowFlightDuration));
 
+                
+                var flightsAndFlightCrews = flights.Join(flightCrews, f => f.FlightId, fcp => fcp.FlightId, (f, fcp) => new GliderFlightOverview
+                {
+                    FlightId = f.FlightId,
+                    FlightComment = f.Comment,
+                    IsSoloFlight = f.IsSoloFlight,
+                    PilotName = fcp.Pilot.Person.Lastname + " " + fcp.Pilot.Person.Firstname,
+                    SecondCrewName = fcp.SecondCrew != null ? fcp.SecondCrew.Person.Lastname + " " + fcp.SecondCrew.Person.Firstname : null,
+                    GliderFlightDurationInSeconds = DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime),
+                    FlightCode = f.FlightType.FlightCode,
+                    AirState = f.AirStateId,
+                    ValidationState = f.ValidationStateId,
+                    ProcessState = f.ProcessStateId,
+                    Immatriculation = f.Aircraft.Immatriculation,
+                    StartType = f.StartTypeId,
+                    FlightDate = f.FlightDate,
+                    StartDateTime = f.StartDateTime,    
+                    LdgDateTime = f.LdgDateTime,        
+                    TowFlightId = f.TowFlightId,
+                    TowAircraftImmatriculation = f.TowFlight.Aircraft.Immatriculation,
+                    TowFlightStartDateTime = f.TowFlight.StartDateTime,
+                    TowFlightLdgDateTime = f.TowFlight.LdgDateTime,
+                    TowFlightDurationInSeconds = DbFunctions.DiffSeconds(f.TowFlight.StartDateTime, f.TowFlight.LdgDateTime),
+                    TowFlightStartLocation = f.TowFlight.StartLocation.LocationName,
+                    TowFlightLdgLocation = f.TowFlight.LdgLocation.LocationName,
+                    TowFlightAirState = f.TowFlight.AirStateId,
+                    TowFlightValidationState = f.TowFlight.ValidationStateId,
+                    TowFlightProcessState = f.TowFlight.ProcessStateId,
+                    TowPilotName = f.TowFlight.FlightCrews.Any(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent) ?
+                            f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname
+                            + " " + f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname : null,
+                    WinchOperatorName = fcp.WinchOperator != null ? fcp.WinchOperator.Person.Lastname + " " + fcp.WinchOperator.Person.Firstname : null,
+                    StartLocation = f.StartLocation.LocationName,
+                    LdgLocation = f.LdgLocation.LocationName
+                }).OrderByPropertyNames(pageableSearchFilter.Sorting);
 
-                var pagedQuery = new PagedQuery<Flight>(flights, pageStart, pageSize);
+                var pagedQuery = new PagedQuery<GliderFlightOverview>(flightsAndFlightCrews, pageStart, pageSize);
 
-                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToGliderFlightOverview())
-                .Where(obj => obj != null)
-                .ToList();
+                var overviewList = pagedQuery.Items.ToList();
 
                 SetGliderFlightOverviewSecurity(overviewList);
 
