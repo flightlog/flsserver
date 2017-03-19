@@ -1977,17 +1977,17 @@ namespace FLS.Server.Data.Mapping
 
             FlightCrew flightCrew = null;
 
-            if (details.PilotPersonId.IsValid())
+            if (details.PilotPersonId.HasValue && details.PilotPersonId.Value.IsValid())
             {
                 if (entity.Pilot != null)
                 {
-                    entity.Pilot.PersonId = details.PilotPersonId;
+                    entity.Pilot.PersonId = details.PilotPersonId.Value;
                 }
                 else
                 {
                     flightCrew = new FlightCrew();
                     flightCrew.FlightId = entity.FlightId;
-                    flightCrew.PersonId = details.PilotPersonId;
+                    flightCrew.PersonId = details.PilotPersonId.Value;
                     flightCrew.FlightCrewTypeId = (int) FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent;
                     entity.FlightCrews.Add(flightCrew);
                 }

@@ -816,41 +816,46 @@ namespace FLS.Server.Service
                 //flights = flights.WhereIf(filter.TowFlightDuration,
                 //    flight => flight.TowFlight.FlightDuration.LocationName.Contains(filter.TowFlightDuration));
 
-                
-                var flightsAndFlightCrews = flights.Join(flightCrews, f => f.FlightId, fcp => fcp.FlightId, (f, fcp) => new GliderFlightOverview
-                {
-                    FlightId = f.FlightId,
-                    FlightComment = f.Comment,
-                    IsSoloFlight = f.IsSoloFlight,
-                    PilotName = fcp.Pilot.Person.Lastname + " " + fcp.Pilot.Person.Firstname,
-                    SecondCrewName = fcp.SecondCrew != null ? fcp.SecondCrew.Person.Lastname + " " + fcp.SecondCrew.Person.Firstname : null,
-                    GliderFlightDurationInSeconds = DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime),
-                    FlightCode = f.FlightType.FlightCode,
-                    AirState = f.AirStateId,
-                    ValidationState = f.ValidationStateId,
-                    ProcessState = f.ProcessStateId,
-                    Immatriculation = f.Aircraft.Immatriculation,
-                    StartType = f.StartTypeId,
-                    FlightDate = f.FlightDate,
-                    StartDateTime = f.StartDateTime,    
-                    LdgDateTime = f.LdgDateTime,        
-                    TowFlightId = f.TowFlightId,
-                    TowAircraftImmatriculation = f.TowFlight.Aircraft.Immatriculation,
-                    TowFlightStartDateTime = f.TowFlight.StartDateTime,
-                    TowFlightLdgDateTime = f.TowFlight.LdgDateTime,
-                    TowFlightDurationInSeconds = DbFunctions.DiffSeconds(f.TowFlight.StartDateTime, f.TowFlight.LdgDateTime),
-                    TowFlightStartLocation = f.TowFlight.StartLocation.LocationName,
-                    TowFlightLdgLocation = f.TowFlight.LdgLocation.LocationName,
-                    TowFlightAirState = f.TowFlight.AirStateId,
-                    TowFlightValidationState = f.TowFlight.ValidationStateId,
-                    TowFlightProcessState = f.TowFlight.ProcessStateId,
-                    TowPilotName = f.TowFlight.FlightCrews.Any(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent) ?
-                            f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname
-                            + " " + f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname : null,
-                    WinchOperatorName = fcp.WinchOperator != null ? fcp.WinchOperator.Person.Lastname + " " + fcp.WinchOperator.Person.Firstname : null,
-                    StartLocation = f.StartLocation.LocationName,
-                    LdgLocation = f.LdgLocation.LocationName
-                }).OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var flightsAndFlightCrews = flights.GroupJoin(flightCrews, f => f.FlightId, fcp => fcp.FlightId,
+                        (f, fcp) => new {f, fcp})
+                    .SelectMany(x => x.fcp.DefaultIfEmpty(), (f, fcp) => new GliderFlightOverview
+                    {
+                        FlightId = f.f.FlightId,
+                        FlightComment = f.f.Comment,
+                        IsSoloFlight = f.f.IsSoloFlight,
+                        PilotName = fcp.Pilot != null ? fcp.Pilot.Person.Lastname + " " + fcp.Pilot.Person.Firstname : null,
+                        SecondCrewName =
+                            fcp.SecondCrew != null
+                                ? fcp.SecondCrew.Person.Lastname + " " + fcp.SecondCrew.Person.Firstname
+                                : null,
+                        GliderFlightDurationInSeconds = DbFunctions.DiffSeconds(f.f.StartDateTime, f.f.LdgDateTime),
+                        FlightCode = f.f.FlightType.FlightCode,
+                        AirState = f.f.AirStateId,
+                        ValidationState = f.f.ValidationStateId,
+                        ProcessState = f.f.ProcessStateId,
+                        Immatriculation = f.f.Aircraft.Immatriculation,
+                        StartType = f.f.StartTypeId,
+                        FlightDate = f.f.FlightDate,
+                        StartDateTime = f.f.StartDateTime,
+                        LdgDateTime = f.f.LdgDateTime,
+                        TowFlightId = f.f.TowFlightId,
+                        TowAircraftImmatriculation = f.f.TowFlight.Aircraft.Immatriculation,
+                        TowFlightStartDateTime = f.f.TowFlight.StartDateTime,
+                        TowFlightLdgDateTime = f.f.TowFlight.LdgDateTime,
+                        TowFlightDurationInSeconds = DbFunctions.DiffSeconds(f.f.TowFlight.StartDateTime, f.f.TowFlight.LdgDateTime),
+                        TowFlightStartLocation = f.f.TowFlight.StartLocation.LocationName,
+                        TowFlightLdgLocation = f.f.TowFlight.LdgLocation.LocationName,
+                        TowFlightAirState = f.f.TowFlight.AirStateId,
+                        TowFlightValidationState = f.f.TowFlight.ValidationStateId,
+                        TowFlightProcessState = f.f.TowFlight.ProcessStateId,
+                        TowPilotName = f.f.TowFlight.FlightCrews.Any(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent) ?
+                                f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname
+                                + " " + f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname : null,
+                        WinchOperatorName = fcp.WinchOperator != null ? fcp.WinchOperator.Person.Lastname + " " + fcp.WinchOperator.Person.Firstname : null,
+                        StartLocation = f.f.StartLocation.LocationName,
+                        LdgLocation = f.f.LdgLocation.LocationName
+                    }).OrderByPropertyNames(pageableSearchFilter.Sorting);
 
                 var pagedQuery = new PagedQuery<GliderFlightOverview>(flightsAndFlightCrews, pageStart, pageSize);
 

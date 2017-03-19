@@ -13,9 +13,7 @@ namespace FLS.Data.WebApi.Flight
         [GuidNotEmptyValidator]
         public Guid AircraftId { get; set; }
 
-        [Required]
-        [GuidNotEmptyValidator]
-        public Guid PilotPersonId { get; set; }
+        public Nullable<Guid> PilotPersonId { get; set; }
 
         public Nullable<Guid> CoPilotPersonId { get; set; }
 

@@ -636,8 +636,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
                 }
 
                 if (flightDetails.TowFlightDetailsData != null
-                    && flightDetails.TowFlightDetailsData.AircraftId.IsValid()
-                    && flightDetails.TowFlightDetailsData.PilotPersonId.IsValid())
+                    && flightDetails.TowFlightDetailsData.AircraftId.IsValid())
                 {
                     flightDetails.TowFlightDetailsData.FlightComment = DateTime.Now.ToShortTimeString();
                 }
