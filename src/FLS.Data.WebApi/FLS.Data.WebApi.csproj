@@ -109,6 +109,7 @@
     <Compile Include="Emails\EmailTemplateOverview.cs" />
     <Compile Include="Emails\EmailTemplateDetails.cs" />
     <Compile Include="Exceptions\FLSServerException.cs" />
+    <Compile Include="Flight\FlightCrewTypeListItem.cs" />
     <Compile Include="Flight\FlightExchangeData.cs" />
     <Compile Include="Flight\FlightOverviewSearchFilter.cs" />
     <Compile Include="Flight\FlightOverview.cs" />

@@ -201,6 +201,23 @@ namespace FLS.Server.Service
         }
         #endregion FlightState
 
+        #region FlightCrewType
+        internal List<FlightCrewTypeListItem> GetFlightCrewTypeListItems()
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var flightCrewTypeListItems =
+                    context.FlightCrewTypes.OrderBy(x => x.FlightCrewTypeName).Select(x => new FlightCrewTypeListItem()
+                    {
+                        FlightCrewTypeId = x.FlightCrewTypeId,
+                        FlightCrewTypeName = x.FlightCrewTypeName
+                    }).ToList();
+
+                return flightCrewTypeListItems;
+            }
+        }
+        #endregion FlightCrewType
+
         #region StartType
         public List<StartTypeListItem> GetStartTypeListItems()
         {

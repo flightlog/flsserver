@@ -272,6 +272,7 @@
     <Compile Include="Controllers\AccountingRuleFilterTypesController.cs" />
     <Compile Include="Controllers\AircraftOperatingCountersController.cs" />
     <Compile Include="Controllers\AccountingRuleFiltersController.cs" />
+    <Compile Include="Controllers\FlightCrewTypesController.cs" />
     <Compile Include="Controllers\AuditLogsController.cs" />
     <Compile Include="Controllers\DashboardsController.cs" />
     <Compile Include="Controllers\CounterUnitTypesController.cs" />
