@@ -594,12 +594,10 @@ namespace FLS.Server.Service
         #region GliderFlights
         public List<GliderFlightOverview> GetGliderFlightOverviews()
         {
-            var flights = GetFlights(flight => flight.OwnerId == CurrentAuthenticatedFLSUserClubId
-                                              && flight.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight);
+            var filter = new PageableSearchFilter<GliderFlightOverviewSearchFilter>();
 
-            var preparedFlights = PrepareGliderFlightOverviews(flights);
-
-            return preparedFlights;
+            var flights = GetPagedGliderFlightOverview(0, 10000, filter);
+            return flights.Items;
         }
 
         public List<GliderFlightOverview> GetGliderFlightOverviewsWithinToday()
@@ -609,33 +607,19 @@ namespace FLS.Server.Service
 
         public List<GliderFlightOverview> GetGliderFlightOverviews(DateTime fromDate, DateTime toDate)
         {
-            //needed for flights without start time (null values in StartDateTime)
-            DateTime fromDateTime = fromDate.Date;
-            DateTime toDateTime;
-
-            if (toDate.Date < DateTime.MaxValue.Date)
+            var filter = new PageableSearchFilter<GliderFlightOverviewSearchFilter>()
             {
-                toDateTime = toDate.Date.AddDays(1).AddTicks(-1);
-            }
-            else
-            {
-                toDateTime = DateTime.MaxValue;
-            }
+                SearchFilter = new GliderFlightOverviewSearchFilter() { 
+                    FlightDate = new DateTimeFilter()
+                    {
+                        From = fromDate,
+                        To = toDate
+                    }
+                }
+            };
 
-            bool isTodayIncluded = fromDate.Date <= DateTime.Now.Date && toDate.Date >= DateTime.Now.Date;
-
-            var flights = GetFlights(flight => (flight.StartDateTime == null && isTodayIncluded
-                                               ||
-                                               flight.StartDateTime.Value >= fromDateTime &&
-                                               flight.StartDateTime.Value <= toDateTime
-                                               || flight.LdgDateTime == null && isTodayIncluded
-                                               ||
-                                               flight.LdgDateTime.Value >= fromDateTime &&
-                                               flight.LdgDateTime.Value <= toDateTime)
-                                              && flight.OwnerId == CurrentAuthenticatedFLSUser.ClubId
-                                              && flight.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight);
-
-            return PrepareGliderFlightOverviews(flights);
+            var flights = GetPagedGliderFlightOverview(0, 10000, filter);
+            return flights.Items;
         }
         
         public PagedList<GliderFlightOverview> GetPagedGliderFlightOverview(int? pageStart, int? pageSize, PageableSearchFilter<GliderFlightOverviewSearchFilter> pageableSearchFilter)
@@ -868,14 +852,6 @@ namespace FLS.Server.Service
 
                 return pagedList;
             }
-        }
-
-        private List<GliderFlightOverview> PrepareGliderFlightOverviews(List<Flight> flights)
-        {
-            var flightOverviewList = flights.Select(e => e.ToGliderFlightOverview()).ToList();
-            SetGliderFlightOverviewSecurity(flightOverviewList);
-
-            return flightOverviewList.ToList();
         }
         #endregion GliderFlights
 
