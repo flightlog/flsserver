@@ -33,11 +33,11 @@ namespace FLS.Server.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("availabledates")]
+        [Route("availabledates/{clubKey}")]
         [ResponseType(typeof(List<DateTime>))]
-        public IHttpActionResult GetAvailableTrialFlightDates()
+        public IHttpActionResult GetAvailableTrialFlightDates(string clubKey)
         {
-            var dates = _registrationService.GetTrialFlightsDates();
+            var dates = _registrationService.GetTrialFlightsDates(clubKey);
             return Ok(dates);
         }
 

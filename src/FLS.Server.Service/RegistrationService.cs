@@ -30,12 +30,17 @@ namespace FLS.Server.Service
             Logger = LogManager.GetCurrentClassLogger();
         }
 
-        public List<DateTime> GetTrialFlightsDates()
+        public List<DateTime> GetTrialFlightsDates(string clubKey)
         {
+            
             var trialFlightDates = new List<DateTime>();
-            trialFlightDates.Add(new DateTime(2017, 5, 6));
-            trialFlightDates.Add(new DateTime(2017, 7, 1));
-            trialFlightDates.Add(new DateTime(2017, 9, 2));
+
+            if (clubKey.ToUpper() == "FGZO")
+            {
+                trialFlightDates.Add(new DateTime(2017, 5, 6));
+                trialFlightDates.Add(new DateTime(2017, 7, 1));
+                trialFlightDates.Add(new DateTime(2017, 9, 2));
+            }
 
             return trialFlightDates;
         }
@@ -130,10 +135,13 @@ namespace FLS.Server.Service
                     {
                         AircraftId = aircraft.AircraftId,
                         ClubId = club.ClubId,
+                        Start = trialFlightRegistrationDetails.SelectedDay.Date,
+                        End = trialFlightRegistrationDetails.SelectedDay.Date.AddDays(1).AddTicks(-1),
                         IsAllDayReservation = true,
                         PilotPerson = person,
                         LocationId = club.HomebaseId.Value,
-                        ReservationTypeId = 2 //Schulung/Check-Flug
+                        ReservationTypeId = 2, //Schulung/Check-Flug
+                        Remarks = "Schnupperflug-Kandidat"
                     };
 
                     context.AircraftReservations.Add(reservation);

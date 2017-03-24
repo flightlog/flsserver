@@ -22,7 +22,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void TrialFlightRegistrationDetailsWebApiTest()
         {
-            var dates = GetAsync<IEnumerable<DateTime>>("/api/v1/trialflightsregistrations/availabledates").Result;
+            var dates = GetAsync<IEnumerable<DateTime>>("/api/v1/trialflightsregistrations/availabledates/fgzo").Result;
 
             Assert.IsTrue(dates.Any());
 
