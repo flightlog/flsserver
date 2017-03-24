@@ -200,6 +200,7 @@
     <Compile Include="WebApiControllerTests\EmailTemplatesControllerTest.cs" />
     <Compile Include="WebApiControllerTests\ArticlesControllerTest.cs" />
     <Compile Include="WebApiControllerTests\AccountingRuleFiltersControllerTest.cs" />
+    <Compile Include="WebApiControllerTests\RegistrationsControllerTest.cs" />
     <Compile Include="WebApiControllerTests\PersonCategoriesControllerTest.cs" />
     <Compile Include="WebApiControllerTests\SystemDatasControllerTest.cs" />
     <Compile Include="WebApiControllerTests\ClubsControllerTest.cs" />

@@ -164,6 +164,7 @@
     <Compile Include="PagedList.cs" />
     <Compile Include="Person\ClubRelatedPersonFullDetails.cs" />
     <Compile Include="Person\ClubRelatedPersonDetails.cs" />
+    <Compile Include="Registrations\TrialFlightRegistrationDetails.cs" />
     <Compile Include="Person\PersonDetails.cs" />
     <Compile Include="Person\PersonOverviewSearchFilter.cs" />
     <Compile Include="Person\PersonOverview.cs" />

@@ -67,6 +67,21 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
             return await GetAsync(Uri);
         }
 
+        protected async Task<TResult> GetAsync<TResult>(string uri)
+        {
+            var response = await GetAsync(uri);
+
+            //http://stackoverflow.com/questions/23576726/using-readasasynct-to-deserialize-complex-json-object
+
+            Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
+
+            var jsonAsString = response.Content.ReadAsStringAsync().Result;
+
+            var output = JsonConvert.DeserializeObject<TResult>(jsonAsString);
+
+            return output;
+        }
+
         protected virtual async Task<HttpResponseMessage> PostAsync<TModel>(TModel model)
         {
             return await PostAsync(model, Uri);
