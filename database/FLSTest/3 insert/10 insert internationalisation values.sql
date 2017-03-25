@@ -972,7 +972,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'TRY_FLIGHT_APPLICATION', 'Schnupperflug Anmeldung', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
-     VALUES (NEWID(), 'TRY_FLIGHT_FORM_EXPLANATION', 'Online-Anmeldung für Schnupperflugtag Teilnehmer:', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'TRY_FLIGHT_FORM_EXPLANATION', 'Teilnehmer:', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'PRIVATE_PHONE', 'Tel. Privat', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -993,7 +993,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'APPLY_FOR_TRY_FLIGHT', 'Anmeldung abschicken', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
-     VALUES (NEWID(), 'APPLICATION_FOR_TRY_FLIGHT_WAS_SUCCESSFUL', 'Vielen Dank für die Anmeldung.', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'APPLICATION_FOR_TRY_FLIGHT_WAS_SUCCESSFUL', 'Vielen Dank für die Anmeldung. Wir freuen uns auf einen ', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'BACK_TO_HOMEPAGE', 'Zurück zur Homepage', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
