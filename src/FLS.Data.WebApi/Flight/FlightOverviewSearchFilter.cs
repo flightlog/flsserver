@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FLS.Data.WebApi.Flight
 {
@@ -14,11 +15,11 @@ namespace FLS.Data.WebApi.Flight
 
         public string FlightComment { get; set; }
 
-        public string AirState { get; set; }
+        public List<int> AirStates { get; set; }
 
-        public string ValidationState { get; set; }
+        public List<int> ValidationStates { get; set; }
 
-        public string ProcessState { get; set; }
+        public List<int> ProcessStates { get; set; }
 
         public string FlightCode { get; set; }
         

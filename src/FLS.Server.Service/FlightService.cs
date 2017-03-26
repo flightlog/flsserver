@@ -383,12 +383,11 @@ namespace FLS.Server.Service
 
                 flights = flights.WhereIf(filter.FlightComment,
                     flight => flight.Comment.Contains(filter.FlightComment));
-                flights = flights.WhereIf(filter.AirState,
-                    flight => flight.FlightAirState.FlightAirStateName.Contains(filter.AirState));
-                flights = flights.WhereIf(filter.ValidationState,
-                    flight => flight.FlightValidationState.FlightValidationStateName.Contains(filter.ValidationState));
-                flights = flights.WhereIf(filter.ProcessState,
-                    flight => flight.FlightProcessState.FlightProcessStateName.Contains(filter.ProcessState));
+
+                if (filter.AirStates != null && filter.AirStates.Any()) flights = flights.Where(flight => filter.AirStates.Contains(flight.AirStateId));
+                if (filter.ValidationStates != null && filter.ValidationStates.Any()) flights = flights.Where(flight => filter.ValidationStates.Contains(flight.ValidationStateId));
+                if (filter.ProcessStates != null && filter.ProcessStates.Any()) flights = flights.Where(flight => filter.ProcessStates.Contains(flight.ProcessStateId));
+
                 flights = flights.WhereIf(filter.FlightCode,
                     flight => flight.FlightType.FlightCode.Contains(filter.FlightCode));
 
@@ -597,12 +596,11 @@ namespace FLS.Server.Service
 
                 flights = flights.WhereIf(filter.FlightComment,
                     flight => flight.Comment.Contains(filter.FlightComment));
-                flights = flights.WhereIf(filter.AirState,
-                    flight => flight.FlightAirState.FlightAirStateName.Contains(filter.AirState));
-                flights = flights.WhereIf(filter.ValidationState,
-                    flight => flight.FlightValidationState.FlightValidationStateName.Contains(filter.ValidationState));
-                flights = flights.WhereIf(filter.ProcessState,
-                    flight => flight.FlightProcessState.FlightProcessStateName.Contains(filter.ProcessState));
+
+                if (filter.AirStates != null && filter.AirStates.Any()) flights = flights.Where(flight => filter.AirStates.Contains(flight.AirStateId));
+                if (filter.ValidationStates != null && filter.ValidationStates.Any()) flights = flights.Where(flight => filter.ValidationStates.Contains(flight.ValidationStateId));
+                if (filter.ProcessStates != null && filter.ProcessStates.Any()) flights = flights.Where(flight => filter.ProcessStates.Contains(flight.ProcessStateId));
+                
                 flights = flights.WhereIf(filter.FlightCode,
                     flight => flight.FlightType.FlightCode.Contains(filter.FlightCode));
 
@@ -662,13 +660,10 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.TowPilotName,
                     flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname).Contains(filter.TowPilotName));
 
-                flights = flights.WhereIf(filter.TowFlightAirState,
-                    flight => flight.TowFlight.FlightAirState.FlightAirStateName.Contains(filter.TowFlightAirState));
-                flights = flights.WhereIf(filter.TowFlightValidationState,
-                    flight => flight.TowFlight.FlightValidationState.FlightValidationStateName.Contains(filter.TowFlightValidationState));
-                flights = flights.WhereIf(filter.TowFlightProcessState,
-                    flight => flight.TowFlight.FlightProcessState.FlightProcessStateName.Contains(filter.TowFlightProcessState));
-
+                if (filter.TowFlightAirStates != null && filter.TowFlightAirStates.Any()) flights = flights.Where(flight => filter.TowFlightAirStates.Contains(flight.TowFlight.AirStateId));
+                if (filter.TowFlightValidationStates != null && filter.TowFlightValidationStates.Any()) flights = flights.Where(flight => filter.TowFlightValidationStates.Contains(flight.TowFlight.ValidationStateId));
+                if (filter.TowFlightProcessStates != null && filter.TowFlightProcessStates.Any()) flights = flights.Where(flight => filter.TowFlightProcessStates.Contains(flight.TowFlight.ProcessStateId));
+                
                 //if (filter.TowFlightStartDateTime != null)
                 //{
                 //    var dateTimeFilter = filter.TowFlightStartDateTime;
