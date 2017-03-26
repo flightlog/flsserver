@@ -319,23 +319,11 @@ namespace FLS.Server.Service
                 }
             };
 
-            var flights = GetPagedFlightOverview(0, 10000, filter);
+            var flights = GetPagedFlightOverview(0, 10000, filter, false);
             return flights.Items;
         }
-
-        public PagedList<FlightOverview> GetPagedMotorFlightOverview(int? pageStart, int? pageSize,
-            PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter)
-        {
-            return GetPagedFlightOverview(pageStart, pageSize, pageableSearchFilter, true);
-        }
-
-        public PagedList<FlightOverview> GetPagedFlightOverview(int? pageStart, int? pageSize,
-            PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter)
-        {
-            return GetPagedFlightOverview(pageStart, pageSize, pageableSearchFilter, false);
-        }
-
-        private PagedList<FlightOverview> GetPagedFlightOverview(int? pageStart, int? pageSize, PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, bool motorFlightsOnly)
+        
+        public PagedList<FlightOverview> GetPagedFlightOverview(int? pageStart, int? pageSize, PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, bool motorFlightsOnly)
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<FlightOverviewSearchFilter>();
             if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new FlightOverviewSearchFilter();
@@ -386,15 +374,12 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.Immatriculation,
                         flight => flight.Aircraft.Immatriculation.Contains(filter.Immatriculation));
                 flights = flights.WhereIf(filter.PilotName,
-                    flight => flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname.Contains(filter.PilotName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname.Contains(filter.PilotName));
+                    flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname)
+                    .Contains(filter.PilotName));
                 flights = flights.WhereIf(filter.SecondCrewName,
-                    flight => flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Lastname.Contains(filter.SecondCrewName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Firstname.Contains(filter.SecondCrewName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Lastname.Contains(filter.SecondCrewName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Firstname.Contains(filter.SecondCrewName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Lastname.Contains(filter.SecondCrewName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Firstname.Contains(filter.SecondCrewName));
+                    flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Firstname).Contains(filter.SecondCrewName)
+                    || (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Firstname).Contains(filter.SecondCrewName)
+                    || (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Firstname).Contains(filter.SecondCrewName));
 
                 flights = flights.WhereIf(filter.FlightComment,
                     flight => flight.Comment.Contains(filter.FlightComment));
@@ -603,15 +588,12 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.Immatriculation,
                         flight => flight.Aircraft.Immatriculation.Contains(filter.Immatriculation));
                 flights = flights.WhereIf(filter.PilotName,
-                    flight => flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname.Contains(filter.PilotName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname.Contains(filter.PilotName));
+                    flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname).Contains(filter.PilotName));
                 flights = flights.WhereIf(filter.SecondCrewName,
-                    flight => flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Lastname.Contains(filter.SecondCrewName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Firstname.Contains(filter.SecondCrewName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Lastname.Contains(filter.SecondCrewName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Firstname.Contains(filter.SecondCrewName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Lastname.Contains(filter.SecondCrewName)
-                    || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Firstname.Contains(filter.SecondCrewName));
+                    flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Firstname).Contains(filter.SecondCrewName)
+                    || (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Firstname).Contains(filter.SecondCrewName)
+                    || (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Firstname).Contains(filter.SecondCrewName));
+
 
                 flights = flights.WhereIf(filter.FlightComment,
                     flight => flight.Comment.Contains(filter.FlightComment));
@@ -671,16 +653,14 @@ namespace FLS.Server.Service
                 //    flight => flight.FlightDuration.LocationName.Contains(filter.GliderFlightDuration));
 
                 flights = flights.WhereIf(filter.WinchOperatorName,
-                    flight => flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator).Person.Lastname.Contains(filter.WinchOperatorName)
-                        || flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator).Person.Firstname.Contains(filter.WinchOperatorName));
+                    flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator).Person.Firstname).Contains(filter.WinchOperatorName));
 
 
                 //TowFlight filtering
                 flights = flights.WhereIf(filter.TowAircraftImmatriculation,
                         flight => flight.TowFlight.Aircraft.Immatriculation.Contains(filter.TowAircraftImmatriculation));
                 flights = flights.WhereIf(filter.TowPilotName,
-                    flight => flight.TowFlight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname.Contains(filter.TowPilotName)
-                    || flight.TowFlight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname.Contains(filter.TowPilotName));
+                    flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname).Contains(filter.TowPilotName));
 
                 flights = flights.WhereIf(filter.TowFlightAirState,
                     flight => flight.TowFlight.FlightAirState.FlightAirStateName.Contains(filter.TowFlightAirState));

@@ -81,7 +81,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(PagedList<FlightOverview>))]
         public IHttpActionResult GetPagedFlightOverview([FromBody]PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
         {
-            var flights = _flightService.GetPagedFlightOverview(pageStart, pageSize, pageableSearchFilter);
+            var flights = _flightService.GetPagedFlightOverview(pageStart, pageSize, pageableSearchFilter, false);
             return Ok(flights);
         }
 
@@ -197,7 +197,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(PagedList<FlightOverview>))]
         public IHttpActionResult GetPagedMotorFlightOverview([FromBody]PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
         {
-            var flights = _flightService.GetPagedMotorFlightOverview(pageStart, pageSize, pageableSearchFilter);
+            var flights = _flightService.GetPagedFlightOverview(pageStart, pageSize, pageableSearchFilter, true);
             return Ok(flights);
         }
 
