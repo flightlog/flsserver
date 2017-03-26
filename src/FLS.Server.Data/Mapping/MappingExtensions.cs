@@ -1103,7 +1103,8 @@ namespace FLS.Server.Data.Mapping
                     else if (entity.LdgDateTime.HasValue) details.FlightDate = entity.LdgDateTime.Value.Date;
                 }
 
-                if (entity.IsTowed.HasValue && entity.IsTowed.Value)
+                if (entity.IsTowed.HasValue && entity.IsTowed.Value
+                    && entity.TowFlightId.HasValue)
                 {
                     var towFlightDetailsData = new TowFlightDetailsData();
                     if (entity.TowFlight != null)
@@ -1352,6 +1353,7 @@ namespace FLS.Server.Data.Mapping
                     else
                     {
                         //it is an external start or self start
+                        //or could be a towed glider flight without getting towflight data from client
                     }
                 }
 
