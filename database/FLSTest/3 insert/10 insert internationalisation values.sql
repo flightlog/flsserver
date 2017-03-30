@@ -1014,7 +1014,13 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'GLIDER_LANDED', 'Segelflugzeug gelandet', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'GLIDER_INVALID', 'Segelflug unvollständig', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'GLIDER_LOCKED', 'Segelflug in Verrechnung', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'GLIDER_DELIVERED', 'Segelflug verrechnet', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'TOW_READY', 'Schleppflugzeug bereit', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -1026,7 +1032,13 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'TOW_LANDED', 'Schleppflugzeug gelandet', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'TOW_INVALID', 'Schleppflug unvollständig', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'TOW_LOCKED', 'Schleppflug in Verrechnung', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'TOW_DELIVERED', 'Schleppflug verrechnet', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'COPY_FROM_LAST_FLIGHT', 'Vom letzten Flug kopieren', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
