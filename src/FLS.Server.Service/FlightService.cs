@@ -332,7 +332,12 @@ namespace FLS.Server.Service
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
                 pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
             }
-            
+            else if (pageableSearchFilter.Sorting.Count == 1 && pageableSearchFilter.Sorting.ContainsKey("FlightDate"))
+            {
+                //when sorting for flight date only, we sort for StartDateTime as second to get more valuable result
+                pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
+            }
+
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var includedFlightCrewTypes = new int[]
@@ -340,6 +345,7 @@ namespace FLS.Server.Service
                     (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent,
                     (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot,
                     (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor,
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer,
                     (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger,
                     (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator
                 };
@@ -356,6 +362,7 @@ namespace FLS.Server.Service
                         SecondCrew = fc.OrderBy(ffc => ffc.FlightCrewTypeId).FirstOrDefault(ffc =>
                                                         ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot
                                                         || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor
+                                                        || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer
                                                         || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger),
                         WinchOperator = fc.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator)
                     });
@@ -379,6 +386,7 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.SecondCrewName,
                     flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Firstname).Contains(filter.SecondCrewName)
                     || (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Firstname).Contains(filter.SecondCrewName)
+                    || (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer).Person.Firstname).Contains(filter.SecondCrewName)
                     || (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Firstname).Contains(filter.SecondCrewName));
 
                 flights = flights.WhereIf(filter.FlightComment,
@@ -549,6 +557,11 @@ namespace FLS.Server.Service
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
                 pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
             }
+            else if (pageableSearchFilter.Sorting.Count == 1 && pageableSearchFilter.Sorting.ContainsKey("FlightDate"))
+            {
+                //when sorting for flight date only, we sort for StartDateTime as second to get more valuable result
+                pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
+            }
             
             using (var context = _dataAccessService.CreateDbContext())
             {
@@ -557,6 +570,7 @@ namespace FLS.Server.Service
                     (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent,
                     (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot,
                     (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor,
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer,
                     (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger,
                     (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator
                 };
@@ -573,6 +587,7 @@ namespace FLS.Server.Service
                         SecondCrew = fc.OrderBy(ffc => ffc.FlightCrewTypeId).FirstOrDefault(ffc => 
                                                         ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot
                                                         || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor
+                                                        || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer
                                                         || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger),
                         WinchOperator = fc.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator)
                     });
@@ -591,6 +606,7 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.SecondCrewName,
                     flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot).Person.Firstname).Contains(filter.SecondCrewName)
                     || (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor).Person.Firstname).Contains(filter.SecondCrewName)
+                    || (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer).Person.Firstname).Contains(filter.SecondCrewName)
                     || (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger).Person.Firstname).Contains(filter.SecondCrewName));
 
 
