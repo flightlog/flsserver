@@ -106,10 +106,10 @@ namespace FLS.Data.WebApi.Flight
                 {
                     GliderFlightDuration = TimeSpan.FromSeconds(value.Value);
                 }
-                //else if (StartDateTime.HasValue && LdgDateTime.HasValue == false)
-                //{
-                //    GliderFlightDuration = DateTime.UtcNow - StartDateTime.Value;
-                //}
+                else if (StartDateTime.HasValue && LdgDateTime.HasValue == false)
+                {
+                    GliderFlightDuration = DateTime.UtcNow - StartDateTime.Value;
+                }
             }
         }
 
@@ -125,10 +125,10 @@ namespace FLS.Data.WebApi.Flight
                 {
                     TowFlightDuration = TimeSpan.FromSeconds(value.Value);
                 }
-                //else if (TowFlightStartDateTime.HasValue && TowFlightLdgDateTime.HasValue == false)
-                //{
-                //    TowFlightDuration = DateTime.UtcNow - TowFlightStartDateTime.Value;
-                //}
+                else if (TowFlightStartDateTime.HasValue && TowFlightLdgDateTime.HasValue == false)
+                {
+                    TowFlightDuration = DateTime.UtcNow - TowFlightStartDateTime.Value;
+                }
             }
         }
         #endregion Helper Properties with JsonIgnore
