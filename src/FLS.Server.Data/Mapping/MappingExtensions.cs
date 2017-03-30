@@ -1229,7 +1229,6 @@ namespace FLS.Server.Data.Mapping
             flightDetailsData.EngineEndOperatingCounterInSeconds = flight.EngineEndOperatingCounterInSeconds;
 
             flightDetailsData.AirStateId = flight.AirStateId;
-            flightDetailsData.ValidationStateId = flight.ValidationStateId;
             flightDetailsData.ProcessStateId = flight.ProcessStateId;
             flightDetailsData.FlightTypeId = flight.FlightTypeId;
             flightDetailsData.StartLocationId = flight.StartLocationId;
@@ -1606,7 +1605,6 @@ namespace FLS.Server.Data.Mapping
             exchangeData.FlightComment = entity.Comment;
 
             exchangeData.AirState = ((FLS.Data.WebApi.Flight.FlightAirState) entity.AirStateId).ToFlightAirState();
-            exchangeData.ValidationState = ((FLS.Data.WebApi.Flight.FlightValidationState)entity.ValidationStateId).ToFlightValidationState();
             exchangeData.ProcessState = ((FLS.Data.WebApi.Flight.FlightProcessState) entity.ProcessStateId).ToFlightProcessState();
 
             if (entity.FlightType != null)
@@ -1680,7 +1678,6 @@ namespace FLS.Server.Data.Mapping
                 exchangeData.TowFlightFlightComment = towFlight.Comment;
 
                 exchangeData.TowFlightAirState = ((FLS.Data.WebApi.Flight.FlightAirState)towFlight.AirStateId).ToFlightAirState();
-                exchangeData.TowFlightValidationState = ((FLS.Data.WebApi.Flight.FlightValidationState)towFlight.ValidationStateId).ToFlightValidationState();
                 exchangeData.TowFlightProcessState = ((FLS.Data.WebApi.Flight.FlightProcessState)towFlight.ProcessStateId).ToFlightProcessState();
 
                 if (towFlight.FlightType != null)

@@ -168,22 +168,6 @@ namespace FLS.Server.Service
             }
         }
         
-        public List<FlightStateListItem> GetFlightValidationStateListItems()
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var flightStates = context.FlightValidationStates.OrderBy(a => a.FlightValidationStateId);
-
-                var flightStateListItems = flightStates.Select(flightState => new FlightStateListItem()
-                {
-                    FlightStateId = flightState.FlightValidationStateId,
-                    FlightState = flightState.FlightValidationStateName
-                }).ToList();
-
-                return flightStateListItems;
-            }
-        }
-
         public List<FlightStateListItem> GetFlightProcessStateListItems()
         {
             using (var context = _dataAccessService.CreateDbContext())
@@ -393,7 +377,6 @@ namespace FLS.Server.Service
                     flight => flight.Comment.Contains(filter.FlightComment));
 
                 if (filter.AirStates != null && filter.AirStates.Any()) flights = flights.Where(flight => filter.AirStates.Contains(flight.AirStateId));
-                if (filter.ValidationStates != null && filter.ValidationStates.Any()) flights = flights.Where(flight => filter.ValidationStates.Contains(flight.ValidationStateId));
                 if (filter.ProcessStates != null && filter.ProcessStates.Any()) flights = flights.Where(flight => filter.ProcessStates.Contains(flight.ProcessStateId));
 
                 flights = flights.WhereIf(filter.FlightCode,
@@ -460,7 +443,6 @@ namespace FLS.Server.Service
                         FlightDurationInSeconds = DbFunctions.DiffSeconds(f.f.StartDateTime, f.f.LdgDateTime),
                         FlightCode = f.f.FlightType.FlightCode,
                         AirState = f.f.AirStateId,
-                        ValidationState = f.f.ValidationStateId,
                         ProcessState = f.f.ProcessStateId,
                         Immatriculation = f.f.Aircraft.Immatriculation,
                         StartType = f.f.StartTypeId,
@@ -614,7 +596,6 @@ namespace FLS.Server.Service
                     flight => flight.Comment.Contains(filter.FlightComment));
 
                 if (filter.AirStates != null && filter.AirStates.Any()) flights = flights.Where(flight => filter.AirStates.Contains(flight.AirStateId));
-                if (filter.ValidationStates != null && filter.ValidationStates.Any()) flights = flights.Where(flight => filter.ValidationStates.Contains(flight.ValidationStateId));
                 if (filter.ProcessStates != null && filter.ProcessStates.Any()) flights = flights.Where(flight => filter.ProcessStates.Contains(flight.ProcessStateId));
                 
                 flights = flights.WhereIf(filter.FlightCode,
@@ -677,7 +658,6 @@ namespace FLS.Server.Service
                     flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname).Contains(filter.TowPilotName));
 
                 if (filter.TowFlightAirStates != null && filter.TowFlightAirStates.Any()) flights = flights.Where(flight => filter.TowFlightAirStates.Contains(flight.TowFlight.AirStateId));
-                if (filter.TowFlightValidationStates != null && filter.TowFlightValidationStates.Any()) flights = flights.Where(flight => filter.TowFlightValidationStates.Contains(flight.TowFlight.ValidationStateId));
                 if (filter.TowFlightProcessStates != null && filter.TowFlightProcessStates.Any()) flights = flights.Where(flight => filter.TowFlightProcessStates.Contains(flight.TowFlight.ProcessStateId));
                 
                 //if (filter.TowFlightStartDateTime != null)
@@ -740,7 +720,6 @@ namespace FLS.Server.Service
                                 : null,
                         FlightCode = f.f.FlightType.FlightCode,
                         AirState = f.f.AirStateId,
-                        ValidationState = f.f.ValidationStateId,
                         ProcessState = f.f.ProcessStateId,
                         Immatriculation = f.f.Aircraft.Immatriculation,
                         StartType = f.f.StartTypeId,
@@ -756,7 +735,6 @@ namespace FLS.Server.Service
                         TowFlightStartLocation = f.f.TowFlight.StartLocation.LocationName,
                         TowFlightLdgLocation = f.f.TowFlight.LdgLocation.LocationName,
                         TowFlightAirState = f.f.TowFlight.AirStateId,
-                        TowFlightValidationState = f.f.TowFlight.ValidationStateId,
                         TowFlightProcessState = f.f.TowFlight.ProcessStateId,
                         TowPilotName = f.f.TowFlight.FlightCrews.Any(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent) ?
                                 f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname
@@ -821,12 +799,12 @@ namespace FLS.Server.Service
             {
                 //Flights which are not validated or are invalid, or have been modified since last validation date
                 var flightsToValidate = GetFlights(flight => flight.OwnerId == clubId 
-                    && (flight.ValidationStateId < (int)FLS.Data.WebApi.Flight.FlightValidationState.Valid
+                    && (flight.ProcessStateId < (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid
                     || (flight.ModifiedOn.HasValue && flight.ValidatedOn.HasValue && (flight.ModifiedOn >= flight.ValidatedOn))));
 
                 using (var context = _dataAccessService.CreateDbContext())
                 {
-                    var flightValidationStates = context.FlightValidationStates.ToList();
+                    var flightValidationStates = context.FlightProcessStates.ToList();
 
                     foreach (var flight in flightsToValidate)
                     {
@@ -838,7 +816,7 @@ namespace FLS.Server.Service
                         try
                         {
                             Logger.Info(
-                            $"The currently validated flight {flight} has now the following Flight-State: {flight.ValidationStateId} ({flightValidationStates.First(q => q.FlightValidationStateId == flight.ValidationStateId).FlightValidationStateName})");
+                            $"The currently validated flight {flight} has now the following Process-State: {flight.ProcessStateId} ({flightValidationStates.First(q => q.FlightProcessStateId == flight.ProcessStateId).FlightProcessStateName})");
                         }
                         catch (Exception exception)
                         {
@@ -879,7 +857,7 @@ namespace FLS.Server.Service
 
                 var flights =
                     GetFlights(
-                        flight => flight.ValidationStateId == (int)FLS.Data.WebApi.Flight.FlightValidationState.Valid
+                        flight => flight.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid
                                     && flight.ProcessStateId < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
                                     && flight.OwnerId == clubId
                                    && (forceLockNow || DbFunctions.TruncateTime(flight.CreatedOn) <= lockingDate.Date));

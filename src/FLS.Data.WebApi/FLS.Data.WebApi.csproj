@@ -115,7 +115,6 @@
     <Compile Include="Flight\FlightOverview.cs" />
     <Compile Include="Flight\FlightAirState.cs" />
     <Compile Include="Flight\FlightProcessState.cs" />
-    <Compile Include="Flight\FlightValidationState.cs" />
     <Compile Include="Flight\FlightCrewData.cs" />
     <Compile Include="Flight\GliderFlightOverviewSearchFilter.cs" />
     <Compile Include="FLSBaseData.cs" />

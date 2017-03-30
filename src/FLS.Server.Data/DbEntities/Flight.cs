@@ -17,7 +17,6 @@ namespace FLS.Server.Data.DbEntities
             TowedFlights = new HashSet<Flight>();
             Deliveries = new HashSet<Delivery>();
             DeliveryCreationTests = new HashSet<DeliveryCreationTest>();
-            ValidationStateId = (int) FLS.Data.WebApi.Flight.FlightValidationState.NotValidated;
             ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.NotProcessed;
         }
 
@@ -86,9 +85,7 @@ namespace FLS.Server.Data.DbEntities
         public bool NoLdgTimeInformation { get; set; }
         
         public int AirStateId { get; set; }
-
-        public int ValidationStateId { get; set; }
-
+        
         public int ProcessStateId { get; set; }
 
         public int FlightAircraftType { get; set; }
@@ -159,8 +156,6 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual FlightAirState FlightAirState { get; set; }
         
-        public virtual FlightValidationState FlightValidationState { get; set; }
-
         public virtual FlightProcessState FlightProcessState { get; set; }
 
         public virtual FlightType FlightType { get; set; }
@@ -504,8 +499,6 @@ namespace FLS.Server.Data.DbEntities
 
             sb.Append(", Flight-Air-State: ");
             sb.Append(AirStateId);
-            sb.Append(", Flight-Validation-State: ");
-            sb.Append(ValidationStateId);
             sb.Append(", Flight-Process-State: ");
             sb.Append(ProcessStateId);
 
@@ -518,8 +511,6 @@ namespace FLS.Server.Data.DbEntities
 
                 sb.Append(", Tow-Flight-Air-State: ");
                 sb.Append(TowFlight.AirStateId);
-                sb.Append(", Tow-Flight-Validation-State: ");
-                sb.Append(TowFlight.ValidationStateId);
                 sb.Append(", Tow-Flight-Process-State: ");
                 sb.Append(TowFlight.ProcessStateId);
             }
@@ -568,14 +559,14 @@ namespace FLS.Server.Data.DbEntities
                 || NrOfLdgs.HasValue == false
                 || NrOfLdgs.Value < 1)
             {
-                ValidationStateId = (int) FLS.Data.WebApi.Flight.FlightValidationState.Invalid;
+                ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.Invalid;
                 return;
             }
 
             if (FlightAircraftType == (int) FlightAircraftTypeValue.TowFlight)
             {
                 //validation finished
-                ValidationStateId = (int)FLS.Data.WebApi.Flight.FlightValidationState.Valid;
+                ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid;
                 return;
             }
 
@@ -584,7 +575,7 @@ namespace FLS.Server.Data.DbEntities
                 if (TowFlightId == Guid.Empty
                     || TowFlight == null)
                 {
-                    ValidationStateId = (int)FLS.Data.WebApi.Flight.FlightValidationState.Invalid;
+                    ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Invalid;
                 }
 
                 if (TowFlight != null)
@@ -596,7 +587,7 @@ namespace FLS.Server.Data.DbEntities
             {
                 if (TowFlightId.HasValue)
                 {
-                    ValidationStateId = (int)FLS.Data.WebApi.Flight.FlightValidationState.Invalid;
+                    ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Invalid;
                 }
             }
             else if (StartTypeId.Value == (int)AircraftStartType.WinchLaunch)
@@ -604,7 +595,7 @@ namespace FLS.Server.Data.DbEntities
                 if (WinchOperator == null
                     || WinchOperator.HasPerson == false)
                 {
-                    ValidationStateId = (int)FLS.Data.WebApi.Flight.FlightValidationState.Invalid;
+                    ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Invalid;
                 }
             }
             else if (StartTypeId.Value == (int)AircraftStartType.SelfStart)
@@ -616,7 +607,7 @@ namespace FLS.Server.Data.DbEntities
                 
             }
 
-            ValidationStateId = (int)FLS.Data.WebApi.Flight.FlightValidationState.Valid;
+            ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid;
         }
         #endregion additional methods
     }

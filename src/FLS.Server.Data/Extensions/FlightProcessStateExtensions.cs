@@ -14,6 +14,12 @@ namespace FLS.Server.Data.Extensions
                 case FlightProcessState.NotProcessed:
                     returnValue = "NotProcessed";
                     break;
+                case FlightProcessState.Invalid:
+                    returnValue = "Invalid";
+                    break;
+                case FlightProcessState.Valid:
+                    returnValue = "Valid";
+                    break;
                 case FlightProcessState.Locked:
                     returnValue = "Locked";
                     break;

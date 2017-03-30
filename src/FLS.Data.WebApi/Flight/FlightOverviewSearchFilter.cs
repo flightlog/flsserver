@@ -17,8 +17,6 @@ namespace FLS.Data.WebApi.Flight
 
         public List<int> AirStates { get; set; }
 
-        public List<int> ValidationStates { get; set; }
-
         public List<int> ProcessStates { get; set; }
 
         public string FlightCode { get; set; }

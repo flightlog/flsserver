@@ -40,21 +40,7 @@ namespace FLS.Server.WebApi.Controllers
             var flightStates = _flightService.GetFlightAirStateListItems();
             return Ok(flightStates);
         }
-
-        /// <summary>
-        /// Gets the flight validation state list items.
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("validation")]
-        [Route("validation/listitems")]
-        [ResponseType(typeof(List<FlightStateListItem>))]
-        public IHttpActionResult GetFlightValidationStateListItems()
-        {
-            var flightStates = _flightService.GetFlightValidationStateListItems();
-            return Ok(flightStates);
-        }
-
+        
         /// <summary>
         /// Gets the flight process state list items.
         /// </summary>

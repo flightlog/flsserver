@@ -95,7 +95,6 @@
     <Compile Include="DbEntities\ClubState.cs" />
     <Compile Include="DbEntities\Article.cs" />
     <Compile Include="DbEntities\FlightProcessState.cs" />
-    <Compile Include="DbEntities\FlightValidationState.cs" />
     <Compile Include="DbEntities\FlightAirState.cs" />
     <Compile Include="DbEntities\LanguageTranslation.cs" />
     <Compile Include="DbEntities\Language.cs" />
@@ -117,7 +116,6 @@
     <Compile Include="DeletedFLSDataEntities.cs" />
     <Compile Include="Exceptions\DeleteEntityException.cs" />
     <Compile Include="Extensions\FlightProcessStateExtensions.cs" />
-    <Compile Include="Extensions\FlightValidationStateExtensions.cs" />
     <Compile Include="Extensions\FlightAirStateExtensions.cs" />
     <Compile Include="Extensions\EntityTrackerExtensions.cs" />
     <Compile Include="Extensions\CostCenterUnitTypeExtensions.cs" />
