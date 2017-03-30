@@ -738,7 +738,6 @@ namespace FLS.Server.Service
                             fcp.SecondCrew != null
                                 ? fcp.SecondCrew.Person.Lastname + " " + fcp.SecondCrew.Person.Firstname
                                 : null,
-                        GliderFlightDurationInSeconds = DbFunctions.DiffSeconds(f.f.StartDateTime, f.f.LdgDateTime),
                         FlightCode = f.f.FlightType.FlightCode,
                         AirState = f.f.AirStateId,
                         ValidationState = f.f.ValidationStateId,
@@ -748,6 +747,7 @@ namespace FLS.Server.Service
                         FlightDate = f.f.FlightDate,
                         StartDateTime = f.f.StartDateTime,
                         LdgDateTime = f.f.LdgDateTime,
+                        GliderFlightDurationInSeconds = DbFunctions.DiffSeconds(f.f.StartDateTime, f.f.LdgDateTime),
                         TowFlightId = f.f.TowFlightId,
                         TowAircraftImmatriculation = f.f.TowFlight.Aircraft.Immatriculation,
                         TowFlightStartDateTime = f.f.TowFlight.StartDateTime,
