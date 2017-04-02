@@ -47,6 +47,17 @@ namespace FLS.Server.Service.Email
             }
         }
 
+        public void SendSystemErrorEmail(string subject, string errorMessage, string stackTrace, string additionalInfo)
+        {
+            MailMessage message = new MailMessage(SystemData.SystemSenderEmailAddress,
+                SystemData.SystemSenderEmailAddress);
+            message.Subject = subject;
+            message.Body =
+                $"A system error occured in FLS.{Environment.NewLine}Error:{errorMessage}{Environment.NewLine}Additional information:{additionalInfo}{Environment.NewLine}Stacktrace:{stackTrace}.";
+
+            SendEmail(message);
+        }
+
         protected MailMessage BuildEmail(string templateName, MergedEmailFactory factory, 
             Dictionary<string, object> tokenValues, string messageSubject, string recipientEmailAddress,
             Guid? clubId = null)
