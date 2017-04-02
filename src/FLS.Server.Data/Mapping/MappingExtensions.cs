@@ -1481,6 +1481,11 @@ namespace FLS.Server.Data.Mapping
                 //only set coupon number when flight type requires coupon number
                 entity.CouponNumber = details.CouponNumber;
             }
+            else
+            {
+                //set coupon number to null when not required: see also issue https://github.com/flightlog/flsserver/issues/33
+                entity.CouponNumber = null;
+            }
 
             entity.StartPosition = details.StartPosition;
 
