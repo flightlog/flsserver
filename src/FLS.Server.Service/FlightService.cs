@@ -869,8 +869,8 @@ namespace FLS.Server.Service
                         context.Flights.Attach(flight);
 
                         flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked;
-
-                        Logger.Info(string.Format("The valid flight {0} has now been locked.", flight));
+                        flight.DoNotUpdateMetaData = true;
+                        Logger.Info($"The valid flight {flight} has now been locked.");
                     }
 
                     context.SaveChanges();
