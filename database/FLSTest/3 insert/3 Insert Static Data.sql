@@ -74,7 +74,6 @@ DELETE FROM FlightCrew
 DELETE FROM FlightCrewTypes
 DELETE FROM Flights
 DELETE FROM FlightAirStates
-DELETE FROM FlightValidationStates
 DELETE FROM FlightProcessStates
 DELETE FROM Aircrafts
 DELETE FROM UserRoles
@@ -688,14 +687,11 @@ INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comme
 INSERT [dbo].[FlightAirStates] ([FlightAirStateId], [FlightAirStateName], [Comment], [CreatedOn]) VALUES (25, N'Geschlossen', N'Flug/Flugplan geschlossen', SYSUTCDATETIME())
 
 
-INSERT [dbo].[FlightValidationStates] ([FlightValidationStateId], [FlightValidationStateName], [Comment], [CreatedOn]) VALUES (0, N'Nicht validiert', N'Flug wurde noch nicht validiert', SYSUTCDATETIME())
-
-INSERT [dbo].[FlightValidationStates] ([FlightValidationStateId], [FlightValidationStateName], [Comment], [CreatedOn]) VALUES (28, N'Ungültig', N'Flug wurde validiert, Angaben sind aber ungültig oder nicht plausibel', SYSUTCDATETIME())
-
-INSERT [dbo].[FlightValidationStates] ([FlightValidationStateId], [FlightValidationStateName], [Comment], [CreatedOn]) VALUES (30, N'Gültig', N'Flug wurde validiert und Angaben zum Flug sind gültig', SYSUTCDATETIME())
-
-
 INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (0, N'Kein Prozess gelaufen', N'Für diesen Flug war noch kein Prozess gelaufen', SYSUTCDATETIME())
+
+INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (28, N'Ungültig', N'Flug wurde validiert, Angaben sind aber ungültig oder nicht plausibel', SYSUTCDATETIME())
+
+INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (30, N'Gültig', N'Flug wurde validiert und Angaben zum Flug sind gültig', SYSUTCDATETIME())
 
 INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) VALUES (40, N'Gesperrt', N'Flug kann nicht mehr editiert werden und ist für Verrechnung bereit', SYSUTCDATETIME())
 
