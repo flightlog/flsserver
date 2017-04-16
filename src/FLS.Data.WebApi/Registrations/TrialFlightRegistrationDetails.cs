@@ -62,5 +62,9 @@ namespace FLS.Data.WebApi.Registrations
         public Guid? InvoiceToCountryId { get; set; }
 
         public DateTime SelectedDay { get; set; }
+
+        public bool SendCouponToInvoiceAddress { get; set; }
+
+        public string Remarks { get; set; }
     }
 }

@@ -77,12 +77,18 @@ namespace FLS.Server.Data.DbEntities
         public Guid? DefaultTowFlightTypeId { get; set; }
 
         public Guid? DefaultMotorFlightTypeId { get; set; }
-        
+
+        [StringLength(250)]
         public string SendAircraftStatisticReportTo { get; set; }
 
+        [StringLength(250)]
         public string SendPlanningDayInfoMailTo { get; set; }
 
+        [StringLength(250)]
         public string SendDeliveryMailExportTo { get; set; }
+
+        [StringLength(250)]
+        public string SendTrialFlightRegistrationOperatorEmailTo { get; set; }
 
         public bool RunDeliveryCreationJob { get; set; }
 

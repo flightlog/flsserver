@@ -53,7 +53,15 @@ namespace FLS.Server.Service
             {
                 try
                 {
+                    Logger.Info($"New trial flight registration with following data (JSON): {JsonConvert.SerializeObject(trialFlightRegistrationDetails)}");
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception);
+                }
 
+                try
+                {
                     var club =
                         context.Clubs.FirstOrDefault(
                             x => x.ClubKey.ToUpper() == trialFlightRegistrationDetails.ClubKey.ToUpper());
@@ -135,25 +143,32 @@ namespace FLS.Server.Service
                         context.Persons.Add(invoicePerson);
                     }
 
-                    var aircraft = context.Aircrafts.FirstOrDefault(x => x.Immatriculation.ToUpper() == "HB-3256");
+                    var aircraft = context.Aircrafts.FirstOrDefault(x => x.AircraftOwnerClubId == club.ClubId && x.NrOfSeats == 2 && x.AircraftTypeId == (int)AircraftType.Glider);
+                    var aircraftReservationInfo = string.Empty;
 
                     if (aircraft == null)
                     {
-                        Logger.Warn("Aircraft HB-3256 not fount!");
-                        aircraft =
-                            context.Aircrafts.FirstOrDefault(
-                                x => x.NrOfSeats == 2 && x.AircraftTypeId == (int) AircraftType.Glider);
+                        Logger.Warn($"No double seats glider aircraft found with owned club {club.Clubname}!");
+                        aircraftReservationInfo =
+                            "Reservation konnte NICHT gemacht werden. Grund: Kein Doppelsitzer für Club gefunden!";
                     }
 
-                    if (aircraft == null)
-                    {
-                        Logger.Error("No double seats glider aircraft found!");
-                    }
-                    else if (club.HomebaseId.HasValue == false)
+                    if (club.HomebaseId.HasValue == false)
                     {
                         Logger.Warn("No homebase or location defined for trial flight day!");
+
+                        if (aircraft == null)
+                        {
+                            aircraftReservationInfo = "Reservation konnte NICHT gemacht werden. Grund: Kein Doppelsitzer für Club gefunden und kein Heimflugplatz für Club definiert!";
+                        }
+                        else
+                        {
+                            aircraftReservationInfo =
+                                "Reservation konnte NICHT gemacht werden. Grund: Keine Heimflugplatz für Club definiert!";
+                        }
                     }
-                    else
+                    
+                    if (aircraft != null && club.HomebaseId.HasValue)
                     {
                         var reservation = new AircraftReservation()
                         {
@@ -169,6 +184,9 @@ namespace FLS.Server.Service
                         };
 
                         context.AircraftReservations.Add(reservation);
+
+                        aircraftReservationInfo =
+                                "Reservation wurde erstellt.";
                     }
 
                     context.SaveChanges();
@@ -178,6 +196,24 @@ namespace FLS.Server.Service
                         var email = _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForTrialPilot(person,
                             trialFlightRegistrationDetails.SelectedDay, person.EmailPrivate, club.ClubId, club.HomebaseName);
                         _registrationEmailBuildService.SendEmail(email);
+                    }
+                    else
+                    {
+                        Logger.Info($"No private email set for trial flight pilot {person.DisplayName}. Could not send email to pilot.");
+                    }
+
+                    if (string.IsNullOrWhiteSpace(club.SendTrialFlightRegistrationOperatorEmailTo) == false)
+                    {
+                        var organisationEmail =
+                            _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForOrganisator(
+                                trialFlightRegistrationDetails,
+                                club.SendTrialFlightRegistrationOperatorEmailTo, club.ClubId, club.HomebaseName,
+                                aircraftReservationInfo);
+                        _registrationEmailBuildService.SendEmail(organisationEmail);
+                    }
+                    else
+                    {
+                        Logger.Warn($"Club {club.Clubname} has no email recipient set for send trial flight registration operator email.");
                     }
                 }
                 catch (Exception exception)

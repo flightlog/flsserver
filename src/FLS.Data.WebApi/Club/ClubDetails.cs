@@ -57,15 +57,21 @@ namespace FLS.Data.WebApi.Club
 
         [StringLength(10)]
         public string ZipCode { get; set; }
-        
+
         /// <summary>
         /// Gets or sets to which email addresses club owned aircraft statistic reports should be send
         /// </summary>
+        [StringLength(250)]
         public string SendAircraftStatisticReportTo { get; set; }
 
+        [StringLength(250)]
         public string SendPlanningDayInfoMailTo { get; set; }
 
+        [StringLength(250)]
         public string SendDeliveryMailExportTo { get; set; }
+
+        [StringLength(250)]
+        public string SendTrialFlightRegistrationOperatorEmailTo { get; set; }
 
         public bool RunDeliveryCreationJob { get; set; }
 

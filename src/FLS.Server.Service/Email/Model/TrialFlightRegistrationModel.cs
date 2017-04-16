@@ -24,8 +24,26 @@
 
         public string SelectedTrialFlightDate { get; set; }
 
+        public string InvoiceToFirstname { get; set; }
+
+        public string InvoiceToLastname { get; set; }
+
+        public string InvoiceToAddressLine1 { get; set; }
+
+        public string InvoiceToZipCode { get; set; }
+
+        public string InvoiceToCity { get; set; }
+
+        public string InvoiceToCountryName { get; set; }
+
+        public string SendCouponToInformation { get; set; }
+
         public string WillBeContactedOnDate { get; set; }
 
         public string LocationName { get; set; }
+
+        public string Remarks { get; set; }
+
+        public string ReservationInformation { get; set; }
     }
 }
