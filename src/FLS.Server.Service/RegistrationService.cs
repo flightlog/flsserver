@@ -63,7 +63,7 @@ namespace FLS.Server.Service
                 try
                 {
                     var club =
-                        context.Clubs.FirstOrDefault(
+                        context.Clubs.Include("Homebase").FirstOrDefault(
                             x => x.ClubKey.ToUpper() == trialFlightRegistrationDetails.ClubKey.ToUpper());
 
                     if (club == null)
