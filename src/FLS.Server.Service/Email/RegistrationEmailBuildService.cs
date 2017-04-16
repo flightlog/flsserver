@@ -103,7 +103,7 @@ namespace FLS.Server.Service.Email
                     {"TrialFlightRegistrationModel", model}
                 };
 
-            return base.BuildEmail("TrialFlightRegistrationEmailForTrialPilot", factory, tokenValues, messageSubject, emailRecipientAddress.FormatMultipleEmailAddresses(), clubId);
+            return base.BuildEmail("NewTrialFlightRegistrationEmail", factory, tokenValues, messageSubject, emailRecipientAddress.FormatMultipleEmailAddresses(), clubId);
         }
     }
 }
