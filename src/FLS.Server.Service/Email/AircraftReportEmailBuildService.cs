@@ -30,14 +30,12 @@ namespace FLS.Server.Service.Email
             report.FLSUrl = SystemData.BaseURL;
             //report.RecipientName = recipients.First().DisplayName;
 
-            string messageSubject = "Flugzeug-Statistik-Report";
-
             var tokenValues = new Dictionary<string, object>
                 {
                     {"EmailAircraftFlightReport", report}
                 };
 
-            return base.BuildEmail("aircraftstatisticreport", factory, tokenValues, messageSubject, 
+            return base.BuildEmail("aircraftstatisticreport", factory, tokenValues, 
                 recipientMailAddresses.FormatMultipleEmailAddresses());
         }
     }

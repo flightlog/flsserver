@@ -59,7 +59,7 @@ namespace FLS.Server.Service.Email
         }
 
         protected MailMessage BuildEmail(string templateName, MergedEmailFactory factory, 
-            Dictionary<string, object> tokenValues, string messageSubject, string recipientEmailAddress,
+            Dictionary<string, object> tokenValues, string recipientEmailAddress,
             Guid? clubId = null)
         {
             try
@@ -67,13 +67,19 @@ namespace FLS.Server.Service.Email
                 templateName.NotNullOrEmpty("templateName");
 
                 var template = _templateService.GetEmailTemplate(templateName, clubId);
+
+                if (template == null)
+                {
+                    Logger.Error($"Email-template with name: {templateName} not found!");
+                    throw new ApplicationException($"Email-template with name: { templateName } not found!");
+                }
                 
                 MailMessage message = factory
                     .WithTokenValues(tokenValues)
+                    .WithSubject(template.Subject)
                     .WithHtmlBodyFromVelocity(template.HtmlBody)
                     .Create();
 
-                message.Subject = messageSubject;
                 message.From = new MailAddress(SystemData.SystemSenderEmailAddress);
 
                 message.To.Add(recipientEmailAddress);

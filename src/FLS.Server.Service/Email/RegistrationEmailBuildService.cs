@@ -36,14 +36,12 @@ namespace FLS.Server.Service.Email
 
             var factory = new MergedEmailFactory(new VelocityTemplateParser("TrialFlightRegistrationModel"));
 
-            string messageSubject = "Email-Bestätigung für Schnupperflug-Registrierung";
-
             var tokenValues = new Dictionary<string, object>
                 {
                     {"TrialFlightRegistrationModel", model}
                 };
 
-            return base.BuildEmail("TrialFlightRegistrationEmailForTrialPilot", factory, tokenValues, messageSubject, emailRecipientAddress.SanitizeEmailAddress(), clubId);
+            return base.BuildEmail("TrialFlightRegistrationEmailForTrialPilot", factory, tokenValues, emailRecipientAddress.SanitizeEmailAddress(), clubId);
         }
 
         public MailMessage CreateTrialFlightRegistrationEmailForOrganisator(TrialFlightRegistrationDetails trialFlightRegistrationDetails, string emailRecipientAddress, Guid clubId, string locationName, string reservationInfo)
@@ -96,14 +94,12 @@ namespace FLS.Server.Service.Email
 
             var factory = new MergedEmailFactory(new VelocityTemplateParser("TrialFlightRegistrationModel"));
 
-            string messageSubject = "Neue Schnupperflug-Registrierung";
-
             var tokenValues = new Dictionary<string, object>
                 {
                     {"TrialFlightRegistrationModel", model}
                 };
 
-            return base.BuildEmail("NewTrialFlightRegistrationEmail", factory, tokenValues, messageSubject, emailRecipientAddress.FormatMultipleEmailAddresses(), clubId);
+            return base.BuildEmail("NewTrialFlightRegistrationEmail", factory, tokenValues, emailRecipientAddress.FormatMultipleEmailAddresses(), clubId);
         }
     }
 }

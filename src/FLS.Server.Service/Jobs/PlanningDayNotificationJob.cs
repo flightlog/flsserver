@@ -101,6 +101,47 @@ namespace FLS.Server.Service.Jobs
                         Logger.Error(ex, $"Error while executing planning day notification job for club: {club.Clubname}. Error: {ex.Message}");
                     }
                 }
+
+                foreach (var club in clubs)
+                {
+                    try
+                    {
+                        var planningDays = _planningDayService.GetPlanningDays(club.ClubId, DateTime.Now.Date.AddDays(7));
+
+                        foreach (var planningDay in planningDays.Where(planningDay => planningDay.Day.Date == DateTime.Now.Date.AddDays(7)))
+                        {
+                            foreach (var planningDayPlanningDayAssignment in planningDay.PlanningDayAssignments)
+                            {
+                                try
+                                {
+                                    MailMessage message =
+                                        _planningDayEmailService.CreatePlanningDayAssignmentNotificationEmail(
+                                            planningDayPlanningDayAssignment, club.ClubId);
+
+                                    if (message != null)
+                                    {
+                                        //send email
+                                        _planningDayEmailService.SendEmail(message);
+                                    }
+                                    else
+                                    {
+                                        Logger.Error(
+                                            "Error while creating email message in planningDayEmailService. Email message is null");
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    Logger.Error(e,
+                                        $"Error while trying to create a planningday assignment notification email for day: {planningDay}. Error: {e.Message}");
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex, $"Error while executing planning day notification job for club: {club.Clubname}. Error: {ex.Message}");
+                    }
+                }
             }
             catch (Exception ex)
             {

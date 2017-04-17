@@ -52,7 +52,6 @@ namespace FLS.Server.Service.Email
             }
 
             flightInfoModel.Flights = flights.ToArray();
-            string messageSubject = string.Empty;
 
             if (todaysFlights.Any())
             {
@@ -63,18 +62,15 @@ namespace FLS.Server.Service.Email
                 {
                     if (Equals(flightsFrom, flightsTo) == false)
                     {
-                        messageSubject = $"Flug-Informationen vom {flightsFrom.Value.ToShortDateString()} bis {flightsTo.Value.ToShortDateString()}";
                         flightInfoModel.Date = $"{flightsFrom.Value.ToShortDateString()} bis {flightsTo.Value.ToShortDateString()}";
                     }
                     else
                     {
-                        messageSubject = $"Flug-Informationen vom {flightsFrom.Value.ToShortDateString()}";
                         flightInfoModel.Date = flightsFrom.Value.ToShortDateString();
                     }
                 }
                 else
                 {
-                    messageSubject = $"Flug-Informationen vom {DateTime.Now.ToShortDateString()}";
                     flightInfoModel.Date = DateTime.Now.ToShortDateString();
                 }
             }
@@ -84,7 +80,7 @@ namespace FLS.Server.Service.Email
                     {"FlightInfoModel", flightInfoModel}
                 };
 
-            return base.BuildEmail("flightreport", factory, tokenValues, messageSubject, person.EmailAddressForCommunication.SanitizeEmailAddress());
+            return base.BuildEmail("flightreport", factory, tokenValues, person.EmailAddressForCommunication.SanitizeEmailAddress());
         }
 
     }

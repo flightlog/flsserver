@@ -46,6 +46,15 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void ExecutePlanningDayMailJobTest()
         {
+            var planningDay = new PlanningDayDetails();
+            planningDay.Day = DateTime.Now.Date.AddDays(7);
+            planningDay.LocationId = GetFirstLocation().LocationId;
+            planningDay.Remarks = "Test";
+            planningDay.FlightOperatorPersonId = GetFirstPerson().PersonId;
+            planningDay.TowingPilotPersonId = GetFirstPerson().PersonId;
+            planningDay.InstructorPersonId = GetFirstGliderInstructorPerson(CurrentIdentityUser.ClubId).PersonId;
+            PlanningDayService.InsertPlanningDayDetails(planningDay);
+
             WorkflowService.ExecutePlanningDayMailJob();
         }
         

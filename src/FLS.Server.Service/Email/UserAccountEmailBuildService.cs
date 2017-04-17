@@ -34,14 +34,12 @@ namespace FLS.Server.Service.Email
 
             var factory = new MergedEmailFactory(new VelocityTemplateParser("LostPasswordResetModel"));
 
-            string messageSubject = "Passwort-Reset für Flight Logging System Zugang";
-
             var tokenValues = new Dictionary<string, object>
                 {
                     {"LostPasswordResetModel", lostPasswordResetModel}
                 };
 
-            return base.BuildEmail("lostpassword", factory, tokenValues, messageSubject, user.NotificationEmail.SanitizeEmailAddress(), user.ClubId);
+            return base.BuildEmail("lostpassword", factory, tokenValues, user.NotificationEmail.SanitizeEmailAddress(), user.ClubId);
         }
 
         public MailMessage CreateEmailConfirmationEmail(User user, string emailConfirmationUrl)
@@ -59,14 +57,12 @@ namespace FLS.Server.Service.Email
 
             var factory = new MergedEmailFactory(new VelocityTemplateParser("EmailConfirmationModel"));
 
-            string messageSubject = "Email-Bestätigung für neues Benutzerkonto im Flight Logging System";
-
             var tokenValues = new Dictionary<string, object>
                 {
                     {"EmailConfirmationModel", emailConfirmationModel}
                 };
 
-            return base.BuildEmail("emailconfirmation", factory, tokenValues, messageSubject, user.NotificationEmail.SanitizeEmailAddress(), user.ClubId);
+            return base.BuildEmail("emailconfirmation", factory, tokenValues, user.NotificationEmail.SanitizeEmailAddress(), user.ClubId);
 
         }
     }

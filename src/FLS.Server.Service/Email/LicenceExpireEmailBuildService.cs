@@ -35,14 +35,12 @@ namespace FLS.Server.Service.Email
 
             var factory = new MergedEmailFactory(new VelocityTemplateParser("LicenceExpireModel"));
 
-            string messageSubject = "Lizenz läuft bald ab";
-
             var tokenValues = new Dictionary<string, object>
                 {
                     {"LicenceExpireModel", licenceExpireModel}
                 };
 
-            return base.BuildEmail("licenceexpiressoon", factory, tokenValues, messageSubject, person.EmailAddressForCommunication.SanitizeEmailAddress());
+            return base.BuildEmail("licenceexpiressoon", factory, tokenValues, person.EmailAddressForCommunication.SanitizeEmailAddress());
         }
     }
 }

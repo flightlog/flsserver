@@ -7,6 +7,7 @@ using FLS.Common.Extensions;
 using FLS.Common.Validators;
 using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.PlanningDay;
+using FLS.Server.Data.DbEntities;
 using FLS.Server.Service.Email.Model;
 
 namespace FLS.Server.Service.Email
@@ -31,14 +32,12 @@ namespace FLS.Server.Service.Email
 
                 var planningDayInfoModel = planningDayOverview.ToPlanningDayInfoModel(SystemData, reservations);
 
-                string messageSubject = $"Flugtag vom {planningDayInfoModel.Date} in {planningDayInfoModel.LocationName} findet statt";
-
                 var tokenValues = new Dictionary<string, object>
                 {
                     {"PlanningDayInfoModel", planningDayInfoModel}
                 };
 
-                return BuildEmail("planningday-ok", factory, tokenValues, messageSubject, recipientMailAddresses.FormatMultipleEmailAddresses(), clubId);
+                return BuildEmail("planningday-ok", factory, tokenValues, recipientMailAddresses.FormatMultipleEmailAddresses(), clubId);
             }
             catch (Exception e)
             {
@@ -57,18 +56,49 @@ namespace FLS.Server.Service.Email
 
                 var planningDayInfoModel = planningDayOverview.ToPlanningDayInfoModel(SystemData, null);
 
-                string messageSubject = $"Flugtag vom {planningDayInfoModel.Date} in {planningDayInfoModel.LocationName} hat keine Flugzeugreservationen";
-
                 var tokenValues = new Dictionary<string, object>
                 {
                     {"PlanningDayInfoModel", planningDayInfoModel}
                 };
 
-                return BuildEmail("planningday-cancel", factory, tokenValues, messageSubject, recipientMailAddresses.FormatMultipleEmailAddresses(), clubId);
+                return BuildEmail("planningday-cancel", factory, tokenValues, recipientMailAddresses.FormatMultipleEmailAddresses(), clubId);
             }
             catch (Exception e)
             {
                 Logger.Error(e, $"Error while trying to create planning day no reservation email. Error: {e.Message}");
+                throw;
+            }
+        }
+
+        public MailMessage CreatePlanningDayAssignmentNotificationEmail(PlanningDayAssignment planningDayAssignment, Guid clubId)
+        {
+            try
+            {
+                planningDayAssignment.ArgumentNotNull("planningDayAssignment");
+
+                var factory = new MergedEmailFactory(new VelocityTemplateParser("PlanningDayAssignmentModel"));
+
+                var planningDayAssignmentModel = new PlanningDayAssignmentModel()
+                {
+                    Date = planningDayAssignment.AssignedPlanningDay.Day.ToShortDateString(),
+                    LocationName = planningDayAssignment.AssignedPlanningDay.Location.LocationName,
+                    Remarks = planningDayAssignment.AssignedPlanningDay.Remarks,
+                    AssignedPersonName = planningDayAssignment.AssignedPerson.Firstname,
+                    AssignmentTypeName = planningDayAssignment.AssignmentType.AssignmentTypeName,
+                    FLSUrl = SystemData.BaseURL,
+                    SenderName = SystemData.SystemSenderEmailAddress
+                };
+
+                var tokenValues = new Dictionary<string, object>
+                {
+                    {"PlanningDayAssignmentModel", planningDayAssignmentModel}
+                };
+
+                return BuildEmail("planningday-assignment-notification", factory, tokenValues, planningDayAssignment.AssignedPerson.EmailAddressForCommunication.FormatMultipleEmailAddresses(), clubId);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, $"Error while trying to create planning day assignment notification email. Error: {e.Message}");
                 throw;
             }
         }
