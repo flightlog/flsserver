@@ -110,52 +110,7 @@ namespace FLS.Server.Tests.ServiceTests
                 planningDays.ForEach(x => Logger.Debug($"{x.ToString()}"));
             }
         }
-
-        [TestMethod]
-        [TestCategory("Service")]
-        public void PlanningDayOverviewTest()
-        {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            var planningDays = PlanningDayService.GetPlanningDayOverview(new DateTime(2000, 1, 1));
-            sw.Stop();
-            planningDays.ForEach(p => Logger.Debug($"{p.ToString()}"));
-            Logger.Debug($"GetPlanningDayOverview takes: {sw.ElapsedMilliseconds} ms");
-
-            sw = new Stopwatch();
-            sw.Start();
-            var planningDaysNew = PlanningDayService.GetPlanningDayOverviewWithDirectSelection(new DateTime(2000, 1, 1));
-            sw.Stop();
-            planningDaysNew.ForEach(p => Logger.Debug($"{p.ToString()}"));
-            Logger.Debug($"GetPlanningDayOverviewNew takes: {sw.ElapsedMilliseconds} ms");
-
-            var planningDayOverview = planningDaysNew.First();
-            var planningDayDetails = PlanningDayService.GetPlanningDayDetails(planningDayOverview.PlanningDayId);
-            var reservation = new AircraftReservationDetails();
-            reservation.AircraftId = GetFirstAircraft().AircraftId;
-            reservation.IsAllDayReservation = true;
-            reservation.Start = planningDayDetails.Day;
-            reservation.LocationId = planningDayDetails.LocationId;
-            reservation.PilotPersonId = GetFirstPerson(CurrentIdentityUser.ClubId).PersonId;
-            reservation.ReservationTypeId = 1;
-            AircraftReservationService.InsertAircraftReservationDetails(reservation);
-
-            sw = new Stopwatch();
-            sw.Start();
-            var planningDays2 = PlanningDayService.GetPlanningDayOverview(new DateTime(2000, 1, 1));
-            sw.Stop();
-            planningDays2.ForEach(p => Logger.Debug($"{p.ToString()}"));
-            Logger.Debug($"GetPlanningDayOverview takes: {sw.ElapsedMilliseconds} ms");
-
-            sw = new Stopwatch();
-            sw.Start();
-            var planningDaysNew2 = PlanningDayService.GetPlanningDayOverviewWithDirectSelection(new DateTime(2000, 1, 1));
-            sw.Stop();
-            planningDaysNew2.ForEach(p => Logger.Debug($"{p.ToString()}"));
-            Logger.Debug($"GetPlanningDayOverviewNew takes: {sw.ElapsedMilliseconds} ms");
-
-        }
-
+        
         [TestMethod]
         [TestCategory("Service")]
         public void PagedPlanningDayOverviewTest()

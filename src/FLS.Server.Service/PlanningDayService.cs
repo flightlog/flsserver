@@ -63,44 +63,7 @@ namespace FLS.Server.Service
             SetPlanningDayOverviewSecurity(overviewList);
             return overviewList;
         }
-
-        /// <summary>
-        /// Test implementation to get overview object without using includes and other related services.
-        /// </summary>
-        /// <param name="fromDate"></param>
-        /// <param name="clubId"></param>
-        /// <returns></returns>
-        public List<PlanningDayOverview> GetPlanningDayOverviewWithDirectSelection(DateTime fromDate, Guid? clubId = null)
-        {
-            if (clubId.HasValue == false)
-            {
-                clubId = CurrentAuthenticatedFLSUserClubId;
-            }
-
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var entities = context.PlanningDays
-                    .Where(q => q.ClubId == clubId && DbFunctions.TruncateTime(q.Day) >= fromDate.Date)
-                    .OrderBy(pe => pe.Day)
-                    .Select(p => new PlanningDayOverview()
-                    {
-                        PlanningDayId   = p.PlanningDayId,
-                        Day = p.Day,
-                        Remarks = p.Remarks,
-                        LocationName = p.Location.LocationName,
-                        TowingPilotName = p.PlanningDayAssignments.FirstOrDefault(t=> t.AssignmentType.AssignmentTypeName == "Schlepppilot").AssignedPerson.Lastname + " " + p.PlanningDayAssignments.FirstOrDefault(t => t.AssignmentType.AssignmentTypeName == "Schlepppilot").AssignedPerson.Firstname,
-                        InstructorName = p.PlanningDayAssignments.FirstOrDefault(t => t.AssignmentType.AssignmentTypeName == "Fluglehrer").AssignedPerson.Lastname + " " + p.PlanningDayAssignments.FirstOrDefault(t => t.AssignmentType.AssignmentTypeName == "Fluglehrer").AssignedPerson.Firstname,
-                        FlightOperatorName = p.PlanningDayAssignments.FirstOrDefault(t => t.AssignmentType.AssignmentTypeName == "Segelflugleiter").AssignedPerson.Lastname + " " + p.PlanningDayAssignments.FirstOrDefault(t => t.AssignmentType.AssignmentTypeName == "Segelflugleiter").AssignedPerson.Firstname,
-                        NumberOfAircraftReservations = context.AircraftReservations.Count(ar => ar.ClubId == clubId 
-                        && ar.LocationId == p.LocationId && DbFunctions.TruncateTime(ar.Start) == DbFunctions.TruncateTime(p.Day))
-
-                    }).ToList();
-
-                SetPlanningDayOverviewSecurity(entities);
-                return entities;
-            }
-        }
-
+        
         public PagedList<PlanningDayOverview> GetPagedPlanningDayOverview(int? pageStart, int? pageSize, PageableSearchFilter<PlanningDayOverviewSearchFilter> pageableSearchFilter)
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<PlanningDayOverviewSearchFilter>();
