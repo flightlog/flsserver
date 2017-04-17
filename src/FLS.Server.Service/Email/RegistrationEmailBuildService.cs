@@ -30,7 +30,7 @@ namespace FLS.Server.Service.Email
             {
                 RecipientName = trialPilotPerson.DisplayName,
                 SelectedTrialFlightDate = selectedDate.ToShortDateString(),
-                WillBeContactedOnDate = selectedDate.AddDays(-3).ToShortDateString(),
+                WillBeContactedOnDate = selectedDate.AddDays(-2).ToShortDateString(),
                 LocationName = locationName
             };
 
@@ -60,7 +60,7 @@ namespace FLS.Server.Service.Email
                 PrivatePhoneNumber = trialFlightRegistrationDetails.PrivatePhoneNumber,
                 PrivateEmail = trialFlightRegistrationDetails.PrivateEmail,
                 SelectedTrialFlightDate = trialFlightRegistrationDetails.SelectedDay.ToShortDateString(),
-                WillBeContactedOnDate = trialFlightRegistrationDetails.SelectedDay.AddDays(-3).ToShortDateString(),
+                WillBeContactedOnDate = trialFlightRegistrationDetails.SelectedDay.AddDays(-2).ToShortDateString(),
                 LocationName = locationName,
                 ReservationInformation = reservationInfo,
                 Remarks = trialFlightRegistrationDetails.Remarks
