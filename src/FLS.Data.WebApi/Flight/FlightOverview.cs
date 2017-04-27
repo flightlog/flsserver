@@ -1,4 +1,5 @@
 ﻿using System;
+using FLS.Common.Extensions;
 using Newtonsoft.Json;
 
 namespace FLS.Data.WebApi.Flight
@@ -6,6 +7,8 @@ namespace FLS.Data.WebApi.Flight
     public class FlightOverview : FLSBaseData
     {
         private int? _flightDurationInSeconds;
+        private DateTime? _startDateTime;
+        private DateTime? _ldgDateTime;
 
         public Guid FlightId { get; set; }
 
@@ -26,13 +29,21 @@ namespace FLS.Data.WebApi.Flight
         public int ProcessState { get; set; }
 
         public string FlightCode { get; set; }
-        
-        public Nullable<DateTime> LdgDateTime { get; set; }
+
+        public Nullable<DateTime> LdgDateTime
+        {
+            get { return _ldgDateTime; }
+            set { _ldgDateTime = value.SetAsUtc(); }
+        }
 
         public bool IsSoloFlight { get; set; }
-        
-        public Nullable<DateTime> StartDateTime { get; set; }
-        
+
+        public Nullable<DateTime> StartDateTime
+        {
+            get { return _startDateTime; }
+            set { _startDateTime = value.SetAsUtc(); }
+        }
+
         public Nullable<int> StartType { get; set; }
 
         public string StartLocation { get; set; }
