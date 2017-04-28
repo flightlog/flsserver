@@ -939,13 +939,16 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'IS_CHARGED_TO_CLUB_INTERNAL', 'Intern abbuchen (nicht verrechnen)', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
-     VALUES (NEWID(), 'OR_FLIGHT_DIRATION_BETWEEN', 'oder Flugdauer zwischen minimum:', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'OR_FLIGHT_DURATION_BETWEEN', 'oder Flugdauer zwischen minimum:', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'AND_MAXIMUM_INCL', 'und maximum (inkl.): ', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'MINUTES', 'Minuten', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'SECONDS', 'Sekunden', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'FLIGHT_DURATION_UNLIMITED', 'Flugdauer unbegrenzt', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
