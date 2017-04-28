@@ -52,8 +52,12 @@ namespace FLS.Server.Service.Jobs
 
                 foreach (var club in clubs)
                 {
+                    Logger.Info($"Executing daily report job for club: {club.Clubname}");
+
                     //get all flights related to this club
                     var flights = _flightService.GetFlightsCreatedOrValidatedToday(club.ClubId);
+
+                    Logger.Info($"{flights.Count} flights found for club: {club.Clubname}");
 
                     //prepare a dictionary with persons and the related flights
                     var personFlightList = CreatePersonFlightList(flights);
@@ -71,19 +75,27 @@ namespace FLS.Server.Service.Jobs
                             {
                                 PrepareAndSendFlightReports(personFlightList[person], person);
                             }
+                            else
+                            {
+                                Logger.Info($"Club related details not available or ReceiveFlightReports for person {person.DisplayName} not set. Did not send email with flight report to person!");
+                            }
                         }
+                    }
+                    else
+                    {
+                        Logger.Error($"Could not built person list for flights for club: {club.Clubname}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, $"Error while executing daily workflow job. Error: {ex.Message}");
+                Logger.Error(ex, $"Error while executing daily flight report workflow job. Error: {ex.Message}");
             }
         }
 
         private Dictionary<Person, List<Flight>> CreatePersonFlightList(List<Flight> flights)
         {
-            flights.ArgumentNotNull("todaysFlights");
+            flights.ArgumentNotNull("flights");
 
             if (flights.Any() == false)
             {
