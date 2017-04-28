@@ -74,10 +74,8 @@ namespace FLS.Server.Tests.ServiceTests
         //http://stackoverflow.com/questions/24012253/datadriven-mstests-csv-with-semicolon-separator
         //important: schema.ini must be saved as US-ASCII (in VS)
         [TestMethod]
-        [DeploymentItem(@"TestData\schema.ini")]
-        [DeploymentItem(@"TestData\FlightInvoiceTestdata.csv")]
-        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", @"|DataDirectory|\TestData\FlightInvoiceTestdata.csv", "FlightInvoiceTestdata#csv", 
-            DataAccessMethod.Sequential)]
+        [DeploymentItem(@"TestData\FlightInvoiceTestdata.xlsx")]
+        [DataSource("System.Data.Odbc", @"Dsn=Excel Files;dbq=.\FlightInvoiceTestdata.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5", "FlightInvoiceTestdata$", DataAccessMethod.Sequential)]
         public void ProffixInvoiceTest()
         {
             
@@ -103,7 +101,7 @@ namespace FLS.Server.Tests.ServiceTests
             #region Flight preparation
             var startTime = DateTime.Today.AddDays(-34).AddHours(10);
             var flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
+            flightDetails.StartType = Convert.ToInt32(TestContext.DataRow["StartType"].ToString());
 
             flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData();
             flightDetails.GliderFlightDetailsData.AircraftId =
@@ -120,6 +118,14 @@ namespace FLS.Server.Tests.ServiceTests
                 GetLocation(TestContext.DataRow["GliderLdgLocation"].ToString()).LocationId;
             flightDetails.GliderFlightDetailsData.FlightTypeId =
                 GetFlightType(TestContext.DataRow["GliderFlightCode"].ToString()).FlightTypeId;
+
+            var engineTimeInSeconds = Convert.ToInt32(TestContext.DataRow["EngineTimeInSeconds"].ToString());
+
+            if (engineTimeInSeconds > 0)
+            {
+                flightDetails.GliderFlightDetailsData.EngineStartOperatingCounterInSeconds = 0;
+                flightDetails.GliderFlightDetailsData.EngineEndOperatingCounterInSeconds = engineTimeInSeconds;
+            }
 
             var displayname = TestContext.DataRow["GliderInstructorName"].ToString();
 
@@ -242,9 +248,9 @@ namespace FLS.Server.Tests.ServiceTests
 
                 foreach (var line in flightInvoiceDetails.DeliveryItems.OrderBy(o => o.Position))
                 {
-                    Assert.AreEqual(expectedInvoiceLines[line.Position].ERPArticleNumber, line.ArticleNumber, $"Article number in invoice line {line.Position} is wrong.");
-                    Assert.AreEqual(expectedInvoiceLines[line.Position].Quantity, line.Quantity, $"Quantity in invoice line {line.Position} is wrong.");
-                    Assert.AreEqual(expectedInvoiceLines[line.Position].UnitType, line.UnitType, $"Unittype in invoice line {line.Position} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.Position].ERPArticleNumber, line.ArticleNumber, $"Article number in invoice line {line.Position} {line.ItemText} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.Position].Quantity, line.Quantity, $"Quantity in invoice line {line.Position} {line.ItemText} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.Position].UnitType, line.UnitType, $"Unittype in invoice line {line.Position} {line.ItemText} is wrong.");
                 }
 
                 var deliveryBooking = new DeliveryBooking()

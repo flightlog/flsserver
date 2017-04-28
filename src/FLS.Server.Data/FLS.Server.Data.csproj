@@ -78,6 +78,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbEntities\AccountingUnitType.cs" />
     <Compile Include="DbEntities\AircraftOperatingCounter.cs" />
     <Compile Include="DbEntities\DeliveryCreationTest.cs" />
     <Compile Include="DbEntities\DeliveryItem.cs" />

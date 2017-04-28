@@ -177,6 +177,7 @@
     <Compile Include="FLSCommonTests\AssemblyUtilTest.cs" />
     <Compile Include="Helpers\CompetitionSignWrapper.cs" />
     <Compile Include="Infrastructure\DatabasePreparer.cs" />
+    <Compile Include="Infrastructure\MasterDataSeeder.cs" />
     <Compile Include="Infrastructure\ResourceExtractor.cs" />
     <Compile Include="Mocks\Services\MockEmailSendService.cs" />
     <Compile Include="ServiceTests\ClubServiceTest.cs" />
@@ -257,10 +258,13 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="TestData\FlightInvoiceTestdata.csv">
+    <None Include="Resources\AccountingRuleFilters_SGN.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestData\FlightInvoiceTestdata_SGN.csv">
+    <None Include="TestData\FlightInvoiceTestdata.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\FlightInvoiceTestdata_SGN.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestData\schema.ini">

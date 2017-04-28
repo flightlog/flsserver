@@ -15,7 +15,10 @@ namespace FLS.Server.Service.Accounting
         public bool IsChargedToClubInternal { get; set; }
 
         [JsonIgnore]
-        public double ActiveFlightTime { get; set; }
+        public long ActiveFlightTimeInSeconds { get; set; }
+
+        [JsonIgnore]
+        public long ActiveEngineTimeInSeconds { get; set; }
 
         [JsonIgnore]
         public bool NoLandingTaxForTowFlight { get; set; }

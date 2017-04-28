@@ -36,7 +36,9 @@ namespace FLS.Server.Data.DbEntities
 
         public string RecipientTarget { get; set; }
 
-        public bool IsRuleForSelfstartedGliderFlights { get; set; }
+        //TODO: Implement logic together with SortIndicator
+        public bool StopRuleEngineWhenRuleApplied { get; set; }
+
         public bool IsRuleForGliderFlights { get; set; }
         public bool IsRuleForTowingFlights { get; set; }
 
@@ -44,11 +46,15 @@ namespace FLS.Server.Data.DbEntities
 
         public bool UseRuleForAllAircraftsExceptListed { get; set; }
         public string MatchedAircraftImmatriculations { get; set; }
-        
+
+        public bool UseRuleForAllStartTypesExceptListed { get; set; }
+
+        public string MatchedStartTypes { get; set; }
+
         public bool UseRuleForAllFlightTypesExceptListed { get; set; }
 
-        [Column("MatchedFlightTypeCodes")]
-        public string MatchedFlightTypeCodesAsJson { get; set; }
+        //[Column("MatchedFlightTypeCodes")]
+        public string MatchedFlightTypeCodes { get; set; }
 
         public bool ExtendMatchingFlightTypeCodesToGliderAndTowFlight { get; set; }
 
@@ -66,18 +72,23 @@ namespace FLS.Server.Data.DbEntities
         
         public bool UseRuleForAllClubMemberNumbersExceptListed { get; set; }
 
-        [Column("MatchedClubMemberNumbers")]
-        public string MatchedClubMemberNumbersAsJson { get; set; }
+        //[Column("MatchedClubMemberNumbers")]
+        public string MatchedClubMemberNumbers { get; set; }
 
         public bool UseRuleForAllFlightCrewTypesExceptListed { get; set; }
 
-        [Column("MatchedFlightCrewTypes")]
-        public string MatchedFlightCrewTypesAsJson { get; set; }
+        //[Column("MatchedFlightCrewTypes")]
+        public string MatchedFlightCrewTypes { get; set; }
 
         public bool IsChargedToClubInternal { get; set; }
 
-        public int MinFlightTimeMatchingValue { get; set; }
-        public int MaxFlightTimeMatchingValue { get; set; }
+        public long? MinFlightTimeInSecondsMatchingValue { get; set; }
+
+        public long? MaxFlightTimeInSecondsMatchingValue { get; set; }
+
+        public long? MinEngineTimeInSecondsMatchingValue { get; set; }
+
+        public long? MaxEngineTimeInSecondsMatchingValue { get; set; }
 
         public bool IncludeThresholdText { get; set; }
 
@@ -90,6 +101,8 @@ namespace FLS.Server.Data.DbEntities
         public bool NoLandingTaxForTowingAircraft { get; set; }
 
         public bool NoLandingTaxForAircraft { get; set; }
+
+        public int? AccountingUnitTypeId { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
@@ -117,6 +130,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual Club Club { get; set; }
 
         public virtual AccountingRuleFilterType AccountingRuleFilterType { get; set; }
+
+        public virtual AccountingUnitType AccountingUnitType { get; set; }
 
         public Guid Id
         {

@@ -43,6 +43,7 @@ namespace FLS.Server.Data
         #region DbSet Entity Properties
         public virtual DbSet<AccountingRuleFilter> AccountingRuleFilters { get; set; }
         public virtual DbSet<AccountingRuleFilterType> AccountingRuleFilterTypes { get; set; }
+        public virtual DbSet<AccountingUnitType> AccountingUnitTypes { get; set; }
         public virtual DbSet<AircraftAircraftState> AircraftAircraftStates { get; set; }
         public virtual DbSet<Aircraft> Aircrafts { get; set; }
         public virtual DbSet<AircraftOperatingCounter> AircraftOperatingCounters { get; set; }
@@ -343,6 +344,11 @@ namespace FLS.Server.Data
             modelBuilder.Entity<AccountingRuleFilterType>()
                 .HasMany(e => e.AccountingRuleFilters)
                 .WithRequired(e => e.AccountingRuleFilterType)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<AccountingUnitType>()
+                .HasMany(e => e.AccountingRuleFilters)
+                .WithOptional(e => e.AccountingUnitType)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<FlightCostBalanceType>()

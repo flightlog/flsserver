@@ -62,11 +62,12 @@ namespace FLS.Server.Data.Mapping
                         overview.Target = string.Empty;
                     }
                     break;
-                case (int)AccountingRuleFilterType.AircraftAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.EngineTimeAccountingRuleFilter:
                     if (entity.ArticleTarget != null)
                     {
                         var articleTarget = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
@@ -157,11 +158,12 @@ namespace FLS.Server.Data.Mapping
                         overview.Target = string.Empty;
                     }
                     break;
-                case (int)AccountingRuleFilterType.AircraftAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.EngineTimeAccountingRuleFilter:
                     if (details.ArticleTarget != null)
                     {
                         overview.Target =
@@ -209,7 +211,7 @@ namespace FLS.Server.Data.Mapping
             details.IsActive = entity.IsActive;
             details.IsRuleForGliderFlights = entity.IsRuleForGliderFlights;
             details.IsRuleForMotorFlights = entity.IsRuleForMotorFlights;
-            details.IsRuleForSelfstartedGliderFlights = entity.IsRuleForSelfstartedGliderFlights;
+            details.StopRuleEngineWhenRuleApplied = entity.StopRuleEngineWhenRuleApplied;
             details.IsRuleForTowingFlights = entity.IsRuleForTowingFlights;
             details.SortIndicator = entity.SortIndicator;
             details.UseRuleForAllAircraftsExceptListed = entity.UseRuleForAllAircraftsExceptListed;
@@ -221,15 +223,19 @@ namespace FLS.Server.Data.Mapping
             details.UseRuleForAllLdgLocationsExceptListed = entity.UseRuleForAllLdgLocationsExceptListed;
             details.UseRuleForAllStartLocationsExceptListed =
                 entity.UseRuleForAllStartLocationsExceptListed;
+            details.UseRuleForAllStartTypesExceptListed =
+                entity.UseRuleForAllStartTypesExceptListed;
+            details.AccountingUnitTypeId = entity.AccountingUnitTypeId;
 
             //Deserialize JSON lists to properties
             if (entity.MatchedAircraftImmatriculations != null) details.MatchedAircraftImmatriculations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedAircraftImmatriculations);
             if (entity.MatchedStartLocations != null) details.MatchedStartLocations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedStartLocations);
             if (entity.MatchedLdgLocations != null) details.MatchedLdgLocations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedLdgLocations);
-            if (entity.MatchedFlightTypeCodesAsJson != null) details.MatchedFlightTypeCodes = JsonConvert.DeserializeObject<List<string>>(entity.MatchedFlightTypeCodesAsJson);
-            if (entity.MatchedClubMemberNumbersAsJson != null) details.MatchedClubMemberNumbers = JsonConvert.DeserializeObject<List<string>>(entity.MatchedClubMemberNumbersAsJson);
-            if (entity.MatchedFlightCrewTypesAsJson != null) details.MatchedFlightCrewTypes = JsonConvert.DeserializeObject<List<int>>(entity.MatchedFlightCrewTypesAsJson);
-            
+            if (entity.MatchedFlightTypeCodes != null) details.MatchedFlightTypeCodes = JsonConvert.DeserializeObject<List<string>>(entity.MatchedFlightTypeCodes);
+            if (entity.MatchedClubMemberNumbers != null) details.MatchedClubMemberNumbers = JsonConvert.DeserializeObject<List<string>>(entity.MatchedClubMemberNumbers);
+            if (entity.MatchedFlightCrewTypes != null) details.MatchedFlightCrewTypes = JsonConvert.DeserializeObject<List<int>>(entity.MatchedFlightCrewTypes);
+            if (entity.MatchedStartTypes != null) details.MatchedStartTypes = JsonConvert.DeserializeObject<List<int>>(entity.MatchedStartTypes);
+
             switch (entity.AccountingRuleFilterTypeId)
             {
                 case (int)AccountingRuleFilterType.RecipientAccountingRuleFilter:
@@ -238,17 +244,20 @@ namespace FLS.Server.Data.Mapping
                     details.ArticleTarget = null;
                     details.IsChargedToClubInternal = entity.IsChargedToClubInternal;
                     break;
-                case (int)AccountingRuleFilterType.AircraftAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.EngineTimeAccountingRuleFilter:
 
                     if (entity.ArticleTarget != null) details.ArticleTarget = JsonConvert.DeserializeObject<ArticleTargetDetails>(entity.ArticleTarget);
                     details.RecipientTarget = null;
-                    details.MinFlightTimeMatchingValue = entity.MinFlightTimeMatchingValue;
-                    details.MaxFlightTimeMatchingValue = entity.MaxFlightTimeMatchingValue;
+                    details.MinFlightTimeInSecondsMatchingValue = entity.MinFlightTimeInSecondsMatchingValue;
+                    details.MaxFlightTimeInSecondsMatchingValue = entity.MaxFlightTimeInSecondsMatchingValue;
+                    details.MinEngineTimeInSecondsMatchingValue = entity.MinEngineTimeInSecondsMatchingValue;
+                    details.MaxEngineTimeInSecondsMatchingValue = entity.MaxEngineTimeInSecondsMatchingValue;
                     details.IncludeThresholdText = entity.IncludeThresholdText;
                     details.ThresholdText = entity.ThresholdText;
                     details.IncludeFlightTypeName = entity.IncludeFlightTypeName;
@@ -285,7 +294,7 @@ namespace FLS.Server.Data.Mapping
             entity.IsActive = details.IsActive;
             entity.IsRuleForGliderFlights = details.IsRuleForGliderFlights;
             entity.IsRuleForMotorFlights = details.IsRuleForMotorFlights;
-            entity.IsRuleForSelfstartedGliderFlights = details.IsRuleForSelfstartedGliderFlights;
+            entity.StopRuleEngineWhenRuleApplied = details.StopRuleEngineWhenRuleApplied;
             entity.IsRuleForTowingFlights = details.IsRuleForTowingFlights;
             entity.SortIndicator = details.SortIndicator;
             entity.UseRuleForAllAircraftsExceptListed = details.UseRuleForAllAircraftsExceptListed;
@@ -297,14 +306,18 @@ namespace FLS.Server.Data.Mapping
             entity.UseRuleForAllLdgLocationsExceptListed = details.UseRuleForAllLdgLocationsExceptListed;
             entity.UseRuleForAllStartLocationsExceptListed =
                 details.UseRuleForAllStartLocationsExceptListed;
+            entity.UseRuleForAllStartTypesExceptListed =
+               details.UseRuleForAllStartTypesExceptListed;
+            entity.AccountingUnitTypeId = details.AccountingUnitTypeId;
 
             //Serialize JSON lists to properties
             entity.MatchedAircraftImmatriculations = JsonConvert.SerializeObject(details.MatchedAircraftImmatriculations);
             entity.MatchedStartLocations = JsonConvert.SerializeObject(details.MatchedStartLocations);
             entity.MatchedLdgLocations = JsonConvert.SerializeObject(details.MatchedLdgLocations);
-            entity.MatchedFlightTypeCodesAsJson = JsonConvert.SerializeObject(details.MatchedFlightTypeCodes);
-            entity.MatchedClubMemberNumbersAsJson = JsonConvert.SerializeObject(details.MatchedClubMemberNumbers);
-            entity.MatchedFlightCrewTypesAsJson = JsonConvert.SerializeObject(details.MatchedFlightCrewTypes);
+            entity.MatchedFlightTypeCodes = JsonConvert.SerializeObject(details.MatchedFlightTypeCodes);
+            entity.MatchedClubMemberNumbers = JsonConvert.SerializeObject(details.MatchedClubMemberNumbers);
+            entity.MatchedFlightCrewTypes = JsonConvert.SerializeObject(details.MatchedFlightCrewTypes);
+            entity.MatchedStartTypes = JsonConvert.SerializeObject(details.MatchedStartTypes);
 
             switch (details.AccountingRuleFilterTypeId)
             {
@@ -313,16 +326,19 @@ namespace FLS.Server.Data.Mapping
                     entity.RecipientTarget = JsonConvert.SerializeObject(details.RecipientTarget);
                     entity.IsChargedToClubInternal = details.IsChargedToClubInternal;
                     break;
-                case (int)AccountingRuleFilterType.AircraftAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.EngineTimeAccountingRuleFilter:
                     entity.ArticleTarget = JsonConvert.SerializeObject(details.ArticleTarget);
                     entity.RecipientTarget = null;
-                    entity.MinFlightTimeMatchingValue = details.MinFlightTimeMatchingValue;
-                    entity.MaxFlightTimeMatchingValue = details.MaxFlightTimeMatchingValue;
+                    entity.MinFlightTimeInSecondsMatchingValue = details.MinFlightTimeInSecondsMatchingValue;
+                    entity.MaxFlightTimeInSecondsMatchingValue = details.MaxFlightTimeInSecondsMatchingValue;
+                    entity.MinEngineTimeInSecondsMatchingValue = details.MinEngineTimeInSecondsMatchingValue;
+                    entity.MaxEngineTimeInSecondsMatchingValue = details.MaxEngineTimeInSecondsMatchingValue;
                     entity.IncludeThresholdText = details.IncludeThresholdText;
                     entity.ThresholdText = details.ThresholdText;
                     entity.IncludeFlightTypeName = details.IncludeFlightTypeName;

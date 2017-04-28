@@ -5,7 +5,7 @@
         private readonly T _actual;
         private readonly T _threshold;
 
-        public Equals(T threshold, T actual)
+        public Equals(T actual, T threshold)
         {
             _threshold = threshold;
             _actual = actual;

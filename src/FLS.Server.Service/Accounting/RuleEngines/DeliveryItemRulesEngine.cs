@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FLS.Data.WebApi.Accounting.RuleFilters;
 using FLS.Server.Data.DbEntities;
@@ -46,29 +47,55 @@ namespace FLS.Server.Service.Accounting.RuleEngines
             _ruleBasedDelivery.ApplyRules(rules);
             #endregion NO Landing taxes
 
-            #region Aircraft in MasterFlight (Glider- or Motor-Flight)
+            #region Aircraft flight time in MasterFlight (Glider- or Motor-Flight)
             rules.Clear();
 
-            foreach (var filter in _accountingRuleFilters.Where(x => x.AccountingRuleFilterTypeId == (int)AccountingRuleFilterType.AircraftAccountingRuleFilter))
+            foreach (var filter in _accountingRuleFilters.Where(x => x.AccountingRuleFilterTypeId == (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter))
             {
                 var rule = new AircraftFlightTimeRule(_flight, filter);
                 rules.Add(rule);
             }
 
-            _ruleBasedDelivery.ActiveFlightTime = _flight.FlightDurationZeroBased.TotalMinutes;
+            _ruleBasedDelivery.ActiveFlightTimeInSeconds = Convert.ToInt64(_flight.FlightDurationZeroBased.TotalSeconds);
 
-            while (_ruleBasedDelivery.ActiveFlightTime > 0)
+            while (_ruleBasedDelivery.ActiveFlightTimeInSeconds > 0)
             {
-                Logger.Trace($"Run {rules.Count} rules of AircraftRuleFilter, active flight time = {_ruleBasedDelivery.ActiveFlightTime}");
+                Logger.Trace($"Run {rules.Count} rules of AircraftFlightTimeRuleFilter, active flight time = {_ruleBasedDelivery.ActiveFlightTimeInSeconds}s");
                 _ruleBasedDelivery.ApplyRules(rules);
 
                 if (rules.Any(x => x.RuleApplied) == false)
                 {
-                    Logger.Warn($"No aircraft mapping rule found for flight: {_flight}.");
+                    Logger.Warn($"No aircraft flight time mapping rule found for flight: {_flight}.");
                     break;
                 }
             }
-            #endregion Aircraft in MasterFlight (Glider- or Motor-Flight)
+            #endregion Aircraft flight time in MasterFlight (Glider- or Motor-Flight)
+
+            #region Aircraft engine time in MasterFlight (Glider- or Motor-Flight)
+            rules.Clear();
+
+            foreach (var filter in _accountingRuleFilters.Where(x => x.AccountingRuleFilterTypeId == (int)AccountingRuleFilterType.EngineTimeAccountingRuleFilter))
+            {
+                var rule = new AircraftEngineTimeRule(_flight, filter);
+                rules.Add(rule);
+            }
+
+            _ruleBasedDelivery.ActiveEngineTimeInSeconds =
+                _flight.EngineEndOperatingCounterInSeconds.GetValueOrDefault() -
+                _flight.EngineStartOperatingCounterInSeconds.GetValueOrDefault();
+
+            while (_ruleBasedDelivery.ActiveEngineTimeInSeconds > 0)
+            {
+                Logger.Trace($"Run {rules.Count} rules of AircraftEngineTimeRuleFilter, active engine time = {_ruleBasedDelivery.ActiveEngineTimeInSeconds}s");
+                _ruleBasedDelivery.ApplyRules(rules);
+
+                if (rules.Any(x => x.RuleApplied) == false)
+                {
+                    Logger.Warn($"No aircraft engine time mapping rule found for flight: {_flight}.");
+                    break;
+                }
+            }
+            #endregion Aircraft engine time in MasterFlight (Glider- or Motor-Flight)
 
             #region Instructor fee
             rules.Clear();
@@ -84,7 +111,7 @@ namespace FLS.Server.Service.Accounting.RuleEngines
             #endregion Instructor fee
 
             #region Aircraft in TowFlight
-            //run rule engine again for towflight, before other rules were applied (because of order of delivery lines)
+            //run complete rule engine again for towflight, before other rules were applied (because of order of delivery lines)
             if (_flight.TowFlight != null)
             {
                 var deliveryItemRulesEngine = new DeliveryItemRulesEngine(_ruleBasedDelivery, _flight.TowFlight,

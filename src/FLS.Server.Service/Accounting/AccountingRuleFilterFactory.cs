@@ -43,9 +43,9 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightTypesExceptListed = true,
                 UseRuleForAllStartLocationsExceptListed = true,
                 UseRuleForAllFlightCrewTypesExceptListed = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
                 IsRuleForTowingFlights = true,
                 IsRuleForMotorFlights = true
             };
@@ -64,7 +64,11 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = true,
                 UseRuleForAllFlightTypesExceptListed = true,
-                RuleFilterName = "Instruktor-Honorar Silvan"
+                UseRuleForAllStartTypesExceptListed = true,
+                RuleFilterName = "Instruktor-Honorar Silvan",
+                IsRuleForGliderFlights = true,
+                IsRuleForTowingFlights = false,
+                IsRuleForMotorFlights = false
             };
             accountingRuleFilters.Add(instructorRule);
 
@@ -81,7 +85,11 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = true,
                 UseRuleForAllFlightTypesExceptListed = true,
-                RuleFilterName = "Instruktor-Honorar Karl"
+                UseRuleForAllStartTypesExceptListed = true,
+                RuleFilterName = "Instruktor-Honorar Karl",
+                IsRuleForGliderFlights = true,
+                IsRuleForTowingFlights = false,
+                IsRuleForMotorFlights = false
             };
             accountingRuleFilters.Add(instructorRule);
 
@@ -98,7 +106,11 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = true,
                 UseRuleForAllFlightTypesExceptListed = true,
-                RuleFilterName = "Instruktor-Honorar HUK"
+                UseRuleForAllStartTypesExceptListed = true,
+                RuleFilterName = "Instruktor-Honorar HUK",
+                IsRuleForGliderFlights = true,
+                IsRuleForTowingFlights = false,
+                IsRuleForMotorFlights = false
             };
             accountingRuleFilters.Add(instructorRule);
 
@@ -115,7 +127,11 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = true,
                 UseRuleForAllFlightTypesExceptListed = true,
-                RuleFilterName = "Instruktor-Honorar Päde"
+                UseRuleForAllStartTypesExceptListed = true,
+                RuleFilterName = "Instruktor-Honorar Päde",
+                IsRuleForGliderFlights = true,
+                IsRuleForTowingFlights = false,
+                IsRuleForMotorFlights = false
             };
             accountingRuleFilters.Add(instructorRule);
 
@@ -132,14 +148,18 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = true,
                 UseRuleForAllFlightTypesExceptListed = true,
-                RuleFilterName = "Instruktor-Honorar Thomas"
+                UseRuleForAllStartTypesExceptListed = true,
+                RuleFilterName = "Instruktor-Honorar Thomas",
+                IsRuleForGliderFlights = true,
+                IsRuleForTowingFlights = false,
+                IsRuleForMotorFlights = false
             };
             accountingRuleFilters.Add(instructorRule);
 
             int sortIndicator = 1;
             var aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -156,7 +176,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-3256 Schulung"
             };
@@ -166,7 +186,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -183,7 +203,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-3407 Schulung"
             };
@@ -193,7 +213,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -210,7 +230,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-1841 Schulung"
             };
@@ -220,7 +240,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -237,7 +257,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-1824 Schulung"
             };
@@ -247,7 +267,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -264,7 +284,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-2464 Schulung"
             };
@@ -274,7 +294,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -292,7 +312,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-3256 Weiterbildung ohne Pauschale"
             };
@@ -302,7 +322,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -320,7 +340,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-3407 Weiterbildung ohne Pauschale"
             };
@@ -330,7 +350,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -348,7 +368,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-1841 Weiterbildung ohne Pauschale"
             };
@@ -358,7 +378,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -376,7 +396,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-1824 Weiterbildung ohne Pauschale"
             };
@@ -386,7 +406,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -404,7 +424,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-2464 Weiterbildung ohne Pauschale"
             };
@@ -417,7 +437,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -435,7 +455,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-3256 Weiterbildung mit Pauschale"
             };
@@ -445,7 +465,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -463,7 +483,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-3407 Weiterbildung mit Pauschale"
             };
@@ -473,7 +493,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -491,7 +511,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-1841 Weiterbildung mit Pauschale"
             };
@@ -501,7 +521,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -519,7 +539,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-1824 Weiterbildung mit Pauschale"
             };
@@ -529,7 +549,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -547,7 +567,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-2464 Weiterbildung mit Pauschale"
             };
@@ -558,7 +578,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator = 1;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -575,7 +595,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-3256 Privat"
             };
@@ -586,7 +606,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -603,7 +623,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-3407 Privat"
             };
@@ -614,7 +634,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -631,7 +651,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-1841 Privat"
             };
@@ -642,7 +662,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -659,7 +679,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-1824 Privat"
             };
@@ -670,7 +690,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -687,7 +707,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-2464 Privat"
             };
@@ -699,7 +719,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -712,8 +732,8 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = 10,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = 600,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<string> {"LSZK"},
                 UseRuleForAllClubMemberNumbersExceptListed = true,
@@ -722,7 +742,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-KCB Schulung bis 10min"
             };
@@ -733,7 +753,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -746,8 +766,8 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightTypesExceptListed = false,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
-                MinFlightTimeMatchingValue = 10,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 600,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<string> {"LSZK"},
                 UseRuleForAllClubMemberNumbersExceptListed = true,
@@ -756,7 +776,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-KCB Schulung ab 11.min"
             };
@@ -767,7 +787,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -780,8 +800,8 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = 10,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = 600,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<string> {"LSZK"},
                 UseRuleForAllClubMemberNumbersExceptListed = true,
@@ -790,7 +810,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-KCB Privat bis 10min"
             };
@@ -801,7 +821,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -814,8 +834,8 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true,
-                MinFlightTimeMatchingValue = 10,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 600,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<string> {"LSZK"},
                 UseRuleForAllClubMemberNumbersExceptListed = true,
@@ -824,7 +844,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-KCB Privat ab 11.min"
             };
@@ -835,7 +855,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -844,15 +864,15 @@ namespace FLS.Server.Service.Accounting
                 },
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = false,
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-PFW"
             };
@@ -862,7 +882,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -871,15 +891,15 @@ namespace FLS.Server.Service.Accounting
                 },
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = false,
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-KIO"
             };
@@ -889,7 +909,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -898,15 +918,15 @@ namespace FLS.Server.Service.Accounting
                 },
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = false,
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-PDL"
             };
@@ -916,7 +936,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -925,15 +945,15 @@ namespace FLS.Server.Service.Accounting
                 },
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = false,
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-EQC"
             };
@@ -943,7 +963,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -952,15 +972,15 @@ namespace FLS.Server.Service.Accounting
                 },
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = false,
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-WAT"
             };
@@ -970,7 +990,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -979,15 +999,15 @@ namespace FLS.Server.Service.Accounting
                 },
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = false,
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-DGP"
             };
@@ -997,7 +1017,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -1006,15 +1026,15 @@ namespace FLS.Server.Service.Accounting
                 },
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = false,
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-KDO"
             };
@@ -1024,7 +1044,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -1033,15 +1053,15 @@ namespace FLS.Server.Service.Accounting
                 },
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllClubMemberNumbersExceptListed = true,
                 UseRuleForAllAircraftsExceptListed = false,
                 UseRuleForAllLdgLocationsExceptListed = true,
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-DCU"
             };
@@ -1051,7 +1071,7 @@ namespace FLS.Server.Service.Accounting
             sortIndicator++;
             aircraftMappingRule = new AccountingRuleFilterDetails
             {
-                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.AircraftAccountingRuleFilter,
+                AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter,
                 SortIndicator = sortIndicator,
                 ArticleTarget = new ArticleTargetDetails
                 {
@@ -1060,8 +1080,8 @@ namespace FLS.Server.Service.Accounting
                 },
                 UseRuleForAllFlightTypesExceptListed = true,
                 MatchedFlightTypeCodes = new List<string>(),
-                MinFlightTimeMatchingValue = 0,
-                MaxFlightTimeMatchingValue = int.MaxValue,
+                MinFlightTimeInSecondsMatchingValue = 0,
+                MaxFlightTimeInSecondsMatchingValue = int.MaxValue,
                 UseRuleForAllStartLocationsExceptListed = false,
                 MatchedStartLocations = new List<string> { "LSGK" },
                 UseRuleForAllClubMemberNumbersExceptListed = true,
@@ -1070,7 +1090,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-KCB Saanen"
             };
@@ -1098,7 +1118,7 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 IsRuleForGliderFlights = true,
-                IsRuleForSelfstartedGliderFlights = true,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForMotorFlights = true,
                 IsRuleForTowingFlights = true,
                 RuleFilterName = "HB-KCB Treibstoffzuschlag"
@@ -1110,7 +1130,7 @@ namespace FLS.Server.Service.Accounting
                 AccountingRuleFilterTypeId = (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter,
                 IsRuleForGliderFlights = true,
                 IsRuleForTowingFlights = true,
-                IsRuleForSelfstartedGliderFlights = false,
+                UseRuleForAllStartTypesExceptListed = false,
                 UseRuleForAllAircraftsExceptListed = true,
                 MatchedAircraftImmatriculations = new List<string>(),
                 SortIndicator = 1,
@@ -1146,7 +1166,7 @@ namespace FLS.Server.Service.Accounting
                 MatchedFlightTypeCodes = new List<string>(baseTeachingFlightTypeCodes),
                 UseRuleForAllLdgLocationsExceptListed = false,
                 MatchedLdgLocations = new List<string> { "LSZK"},
-                IsRuleForSelfstartedGliderFlights = true,   //TODO: create start tax for self starting gliders
+                UseRuleForAllStartTypesExceptListed = true,   //TODO: create start tax for self starting gliders
                 IsRuleForGliderFlights = false,
                 IsRuleForTowingFlights = true,
                 IsRuleForMotorFlights = true,
@@ -1154,7 +1174,8 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 UseRuleForAllStartLocationsExceptListed = true,
-                RuleFilterName = "Landetaxen Speck"
+                RuleFilterName = "Landetaxen Speck",
+                ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true
             };
             landingTaxRule.MatchedFlightTypeCodes.AddRange(furtherTrainingFlightTypeCodes);
             accountingRuleFilters.Add(landingTaxRule);
@@ -1174,7 +1195,7 @@ namespace FLS.Server.Service.Accounting
                 MatchedFlightTypeCodes = new List<string>(),
                 UseRuleForAllLdgLocationsExceptListed = false,
                 MatchedLdgLocations = new List<string> { "LSTR" },
-                IsRuleForSelfstartedGliderFlights = false,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForGliderFlights = false,
                 IsRuleForTowingFlights = true,
                 IsRuleForMotorFlights = true,
@@ -1182,7 +1203,8 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 UseRuleForAllStartLocationsExceptListed = true,
-                RuleFilterName = "Landetaxen Montricher"
+                RuleFilterName = "Landetaxen Montricher",
+                ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true
             };
             accountingRuleFilters.Add(landingTaxRule);
 
@@ -1201,7 +1223,7 @@ namespace FLS.Server.Service.Accounting
                 MatchedFlightTypeCodes = new List<string>(),
                 UseRuleForAllLdgLocationsExceptListed = false,
                 MatchedLdgLocations = new List<string> { "LSGK" },
-                IsRuleForSelfstartedGliderFlights = false,
+                UseRuleForAllStartTypesExceptListed = true,
                 IsRuleForGliderFlights = false,
                 IsRuleForTowingFlights = true,
                 IsRuleForMotorFlights = true,
@@ -1209,7 +1231,8 @@ namespace FLS.Server.Service.Accounting
                 UseRuleForAllFlightCrewTypesExceptListed = true,
                 IsActive = true,
                 UseRuleForAllStartLocationsExceptListed = true,
-                RuleFilterName = "Landetaxen Saanen"
+                RuleFilterName = "Landetaxen Saanen",
+                ExtendMatchingFlightTypeCodesToGliderAndTowFlight = true
             };
             accountingRuleFilters.Add(landingTaxRule);
 
@@ -1226,6 +1249,7 @@ namespace FLS.Server.Service.Accounting
             accountingRecipientRuleFilter.RuleFilterName = "Schnupperflug Gutschein auf FGZO Konto buchen";
             accountingRecipientRuleFilter.Description = "Schnupperflug Gutschein auf FGZO Konto buchen";
             accountingRecipientRuleFilter.IsChargedToClubInternal = true;
+            accountingRecipientRuleFilter.IsRuleForGliderFlights = true;
             accountingRuleFilters.Add(accountingRecipientRuleFilter);
 
             accountingRecipientRuleFilter = new AccountingRuleFilterDetails();
@@ -1242,6 +1266,7 @@ namespace FLS.Server.Service.Accounting
             accountingRecipientRuleFilter.RuleFilterName = "FGZO Schnupperflug und Lufttaufe bar auf FGZO Konto buchen";
             accountingRecipientRuleFilter.Description = "FGZO Schnupperflug und Lufttaufe bar auf FGZO Konto buchen";
             accountingRecipientRuleFilter.IsChargedToClubInternal = true;
+            accountingRecipientRuleFilter.IsRuleForGliderFlights = true;
             accountingRuleFilters.Add(accountingRecipientRuleFilter);
 
 
@@ -1257,6 +1282,7 @@ namespace FLS.Server.Service.Accounting
             accountingRecipientRuleFilter.RuleFilterName = "FGZO Passagierflug bar auf FGZO Konto buchen";
             accountingRecipientRuleFilter.Description = "FGZO Passagierflug bar auf FGZO Konto buchen";
             accountingRecipientRuleFilter.IsChargedToClubInternal = true;
+            accountingRecipientRuleFilter.IsRuleForGliderFlights = true;
             accountingRuleFilters.Add(accountingRecipientRuleFilter);
 
 
@@ -1272,6 +1298,7 @@ namespace FLS.Server.Service.Accounting
             accountingRecipientRuleFilter.RuleFilterName = "FGZO Passagierflug Gutschein auf FGZO Konto buchen";
             accountingRecipientRuleFilter.Description = "FGZO Passagierflug Gutschein auf FGZO Konto buchen";
             accountingRecipientRuleFilter.IsChargedToClubInternal = true;
+            accountingRecipientRuleFilter.IsRuleForGliderFlights = true;
             accountingRuleFilters.Add(accountingRecipientRuleFilter);
 
             accountingRecipientRuleFilter = new AccountingRuleFilterDetails();
@@ -1286,6 +1313,7 @@ namespace FLS.Server.Service.Accounting
             accountingRecipientRuleFilter.RuleFilterName = "FGZO Marketingflug auf FGZO Konto buchen";
             accountingRecipientRuleFilter.Description = "FGZO Marketingflug auf FGZO Konto buchen";
             accountingRecipientRuleFilter.IsChargedToClubInternal = true;
+            accountingRecipientRuleFilter.IsRuleForGliderFlights = true;
             accountingRuleFilters.Add(accountingRecipientRuleFilter);
 
             return accountingRuleFilters;

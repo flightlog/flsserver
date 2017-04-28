@@ -26,11 +26,8 @@ namespace FLS.Server.Tests.ServiceTests
         //http://stackoverflow.com/questions/24012253/datadriven-mstests-csv-with-semicolon-separator
         //important: schema.ini must be saved as US-ASCII (in VS)
         [TestMethod]
-        [DeploymentItem(@"TestData\schema.ini")]
-        [DeploymentItem(@"TestData\FlightInvoiceTestdata.csv")]
-        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV",
-             @"|DataDirectory|\TestData\FlightInvoiceTestdata.csv", "FlightInvoiceTestdata#csv",
-             DataAccessMethod.Sequential)]
+        [DeploymentItem(@"TestData\FlightInvoiceTestdata.xlsx")]
+        [DataSource("System.Data.Odbc", @"Dsn=Excel Files;dbq=.\FlightInvoiceTestdata.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5", "FlightInvoiceTestdata$", DataAccessMethod.Sequential)]
         public void DeliveryCreationTestingTest()
         {
 

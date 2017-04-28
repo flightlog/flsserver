@@ -22,8 +22,9 @@ namespace FLS.Data.WebApi.Accounting.RuleFilters
             UseRuleForAllAircraftsExceptListed = true;
             UseRuleForAllClubMemberNumbersExceptListed = true;
             UseRuleForAllFlightTypesExceptListed = true;
-            MinFlightTimeMatchingValue = 0;
-            MaxFlightTimeMatchingValue = int.MaxValue;
+            UseRuleForAllStartTypesExceptListed = true;
+            MinFlightTimeInSecondsMatchingValue = 0;
+            MaxFlightTimeInSecondsMatchingValue = int.MaxValue;
         }
 
         public Guid AccountingRuleFilterId { get; set; }
@@ -38,7 +39,7 @@ namespace FLS.Data.WebApi.Accounting.RuleFilters
 
         public int AccountingRuleFilterTypeId { get; set; }
 
-        public bool IsRuleForSelfstartedGliderFlights { get; set; }
+        public bool StopRuleEngineWhenRuleApplied { get; set; }
         public bool IsRuleForGliderFlights { get; set; }
         public bool IsRuleForTowingFlights { get; set; }
 
@@ -46,7 +47,11 @@ namespace FLS.Data.WebApi.Accounting.RuleFilters
 
         public bool UseRuleForAllAircraftsExceptListed { get; set; }
         public List<string> MatchedAircraftImmatriculations { get; set; }
-        
+
+        public bool UseRuleForAllStartTypesExceptListed { get; set; }
+
+        public List<int> MatchedStartTypes { get; set; }
+
         public bool UseRuleForAllFlightTypesExceptListed { get; set; }
         public List<string> MatchedFlightTypeCodes { get; set; }
 
@@ -70,6 +75,9 @@ namespace FLS.Data.WebApi.Accounting.RuleFilters
         public bool UseRuleForAllFlightCrewTypesExceptListed { get; set; }
         public List<int> MatchedFlightCrewTypes { get; set; }
 
+        public int? AccountingUnitTypeId { get; set; }
+
+
         #region Recipient rule part
         public RecipientDetails RecipientTarget { get; set; }
 
@@ -79,8 +87,11 @@ namespace FLS.Data.WebApi.Accounting.RuleFilters
         #region invoice line rule part
         public ArticleTargetDetails ArticleTarget { get; set; }
 
-        public int MinFlightTimeMatchingValue { get; set; }
-        public int MaxFlightTimeMatchingValue { get; set; }
+        public long? MinFlightTimeInSecondsMatchingValue { get; set; }
+        public long? MaxFlightTimeInSecondsMatchingValue { get; set; }
+
+        public long? MinEngineTimeInSecondsMatchingValue { get; set; }
+        public long? MaxEngineTimeInSecondsMatchingValue { get; set; }
 
         public bool IncludeThresholdText { get; set; }
 

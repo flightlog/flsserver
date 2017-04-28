@@ -111,6 +111,7 @@ DELETE FROM Languages
 
 DELETE FROM ClubStates
 DELETE FROM CounterUnitTypes
+DELETE FROM AccountingUnitTypes
 
 PRINT 'Insert CounterUnitTypes'
 INSERT INTO [dbo].[CounterUnitTypes] ([CounterUnitTypeId], [CounterUnitTypeName], [CounterUnitTypeKeyName],[Comment],[IsActive],[CreatedOn])
@@ -893,44 +894,75 @@ INSERT INTO [dbo].[AccountingRuleFilterTypes]
            ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
            ,[CreatedOn],[ModifiedOn])
      VALUES
-           (10,'Recipient invoice rule filter', 'RecipientInvoiceRuleFilter', SYSDATETIME(), null)
+           (10,'Recipient accounting rule filter', 'RecipientAccountingRuleFilter', SYSDATETIME(), null)
 
 INSERT INTO [dbo].[AccountingRuleFilterTypes]
            ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
            ,[CreatedOn],[ModifiedOn])
      VALUES
-           (20,'No landing tax invoice rule filter', 'NoLandingTaxInvoiceRuleFilter', SYSDATETIME(), null)
+           (20,'No landing tax accounting rule filter', 'NoLandingTaxAccountingRuleFilter', SYSDATETIME(), null)
 
 INSERT INTO [dbo].[AccountingRuleFilterTypes]
            ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
            ,[CreatedOn],[ModifiedOn])
      VALUES
-           (30,'Aircraft invoice rule filter', 'AircraftInvoiceRuleFilter', SYSDATETIME(), null)
+           (30,'Flight time accounting rule filter', 'FlightTimeAccountingRuleFilter', SYSDATETIME(), null)
 
 INSERT INTO [dbo].[AccountingRuleFilterTypes]
            ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
            ,[CreatedOn],[ModifiedOn])
      VALUES
-           (40,'Instructor fee invoice rule filter', 'InstructorFeeInvoiceRuleFilter', SYSDATETIME(), null)
+           (40,'Instructor fee accounting rule filter', 'InstructorFeeAccountingRuleFilter', SYSDATETIME(), null)
 
 INSERT INTO [dbo].[AccountingRuleFilterTypes]
            ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
            ,[CreatedOn],[ModifiedOn])
      VALUES
-           (50,'Additional fuel fee invoice rule filter', 'AdditionalFuelFeeInvoiceRuleFilter', SYSDATETIME(), null)
+           (50,'Additional fuel fee accounting rule filter', 'AdditionalFuelFeeAccountingRuleFilter', SYSDATETIME(), null)
 
 INSERT INTO [dbo].[AccountingRuleFilterTypes]
            ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
            ,[CreatedOn],[ModifiedOn])
      VALUES
-           (60,'Landing tax invoice rule filter', 'LandingTaxInvoiceRuleFilter', SYSDATETIME(), null)
+           (60,'Landing tax accounting rule filter', 'LandingTaxAccountingRuleFilter', SYSDATETIME(), null)
 
 INSERT INTO [dbo].[AccountingRuleFilterTypes]
            ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
            ,[CreatedOn],[ModifiedOn])
      VALUES
-           (70,'VSF fee invoice rule filter', 'VsfFeeInvoiceRuleFilter', SYSDATETIME(), null)
+           (70,'VSF fee accounting rule filter', 'VsfFeeAccountingRuleFilter', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingRuleFilterTypes]
+           ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName], [AccountingRuleFilterTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (80,'Engine time accounting rule filter', 'EngineTimeAccountingRuleFilter', SYSDATETIME(), null)
 
 --SET IDENTITY_INSERT [AccountingRuleFilterTypes] OFF
+
+PRINT 'INSERT AccountingUnitTypes'
+INSERT INTO [dbo].[AccountingUnitTypes]
+           ([AccountingUnitTypeId],[AccountingUnitTypeName], [AccountingUnitTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (10,'Minuten', 'Min', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingUnitTypes]
+           ([AccountingUnitTypeId],[AccountingUnitTypeName], [AccountingUnitTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (20,'Sekunden', 'Sec', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingUnitTypes]
+           ([AccountingUnitTypeId],[AccountingUnitTypeName], [AccountingUnitTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (30,'Landungen', 'Ldgs', SYSDATETIME(), null)
+
+INSERT INTO [dbo].[AccountingUnitTypes]
+           ([AccountingUnitTypeId],[AccountingUnitTypeName], [AccountingUnitTypeKeyName]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (40,'Start oder Flug', 'StartOrFlight', SYSDATETIME(), null)
 
 PRINT 'INSERT Static Data Finished'

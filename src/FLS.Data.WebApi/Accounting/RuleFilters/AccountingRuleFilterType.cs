@@ -4,10 +4,11 @@
     {
         RecipientAccountingRuleFilter = 10,
         NoLandingTaxAccountingRuleFilter = 20,
-        AircraftAccountingRuleFilter = 30,
+        FlightTimeAccountingRuleFilter = 30,
         InstructorFeeAccountingRuleFilter = 40,
         AdditionalFuelFeeAccountingRuleFilter = 50,
         LandingTaxAccountingRuleFilter = 60,
-        VsfFeeAccountingRuleFilter = 70
+        VsfFeeAccountingRuleFilter = 70,
+        EngineTimeAccountingRuleFilter = 80
     };
 }

@@ -16,11 +16,13 @@ namespace FLS.Server.Service.RulesEngine.Conditions
 
         public bool IsSatisfied()
         {
-            return _collection.Contains(_key);
+            return _collection != null && _collection.Contains(_key);
         }
 
         public override string ToString()
         {
+            if (_collection == null) return "(collection: NULL)";
+
             return $"(collection: '{string.Join(",", _collection.Select(x => x))}' CONTAINS key: {_key} ==> {IsSatisfied()})";
         }
     }

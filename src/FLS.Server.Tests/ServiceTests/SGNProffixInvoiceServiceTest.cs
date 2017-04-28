@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using FLS.Data.WebApi.Flight;
@@ -14,6 +16,7 @@ using Microsoft.Practices.Unity;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Accounting;
 using FLS.Server.Data;
+using FLS.Server.Tests.Infrastructure;
 
 namespace FLS.Server.Tests.ServiceTests
 {
@@ -34,7 +37,7 @@ namespace FLS.Server.Tests.ServiceTests
 
             public string UnitType { get; set; }
         }
-        
+
         [TestInitialize]
         public void SGNProffixInvoiceTestInitialize()
         {
@@ -56,6 +59,37 @@ namespace FLS.Server.Tests.ServiceTests
                     };
 
                     context.Clubs.Add(club);
+
+                    var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+                    using (var file = new StreamReader(Path.Combine(baseDir, "AccountingRuleFilters_SGN.csv")))
+                    {
+                        var entityType = typeof(AccountingRuleFilter);
+                        var headerLine = file.ReadLine();
+                        var columnNames = headerLine.Split(new string[] {";"}, StringSplitOptions.None);
+
+                        while (!file.EndOfStream)
+                        {
+                            try
+                            {
+                                var dbEntity = new AccountingRuleFilter();
+                                var curLineValues = file.ReadLine().Split(new string[] { ";" }, StringSplitOptions.None);
+                                for (int i = 0; i < columnNames.Length; i++)
+                                {
+                                    var property = entityType.GetProperty(columnNames[i]);
+                                    ParseStringValue(property, dbEntity, curLineValues[i]);
+                                }
+
+                                dbEntity.Club = club;
+
+                                context.AccountingRuleFilters.Add(dbEntity);
+                            }
+                            catch (Exception exception)
+                            {
+                                Logger.Error(exception, "Error while trying to create new AccountingRuleFilter");
+                            }
+                        }
+                    }
 
                     //Insert FlightTypes for Club
                     var flightType = new FlightType()
@@ -396,6 +430,57 @@ namespace FLS.Server.Tests.ServiceTests
             }
         }
 
+        private void ParseStringValue(PropertyInfo p, object row, string value)
+        {
+            p.SetValue(row, ParseStringValue(p, value));
+        }
+
+        private object ParseStringValue(PropertyInfo p, string value)
+        {
+            object parsed = null;
+
+            if (value != "NULL")
+            {
+                value = value.Trim('\"');
+
+                if (p.PropertyType == typeof(string))
+                    parsed = value;
+                else if (p.PropertyType == typeof(bool))
+                {
+                    if (value == "1")
+                    {
+                        parsed = true;
+                    }
+                    else if (value == "0")
+                    {
+                        parsed = false;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            parsed = Convert.ToBoolean(value);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new FormatException("The string is not a recognized as a valid boolean value.");
+                        }
+                    }
+                }
+                else
+                {
+                    Type parseMethodType = p.PropertyType;
+                    if (parseMethodType.IsGenericType) // normally Nullable<T> - extract parse method of T (NULL is handled above)
+                        parseMethodType = parseMethodType.GenericTypeArguments.First();
+
+                    var parseMethod = parseMethodType.GetMethod("Parse", new Type[] { typeof(string) });
+                    parsed = parseMethod.Invoke(null, new[] { value });
+                }
+            }
+
+            return parsed;
+        }
+
         [TestCleanup]
         public void SGNProffixInvoiceTestCleanup()
         {
@@ -430,10 +515,10 @@ namespace FLS.Server.Tests.ServiceTests
         //http://stackoverflow.com/questions/24012253/datadriven-mstests-csv-with-semicolon-separator
         //important: schema.ini must be saved as US-ASCII (in VS)
         [TestMethod]
-        [DeploymentItem(@"TestData\schema.ini")]
-        [DeploymentItem(@"TestData\FlightInvoiceTestdata_SGN.csv")]
-        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", @"|DataDirectory|\TestData\FlightInvoiceTestdata_SGN.csv", "FlightInvoiceTestdata_SGN#csv", 
-            DataAccessMethod.Sequential)]
+        //[DeploymentItem(@"TestData\schema.ini")]
+        [DeploymentItem(@"TestData\FlightInvoiceTestdata_SGN.xlsx")]
+        [DeploymentItem(@"Resources\AccountingRuleFilters_SGN.csv")]
+        [DataSource("System.Data.Odbc", @"Dsn=Excel Files;dbq=.\FlightInvoiceTestdata_SGN.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5", "FlightInvoiceTestdata_SGN$", DataAccessMethod.Sequential)]
         public void SGNProffixGliderInvoiceTest()
         {
             
@@ -459,7 +544,7 @@ namespace FLS.Server.Tests.ServiceTests
             #region Flight preparation
             var startTime = DateTime.Today.AddDays(-34).AddHours(10);
             var flightDetails = new FlightDetails();
-            flightDetails.StartType = (int)AircraftStartType.TowingByAircraft;
+            flightDetails.StartType = Convert.ToInt32(TestContext.DataRow["StartType"].ToString());
 
             flightDetails.GliderFlightDetailsData = new GliderFlightDetailsData();
             flightDetails.GliderFlightDetailsData.AircraftId =
@@ -476,6 +561,14 @@ namespace FLS.Server.Tests.ServiceTests
                 GetLocation(TestContext.DataRow["GliderLdgLocation"].ToString()).LocationId;
             flightDetails.GliderFlightDetailsData.FlightTypeId =
                 GetFlightType(TestContext.DataRow["GliderFlightCode"].ToString()).FlightTypeId;
+
+            var engineTimeInSeconds = Convert.ToInt32(TestContext.DataRow["EngineTimeInSeconds"].ToString());
+
+            if (engineTimeInSeconds > 0)
+            {
+                flightDetails.GliderFlightDetailsData.EngineStartOperatingCounterInSeconds = 0;
+                flightDetails.GliderFlightDetailsData.EngineEndOperatingCounterInSeconds = engineTimeInSeconds;
+            }
 
             var displayname = TestContext.DataRow["GliderInstructorName"].ToString();
 
@@ -551,6 +644,8 @@ namespace FLS.Server.Tests.ServiceTests
             for (int i = 1; i < 10; i++)
             {
                 var erpArticle = TestContext.DataRow[$"ExpectedErpArticleNumberLine{i}"].ToString();
+
+                Logger.Info($"ERP article for invoice line number: {i} is: {erpArticle}");
 
                 if (string.IsNullOrWhiteSpace(erpArticle)) continue;
 

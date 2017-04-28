@@ -27,32 +27,38 @@ namespace FLS.Server.Service.Accounting.Rules
         {
             ICondition condition = null;
 
-            //TODO: condition matches even all "IsRuleFor..." are set to 0
-            if (AccountingRuleFilter.IsRuleForSelfstartedGliderFlights)
-            {
-                condition = new Equals<int>(_flight.StartTypeId.GetValueOrDefault(), (int)AircraftStartType.SelfStart);
-            }
-
             if (AccountingRuleFilter.IsRuleForGliderFlights)
             {
-                condition = new Or(condition,
-                    new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.GliderFlight));
+                condition = new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.GliderFlight);
+            }
+            else
+            {
+                condition = new Inverter(new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.GliderFlight));
             }
 
             if (AccountingRuleFilter.IsRuleForTowingFlights)
             {
                 condition = new Or(condition, new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.TowFlight));
             }
-
-            if (condition != null)
+            else
             {
-                Conditions.Add(condition);
-                condition = null;
+                condition = new And(condition, new Inverter(new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.TowFlight)));
             }
+
+            if (AccountingRuleFilter.IsRuleForMotorFlights)
+            {
+                condition = new Or(condition, new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.MotorFlight));
+            }
+            else
+            {
+                condition = new And(condition, new Inverter(new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.MotorFlight)));
+            }
+
+            Conditions.Add(condition);
 
             if (_accountingRuleFilter.UseRuleForAllAircraftsExceptListed)
             {
-                if (_accountingRuleFilter.MatchedAircraftImmatriculations.Any())
+                if (_accountingRuleFilter.MatchedAircraftIds != null && _accountingRuleFilter.MatchedAircraftIds.Any())
                 {
                     Conditions.Add(new Inverter(new Contains<Guid>(_accountingRuleFilter.MatchedAircraftIds, _flight.AircraftId)));
                 }
@@ -62,12 +68,23 @@ namespace FLS.Server.Service.Accounting.Rules
                 Conditions.Add(new Contains<Guid>(_accountingRuleFilter.MatchedAircraftIds, _flight.AircraftId));
             }
 
+            if (_accountingRuleFilter.UseRuleForAllStartTypesExceptListed)
+            {
+                if (_accountingRuleFilter.MatchedStartTypes != null && _accountingRuleFilter.MatchedStartTypes.Any())
+                {
+                    Conditions.Add(new Inverter(new Contains<int>(_accountingRuleFilter.MatchedStartTypes, _flight.StartTypeId.GetValueOrDefault())));
+                }
+            }
+            else
+            {
+                Conditions.Add(new Contains<int>(_accountingRuleFilter.MatchedStartTypes, _flight.StartTypeId.GetValueOrDefault()));
+            }
 
             //Conditions.Add(new Between<double>(ruleBasedDelivery.ActiveFlightTime, _accountingRuleFilter.MinFlightTimeMatchingValue, _accountingRuleFilter.MaxFlightTimeMatchingValue, includeMinValue:false, includeMaxValue:true));
 
             if (_accountingRuleFilter.UseRuleForAllFlightTypesExceptListed)
             {
-                if (_accountingRuleFilter.MatchedFlightTypeCodes.Any())
+                if (_accountingRuleFilter.MatchedFlightTypeCodes != null && _accountingRuleFilter.MatchedFlightTypeCodes.Any())
                 {
                     condition = null;
 
@@ -117,7 +134,7 @@ namespace FLS.Server.Service.Accounting.Rules
 
             if (_accountingRuleFilter.UseRuleForAllStartLocationsExceptListed)
             {
-                if (_accountingRuleFilter.MatchedStartLocations.Any())
+                if (_accountingRuleFilter.MatchedLdgLocationIds != null && _accountingRuleFilter.MatchedLdgLocationIds.Any())
                 {
                     if (_flight.StartLocationId.HasValue == false)
                     {
@@ -146,7 +163,7 @@ namespace FLS.Server.Service.Accounting.Rules
 
             if (_accountingRuleFilter.UseRuleForAllLdgLocationsExceptListed)
             {
-                if (_accountingRuleFilter.MatchedLdgLocations.Any())
+                if (_accountingRuleFilter.MatchedLdgLocationIds != null && _accountingRuleFilter.MatchedLdgLocationIds.Any())
                 {
                     if (_flight.LdgLocationId.HasValue == false)
                     {
@@ -175,7 +192,7 @@ namespace FLS.Server.Service.Accounting.Rules
 
             if (_accountingRuleFilter.UseRuleForAllClubMemberNumbersExceptListed)
             {
-                if (_accountingRuleFilter.MatchedClubMemberNumbers.Any())
+                if (_accountingRuleFilter.MatchedClubMemberNumbers != null && _accountingRuleFilter.MatchedClubMemberNumbers.Any())
                 {
                     if (_flight.FlightCrews.Any() == false)
                     {
@@ -223,7 +240,7 @@ namespace FLS.Server.Service.Accounting.Rules
 
             if (_accountingRuleFilter.UseRuleForAllFlightCrewTypesExceptListed)
             {
-                if (_accountingRuleFilter.MatchedFlightCrewTypes.Any())
+                if (_accountingRuleFilter.MatchedFlightCrewTypes != null && _accountingRuleFilter.MatchedFlightCrewTypes.Any())
                 {
                     if (_flight.FlightCrews.Any() == false)
                     {
