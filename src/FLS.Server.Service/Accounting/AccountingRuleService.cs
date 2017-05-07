@@ -194,7 +194,7 @@ namespace FLS.Server.Service.Accounting
 
             foreach (var icaoCode in filter.MatchedLdgLocations)
             {
-                var location = locationListItems.FirstOrDefault(q => q.IcaoCode.ToUpper() == icaoCode.ToUpper());
+                var location = locationListItems.FirstOrDefault(q => q.IcaoCode != null && q.IcaoCode.ToUpper() == icaoCode.ToUpper());
 
                 if (location == null)
                 {
@@ -208,7 +208,7 @@ namespace FLS.Server.Service.Accounting
 
             foreach (var icaoCode in filter.MatchedStartLocations)
             {
-                var location = locationListItems.FirstOrDefault(q => q.IcaoCode.ToUpper() == icaoCode.ToUpper());
+                var location = locationListItems.FirstOrDefault(q => q.IcaoCode != null && q.IcaoCode.ToUpper() == icaoCode.ToUpper());
 
                 if (location == null)
                 {
