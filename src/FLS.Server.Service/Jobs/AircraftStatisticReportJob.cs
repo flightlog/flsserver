@@ -65,6 +65,12 @@ namespace FLS.Server.Service.Jobs
             {
                 if (aircraft.AircraftOwnerClubId.HasValue)
                 {
+                    if (aircraft.AircraftOwnerClub == null)
+                    {
+                        Logger.Warn($"Aircraft owner club is null, but AircraftOwnerClubId has still a value for aircraft: {aircraft.Immatriculation}. So may the club is flagged as deleted!");
+                        continue;
+                    }
+
                     if (string.IsNullOrWhiteSpace(aircraft.AircraftOwnerClub.SendAircraftStatisticReportTo)) continue;
                     
                     if (aircraftOwnerDictionary.Keys.Contains(
@@ -78,6 +84,12 @@ namespace FLS.Server.Service.Jobs
                 }
                 else if (aircraft.AircraftOwnerPersonId.HasValue)
                 {
+                    if (aircraft.AircraftOwnerPerson == null)
+                    {
+                        Logger.Warn($"Aircraft owner person is null, but AircraftOwnerPersonId has still a value for aircraft: {aircraft.Immatriculation}. So may the person is flagged as deleted!");
+                        continue;    
+                    }
+
                     if (aircraft.AircraftOwnerPerson.ReceiveOwnedAircraftStatisticReports == false) continue;
 
                     if (aircraftOwnerDictionary.Keys.Contains(
