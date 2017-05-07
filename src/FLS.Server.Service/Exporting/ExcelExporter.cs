@@ -78,7 +78,7 @@ namespace FLS.Server.Service.Exporting
 
                                 int flightBeginRowNumber = rowNumber;
 
-                                foreach (var flightInvoiceLineItem in ruleBasedDelivery.DeliveryItems)
+                                foreach (var flightInvoiceLineItem in ruleBasedDelivery.DeliveryItems.OrderBy(o => o.Position))
                                 {
                                     worksheet.Cells[rowNumber, 1].Value = flightNr;
                                     worksheet.Cells[rowNumber, 2].Value =
