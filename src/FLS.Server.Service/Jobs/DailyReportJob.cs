@@ -26,7 +26,7 @@ namespace FLS.Server.Service.Jobs
             get { return _logger; }
             set { _logger = value; }
         }
-        
+
         public DailyReportJob(FlightService flightService, ClubService clubService,
             PersonService personService,
             FlightInformationEmailBuildService flightInformationEmailService)
@@ -52,38 +52,52 @@ namespace FLS.Server.Service.Jobs
 
                 foreach (var club in clubs)
                 {
-                    Logger.Info($"Executing daily report job for club: {club.Clubname}");
-
-                    //get all flights related to this club
-                    var flights = _flightService.GetFlightsCreatedOrValidatedToday(club.ClubId);
-
-                    Logger.Info($"{flights.Count} flights found for club: {club.Clubname}");
-
-                    //prepare a dictionary with persons and the related flights
-                    var personFlightList = CreatePersonFlightList(flights);
-
-                    if (personFlightList != null)
+                    try
                     {
-                        foreach (var person in personFlightList.Keys)
-                        {
-                            //get person details to have the information if we need to send the flight report to this person
-                            var personDetails = _personService.GetPilotPersonDetailsInternal(person.PersonId,
-                                                                                             club.ClubId, false);
+                        Logger.Info($"Executing daily report job for club: {club.Clubname}");
 
-                            if (personDetails.ClubRelatedPersonDetails != null
-                                && personDetails.ClubRelatedPersonDetails.ReceiveFlightReports)
+                        //get all flights related to this club
+                        var flights = _flightService.GetFlightsCreatedOrValidatedToday(club.ClubId);
+
+                        if (flights.Any() == false)
+                        {
+                            Logger.Info($"No today flights to send by email for club: {club.Clubname}");
+                            continue;
+                        }
+
+                        Logger.Info($"{flights.Count} flights found for club: {club.Clubname}");
+                        
+                        //prepare a dictionary with persons and the related flights
+                        var personFlightList = CreatePersonFlightList(flights);
+
+                        if (personFlightList != null)
+                        {
+                            foreach (var person in personFlightList.Keys)
                             {
-                                PrepareAndSendFlightReports(personFlightList[person], person);
-                            }
-                            else
-                            {
-                                Logger.Info($"Club related details not available or ReceiveFlightReports for person {person.DisplayName} not set. Did not send email with flight report to person!");
+                                //get person details to have the information if we need to send the flight report to this person
+                                var personDetails = _personService.GetPilotPersonDetailsInternal(person.PersonId,
+                                                                                                 club.ClubId, false);
+
+                                if (personDetails != null 
+                                    && personDetails.ClubRelatedPersonDetails != null
+                                    && personDetails.ClubRelatedPersonDetails.ReceiveFlightReports)
+                                {
+                                    PrepareAndSendFlightReports(personFlightList[person], person);
+                                }
+                                else
+                                {
+                                    Logger.Info($"Club related details not available or ReceiveFlightReports for person {person.DisplayName} not set. Did not send email with flight report to person!");
+                                }
                             }
                         }
+                        else
+                        {
+                            Logger.Error($"Could not built person list for flights for club: {club.Clubname}");
+                        }
                     }
-                    else
+                    catch (Exception exception)
                     {
-                        Logger.Error($"Could not built person list for flights for club: {club.Clubname}");
+                        Logger.Error(exception, $"Error while executing daily report job for club: {club.Clubname}. Message: {exception.Message}");
                     }
                 }
             }
@@ -96,20 +110,17 @@ namespace FLS.Server.Service.Jobs
         private Dictionary<Person, List<Flight>> CreatePersonFlightList(List<Flight> flights)
         {
             flights.ArgumentNotNull("flights");
-
-            if (flights.Any() == false)
-            {
-                Logger.Info("No flight reports to send by email");
-                return null;
-            }
-
+            
             var personFlightList = new Dictionary<Person, List<Flight>>();
 
             foreach (var flight in flights)
             {
-                var person = flight.Pilot.Person;
-                if (person != null)
+                Person person = null;
+
+                if (flight.Pilot != null && flight.Pilot.Person != null)
                 {
+                    person = flight.Pilot.Person;
+
                     if (personFlightList.ContainsKey(person) == false)
                     {
                         var flightList = new List<Flight>();
@@ -120,6 +131,10 @@ namespace FLS.Server.Service.Jobs
                     {
                         personFlightList[person].Add(flight);
                     }
+                }
+                else
+                {
+                    Logger.Warn($"Pilot or PilotPerson of flight {flight} is NULL! Could not add to daily flight report email list!");
                 }
 
                 if (flight.CoPilot != null)
