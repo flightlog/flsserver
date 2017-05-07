@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FLS.Data.WebApi.Accounting.RuleFilters;
 using FLS.Server.Data.DbEntities;
@@ -190,79 +191,51 @@ namespace FLS.Server.Service.Accounting.Rules
                 }
             }
 
-            if (_accountingRuleFilter.UseRuleForAllClubMemberNumbersExceptListed)
+            if (_flight.FlightCrews.Any() == false)
             {
-                if (_accountingRuleFilter.MatchedClubMemberNumbers != null && _accountingRuleFilter.MatchedClubMemberNumbers.Any())
+                Logger.Warn($"Flight has no flight crew. May we account something wrong! Adding false condition to not fit rule!");
+                Conditions.Add(new Equals<bool>(false, true));
+            }
+            else
+            {
+                // club members and flight crew types must be combined
+                var flightCrewTypes = Enum.GetValues(typeof(FLS.Data.WebApi.Flight.FlightCrewType)).Cast<int>().ToList();
+                var flightCrewTypeSelection = flightCrewTypes;
+                if (_accountingRuleFilter.UseRuleForAllFlightCrewTypesExceptListed)
                 {
-                    if (_flight.FlightCrews.Any() == false)
+                    if (_accountingRuleFilter.MatchedFlightCrewTypes != null && _accountingRuleFilter.MatchedFlightCrewTypes.Any())
                     {
-                        Logger.Warn($"Flight has no flight crew. May we account something wrong!");
+                        flightCrewTypeSelection = flightCrewTypes.Except(_accountingRuleFilter.MatchedFlightCrewTypes).ToList();
                     }
-                    else
+                }
+                else
+                {
+                    flightCrewTypeSelection = _accountingRuleFilter.MatchedFlightCrewTypes;
+                }
+
+                if (_accountingRuleFilter.UseRuleForAllClubMemberNumbersExceptListed)
+                {
+                    if (_accountingRuleFilter.MatchedClubMemberNumbers != null && _accountingRuleFilter.MatchedClubMemberNumbers.Any())
                     {
-                        var persons = _flight.FlightCrews.Select(x => x.Person);
+                        //there are some excluded member numbers we have to filter for
+                        var persons = _flight.FlightCrews
+                                            .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                                            .Select(x => x.Person);
                         var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
 
                         Conditions.Add(new Inverter(new IntersectAny<string>(_accountingRuleFilter.MatchedClubMemberNumbers,
                             personClubs.Select(pc => pc.MemberNumber))));
                     }
-                    //if (string.IsNullOrWhiteSpace(ruleBasedDelivery.RecipientDetails.PersonClubMemberNumber))
-                    //{
-                    //    Logger.Info($"Invoice has no recipient with club member number! Condition for club member number will not be added.");
-                    //}
-                    //else
-                    //{
-
-                    //    Conditions.Add(new Inverter(new Contains<string>(_accountingRuleFilter.MatchedClubMemberNumbers,
-                    //        ruleBasedDelivery.RecipientDetails.PersonClubMemberNumber)));
-                    //}
-                }
-            }
-            else
-            {
-                //if (string.IsNullOrWhiteSpace(ruleBasedDelivery.RecipientDetails.PersonClubMemberNumber))
-                //{
-                //    Logger.Info($"Invoice has no recipient with club member number! Condition for club member number will not be added.");
-                //}
-                //else
-                //{
-
-                //    Conditions.Add(new Contains<string>(_accountingRuleFilter.MatchedClubMemberNumbers,
-                //        ruleBasedDelivery.RecipientDetails.PersonClubMemberNumber));
-                //}
-
-                var persons = _flight.FlightCrews.Select(x => x.Person);
-                var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
-
-                Conditions.Add(new IntersectAny<string>(_accountingRuleFilter.MatchedClubMemberNumbers,
-                    personClubs.Select(pc => pc.MemberNumber)));
-            }
-
-            if (_accountingRuleFilter.UseRuleForAllFlightCrewTypesExceptListed)
-            {
-                if (_accountingRuleFilter.MatchedFlightCrewTypes != null && _accountingRuleFilter.MatchedFlightCrewTypes.Any())
-                {
-                    if (_flight.FlightCrews.Any() == false)
-                    {
-                        Logger.Warn($"Flight has no flight crew. May we account something wrong!");
-                    }
-                    else
-                    {
-                        Conditions.Add(new Inverter(new IntersectAny<int>(_accountingRuleFilter.MatchedFlightCrewTypes,
-                            _flight.FlightCrews.Select(x => x.FlightCrewTypeId))));
-                    }
-                }
-            }
-            else
-            {
-                if (_flight.FlightCrews.Any() == false)
-                {
-                    Logger.Warn($"Flight has no flight crew. May we account something wrong!");
                 }
                 else
                 {
-                    Conditions.Add(new IntersectAny<int>(_accountingRuleFilter.MatchedFlightCrewTypes,
-                        _flight.FlightCrews.Select(x => x.FlightCrewTypeId)));
+                    var persons = _flight.FlightCrews
+                                        .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                                        .Select(x => x.Person);
+                    var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
+
+                    Conditions.Add(new IntersectAny<string>(_accountingRuleFilter.MatchedClubMemberNumbers,
+                        personClubs.Select(pc => pc.MemberNumber)));
                 }
             }
         }
