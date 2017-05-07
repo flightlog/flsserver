@@ -128,7 +128,7 @@ namespace FLS.Server.Tests
             container.RegisterType<IUserEmailStore<User, Guid>, IdentityUserStoreService>();
             container.RegisterType<IUserSecurityStampStore<User, Guid>, IdentityUserStoreService>();
             container.RegisterType<IRoleStore<Role, Guid>, IdentityRoleStoreService>();
-            container.RegisterType<IEmailSendService, EmailSendService>();
+            container.RegisterType<IEmailSendService, MockEmailSendService>();
             container.RegisterType<ILocationService, LocationService>();
             container.RegisterType<IAircraftService, AircraftService>();
             container.RegisterType<IPersonService, PersonService>();
