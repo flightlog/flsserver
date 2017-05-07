@@ -44,6 +44,20 @@ namespace FLS.Server.Tests.ServiceTests
 
         [TestMethod]
         [TestCategory("Service")]
+        public void ExecuteDeliveryCreationJobTest()
+        {
+            WorkflowService.ExecuteDeliveryCreationJob();
+        }
+
+        [TestMethod]
+        [TestCategory("Service")]
+        public void ExecuteDeliveryMailExportJobTest()
+        {
+            WorkflowService.ExecuteDeliveryMailExportJob();
+        }
+
+        [TestMethod]
+        [TestCategory("Service")]
         public void ExecutePlanningDayMailJobTest()
         {
             var planningDay = new PlanningDayDetails();
