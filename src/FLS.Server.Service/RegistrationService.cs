@@ -193,13 +193,22 @@ namespace FLS.Server.Service
 
                     if (string.IsNullOrWhiteSpace(person.EmailPrivate) == false)
                     {
-                        var email = _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForTrialPilot(person,
-                            trialFlightRegistrationDetails.SelectedDay, person.EmailPrivate, club.ClubId, club.HomebaseName);
-                        _registrationEmailBuildService.SendEmail(email);
+                        if (trialFlightRegistrationDetails.SendCouponToInvoiceAddress == false)
+                        {
+                            var email =
+                                _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForTrialPilot(person,
+                                    trialFlightRegistrationDetails.SelectedDay, person.EmailPrivate, club.ClubId,
+                                    club.HomebaseName);
+                            _registrationEmailBuildService.SendEmail(email);
+                        }
+                        else
+                        {
+                            Logger.Info($"Coupon is requested to send to invoice address {trialFlightRegistrationDetails.InvoiceToFirstname} {trialFlightRegistrationDetails.InvoiceToLastname}. Will not send email to trial flight candidate.");
+                        }
                     }
                     else
                     {
-                        Logger.Info($"No private email set for trial flight pilot {person.DisplayName}. Could not send email to pilot.");
+                        Logger.Info($"No private email set for trial flight pilot {person.DisplayName}. Could not send email to trial flight candidate.");
                     }
 
                     if (string.IsNullOrWhiteSpace(club.SendTrialFlightRegistrationOperatorEmailTo) == false)
