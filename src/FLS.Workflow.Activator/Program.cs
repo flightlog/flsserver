@@ -28,7 +28,7 @@ namespace FLS.Workflow.Activator
                     Logger.Debug(string.Format("Parsing argument: {0}", args[0]));
                     if (args[0].ToLower() == "?" || args[0].ToLower() == "help")
                     {
-                        Console.WriteLine("Use 'flightvalidation','dailyreport','monthlyreport','planning','testmail','invoice'");
+                        Console.WriteLine("Use 'flightvalidation','dailyreport','monthlyreport','planning','testmail','deliverycreation','deliverymailexport'");
                         return;
                     }
                     else if (args[0].ToLower() == "flightvalidation")
