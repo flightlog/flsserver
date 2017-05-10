@@ -16,6 +16,7 @@ namespace FLS.Data.WebApi.Accounting.RuleFilters
             MatchedLdgLocations = new List<string>();
             MatchedClubMemberNumbers = new List<string>();
             MatchedFlightCrewTypes = new List<int>();
+            MatchedStartTypes = new List<int>();
             UseRuleForAllStartLocationsExceptListed = true;
             UseRuleForAllLdgLocationsExceptListed = true;
             UseRuleForAllFlightCrewTypesExceptListed = true;
