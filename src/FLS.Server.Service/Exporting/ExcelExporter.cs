@@ -69,7 +69,7 @@ namespace FLS.Server.Service.Exporting
                             int flightNr = 1;
                             int rowNumber = 2;
 
-                            foreach (var ruleBasedDelivery in flightInvoiceDetailList)
+                            foreach (var ruleBasedDelivery in flightInvoiceDetailList.OrderBy(o => o.FlightInformation.FlightDate))
                             {
                                 if (ruleBasedDelivery.RecipientDetails.RecipientName != recipient)
                                 {
