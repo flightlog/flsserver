@@ -21,18 +21,62 @@ namespace FLS.Server.Service.Email
             
         }
         
-        public MailMessage CreateTrialFlightRegistrationEmailForTrialPilot(Person trialPilotPerson, DateTime selectedDate, 
+        public MailMessage CreateTrialFlightRegistrationEmailForTrialPilot(TrialFlightRegistrationDetails trialFlightRegistrationDetails,
             string emailRecipientAddress, Guid clubId, string locationName)
         {
-            trialPilotPerson.ArgumentNotNull("trialPilotPerson");
+            trialFlightRegistrationDetails.ArgumentNotNull("trialFlightRegistrationDetails");
 
             var model = new TrialFlightRegistrationModel()
             {
-                RecipientName = trialPilotPerson.DisplayName,
-                SelectedTrialFlightDate = selectedDate.ToShortDateString(),
-                WillBeContactedOnDate = selectedDate.AddDays(-2).ToShortDateString(),
-                LocationName = locationName
+                RecipientName = $"{trialFlightRegistrationDetails.Firstname} {trialFlightRegistrationDetails.Lastname}",
+                Firstname = trialFlightRegistrationDetails.Firstname,
+                Lastname = trialFlightRegistrationDetails.Lastname,
+                AddressLine1 = trialFlightRegistrationDetails.AddressLine1,
+                ZipCode = trialFlightRegistrationDetails.ZipCode,
+                City = trialFlightRegistrationDetails.City,
+                BusinessPhoneNumber = trialFlightRegistrationDetails.BusinessPhoneNumber,
+                MobilePhoneNumber = trialFlightRegistrationDetails.MobilePhoneNumber,
+                PrivatePhoneNumber = trialFlightRegistrationDetails.PrivatePhoneNumber,
+                PrivateEmail = trialFlightRegistrationDetails.PrivateEmail,
+                SelectedTrialFlightDate = trialFlightRegistrationDetails.SelectedDay.ToShortDateString(),
+                WillBeContactedOnDate = trialFlightRegistrationDetails.SelectedDay.AddDays(-2).ToShortDateString(),
+                LocationName = locationName,
+                Remarks = trialFlightRegistrationDetails.Remarks
             };
+
+            if (string.IsNullOrWhiteSpace(trialFlightRegistrationDetails.Remarks))
+            {
+                model.Remarks = "keine";
+            }
+
+            if (trialFlightRegistrationDetails.InvoiceAddressIsSame)
+            {
+                model.InvoiceToFirstname = trialFlightRegistrationDetails.Firstname;
+                model.InvoiceToLastname = trialFlightRegistrationDetails.Lastname;
+                model.InvoiceToAddressLine1 = trialFlightRegistrationDetails.AddressLine1;
+                model.InvoiceToZipCode = trialFlightRegistrationDetails.ZipCode;
+                model.InvoiceToCity = trialFlightRegistrationDetails.City;
+            }
+            else
+            {
+                model.RecipientName =
+                    $"{trialFlightRegistrationDetails.InvoiceToFirstname} {trialFlightRegistrationDetails.InvoiceToLastname}";
+                model.InvoiceToFirstname = trialFlightRegistrationDetails.InvoiceToFirstname;
+                model.InvoiceToLastname = trialFlightRegistrationDetails.InvoiceToLastname;
+                model.InvoiceToAddressLine1 = trialFlightRegistrationDetails.InvoiceToAddressLine1;
+                model.InvoiceToZipCode = trialFlightRegistrationDetails.InvoiceToZipCode;
+                model.InvoiceToCity = trialFlightRegistrationDetails.InvoiceToCity;
+            }
+
+            if (trialFlightRegistrationDetails.InvoiceAddressIsSame == false
+                && trialFlightRegistrationDetails.SendCouponToInvoiceAddress)
+            {
+                model.SendCouponToInformation = "Rechnungs-Empfänger";
+            }
+            else
+            {
+                model.SendCouponToInformation = "Schnupperflug-Kandidat";
+            }
 
             var factory = new MergedEmailFactory(new VelocityTemplateParser("TrialFlightRegistrationModel"));
 
@@ -65,6 +109,11 @@ namespace FLS.Server.Service.Email
                 ReservationInformation = reservationInfo,
                 Remarks = trialFlightRegistrationDetails.Remarks
             };
+
+            if (string.IsNullOrWhiteSpace(trialFlightRegistrationDetails.Remarks))
+            {
+                model.Remarks = "keine";
+            }
 
             if (trialFlightRegistrationDetails.InvoiceAddressIsSame)
             {

@@ -196,8 +196,7 @@ namespace FLS.Server.Service
                         string.IsNullOrWhiteSpace(trialFlightRegistrationDetails.PrivateEmail) == false)
                     {
                         var email =
-                                _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForTrialPilot(person,
-                                    trialFlightRegistrationDetails.SelectedDay, person.EmailPrivate, club.ClubId,
+                                _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForTrialPilot(trialFlightRegistrationDetails, person.EmailPrivate, club.ClubId,
                                     club.HomebaseName);
                         _registrationEmailBuildService.SendEmail(email);
                     }
@@ -205,8 +204,7 @@ namespace FLS.Server.Service
                         && string.IsNullOrWhiteSpace(trialFlightRegistrationDetails.NotificationEmail) == false)
                     {
                         var email =
-                                _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForTrialPilot(person,
-                                    trialFlightRegistrationDetails.SelectedDay, trialFlightRegistrationDetails.NotificationEmail, club.ClubId,
+                                _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForTrialPilot(trialFlightRegistrationDetails, trialFlightRegistrationDetails.NotificationEmail, club.ClubId,
                                     club.HomebaseName);
                         _registrationEmailBuildService.SendEmail(email);
                     }
