@@ -201,7 +201,8 @@ namespace FLS.Server.Service
                                     club.HomebaseName);
                         _registrationEmailBuildService.SendEmail(email);
                     }
-                    else if (string.IsNullOrWhiteSpace(trialFlightRegistrationDetails.NotificationEmail) == false)
+                    else if (trialFlightRegistrationDetails.InvoiceAddressIsSame == false 
+                        && string.IsNullOrWhiteSpace(trialFlightRegistrationDetails.NotificationEmail) == false)
                     {
                         var email =
                                 _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForTrialPilot(person,
