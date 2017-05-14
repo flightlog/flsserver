@@ -83,7 +83,8 @@ namespace FLS.Server.Service.Email
                 model.InvoiceToCity = trialFlightRegistrationDetails.InvoiceToCity;
             }
 
-            if (trialFlightRegistrationDetails.SendCouponToInvoiceAddress)
+            if (trialFlightRegistrationDetails.InvoiceAddressIsSame == false 
+                && trialFlightRegistrationDetails.SendCouponToInvoiceAddress)
             {
                 model.SendCouponToInformation = "Rechnungs-Empfänger";
             }
