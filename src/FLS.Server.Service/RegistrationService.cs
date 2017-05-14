@@ -135,6 +135,7 @@ namespace FLS.Server.Service
                             Zip = trialFlightRegistrationDetails.InvoiceToZipCode,
                             City = trialFlightRegistrationDetails.InvoiceToCity,
                             CountryId = trialFlightRegistrationDetails.InvoiceToCountryId,
+                            EmailPrivate = trialFlightRegistrationDetails.NotificationEmail
                         };
 
                         personClub = new PersonClub {ClubId = club.ClubId};
@@ -191,24 +192,26 @@ namespace FLS.Server.Service
 
                     context.SaveChanges();
 
-                    if (string.IsNullOrWhiteSpace(person.EmailPrivate) == false)
+                    if (trialFlightRegistrationDetails.InvoiceAddressIsSame &&
+                        string.IsNullOrWhiteSpace(trialFlightRegistrationDetails.PrivateEmail) == false)
                     {
-                        if (trialFlightRegistrationDetails.SendCouponToInvoiceAddress == false)
-                        {
-                            var email =
+                        var email =
                                 _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForTrialPilot(person,
                                     trialFlightRegistrationDetails.SelectedDay, person.EmailPrivate, club.ClubId,
                                     club.HomebaseName);
-                            _registrationEmailBuildService.SendEmail(email);
-                        }
-                        else
-                        {
-                            Logger.Info($"Coupon is requested to send to invoice address {trialFlightRegistrationDetails.InvoiceToFirstname} {trialFlightRegistrationDetails.InvoiceToLastname}. Will not send email to trial flight candidate.");
-                        }
+                        _registrationEmailBuildService.SendEmail(email);
+                    }
+                    else if (string.IsNullOrWhiteSpace(trialFlightRegistrationDetails.NotificationEmail) == false)
+                    {
+                        var email =
+                                _registrationEmailBuildService.CreateTrialFlightRegistrationEmailForTrialPilot(person,
+                                    trialFlightRegistrationDetails.SelectedDay, trialFlightRegistrationDetails.NotificationEmail, club.ClubId,
+                                    club.HomebaseName);
+                        _registrationEmailBuildService.SendEmail(email);
                     }
                     else
                     {
-                        Logger.Info($"No private email set for trial flight pilot {person.DisplayName}. Could not send email to trial flight candidate.");
+                        Logger.Info($"No email entered for trial flight pilot {person.DisplayName}. Could not send email to trial flight candidate.");
                     }
 
                     if (string.IsNullOrWhiteSpace(club.SendTrialFlightRegistrationOperatorEmailTo) == false)

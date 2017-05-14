@@ -61,6 +61,10 @@ namespace FLS.Data.WebApi.Registrations
 
         public Guid? InvoiceToCountryId { get; set; }
 
+        [StringLength(256)]
+        [EmailAddress]
+        public string NotificationEmail { get; set; }
+
         public DateTime SelectedDay { get; set; }
 
         public bool SendCouponToInvoiceAddress { get; set; }
