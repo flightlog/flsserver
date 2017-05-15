@@ -46,6 +46,7 @@ namespace FLS.Server.Tests.ServiceTests
             using (var context = DataAccessService.CreateDbContext())
             {
                 Club club = context.Clubs.FirstOrDefault(x => x.ClubKey == "SGN");
+                var clubExists = true;
 
                 if (club == null)
                 {
@@ -59,7 +60,11 @@ namespace FLS.Server.Tests.ServiceTests
                     };
 
                     context.Clubs.Add(club);
+                    clubExists = false;
+                }
 
+                if (clubExists == false || context.AccountingRuleFilters.Any(x => x.ClubId == club.ClubId) == false)
+                {
                     var baseDir = AppDomain.CurrentDomain.BaseDirectory;
 
                     using (var file = new StreamReader(Path.Combine(baseDir, "AccountingRuleFilters_SGN.csv")))
@@ -73,13 +78,14 @@ namespace FLS.Server.Tests.ServiceTests
                             try
                             {
                                 var dbEntity = new AccountingRuleFilter();
-                                var curLineValues = file.ReadLine().Split(new string[] { ";" }, StringSplitOptions.None);
+                                var curLineValues = file.ReadLine().Split(new string[] {";"}, StringSplitOptions.None);
                                 for (int i = 0; i < columnNames.Length; i++)
                                 {
                                     var property = entityType.GetProperty(columnNames[i]);
                                     ParseStringValue(property, dbEntity, curLineValues[i]);
                                 }
 
+                                dbEntity.ClubId = club.ClubId;
                                 dbEntity.Club = club;
 
                                 context.AccountingRuleFilters.Add(dbEntity);
@@ -87,10 +93,14 @@ namespace FLS.Server.Tests.ServiceTests
                             catch (Exception exception)
                             {
                                 Logger.Error(exception, "Error while trying to create new AccountingRuleFilter");
+                                Assert.Fail($"Exception occured while reading accounting rule filters! Message: {exception.Message}{Environment.NewLine}Stacktrace:{exception.StackTrace}");
                             }
                         }
                     }
+                }
 
+                if (context.FlightTypes.Any(x => x.ClubId == club.ClubId) == false)
+                {
                     //Insert FlightTypes for Club
                     var flightType = new FlightType()
                     {
