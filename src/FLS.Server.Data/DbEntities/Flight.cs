@@ -131,6 +131,9 @@ namespace FLS.Server.Data.DbEntities
 
         public bool IsDeleted { get; set; }
 
+        [Column(TypeName = "datetime2")]
+        public DateTime? FlightReportSentOn { get; set; }
+
         /// <summary>
         /// Gets or sets a value indicating whether [do not update meta data].
         /// Used for workflow processes to not create a modified user error when trying to save records.

@@ -769,21 +769,21 @@ namespace FLS.Server.Service
         }
         
         /// <summary>
-        /// Gets the flights which have been created or validated today.
+        /// Gets the flights which have been created today or have been modified since the flight was sent last time to the pilot.
         /// </summary>
         /// <param name="clubId">The club identifier.</param>
         /// <returns></returns>
-        internal List<Flight> GetFlightsCreatedOrValidatedToday(Guid clubId)
+        internal List<Flight> GetFlightsCreatedTodayOrModifiedSinceLastReportSentOn(Guid clubId)
         {
             DateTime today = DateTime.Now.Date;
 
-            var flights = GetFlights(flight => (DbFunctions.TruncateTime(flight.CreatedOn) == today.Date
-                                                || (flight.ValidatedOn.HasValue && 
-                                                DbFunctions.TruncateTime(flight.ValidatedOn.Value) == today.Date))
-                                               && flight.OwnerId == clubId 
-                                               &&
-                                              (flight.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight
-                                               || flight.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight));
+            var flights = GetFlights(flight => DbFunctions.TruncateTime(flight.CreatedOn) == today.Date
+                                                && (flight.FlightReportSentOn.HasValue == false
+                                                    || (flight.ModifiedOn.HasValue 
+                                                        && flight.FlightReportSentOn.Value < flight.ModifiedOn.Value))
+                                                && flight.OwnerId == clubId 
+                                                && (flight.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight
+                                                    || flight.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight));
 
             return flights;
         }
@@ -797,10 +797,10 @@ namespace FLS.Server.Service
         {
             try
             {
-                //Flights which are not validated or are invalid, or have been modified since last validation date
+                //Flights which are not validated or are invalid and have been modified since last validation date
                 var flightsToValidate = GetFlights(flight => flight.OwnerId == clubId 
-                    && (flight.ProcessStateId < (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid
-                    || (flight.ModifiedOn.HasValue && flight.ValidatedOn.HasValue && (flight.ModifiedOn >= flight.ValidatedOn))));
+                    && (flight.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.NotProcessed
+                    || (flight.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.Invalid && flight.ModifiedOn.HasValue && flight.ValidatedOn.HasValue && (flight.ModifiedOn >= flight.ValidatedOn))));
 
                 using (var context = _dataAccessService.CreateDbContext())
                 {
@@ -1330,5 +1330,20 @@ namespace FLS.Server.Service
             }
         }
         #endregion Security
+
+        public void SetFlightReportSent(List<Flight> flights, DateTime flightReportSentOn)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                foreach (var flight in flights)
+                {
+                    context.Flights.Attach(flight);
+                    flight.FlightReportSentOn = flightReportSentOn;
+                    flight.DoNotUpdateMetaData = true;
+                }
+
+                context.SaveChanges();
+            }
+        }
     }
 }

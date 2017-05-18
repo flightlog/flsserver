@@ -57,7 +57,7 @@ namespace FLS.Server.Service.Jobs
                         Logger.Info($"Executing daily report job for club: {club.Clubname}");
 
                         //get all flights related to this club
-                        var flights = _flightService.GetFlightsCreatedOrValidatedToday(club.ClubId);
+                        var flights = _flightService.GetFlightsCreatedTodayOrModifiedSinceLastReportSentOn(club.ClubId);
 
                         if (flights.Any() == false)
                         {
@@ -190,10 +190,11 @@ namespace FLS.Server.Service.Jobs
             {
                 var message = _flightInformationEmailService.CreateFlightReportEmail(flights, person);
                 _flightInformationEmailService.SendEmail(message);
+                _flightService.SetFlightReportSent(flights, DateTime.UtcNow);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, $"Error while trying to create or send flight information email. Message: {ex.Message}");
+                Logger.Error(ex, $"Error while trying to create or send flight information email or during update flight. Message: {ex.Message}");
             }
         }
     }
