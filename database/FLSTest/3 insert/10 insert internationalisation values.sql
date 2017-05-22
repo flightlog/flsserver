@@ -909,7 +909,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'FOR_MOTOR_FLIGHTS', 'Für Motorflüge', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
-     VALUES (NEWID(), 'ACCOUNTING_RULE_FILTER_ACTIVE', 'Aktiv', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+     VALUES (NEWID(), 'ACTIVE', 'Aktiv', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'START_LOCATIONS', 'Startplätze', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
@@ -1093,6 +1093,15 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
      VALUES (NEWID(), 'SEND_COUPON_TO_CANDIDATE', 'Direkt an Schnupperflug-Kandidat schicken', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'DELIVERY_CREATION_TESTS', 'Verrechnungs-Regel-Tests', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'DELIVERY_CREATION_TEST_NAME', 'Test-Name', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn], [CreatedByUserId], [RecordState], [OwnerId], [OwnershipType], [IsDeleted])
+     VALUES (NEWID(), 'FLIGHT_ID', 'Flug-ID', 1, SYSDATETIME(), @insertUserId, 1, @ownerId, @OwnerShipType, 0)
 
 GO
 
