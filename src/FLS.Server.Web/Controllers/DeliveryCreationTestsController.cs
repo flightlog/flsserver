@@ -16,7 +16,7 @@ namespace FLS.Server.WebApi.Controllers
     /// <summary>
     /// Api controller for deliveries.
     /// </summary>
-    [Authorize]
+    [Authorize(Roles = RoleApplicationKeyStrings.ClubAdministrator)]
     [RoutePrefix("api/v1/deliverycreationtests")]
     public class DeliveryCreationTestsController : ApiController
     {
@@ -29,21 +29,7 @@ namespace FLS.Server.WebApi.Controllers
         {
             DeliveryService = deliveryService;
         }
-
-        /// <summary>
-        /// Gets all the delivery creation tests for an overview.
-        /// </summary>
-        /// <returns></returns>
-        [Authorize(Roles = RoleApplicationKeyStrings.ClubAdministrator)]
-        [HttpGet]
-        [Route("")]
-        [ResponseType(typeof(List<DeliveryCreationTestOverview>))]
-        public IHttpActionResult GetDeliveryCreationTestOverview()
-        {
-            var records = DeliveryService.GetDeliveryCreationTestOverviews();
-            return Ok(records);
-        }
-
+        
         /// <summary>
         /// Gets the delivery creation tests overviews.
         /// </summary>

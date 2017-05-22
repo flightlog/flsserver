@@ -60,6 +60,7 @@
     <Compile Include="Accounting\RuleFilters\AccountingRuleFilterTypeListItem.cs" />
     <Compile Include="Accounting\Testing\DeliveryCreationResult.cs" />
     <Compile Include="Accounting\Testing\DeliveryCreationTestOverviewSearchFilter.cs" />
+    <Compile Include="Accounting\Testing\FlightInformationOverview.cs" />
     <Compile Include="Accounting\Testing\LastDeliveryCreationTestResult.cs" />
     <Compile Include="Accounting\Testing\DeliveryCreationTestOverview.cs" />
     <Compile Include="Accounting\Testing\DeliveryCreationTestDetails.cs" />

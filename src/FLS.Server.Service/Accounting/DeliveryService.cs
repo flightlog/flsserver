@@ -26,21 +26,18 @@ namespace FLS.Server.Service.Accounting
         private readonly DataAccessService _dataAccessService;
         private readonly AccountingRuleFilterFactory _accountingRuleFilterFactory;
         private readonly IPersonService _personService;
-        private readonly IAircraftService _aircraftService;
-        private readonly ILocationService _locationService;
+        private readonly FlightService _flightService;
         private readonly AccountingRuleService _accountingRuleService;
 
         public DeliveryService(DataAccessService dataAccessService, IdentityService identityService,
             AccountingRuleFilterFactory accountingRuleFilterFactory, IPersonService personService,
-            IAircraftService aircraftService, ILocationService locationService,
-            AccountingRuleService accountingRuleService)
+            FlightService flightService, AccountingRuleService accountingRuleService)
             : base(dataAccessService, identityService)
         {
             _dataAccessService = dataAccessService;
             _accountingRuleFilterFactory = accountingRuleFilterFactory;
             _personService = personService;
-            _aircraftService = aircraftService;
-            _locationService = locationService;
+            _flightService = flightService;
             _accountingRuleService = accountingRuleService;
         }
 
@@ -632,30 +629,7 @@ namespace FLS.Server.Service.Accounting
                 Logger.Error(ex, error);
             }
         }
-
-        public List<DeliveryCreationTestOverview> GetDeliveryCreationTestOverviews()
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                List<DeliveryCreationTest> deliveryCreationTests = context.DeliveryCreationTests.Where(c => c.ClubId == CurrentAuthenticatedFLSUserClubId).OrderBy(t => t.DeliveryCreationTestName).ToList();
-
-                var overviewList = deliveryCreationTests.Select(x => new DeliveryCreationTestOverview()
-                {
-                    DeliveryCreationTestId = x.DeliveryCreationTestId,
-                    FlightId = x.FlightId,
-                    DeliveryCreationTestName = x.DeliveryCreationTestName,
-                    Description = x.Description,
-                    IsActive = x.IsActive,
-                    LastTestSuccessful = x.LastTestSuccessful,
-                    LastTestResultMessage = x.LastTestResultMessage,
-                    LastTestRunOn = x.LastTestRunOn
-                }).ToList();
-
-                SetDeliveryCreationTestOverviewSecurity(overviewList);
-                return overviewList;
-            }
-        }
-
+        
         public PagedList<DeliveryCreationTestOverview> GetPagedDeliveryCreationTestOverview(int? pageStart, int? pageSize, PageableSearchFilter<DeliveryCreationTestOverviewSearchFilter> pageableSearchFilter)
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<DeliveryCreationTestOverviewSearchFilter>();
@@ -705,14 +679,77 @@ namespace FLS.Server.Service.Accounting
                 var overviewList = pagedQuery.Items.ToList().Select(x => new DeliveryCreationTestOverview()
                 {
                     DeliveryCreationTestId = x.DeliveryCreationTestId,
-                    FlightId = x.FlightId,
                     DeliveryCreationTestName = x.DeliveryCreationTestName,
+                    FlightInformationOverview = new FlightInformationOverview()
+                    {
+                        FlightId  = x.FlightId
+                    },
                     Description = x.Description,
                     IsActive = x.IsActive,
                     LastTestSuccessful = x.LastTestSuccessful,
                     LastTestResultMessage = x.LastTestResultMessage,
                     LastTestRunOn = x.LastTestRunOn
                 }).ToList();
+
+                foreach (var deliveryCreationTestOverview in overviewList)
+                {
+                    var flight =
+                        context.Flights
+                            .Include(Constants.Aircraft)
+                            .Include(Constants.FlightType)
+                            .Include(Constants.FlightCrews)
+                            .Include(Constants.FlightCrews + "." + Constants.Person)
+                            .Include(Constants.FlightCrews + "." + Constants.Person + "." + Constants.PersonClubs)
+                            .Include(Constants.StartType)
+                            .Include(Constants.StartLocation)
+                            .Include(Constants.LdgLocation)
+                            .Include(Constants.TowFlight)
+                            .Include(Constants.TowFlight + "." + Constants.Aircraft)
+                            .Include(Constants.TowFlight + "." + Constants.FlightType)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person)
+                            .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person + "." +
+                                     Constants.PersonClubs)
+                            .Include(Constants.TowFlight + "." + Constants.StartLocation)
+                            .Include(Constants.TowFlight + "." + Constants.LdgLocation)
+                            .FirstOrDefault(
+                                f =>
+                                    f.FlightId ==
+                                        deliveryCreationTestOverview.FlightInformationOverview.FlightId);
+
+                    if (flight != null)
+                    {
+                        deliveryCreationTestOverview.FlightInformationOverview.FlightDate =
+                            flight.FlightDate.GetValueOrDefault();
+                        deliveryCreationTestOverview.FlightInformationOverview.AircraftImmatriculation =
+                            flight.AircraftImmatriculation;
+                        deliveryCreationTestOverview.FlightInformationOverview.FlightCrewNames = flight.PilotDisplayName;
+
+                        if (string.IsNullOrWhiteSpace(flight.PassengerDisplayName) == false)
+                            deliveryCreationTestOverview.FlightInformationOverview.FlightCrewNames +=
+                                $"/{flight.PassengerDisplayName}";
+                        if (string.IsNullOrWhiteSpace(flight.CoPilotDisplayName) == false)
+                            deliveryCreationTestOverview.FlightInformationOverview.FlightCrewNames +=
+                                $"/{flight.CoPilotDisplayName}";
+                        if (string.IsNullOrWhiteSpace(flight.InstructorDisplayName) == false)
+                            deliveryCreationTestOverview.FlightInformationOverview.FlightCrewNames +=
+                                $"/{flight.InstructorDisplayName}";
+
+                        deliveryCreationTestOverview.FlightInformationOverview.FlightDurationInSeconds =
+                            Convert.ToInt32(flight.FlightDuration.GetValueOrDefault().TotalSeconds);
+                        deliveryCreationTestOverview.FlightInformationOverview.FlightTypeName = $"{flight.FlightType.FlightCode} - {flight.FlightType.FlightTypeName}";
+                        deliveryCreationTestOverview.FlightInformationOverview.StartAndLdgLocationNames =
+                            $"{flight.StartLocation.IcaoCode} -> {flight.LdgLocation.IcaoCode}";
+
+                        if (flight.TowFlight != null)
+                        {
+                            deliveryCreationTestOverview.FlightInformationOverview.TowFlightInformation =
+                                $"{flight.TowFlight.AircraftImmatriculation} / {flight.TowFlight.PilotDisplayName} / {Convert.ToInt32(flight.TowFlight.FlightDuration.GetValueOrDefault().TotalSeconds)}s";
+                        }
+
+                    }
+                }
+
 
                 var pagedList = new PagedList<DeliveryCreationTestOverview>(overviewList, pagedQuery.PageStart,
                     pagedQuery.PageSize, pagedQuery.TotalRows);

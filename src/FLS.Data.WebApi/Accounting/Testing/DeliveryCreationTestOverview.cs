@@ -11,11 +11,12 @@ namespace FLS.Data.WebApi.Accounting.Testing
     {
         public DeliveryCreationTestOverview()
         {
+            FlightInformationOverview = new FlightInformationOverview();
         }
 
         public Guid DeliveryCreationTestId { get; set; }
 
-        public Guid FlightId { get; set; }
+        public FlightInformationOverview FlightInformationOverview { get; set; }
 
         public string DeliveryCreationTestName { get; set; }
 
