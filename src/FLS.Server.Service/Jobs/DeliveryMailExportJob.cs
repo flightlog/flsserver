@@ -48,20 +48,6 @@ namespace FLS.Server.Service.Jobs
             {
                 Logger.Info("Executing Delivery mail export job");
 
-                ProcessDeliveries();
-
-                Logger.Info("Executed Delivery mail export job.");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"Error while executing monthly workflow job. Error: {ex.Message}");
-            }
-        }
-
-        private void ProcessDeliveries()
-        {
-            try
-            {
                 //as the Job runs on 3rd each month, we have to catch the correct year by add some minus days (for january)
                 var fromDate = new DateTime(DateTime.Now.AddDays(-10).Year, 1, 1);
                 var toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -75,9 +61,9 @@ namespace FLS.Server.Service.Jobs
 
                         if (deliveries.Any() == false)
                         {
+                            Logger.Info($"No Flights to invoice. Will send no invoice email message to club: {club.Clubname}");
                             var noInvoiceMessage = _emailBuildService.CreateNoAccountingEmail(club.SendDeliveryMailExportTo, fromDate, toDate);
                             _emailBuildService.SendEmail(noInvoiceMessage);
-                            Logger.Info($"No Flights to invoice. Sent no invoice email message to club: {club.Clubname}");
                             continue;
                         }
 
@@ -91,7 +77,7 @@ namespace FLS.Server.Service.Jobs
                             var deliveryBooking = new DeliveryBooking
                             {
                                 DeliveryId = delivery.DeliveryId,
-                                DeliveryDateTime = DateTime.Now.Date,
+                                DeliveryDateTime = DateTime.UtcNow,
                                 DeliveryNumber = $"Workflow {DateTime.Now.ToShortTimeString()}"
                             };
 
@@ -105,12 +91,13 @@ namespace FLS.Server.Service.Jobs
                         Logger.Error(e, $"Error while processing flights for invoicing for club {club.Clubname}. Error: {e.Message}");
                     }
                 }
+
+                Logger.Info("Executed Delivery mail export job.");
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, $"Error while processing flights for invoicing. Error: {ex.Message}");
             }
         }
-        
     }
 }
