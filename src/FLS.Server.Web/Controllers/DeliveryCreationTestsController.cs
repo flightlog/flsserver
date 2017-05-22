@@ -72,6 +72,20 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
+        /// Creates a test delivery for the specified flight.
+        /// </summary>
+        /// <param name="flightId">FlightId of flight to create a delivery.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("testdeliveryforflight/{flightId}")]
+        [ResponseType(typeof(DeliveryCreationResult))]
+        public IHttpActionResult CreateDeliveryDetailsForTest(Guid flightId)
+        {
+            var result = DeliveryService.CreateDeliveryDetailsForTest(flightId);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Inserts the specified delivery creation test details.
         /// </summary>
         /// <param name="deliveryCreationTestDetails">The delivery creation test details.</param>
