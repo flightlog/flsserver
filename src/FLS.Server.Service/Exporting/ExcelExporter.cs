@@ -54,17 +54,19 @@ namespace FLS.Server.Service.Exporting
                             worksheet.Cells[1, 1].Value = "Flugnr";
                             worksheet.Cells[1, 2].Value = "Pilot";
                             worksheet.Cells[1, 3].Value = "Mitgliedernummer";
-                            worksheet.Cells[1, 4].Value = "Flugdatum";
-                            worksheet.Cells[1, 5].Value = "Immatrikulation";
-                            worksheet.Cells[1, 6].Value = "Flugart";
-                            worksheet.Cells[1, 7].Value = "Position";
-                            worksheet.Cells[1, 8].Value = "Produkt";
-                            worksheet.Cells[1, 9].Value = "Produktbezeichnung";
-                            worksheet.Cells[1, 10].Value = "Anzahl";
-                            worksheet.Cells[1, 11].Value = "Einheit";
-                            worksheet.Cells[1, 12].Value = "Schulung";
+                            worksheet.Cells[1, 4].Value = "Empfänger";
+                            worksheet.Cells[1, 5].Value = "Adressnummer";
+                            worksheet.Cells[1, 6].Value = "Flugdatum";
+                            worksheet.Cells[1, 7].Value = "Immatrikulation";
+                            worksheet.Cells[1, 8].Value = "Flugart";
+                            worksheet.Cells[1, 9].Value = "Position";
+                            worksheet.Cells[1, 10].Value = "Produkt";
+                            worksheet.Cells[1, 11].Value = "Produktbezeichnung";
+                            worksheet.Cells[1, 12].Value = "Anzahl";
+                            worksheet.Cells[1, 13].Value = "Einheit";
+                            worksheet.Cells[1, 14].Value = "Schulung";
 
-                            worksheet.Cells[1, 1, 1, 12].Style.Font.Bold = true;
+                            worksheet.Cells[1, 1, 1, 14].Style.Font.Bold = true;
 
                             int flightNr = 1;
                             int rowNumber = 2;
@@ -82,19 +84,23 @@ namespace FLS.Server.Service.Exporting
                                 {
                                     worksheet.Cells[rowNumber, 1].Value = flightNr;
                                     worksheet.Cells[rowNumber, 2].Value =
-                                        ruleBasedDelivery.RecipientDetails.RecipientName;
+                                        ruleBasedDelivery.FlightInformation.PilotName;
                                     worksheet.Cells[rowNumber, 3].Value =
+                                        ruleBasedDelivery.FlightInformation.PilotPersonClubMemberNumber;
+                                    worksheet.Cells[rowNumber, 4].Value =
+                                        ruleBasedDelivery.RecipientDetails.RecipientName;
+                                    worksheet.Cells[rowNumber, 5].Value =
                                         ruleBasedDelivery.RecipientDetails.PersonClubMemberNumber;
-                                    worksheet.Cells[rowNumber, 4].Value = ruleBasedDelivery.FlightInformation.FlightDate;
+                                    worksheet.Cells[rowNumber, 6].Value = ruleBasedDelivery.FlightInformation.FlightDate;
                                     //.ToShortDateString();
-                                    worksheet.Cells[rowNumber, 5].Value = ruleBasedDelivery.FlightInformation.AircraftImmatriculation;
-                                    worksheet.Cells[rowNumber, 6].Value = ruleBasedDelivery.DeliveryInformation;
-                                    worksheet.Cells[rowNumber, 7].Value = flightInvoiceLineItem.Position;
-                                    worksheet.Cells[rowNumber, 8].Value = flightInvoiceLineItem.ArticleNumber;
-                                    worksheet.Cells[rowNumber, 9].Value = flightInvoiceLineItem.ItemText;
-                                    worksheet.Cells[rowNumber, 10].Value = flightInvoiceLineItem.Quantity;
-                                    worksheet.Cells[rowNumber, 11].Value = flightInvoiceLineItem.UnitType;
-                                    worksheet.Cells[rowNumber, 12].Value = ruleBasedDelivery.AdditionalInformation;
+                                    worksheet.Cells[rowNumber, 7].Value = ruleBasedDelivery.FlightInformation.AircraftImmatriculation;
+                                    worksheet.Cells[rowNumber, 8].Value = ruleBasedDelivery.DeliveryInformation;
+                                    worksheet.Cells[rowNumber, 9].Value = flightInvoiceLineItem.Position;
+                                    worksheet.Cells[rowNumber, 10].Value = flightInvoiceLineItem.ArticleNumber;
+                                    worksheet.Cells[rowNumber, 11].Value = flightInvoiceLineItem.ItemText;
+                                    worksheet.Cells[rowNumber, 12].Value = flightInvoiceLineItem.Quantity;
+                                    worksheet.Cells[rowNumber, 13].Value = flightInvoiceLineItem.UnitType;
+                                    worksheet.Cells[rowNumber, 14].Value = ruleBasedDelivery.AdditionalInformation;
                                     rowNumber++;
                                 }
 
@@ -102,7 +108,7 @@ namespace FLS.Server.Service.Exporting
 
                                 if (flightNr%2 == 0 && rowNumber > flightBeginRowNumber)
                                 {
-                                    using (var range = worksheet.Cells[flightBeginRowNumber, 1, rowNumber - 1, 12])
+                                    using (var range = worksheet.Cells[flightBeginRowNumber, 1, rowNumber - 1, 14])
                                     {
                                         range.Style.Fill.PatternType = ExcelFillStyle.Solid;
                                         range.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
@@ -112,13 +118,13 @@ namespace FLS.Server.Service.Exporting
 
                             if (rowNumber > 2)
                             {
-                                worksheet.Cells[2, 1, rowNumber - 1, 12].Style.Numberformat.Format = "@";
+                                worksheet.Cells[2, 1, rowNumber - 1, 14].Style.Numberformat.Format = "@";
                                     //Format as text
-                                worksheet.Cells[2, 4, rowNumber - 1, 4].Style.Numberformat.Format = "dd.mm.yyyy";
+                                worksheet.Cells[2, 6, rowNumber - 1, 6].Style.Numberformat.Format = "dd.mm.yyyy";
                                 //Format as date
-                                worksheet.Cells[2, 7, rowNumber - 1, 8].Style.Numberformat.Format = "0";
+                                worksheet.Cells[2, 9, rowNumber - 1, 10].Style.Numberformat.Format = "0";
                                     //Format as number
-                                worksheet.Cells[2, 10, rowNumber - 1, 10].Style.Numberformat.Format = "0";
+                                worksheet.Cells[2, 12, rowNumber - 1, 12].Style.Numberformat.Format = "0";
                             }
 
                             //Format as number

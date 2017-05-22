@@ -11,5 +11,11 @@ namespace FLS.Data.WebApi.Accounting
         public string AircraftImmatriculation { get; set; }
 
         public string FlightTypeName { get; set; }
+
+        public string PilotName { get; set; }
+
+        public string PilotPersonClubMemberNumber { get; set; }
+
+        public string SecondCrewName { get; set; }
     }
 }

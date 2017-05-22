@@ -744,11 +744,16 @@ namespace FLS.Server.Data.Mapping
                 overview.FlightInformation.AircraftImmatriculation = entity.Flight.AircraftImmatriculation;
                 overview.FlightInformation.FlightDate = entity.Flight.StartDateTime.Value;
                 overview.FlightInformation.FlightId = entity.Flight.FlightId;
+                overview.FlightInformation.PilotName = entity.Flight.PilotDisplayName;
 
                 if (entity.Flight.FlightType != null)
                 {
                     overview.FlightInformation.FlightTypeName = entity.Flight.FlightType.FlightTypeName;
                 }
+
+                if (entity.Flight.Passenger != null) overview.FlightInformation.SecondCrewName = entity.Flight.PassengerDisplayName;
+                if (entity.Flight.CoPilot != null) overview.FlightInformation.SecondCrewName = entity.Flight.CoPilotDisplayName;
+                if (entity.Flight.Instructor != null) overview.FlightInformation.SecondCrewName = entity.Flight.InstructorDisplayName;
             }
 
             overview.DeliveryInformation = entity.DeliveryInformation;
@@ -784,6 +789,21 @@ namespace FLS.Server.Data.Mapping
                 if (entity.Flight != null) details.FlightInformation.AircraftImmatriculation = entity.Flight.AircraftImmatriculation;
                 if (entity.Flight != null && entity.Flight.FlightDate.HasValue) details.FlightInformation.FlightDate = entity.Flight.FlightDate.Value;
                 if (entity.FlightId.HasValue) details.FlightInformation.FlightId = entity.FlightId.Value;
+                if (entity.Flight != null) details.FlightInformation.PilotName = entity.Flight.PilotDisplayName;
+                if (entity.Flight != null && entity.Flight.Passenger != null) details.FlightInformation.SecondCrewName = entity.Flight.PassengerDisplayName;
+                if (entity.Flight != null && entity.Flight.CoPilot != null) details.FlightInformation.SecondCrewName = entity.Flight.CoPilotDisplayName;
+                if (entity.Flight != null && entity.Flight.Instructor != null) details.FlightInformation.SecondCrewName = entity.Flight.InstructorDisplayName;
+
+                if (entity.Flight != null
+                    && entity.Flight.Pilot != null
+                    && entity.Flight.Pilot.Person != null
+                    && entity.Flight.Pilot.Person.PersonClubs.Any())
+                {
+                    var personClub =
+                        entity.Flight.Pilot.Person.PersonClubs.FirstOrDefault(x => x.ClubId == entity.ClubId);
+                    if (personClub != null)
+                        details.FlightInformation.PilotPersonClubMemberNumber = personClub.MemberNumber;
+                }
 
                 if (entity.Flight != null && entity.Flight.FlightType != null)
                 {

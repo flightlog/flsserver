@@ -198,11 +198,16 @@ namespace FLS.Server.Service.Accounting
                 {
                     FlightId = flight.FlightId,
                     AircraftImmatriculation = flight.AircraftImmatriculation,
-                    FlightDate = flight.FlightDate.Value
+                    FlightDate = flight.FlightDate.GetValueOrDefault(),
+                    PilotName = flight.PilotDisplayName
                 },
                 DeliveryInformation = flight.FlightType.FlightTypeName,
                 ClubId = clubId
             };
+
+            if (flight.Passenger != null) ruleBasedDelivery.FlightInformation.SecondCrewName = flight.PassengerDisplayName;
+            if (flight.CoPilot != null) ruleBasedDelivery.FlightInformation.SecondCrewName = flight.CoPilotDisplayName;
+            if (flight.Instructor != null) ruleBasedDelivery.FlightInformation.SecondCrewName = flight.InstructorDisplayName;
 
             var recipientRulesEngine = new RecipientRulesEngine(ruleBasedDelivery, flight,
                 _personService,
@@ -830,7 +835,10 @@ namespace FLS.Server.Service.Accounting
                             .Include("Flight")
                             .Include("Flight." + Constants.Aircraft)
                             .Include("Flight." + Constants.FlightType)
-                            .Where(c => c.ClubId == CurrentAuthenticatedFLSUserClubId);
+                            .Include("Flight.FlightCrews")
+                            .Include("Flight.FlightCrews.Person")
+                            .Include("Flight.FlightCrews.Person.PersonClubs")
+                            .Where(c => c.ClubId == clubId);
 
                 if (furtherProcessed.HasValue)
                 {
