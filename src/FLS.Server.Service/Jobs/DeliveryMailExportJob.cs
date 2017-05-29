@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using FLS.Data.WebApi.Accounting;
+using FLS.Server.Interfaces;
 using FLS.Server.Service.Accounting;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Exporting;
@@ -16,8 +17,7 @@ namespace FLS.Server.Service.Jobs
     public class DeliveryMailExportJob : IJob
     {
         private readonly DeliveryService _deliveryService;
-        private readonly UserService _userService;
-        private readonly IdentityService _identityService;
+        private readonly IDeliveryExcelExporter _deliveryExcelExporter;
         private readonly ClubService _clubService;
         private readonly AccountingEmailBuildService _emailBuildService;
         private Logger _logger = LogManager.GetCurrentClassLogger();
@@ -28,12 +28,11 @@ namespace FLS.Server.Service.Jobs
             set { _logger = value; }
         }
 
-        public DeliveryMailExportJob(DeliveryService deliveryService, UserService userService, IdentityService identityService, 
+        public DeliveryMailExportJob(DeliveryService deliveryService, IDeliveryExcelExporter deliveryExcelExporter, 
             ClubService clubService, AccountingEmailBuildService emailBuildService)
         {
             _deliveryService = deliveryService;
-            _userService = userService;
-            _identityService = identityService;
+            _deliveryExcelExporter = deliveryExcelExporter;
             _clubService = clubService;
             _emailBuildService = emailBuildService;
         }
@@ -67,7 +66,7 @@ namespace FLS.Server.Service.Jobs
                             continue;
                         }
 
-                        var zipBytes = ExcelExporter.ExportInvoicesToExcel(deliveries);
+                        var zipBytes = _deliveryExcelExporter.ExportDeliveriesToExcel(deliveries);
 
                         var message = _emailBuildService.CreateAccountingEmail(club.SendDeliveryMailExportTo, zipBytes, fromDate, toDate);
                         _emailBuildService.SendEmail(message);

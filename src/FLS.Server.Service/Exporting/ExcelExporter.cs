@@ -8,6 +8,7 @@ using FLS.Common.Extensions;
 using FLS.Data.WebApi.Accounting;
 using FLS.Data.WebApi.Person;
 using FLS.Data.WebApi.Reporting;
+using FLS.Server.Interfaces;
 using Ionic.Zip;
 using NLog;
 using OfficeOpenXml;
@@ -18,14 +19,24 @@ namespace FLS.Server.Service.Exporting
     /// <summary>
     /// Excel exporter helper class which uses EPPlus library.
     /// </summary>
-    public static class ExcelExporter
+    public class ExcelExporter : IDeliveryExcelExporter
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private bool _addFlightIdColumn = false;
 
-        public static byte[] ExportInvoicesToExcel(List<DeliveryDetails> flightInvoiceDetailList)
+        public ExcelExporter()
+        {
+                
+        }
+        public ExcelExporter(bool addFlightIdColumn)
+        {
+            _addFlightIdColumn = addFlightIdColumn;
+        }
+
+        public byte[] ExportDeliveriesToExcel(List<DeliveryDetails> deliveryDetailList)
         {
             var list = new List<string>();
-            foreach (var ruleBasedDelivery in flightInvoiceDetailList)
+            foreach (var ruleBasedDelivery in deliveryDetailList)
             {
                 //check if there are some line items in the invoice, if not, check next invoice
                 if (ruleBasedDelivery.DeliveryItems.Any() == false) continue;
@@ -48,6 +59,7 @@ namespace FLS.Server.Service.Exporting
 
                         using (ExcelPackage package = new ExcelPackage())
                         {
+                            var nrOfColumns = 14;
                             // add a new worksheet to the empty workbook
                             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Tabelle");
                             //Add the headers
@@ -66,12 +78,17 @@ namespace FLS.Server.Service.Exporting
                             worksheet.Cells[1, 13].Value = "Einheit";
                             worksheet.Cells[1, 14].Value = "Schulung";
 
-                            worksheet.Cells[1, 1, 1, 14].Style.Font.Bold = true;
+                            if (_addFlightIdColumn)
+                            {
+                                worksheet.Cells[1, 15].Value = "FlightId";
+                                nrOfColumns = 15;
+                            }
+                            worksheet.Cells[1, 1, 1, nrOfColumns].Style.Font.Bold = true;
 
                             int flightNr = 1;
                             int rowNumber = 2;
 
-                            foreach (var ruleBasedDelivery in flightInvoiceDetailList.OrderBy(o => o.FlightInformation.FlightDate))
+                            foreach (var ruleBasedDelivery in deliveryDetailList.OrderBy(o => o.FlightInformation.FlightDate))
                             {
                                 if (ruleBasedDelivery.RecipientDetails.RecipientName != recipient)
                                 {
@@ -101,6 +118,8 @@ namespace FLS.Server.Service.Exporting
                                     worksheet.Cells[rowNumber, 12].Value = flightInvoiceLineItem.Quantity;
                                     worksheet.Cells[rowNumber, 13].Value = flightInvoiceLineItem.UnitType;
                                     worksheet.Cells[rowNumber, 14].Value = ruleBasedDelivery.AdditionalInformation;
+
+                                    if (_addFlightIdColumn) worksheet.Cells[rowNumber, 15].Value = ruleBasedDelivery.FlightInformation.FlightId;
                                     rowNumber++;
                                 }
 
@@ -108,7 +127,7 @@ namespace FLS.Server.Service.Exporting
 
                                 if (flightNr%2 == 0 && rowNumber > flightBeginRowNumber)
                                 {
-                                    using (var range = worksheet.Cells[flightBeginRowNumber, 1, rowNumber - 1, 14])
+                                    using (var range = worksheet.Cells[flightBeginRowNumber, 1, rowNumber - 1, nrOfColumns])
                                     {
                                         range.Style.Fill.PatternType = ExcelFillStyle.Solid;
                                         range.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
@@ -118,7 +137,7 @@ namespace FLS.Server.Service.Exporting
 
                             if (rowNumber > 2)
                             {
-                                worksheet.Cells[2, 1, rowNumber - 1, 14].Style.Numberformat.Format = "@";
+                                worksheet.Cells[2, 1, rowNumber - 1, nrOfColumns].Style.Numberformat.Format = "@";
                                     //Format as text
                                 worksheet.Cells[2, 6, rowNumber - 1, 6].Style.Numberformat.Format = "dd.mm.yyyy";
                                 //Format as date
@@ -150,7 +169,7 @@ namespace FLS.Server.Service.Exporting
             }
         }
 
-        public static void ExportFlightReportToExcel(FlightReportData flightReportData,
+        public void ExportFlightReportToExcel(FlightReportData flightReportData,
                                                 string exportDirectory, string filename)
         {
             if (Directory.Exists(exportDirectory) == false)

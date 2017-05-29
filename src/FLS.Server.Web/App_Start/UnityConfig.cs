@@ -5,6 +5,7 @@ using FLS.Server.Data.DbEntities;
 using FLS.Server.Interfaces;
 using FLS.Server.Service;
 using FLS.Server.Service.Email;
+using FLS.Server.Service.Exporting;
 using FLS.Server.Service.Identity;
 using FLS.Server.WebApi.Identity;
 using Microsoft.AspNet.Identity;
@@ -77,6 +78,7 @@ namespace FLS.Server.WebApi
             container.RegisterType<ILocationService, LocationService>();
             container.RegisterType<IAircraftService, AircraftService>();
             container.RegisterType<IPersonService, PersonService>();
+            container.RegisterType<IDeliveryExcelExporter, ExcelExporter>();
             //container.RegisterType<DataAccessService>(); 
             //container.RegisterType<AircraftReservationService>();
             //container.RegisterType<AircraftService>();

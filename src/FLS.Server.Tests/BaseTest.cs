@@ -41,6 +41,7 @@ using LengthUnitType = FLS.Server.Data.DbEntities.LengthUnitType;
 using LocationType = FLS.Server.Data.DbEntities.LocationType;
 using System.Threading;
 using FLS.Server.Service.Accounting;
+using FLS.Server.Service.Exporting;
 
 namespace FLS.Server.Tests
 {
@@ -132,6 +133,7 @@ namespace FLS.Server.Tests
             container.RegisterType<ILocationService, LocationService>();
             container.RegisterType<IAircraftService, AircraftService>();
             container.RegisterType<IPersonService, PersonService>();
+            container.RegisterType<IDeliveryExcelExporter, AddFlightIdExcelExporter>();
 
             //container.RegisterType<IUserStore<ApplicationUser>, UserStore<ApplicationUser>>(
             //    new InjectionConstructor(typeof(ApplicationDbContext)));

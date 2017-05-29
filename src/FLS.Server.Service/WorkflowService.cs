@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Mail;
+using FLS.Server.Interfaces;
 using FLS.Server.Service.Accounting;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Jobs;
@@ -25,6 +26,7 @@ namespace FLS.Server.Service
         private readonly DataAccessService _dataAccessService;
         private readonly IdentityService _identityService;
         private readonly AccountingEmailBuildService _accountingEmailBuildService;
+        private readonly IDeliveryExcelExporter _deliveryExcelExporter;
 
         public WorkflowService(FlightService flightService, 
             ClubService clubService, 
@@ -41,7 +43,8 @@ namespace FLS.Server.Service
             LicenceExpireEmailBuildService licenceExpireEmailBuildService,
             DataAccessService dataAccessService, 
             IdentityService identityService,
-            AccountingEmailBuildService accountingEmailBuildService)
+            AccountingEmailBuildService accountingEmailBuildService,
+            IDeliveryExcelExporter deliveryExcelExporter)
             : base(dataAccessService, identityService)
         {
             _flightService = flightService;
@@ -60,6 +63,7 @@ namespace FLS.Server.Service
             _dataAccessService = dataAccessService;
             _identityService = identityService;
             _accountingEmailBuildService = accountingEmailBuildService;
+            _deliveryExcelExporter = deliveryExcelExporter;
             Logger = LogManager.GetCurrentClassLogger();
         }
 
@@ -160,7 +164,7 @@ namespace FLS.Server.Service
         public void ExecuteDeliveryMailExportJob()
         {
             Logger.Info("Execute delivery mail export job.");
-            var job = new DeliveryMailExportJob(_deliveryService, _userService, _identityService, _clubService, _accountingEmailBuildService);
+            var job = new DeliveryMailExportJob(_deliveryService, _deliveryExcelExporter, _clubService, _accountingEmailBuildService);
             job.Execute(null);
         }
 
