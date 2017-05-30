@@ -82,13 +82,13 @@ namespace FLS.Server.Data.DbEntities
 
         public bool IsChargedToClubInternal { get; set; }
 
-        public long? MinFlightTimeInSecondsMatchingValue { get; set; }
+        public int? MinFlightTimeInSecondsMatchingValue { get; set; }
 
-        public long? MaxFlightTimeInSecondsMatchingValue { get; set; }
+        public int? MaxFlightTimeInSecondsMatchingValue { get; set; }
 
-        public long? MinEngineTimeInSecondsMatchingValue { get; set; }
+        public int? MinEngineTimeInSecondsMatchingValue { get; set; }
 
-        public long? MaxEngineTimeInSecondsMatchingValue { get; set; }
+        public int? MaxEngineTimeInSecondsMatchingValue { get; set; }
 
         public bool IncludeThresholdText { get; set; }
 
