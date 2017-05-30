@@ -60,7 +60,7 @@ namespace FLS.Server.Service.Jobs
                     {
                         var deliveries = _deliveryService.CreateDeliveriesFromFlights(club.ClubId);
                         
-                        Logger.Info($"{deliveries.Count} deliveries for flights created.");
+                        Logger.Info($"{deliveries.Count} deliveries for flights of club {club.Clubname} created.");
                     }
                     catch (Exception e)
                     {
