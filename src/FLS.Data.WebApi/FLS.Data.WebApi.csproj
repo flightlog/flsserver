@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Accounting\RuleFilters\AccountingRuleFilterOverviewSearchFilter.cs" />
     <Compile Include="Accounting\DeliveryOverview.cs" />
+    <Compile Include="Accounting\AccountingUnitType.cs" />
     <Compile Include="Accounting\RuleFilters\AccountingRuleFilterTypeListItem.cs" />
     <Compile Include="Accounting\Testing\DeliveryCreationResult.cs" />
     <Compile Include="Accounting\Testing\DeliveryCreationTestOverviewSearchFilter.cs" />
