@@ -114,6 +114,7 @@ namespace FLS.Server.Tests
             //container.RegisterType<ValidateModelStateAttribute>();
             //container.RegisterType<CheckModelForNullAttribute>();
             //container.RegisterType<UnhandledExceptionFilterAttribute>();
+
             container.RegisterType<IDataProtectionProvider, MachineKeyDataProtectionProvider>(new HierarchicalLifetimeManager());
 
             container.RegisterType<IIdentityMessageService, IdentityEmailService>();
@@ -133,7 +134,7 @@ namespace FLS.Server.Tests
             container.RegisterType<ILocationService, LocationService>();
             container.RegisterType<IAircraftService, AircraftService>();
             container.RegisterType<IPersonService, PersonService>();
-            container.RegisterType<IDeliveryExcelExporter, AddFlightIdExcelExporter>();
+            //container.RegisterType<IDeliveryExcelExporter, AddFlightIdExcelExporter>();
 
             //container.RegisterType<IUserStore<ApplicationUser>, UserStore<ApplicationUser>>(
             //    new InjectionConstructor(typeof(ApplicationDbContext)));

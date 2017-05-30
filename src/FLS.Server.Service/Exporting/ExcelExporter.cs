@@ -19,18 +19,16 @@ namespace FLS.Server.Service.Exporting
     /// <summary>
     /// Excel exporter helper class which uses EPPlus library.
     /// </summary>
-    public class ExcelExporter : IDeliveryExcelExporter
+    public class ExcelExporter
     {
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private bool _addFlightIdColumn = false;
 
         public ExcelExporter()
         {
-                
-        }
-        public ExcelExporter(bool addFlightIdColumn)
-        {
-            _addFlightIdColumn = addFlightIdColumn;
+#if DEBUG
+            _addFlightIdColumn = true;
+#endif
         }
 
         public byte[] ExportDeliveriesToExcel(List<DeliveryDetails> deliveryDetailList)

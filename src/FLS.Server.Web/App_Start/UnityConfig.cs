@@ -78,7 +78,6 @@ namespace FLS.Server.WebApi
             container.RegisterType<ILocationService, LocationService>();
             container.RegisterType<IAircraftService, AircraftService>();
             container.RegisterType<IPersonService, PersonService>();
-            container.RegisterType<IDeliveryExcelExporter, ExcelExporter>();
             //container.RegisterType<DataAccessService>(); 
             //container.RegisterType<AircraftReservationService>();
             //container.RegisterType<AircraftService>();

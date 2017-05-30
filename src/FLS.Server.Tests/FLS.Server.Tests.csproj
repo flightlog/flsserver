@@ -179,7 +179,6 @@
     <Compile Include="Infrastructure\DatabasePreparer.cs" />
     <Compile Include="Infrastructure\MasterDataSeeder.cs" />
     <Compile Include="Infrastructure\ResourceExtractor.cs" />
-    <Compile Include="Mocks\Services\AddFlightIdExcelExporter.cs" />
     <Compile Include="Mocks\Services\MockEmailSendService.cs" />
     <Compile Include="ServiceTests\ClubServiceTest.cs" />
     <Compile Include="ServiceTests\PlanningDayServiceTest.cs" />

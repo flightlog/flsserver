@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDeliveryExcelExporter.cs" />
     <Compile Include="IExtensionService.cs" />
     <Compile Include="IPersonService.cs" />
     <Compile Include="ILocationService.cs" />

@@ -17,7 +17,7 @@ namespace FLS.Server.Service.Jobs
     public class DeliveryMailExportJob : IJob
     {
         private readonly DeliveryService _deliveryService;
-        private readonly IDeliveryExcelExporter _deliveryExcelExporter;
+        private readonly ExcelExporter _deliveryExcelExporter;
         private readonly ClubService _clubService;
         private readonly AccountingEmailBuildService _emailBuildService;
         private Logger _logger = LogManager.GetCurrentClassLogger();
@@ -28,7 +28,7 @@ namespace FLS.Server.Service.Jobs
             set { _logger = value; }
         }
 
-        public DeliveryMailExportJob(DeliveryService deliveryService, IDeliveryExcelExporter deliveryExcelExporter, 
+        public DeliveryMailExportJob(DeliveryService deliveryService, ExcelExporter deliveryExcelExporter, 
             ClubService clubService, AccountingEmailBuildService emailBuildService)
         {
             _deliveryService = deliveryService;

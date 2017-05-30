@@ -3,6 +3,7 @@ using System.Net.Mail;
 using FLS.Server.Interfaces;
 using FLS.Server.Service.Accounting;
 using FLS.Server.Service.Email;
+using FLS.Server.Service.Exporting;
 using FLS.Server.Service.Jobs;
 using NLog;
 
@@ -26,7 +27,7 @@ namespace FLS.Server.Service
         private readonly DataAccessService _dataAccessService;
         private readonly IdentityService _identityService;
         private readonly AccountingEmailBuildService _accountingEmailBuildService;
-        private readonly IDeliveryExcelExporter _deliveryExcelExporter;
+        private readonly ExcelExporter _deliveryExcelExporter;
 
         public WorkflowService(FlightService flightService, 
             ClubService clubService, 
@@ -44,7 +45,7 @@ namespace FLS.Server.Service
             DataAccessService dataAccessService, 
             IdentityService identityService,
             AccountingEmailBuildService accountingEmailBuildService,
-            IDeliveryExcelExporter deliveryExcelExporter)
+            ExcelExporter deliveryExcelExporter)
             : base(dataAccessService, identityService)
         {
             _flightService = flightService;
