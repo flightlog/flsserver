@@ -12,7 +12,7 @@ INSERT INTO [dbo].[SystemVersion]
            ,[UpgradeDateTime])
      VALUES
            (31,1,9,17,0
-           ,'1.9.16.0'
+           ,'1.9.15.0'
            ,SYSUTCDATETIME())
 GO
 
