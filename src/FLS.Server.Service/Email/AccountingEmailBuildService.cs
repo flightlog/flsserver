@@ -20,13 +20,13 @@ namespace FLS.Server.Service.Email
             
         }
 
-        internal MailMessage CreateNoAccountingEmail(string recipientMailAddresses, DateTime from, DateTime to)
+        internal MailMessage CreateNoAccountingEmail(string recipientMailAddresses)
         {
             recipientMailAddresses.ArgumentNotNull("recipients");
 
             var message = new MailMessage();
 
-            message.Subject = $"Keine Flüge für die Verrechnung von FLS zwischen {from.ToShortDateString()} und {to.ToShortDateString()} ";
+            message.Subject = $"Keine Flüge für die Verrechnung von FLS";
 
             message.From = new MailAddress(SystemData.SystemSenderEmailAddress);    
 
@@ -37,13 +37,13 @@ namespace FLS.Server.Service.Email
             return message;
         }
 
-        internal MailMessage CreateAccountingEmail(string recipientMailAddresses, byte[] attachmentBytes, DateTime from, DateTime to)
+        internal MailMessage CreateAccountingEmail(string recipientMailAddresses, byte[] attachmentBytes)
         {
             recipientMailAddresses.ArgumentNotNull("recipients");
             
             var message = new MailMessage();
 
-            message.Subject = $"Rechnungs-Export von FLS zwischen {from.ToShortDateString()} und {to.ToShortDateString()}";
+            message.Subject = $"Rechnungs-Export von FLS";
             message.From = new MailAddress(SystemData.SystemSenderEmailAddress);
 
             message.To.Add(recipientMailAddresses.FormatMultipleEmailAddresses());

@@ -47,9 +47,6 @@ namespace FLS.Server.Service.Jobs
             {
                 Logger.Info("Executing Delivery mail export job");
 
-                //as the Job runs on 3rd each month, we have to catch the correct year by add some minus days (for january)
-                var fromDate = new DateTime(DateTime.Now.AddDays(-10).Year, 1, 1);
-                var toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                 var clubs = _clubService.GetClubs(false);
 
                 foreach (var club in clubs.Where(c => c.RunDeliveryMailExportJob && string.IsNullOrWhiteSpace(c.SendDeliveryMailExportTo) == false))
@@ -61,14 +58,14 @@ namespace FLS.Server.Service.Jobs
                         if (deliveries.Any() == false)
                         {
                             Logger.Info($"No Flights to invoice. Will send no invoice email message to club: {club.Clubname}");
-                            var noInvoiceMessage = _emailBuildService.CreateNoAccountingEmail(club.SendDeliveryMailExportTo, fromDate, toDate);
+                            var noInvoiceMessage = _emailBuildService.CreateNoAccountingEmail(club.SendDeliveryMailExportTo);
                             _emailBuildService.SendEmail(noInvoiceMessage);
                             continue;
                         }
 
                         var zipBytes = _deliveryExcelExporter.ExportDeliveriesToExcel(deliveries);
 
-                        var message = _emailBuildService.CreateAccountingEmail(club.SendDeliveryMailExportTo, zipBytes, fromDate, toDate);
+                        var message = _emailBuildService.CreateAccountingEmail(club.SendDeliveryMailExportTo, zipBytes);
                         _emailBuildService.SendEmail(message);
 
                         foreach (var delivery in deliveries)
