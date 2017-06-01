@@ -354,6 +354,8 @@ namespace FLS.Server.Service
                 .Where(obj => obj != null)
                 .ToList();
 
+                SetPersonOverviewSecurity(overviewList);
+
                 var pagedList = new PagedList<PersonOverview>(overviewList, pagedQuery.PageStart,
                     pagedQuery.PageSize, pagedQuery.TotalRows);
 
