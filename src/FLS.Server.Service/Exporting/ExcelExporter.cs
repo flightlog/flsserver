@@ -33,15 +33,32 @@ namespace FLS.Server.Service.Exporting
 
         public byte[] ExportDeliveriesToExcel(List<DeliveryDetails> deliveryDetailList)
         {
-            var list = new List<string>();
+            var recipientSortedDeliveries = new Dictionary<string, List<DeliveryDetails>>();
             foreach (var ruleBasedDelivery in deliveryDetailList)
             {
                 //check if there are some line items in the invoice, if not, check next invoice
-                if (ruleBasedDelivery.DeliveryItems.Any() == false) continue;
-
-                if (list.Contains(ruleBasedDelivery.RecipientDetails.RecipientName) == false)
+                if (ruleBasedDelivery.DeliveryItems.Any() == false)
                 {
-                    list.Add(ruleBasedDelivery.RecipientDetails.RecipientName);
+                    Logger.Warn($"Delivery (ID: {ruleBasedDelivery.DeliveryId}) without items found. Will exclude it from export into excel!");
+                    continue;
+                }
+
+                var recipientName = ruleBasedDelivery.RecipientDetails.RecipientName;
+                if (string.IsNullOrWhiteSpace(recipientName))
+                {
+                    Logger.Warn($"Delivery (ID: {ruleBasedDelivery.DeliveryId}) has no recipient name or is null!");
+                    recipientName = "NO_RECIPIENT";
+                }
+
+                if (recipientSortedDeliveries.ContainsKey(recipientName) == false)
+                {
+                    var deliveryList = new List<DeliveryDetails>();
+                    deliveryList.Add(ruleBasedDelivery);
+                    recipientSortedDeliveries.Add(recipientName, deliveryList);
+                }
+                else
+                {
+                    recipientSortedDeliveries[recipientName].Add(ruleBasedDelivery);
                 }
             }
 
@@ -49,7 +66,7 @@ namespace FLS.Server.Service.Exporting
             {
                 using (ZipFile zip = new ZipFile())
                 {
-                    foreach (var recipient in list)
+                    foreach (var recipient in recipientSortedDeliveries.Keys)
                     {
                         var filename = $"Rechnung {DateTime.Now.Date.ToString("yyyy-MM-dd")} {recipient}.xlsx";
                         filename = filename.SanitizeFilename();
@@ -86,13 +103,8 @@ namespace FLS.Server.Service.Exporting
                             int flightNr = 1;
                             int rowNumber = 2;
 
-                            foreach (var ruleBasedDelivery in deliveryDetailList.OrderBy(o => o.FlightInformation.FlightDate))
+                            foreach (var ruleBasedDelivery in recipientSortedDeliveries[recipient].OrderBy(o => o.FlightInformation.FlightDate))
                             {
-                                if (ruleBasedDelivery.RecipientDetails.RecipientName != recipient)
-                                {
-                                    continue;
-                                }
-
                                 int flightBeginRowNumber = rowNumber;
 
                                 foreach (var flightInvoiceLineItem in ruleBasedDelivery.DeliveryItems.OrderBy(o => o.Position))
@@ -135,16 +147,12 @@ namespace FLS.Server.Service.Exporting
 
                             if (rowNumber > 2)
                             {
-                                worksheet.Cells[2, 1, rowNumber - 1, nrOfColumns].Style.Numberformat.Format = "@";
-                                    //Format as text
-                                worksheet.Cells[2, 6, rowNumber - 1, 6].Style.Numberformat.Format = "dd.mm.yyyy";
-                                //Format as date
-                                worksheet.Cells[2, 9, rowNumber - 1, 10].Style.Numberformat.Format = "0";
-                                    //Format as number
-                                worksheet.Cells[2, 12, rowNumber - 1, 12].Style.Numberformat.Format = "0";
+                                worksheet.Cells[2, 1, rowNumber - 1, nrOfColumns].Style.Numberformat.Format = "@"; //Format as text
+                                worksheet.Cells[2, 6, rowNumber - 1, 6].Style.Numberformat.Format = "dd.mm.yyyy"; //Format as date
+                                worksheet.Cells[2, 9, rowNumber - 1, 10].Style.Numberformat.Format = "0"; //Format as number --> Item position
+                                worksheet.Cells[2, 12, rowNumber - 1, 12].Style.Numberformat.Format = "0.00"; //Format as number with 2 decimals --> Quantity
                             }
 
-                            //Format as number
                             worksheet.Cells.AutoFitColumns(0); //Autofit columns for all cells
 
                             // set some document properties
