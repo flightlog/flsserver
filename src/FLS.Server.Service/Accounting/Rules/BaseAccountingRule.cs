@@ -240,6 +240,80 @@ namespace FLS.Server.Service.Accounting.Rules
             }
         }
 
+        protected Decimal GetUnitQuantity(decimal quantity, FLS.Data.WebApi.Accounting.AccountingUnitType baseUnitType)
+        {
+            var outputUnitType =
+                (FLS.Data.WebApi.Accounting.AccountingUnitType)
+                AccountingRuleFilter.AccountingUnitTypeId.GetValueOrDefault(0);
+            if (baseUnitType == outputUnitType) return quantity;
+
+            var returnQuantity = 0.0m;
+
+            switch (outputUnitType)
+            {
+                case FLS.Data.WebApi.Accounting.AccountingUnitType.Min:
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Sec) returnQuantity = quantity / 60;
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Min) returnQuantity = quantity;
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Ldgs
+                        || baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.StartOrFlight)
+                            throw new InvalidCastException("Can not convert from landings or starts into minutes!");
+                    break;
+                case FLS.Data.WebApi.Accounting.AccountingUnitType.Sec:
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Sec) returnQuantity = quantity;
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Min) returnQuantity = quantity * 60;
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Ldgs
+                        || baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.StartOrFlight)
+                        throw new InvalidCastException("Can not convert from landings or starts into seconds!");
+                    break;
+                case FLS.Data.WebApi.Accounting.AccountingUnitType.Ldgs:
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Ldgs) returnQuantity = quantity;
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.StartOrFlight) returnQuantity = quantity;
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Sec
+                        || baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Min)
+                        throw new InvalidCastException("Can not convert from seconds or minutes into landings!");
+                    break;
+                case FLS.Data.WebApi.Accounting.AccountingUnitType.StartOrFlight:
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Ldgs) returnQuantity = quantity;
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.StartOrFlight) returnQuantity = quantity;
+                    if (baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Sec
+                        || baseUnitType == FLS.Data.WebApi.Accounting.AccountingUnitType.Min)
+                        throw new InvalidCastException("Can not convert from seconds or minutes into starts!");
+                    break;
+                default:
+                    returnQuantity = quantity;
+                    break;
+            }
+
+            return returnQuantity;
+        }
+
+        protected string GetUnitTypeString()
+        {
+            string unitTypeString;
+
+            switch ((FLS.Data.WebApi.Accounting.AccountingUnitType)
+                        AccountingRuleFilter.AccountingUnitTypeId.GetValueOrDefault(0))
+            {
+                case FLS.Data.WebApi.Accounting.AccountingUnitType.Sec:
+                    unitTypeString = "Sekunden";
+                    break;
+                case FLS.Data.WebApi.Accounting.AccountingUnitType.Min:
+                    unitTypeString = "Minuten";
+                    break;
+                case FLS.Data.WebApi.Accounting.AccountingUnitType.StartOrFlight:
+                    unitTypeString = "Start";
+                    break;
+                case FLS.Data.WebApi.Accounting.AccountingUnitType.Ldgs:
+                    unitTypeString = "Landung";
+                    break;
+                default:
+                    unitTypeString = string.Empty;
+                    break;
+            }
+
+            return unitTypeString;
+        }
+
         public override string ToString()
         {
             return

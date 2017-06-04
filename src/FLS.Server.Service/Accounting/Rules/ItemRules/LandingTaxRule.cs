@@ -6,14 +6,20 @@ using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
 using FLS.Server.Data.Extensions;
 using FLS.Server.Service.RulesEngine.Conditions;
+using System;
 
 namespace FLS.Server.Service.Accounting.Rules.ItemRules
 {
     internal class LandingTaxRule : BaseAccountingRule
     {
+        private readonly long _minFlightTimeInSecondsMatchingValue;
+        private readonly long _maxFlightTimeInSecondsMatchingValue;
+
         internal LandingTaxRule(Flight flight, RuleBasedAccountingRuleFilterDetails landingTaxAccountingRuleFilter)
             : base(flight, landingTaxAccountingRuleFilter)
         {
+            _minFlightTimeInSecondsMatchingValue = landingTaxAccountingRuleFilter.MinFlightTimeInSecondsMatchingValue ?? 0;
+            _maxFlightTimeInSecondsMatchingValue = landingTaxAccountingRuleFilter.MaxFlightTimeInSecondsMatchingValue ?? long.MaxValue;
         }
 
         public override void Initialize(RuleBasedDeliveryDetails ruleBasedDelivery)
@@ -34,6 +40,8 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 //rule must not be applied
                 Conditions.Add(new Equals<bool>(false, true));
             }
+
+            Conditions.Add(new Between<long>(Convert.ToInt64(Flight.FlightDurationZeroBased.TotalSeconds), _minFlightTimeInSecondsMatchingValue, _maxFlightTimeInSecondsMatchingValue, includeMinValue: false, includeMaxValue: true));
         }
 
         public override RuleBasedDeliveryDetails Apply(RuleBasedDeliveryDetails ruleBasedDelivery)
@@ -51,7 +59,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 line.Position = ruleBasedDelivery.DeliveryItems.Count + 1;
                 line.ArticleNumber = AccountingRuleFilter.ArticleTarget.ArticleNumber;
                 line.Quantity = 1.0m;
-                line.UnitType = CostCenterUnitType.PerLanding.ToUnitTypeString();
+                line.UnitType = GetUnitTypeString();
                 line.ItemText = $"{AccountingRuleFilter.ArticleTarget.DeliveryLineText}";
 
                 ruleBasedDelivery.DeliveryItems.Add(line);

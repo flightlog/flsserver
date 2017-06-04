@@ -56,7 +56,7 @@ namespace FLS.Server.Service.Accounting.RuleEngines
                 rules.Add(rule);
             }
 
-            _ruleBasedDelivery.ActiveFlightTimeInSeconds = Convert.ToInt64(_flight.FlightDurationZeroBased.TotalSeconds);
+            _ruleBasedDelivery.ActiveFlightTimeInSeconds = Convert.ToInt32(_flight.FlightDurationZeroBased.TotalSeconds);
 
             while (_ruleBasedDelivery.ActiveFlightTimeInSeconds > 0)
             {

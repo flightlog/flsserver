@@ -36,7 +36,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 line.Position = ruleBasedDelivery.DeliveryItems.Count + 1;
                 line.ArticleNumber = AccountingRuleFilter.ArticleTarget.ArticleNumber;
                 line.Quantity = 1.0m;
-                line.UnitType = CostCenterUnitType.PerLanding.ToUnitTypeString();
+                line.UnitType = GetUnitTypeString();
                 line.ItemText = $"{AccountingRuleFilter.ArticleTarget.DeliveryLineText}";
 
                 ruleBasedDelivery.DeliveryItems.Add(line);

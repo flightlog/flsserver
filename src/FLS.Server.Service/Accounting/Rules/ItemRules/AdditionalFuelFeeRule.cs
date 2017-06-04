@@ -29,7 +29,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
             {
                 //this case should never happened. It happens when multiple rules matches
                 var line = ruleBasedDelivery.DeliveryItems.First(x => x.ArticleNumber == AccountingRuleFilter.ArticleTarget.ArticleNumber);
-                line.Quantity += Convert.ToDecimal(Flight.FlightDurationZeroBased.TotalMinutes);
+                line.Quantity += GetUnitQuantity(Convert.ToDecimal(Flight.FlightDurationZeroBased.TotalMinutes), FLS.Data.WebApi.Accounting.AccountingUnitType.Min);
 
                 Logger.Warn($"Delivery line already exists. Added quantity to the existing line! New line values: {line}");
             }
@@ -38,8 +38,8 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 var line = new DeliveryItemDetails();
                 line.Position = ruleBasedDelivery.DeliveryItems.Count + 1;
                 line.ArticleNumber = AccountingRuleFilter.ArticleTarget.ArticleNumber;
-                line.Quantity = Convert.ToDecimal(Flight.FlightDurationZeroBased.TotalMinutes);
-                line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
+                line.Quantity = GetUnitQuantity(Convert.ToDecimal(Flight.FlightDurationZeroBased.TotalMinutes), FLS.Data.WebApi.Accounting.AccountingUnitType.Min);
+                line.UnitType = GetUnitTypeString();
                 line.ItemText = $"{AccountingRuleFilter.ArticleTarget.DeliveryLineText} {Flight.AircraftImmatriculation}";
                 
                 ruleBasedDelivery.DeliveryItems.Add(line);

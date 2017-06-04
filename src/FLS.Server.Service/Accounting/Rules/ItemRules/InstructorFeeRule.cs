@@ -19,7 +19,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
             var line = new DeliveryItemDetails();
             line.Position = ruleBasedDelivery.DeliveryItems.Count + 1;
             line.ArticleNumber = AccountingRuleFilter.ArticleTarget.ArticleNumber;
-            line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
+            line.UnitType = GetUnitTypeString();
 
             line.ItemText = $"Fluglehrer-Honorar {Flight.InstructorDisplayName}";
 
@@ -32,7 +32,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
             }
             else
             {
-                line.Quantity = Convert.ToDecimal(Flight.FlightDurationZeroBased.TotalMinutes);
+                line.Quantity = GetUnitQuantity(Convert.ToDecimal(Flight.FlightDurationZeroBased.TotalMinutes), FLS.Data.WebApi.Accounting.AccountingUnitType.Min);
             }
 
             ruleBasedDelivery.DeliveryItems.Add(line);

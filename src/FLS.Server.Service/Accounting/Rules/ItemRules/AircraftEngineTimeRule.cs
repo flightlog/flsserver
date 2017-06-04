@@ -19,7 +19,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
             : base(flight, engineTimeAccountingRuleFilter)
         {
             _minEngineTimeInSecondsMatchingValue = engineTimeAccountingRuleFilter.MinEngineTimeInSecondsMatchingValue ?? 0;
-            _maxEngineTimeInSecondsMatchingValue = engineTimeAccountingRuleFilter.MaxEngineTimeInSecondsMatchingValue ?? Int64.MaxValue;
+            _maxEngineTimeInSecondsMatchingValue = engineTimeAccountingRuleFilter.MaxEngineTimeInSecondsMatchingValue ?? long.MaxValue;
         }
 
         public override void Initialize(RuleBasedDeliveryDetails ruleBasedDelivery)
@@ -45,12 +45,12 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 lineQuantity = Convert.ToDecimal(ruleBasedDelivery.ActiveEngineTimeInSeconds - _minEngineTimeInSecondsMatchingValue);
                 ruleBasedDelivery.ActiveEngineTimeInSeconds = _minEngineTimeInSecondsMatchingValue;
             }
-
+            
             if (ruleBasedDelivery.DeliveryItems.Any(x => x.ArticleNumber == AccountingRuleFilter.ArticleTarget.ArticleNumber))
             {
                 //this case should never happened. It happens when multiple rules matches
                 var line = ruleBasedDelivery.DeliveryItems.First(x => x.ArticleNumber == AccountingRuleFilter.ArticleTarget.ArticleNumber);
-                line.Quantity += lineQuantity / 60;
+                line.Quantity += GetUnitQuantity(lineQuantity, FLS.Data.WebApi.Accounting.AccountingUnitType.Sec);
 
                 Logger.Warn($"Delivery line already exists. Added quantity to the existing line! New line values: {line}");
             }
@@ -59,8 +59,8 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 var line = new DeliveryItemDetails();
                 line.Position = ruleBasedDelivery.DeliveryItems.Count + 1;
                 line.ArticleNumber = AccountingRuleFilter.ArticleTarget.ArticleNumber;
-                line.Quantity = lineQuantity / 60;
-                line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
+                line.Quantity = GetUnitQuantity(lineQuantity, FLS.Data.WebApi.Accounting.AccountingUnitType.Sec);
+                line.UnitType = GetUnitTypeString();
 
                 if (AccountingRuleFilter.IncludeThresholdText)
                 {

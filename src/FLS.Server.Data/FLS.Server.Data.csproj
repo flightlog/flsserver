@@ -119,7 +119,6 @@
     <Compile Include="Extensions\FlightProcessStateExtensions.cs" />
     <Compile Include="Extensions\FlightAirStateExtensions.cs" />
     <Compile Include="Extensions\EntityTrackerExtensions.cs" />
-    <Compile Include="Extensions\CostCenterUnitTypeExtensions.cs" />
     <Compile Include="Extensions\LinqExtensions.cs" />
     <Compile Include="Mapping\AccountingRuleFilterMappingExtensions.cs" />
     <Compile Include="Mapping\CounterUnitExtensions.cs" />
@@ -128,7 +127,6 @@
     <Compile Include="Enums\AircraftStartType.cs" />
     <Compile Include="Enums\AircraftStateKey.cs" />
     <Compile Include="Enums\AirfieldLocationType.cs" />
-    <Compile Include="Enums\CostCenterUnitType.cs" />
     <Compile Include="Enums\EntityRecordState.cs" />
     <Compile Include="Enums\FlightAircraftTypeValue.cs" />
     <Compile Include="Enums\OwnershipType.cs" />

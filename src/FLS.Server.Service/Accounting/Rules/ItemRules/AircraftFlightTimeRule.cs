@@ -19,7 +19,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
             : base(flight, flightTimeAccountingRuleFilter)
         {
             _minFlightTimeInSecondsMatchingValue = flightTimeAccountingRuleFilter.MinFlightTimeInSecondsMatchingValue ?? 0;
-            _maxFlightTimeInSecondsMatchingValue = flightTimeAccountingRuleFilter.MaxFlightTimeInSecondsMatchingValue ?? Int64.MaxValue;
+            _maxFlightTimeInSecondsMatchingValue = flightTimeAccountingRuleFilter.MaxFlightTimeInSecondsMatchingValue ?? long.MaxValue;
         }
 
         public override void Initialize(RuleBasedDeliveryDetails ruleBasedDelivery)
@@ -27,7 +27,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
             AccountingRuleFilter.ArticleTarget.NotNull("ArticleTarget");
             base.Initialize(ruleBasedDelivery);
 
-            Conditions.Add(new Between<double>(ruleBasedDelivery.ActiveFlightTimeInSeconds, _minFlightTimeInSecondsMatchingValue, _maxFlightTimeInSecondsMatchingValue, includeMinValue:false, includeMaxValue:true));
+            Conditions.Add(new Between<long>(ruleBasedDelivery.ActiveFlightTimeInSeconds, _minFlightTimeInSecondsMatchingValue, _maxFlightTimeInSecondsMatchingValue, includeMinValue:false, includeMaxValue:true));
         }
 
         public override RuleBasedDeliveryDetails Apply(RuleBasedDeliveryDetails ruleBasedDelivery)
@@ -36,12 +36,12 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
 
             if (_minFlightTimeInSecondsMatchingValue == 0)
             {
-                lineQuantity = Convert.ToDecimal(ruleBasedDelivery.ActiveFlightTimeInSeconds / 60);
+                lineQuantity = Convert.ToDecimal(ruleBasedDelivery.ActiveFlightTimeInSeconds);
                 ruleBasedDelivery.ActiveFlightTimeInSeconds = 0;
             }
             else
             {
-                lineQuantity = Convert.ToDecimal((ruleBasedDelivery.ActiveFlightTimeInSeconds - _minFlightTimeInSecondsMatchingValue) / 60);
+                lineQuantity = Convert.ToDecimal(ruleBasedDelivery.ActiveFlightTimeInSeconds - _minFlightTimeInSecondsMatchingValue);
                 ruleBasedDelivery.ActiveFlightTimeInSeconds = _minFlightTimeInSecondsMatchingValue;
             }
 
@@ -49,7 +49,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
             {
                 //this case should never happened. It happens when multiple rules matches
                 var line = ruleBasedDelivery.DeliveryItems.First(x => x.ArticleNumber == AccountingRuleFilter.ArticleTarget.ArticleNumber);
-                line.Quantity += lineQuantity;
+                line.Quantity += GetUnitQuantity(lineQuantity, FLS.Data.WebApi.Accounting.AccountingUnitType.Sec); 
 
                 Logger.Warn($"Delivery line already exists. Added quantity to the existing line! New line values: {line}");
             }
@@ -58,8 +58,8 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 var line = new DeliveryItemDetails();
                 line.Position = ruleBasedDelivery.DeliveryItems.Count + 1;
                 line.ArticleNumber = AccountingRuleFilter.ArticleTarget.ArticleNumber;
-                line.Quantity = lineQuantity;
-                line.UnitType = CostCenterUnitType.PerFlightMinute.ToUnitTypeString();
+                line.Quantity = GetUnitQuantity(lineQuantity, FLS.Data.WebApi.Accounting.AccountingUnitType.Sec);
+                line.UnitType = GetUnitTypeString();
 
                 if (AccountingRuleFilter.IncludeThresholdText)
                 {
