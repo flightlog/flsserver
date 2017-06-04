@@ -129,6 +129,11 @@ namespace FLS.Server.Service.Accounting
                         {
                             var delivery = CreateDeliveryForFlight(flight, clubId, batchId, accountingRuleFilters);
 
+                            if (delivery.DeliveryItems.Any() == false)
+                            {
+                                Logger.Warn($"Delivery without Items created for FlightId: {flight.FlightId}!");
+                            }
+
                             context.Deliveries.Add(delivery);
 
                             flight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.Delivered;
