@@ -285,6 +285,23 @@ namespace FLS.Server.Data.DbEntities
             }
         }
 
+        [NotMapped]
+        public TimeSpan EngineDurationZeroBased
+        {
+            get
+            {
+                if (EngineStartOperatingCounterInSeconds.HasValue
+                    || EngineEndOperatingCounterInSeconds.HasValue)
+                {
+                    return
+                        TimeSpan.FromSeconds(EngineEndOperatingCounterInSeconds.Value -
+                                             EngineStartOperatingCounterInSeconds.Value);
+                }
+
+                return TimeSpan.Zero;
+            }
+        }
+
         /// <summary>
         /// returns the pilot of the flightcrew
         /// </summary>

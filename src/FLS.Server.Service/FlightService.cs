@@ -1088,6 +1088,7 @@ namespace FLS.Server.Service
                     foreach (var flight in flights.Where(x => x.AircraftId == id))
                     {
                         aircraftFlightReportData.FlightDuration += flight.FlightDurationZeroBased;
+                        aircraftFlightReportData.EngineDuration += flight.EngineDurationZeroBased;
 
                         if (flight.NrOfLdgs.HasValue)
                         {

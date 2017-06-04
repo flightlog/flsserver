@@ -30,20 +30,13 @@ namespace FLS.Data.WebApi.Reporting
             }
         }
 
-        public TimeSpan? EngineDuration { get; set; }
+        public TimeSpan EngineDuration { get; set; }
 
         public string EngineDurationString
         {
             get
             {
-                if (EngineDuration.HasValue)
-                {
-                    return string.Format("{0}:{1:mm}", (int)EngineDuration.Value.TotalHours, EngineDuration.Value);
-                }
-                else
-                {
-                    return "n/a";
-                }
+                return string.Format("{0}:{1:mm}", (int)EngineDuration.TotalHours, EngineDuration);
             }
         }
 

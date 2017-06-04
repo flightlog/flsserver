@@ -9,6 +9,7 @@ using FLS.Server.Service.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NLog;
 using Microsoft.Practices.Unity;
+using FLS.Data.WebApi.Reporting;
 
 namespace FLS.Server.Tests.ServiceTests
 {
@@ -112,6 +113,22 @@ namespace FLS.Server.Tests.ServiceTests
                 Assert.IsTrue(compareResult, "Flight property values does not match");
             }
 
+        }
+
+        [TestMethod]
+        [TestCategory("Service")]
+        public void AircraftStatisticReportServiceTest()
+        {
+            var startDate = new DateTime(2017, 5, 1);
+            var endDate = startDate.AddMonths(1).AddTicks(-1);
+
+            var filterCriteria = new AircraftFlightReportFilterCriteria();
+            filterCriteria.StatisticStartDateTime = startDate;
+            filterCriteria.StatisticEndDateTime = endDate;
+            filterCriteria.AircraftIds.Add(Guid.Parse("CA77AA0D-ADFF-4809-960A-D9E42E14CD44")); //HB-2310 Dimona
+            var report = FlightService.GetAircraftFlightReport(filterCriteria);
+            Assert.IsNotNull(report);
+            
         }
 
     }

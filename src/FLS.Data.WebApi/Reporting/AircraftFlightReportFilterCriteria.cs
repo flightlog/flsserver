@@ -35,12 +35,14 @@ namespace FLS.Data.WebApi.Reporting
         /// </value>
         public List<Guid> FlownByPersonIds { get; set; }
 
-        public AircraftFlightReportFilterCriteria(bool takeWinchStarts = true, bool takeTowingStarts = true, bool takeSelfStarts = true, bool takeStartsOfUnknownType = true)
+        public AircraftFlightReportFilterCriteria(bool takeWinchStarts = true, bool takeTowingStarts = true, 
+            bool takeSelfStarts = true, bool takeMotorFlightStarts = true, bool takeStartsOfUnknownType = true)
         {
             TakeWinchStarts = takeWinchStarts;
             TakeTowingStarts = takeTowingStarts;
             TakeSelfStarts = takeSelfStarts;
             TakeExternalStarts = takeStartsOfUnknownType;
+            TakeMotorFlightStarts = takeMotorFlightStarts;
             AircraftIds = new List<Guid>();
             FlownByPersonIds = new List<Guid>();
         }
@@ -54,6 +56,7 @@ namespace FLS.Data.WebApi.Reporting
             TakeTowingStarts = filterCriteria.TakeTowingStarts;
             TakeSelfStarts = filterCriteria.TakeSelfStarts;
             TakeExternalStarts = filterCriteria.TakeExternalStarts;
+            TakeMotorFlightStarts = filterCriteria.TakeMotorFlightStarts;
             FlownByPersonIds = filterCriteria.FlownByPersonIds;
         }
     }
