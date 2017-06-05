@@ -24,7 +24,6 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
 
         public override void Initialize(RuleBasedDeliveryDetails ruleBasedDelivery)
         {
-            AccountingRuleFilter.ArticleTarget.NotNull("ArticleTarget");
             base.Initialize(ruleBasedDelivery);
 
             Conditions.Add(new Between<long>(Convert.ToInt64(Flight.FlightDurationZeroBased.TotalSeconds), _minFlightTimeInSecondsMatchingValue, _maxFlightTimeInSecondsMatchingValue, includeMinValue: false, includeMaxValue: true));
