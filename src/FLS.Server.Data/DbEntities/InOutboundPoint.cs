@@ -55,10 +55,8 @@ namespace FLS.Server.Data.DbEntities
 
         public Guid Id
         {
-            get
-            {
-                return InOutboundPointId;
-            }
+            get { return InOutboundPointId; }
+            set { InOutboundPointId = value; }
         }
 
         public override string ToString()
