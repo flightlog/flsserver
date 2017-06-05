@@ -22,8 +22,8 @@ namespace FLS.Data.WebApi.Location
 
         public override Guid Id
         {
-            get { return LocationId; }
-            set { LocationId = value; }
+            get { return InOutboundPointId; }
+            set { InOutboundPointId = value; }
         }
     }
 }

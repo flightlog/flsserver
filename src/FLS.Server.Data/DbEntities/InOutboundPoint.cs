@@ -53,6 +53,7 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual Location Location { get; set; }
 
+        [NotMapped]
         public Guid Id
         {
             get { return InOutboundPointId; }

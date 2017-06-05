@@ -416,11 +416,15 @@ namespace FLS.Server.Service
                 {
                     InOutboundPointName = inOutboundPointDetails.InOutboundPointName,
                     IsInboundPoint = inOutboundPointDetails.IsInboundPoint,
-                    IsOutboundPoint = inOutboundPointDetails.IsOutboundPoint
+                    IsOutboundPoint = inOutboundPointDetails.IsOutboundPoint,
+                    LocationId = inOutboundPointDetails.LocationId
                 };
                 context.InOutboundPoints.Add(inOutboundPoint);
 
                 context.SaveChanges();
+
+                //map ID back
+                inOutboundPointDetails.InOutboundPointId = inOutboundPoint.InOutboundPointId;
             }
         }
         
@@ -436,6 +440,7 @@ namespace FLS.Server.Service
                 original.InOutboundPointName = currentInOutboundPointDetails.InOutboundPointName;
                 original.IsInboundPoint = currentInOutboundPointDetails.IsInboundPoint;
                 original.IsOutboundPoint = currentInOutboundPointDetails.IsOutboundPoint;
+                original.LocationId = currentInOutboundPointDetails.LocationId;
 
                 if (context.ChangeTracker.HasChanges())
                 {
