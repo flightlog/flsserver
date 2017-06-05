@@ -154,6 +154,7 @@
     <Compile Include="Location\CountryOverview.cs" />
     <Compile Include="Location\ElevationUnitType.cs" />
     <Compile Include="Location\LengthUnitType.cs" />
+    <Compile Include="Location\InOutboundPointDetails.cs" />
     <Compile Include="Location\LocationDetails.cs" />
     <Compile Include="Location\LocationData.cs" />
     <Compile Include="Location\LocationListItem.cs" />

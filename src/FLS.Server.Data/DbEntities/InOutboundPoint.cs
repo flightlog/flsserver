@@ -28,10 +28,6 @@ namespace FLS.Server.Data.DbEntities
 
         public bool IsOutboundPoint { get; set; }
 
-        public int SortIndicatorInboundPoint { get; set; }
-
-        public int SortIndicatorOutboundPoint { get; set; }
-
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 

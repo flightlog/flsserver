@@ -359,6 +359,104 @@ namespace FLS.Server.Service
         }
         #endregion Location
 
+        #region InOutboundPoint
+        public List<InOutboundPointDetails> GetInOutboundPointDetailsByLocationId(Guid locationId)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var items = context.InOutboundPoints
+                    .Where(x => x.LocationId == locationId)
+                    .Select(i => new InOutboundPointDetails
+                    {
+                        InOutboundPointId = i.InOutboundPointId,
+                        InOutboundPointName = i.InOutboundPointName,
+                        IsInboundPoint = i.IsInboundPoint,
+                        IsOutboundPoint = i.IsOutboundPoint
+                    })
+                    .OrderBy(l => l.InOutboundPointName)
+                    .ToList();
+
+                SetInOutboundPointDetailsSecurity(items);
+
+                return items;
+            }
+        }
+        
+        public InOutboundPointDetails GetInOutboundPointDetails(Guid inOutboundPointId)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var item = context.InOutboundPoints
+                    .Where(x => x.InOutboundPointId == inOutboundPointId)
+                    .Select(i => new InOutboundPointDetails
+                    {
+                        InOutboundPointId = i.InOutboundPointId,
+                        InOutboundPointName = i.InOutboundPointName,
+                        IsInboundPoint = i.IsInboundPoint,
+                        IsOutboundPoint = i.IsOutboundPoint
+                    }).FirstOrDefault();
+
+                SetInOutboundPointDetailsSecurity(item);
+
+                return item;
+            }
+        }
+
+        /// <summary>
+        /// Inserts an InOutboundPoint.
+        /// </summary>
+        /// <param name="inOutboundPointDetails">The InOutboundPointDetails.</param>
+        public void InsertInOutboundPointDetails(InOutboundPointDetails inOutboundPointDetails)
+        {
+            inOutboundPointDetails.NotNull("inOutboundPointDetails");
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var inOutboundPoint = new InOutboundPoint()
+                {
+                    InOutboundPointName = inOutboundPointDetails.InOutboundPointName,
+                    IsInboundPoint = inOutboundPointDetails.IsInboundPoint,
+                    IsOutboundPoint = inOutboundPointDetails.IsOutboundPoint
+                };
+                context.InOutboundPoints.Add(inOutboundPoint);
+
+                context.SaveChanges();
+            }
+        }
+        
+        public void UpdateInOutboundPointDetails(InOutboundPointDetails currentInOutboundPointDetails)
+        {
+            currentInOutboundPointDetails.ArgumentNotNull("currentInOutboundPointDetails");
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var original = context.InOutboundPoints.FirstOrDefault(l => l.InOutboundPointId == currentInOutboundPointDetails.InOutboundPointId);
+                original.EntityNotNull("InOutboundPoint", currentInOutboundPointDetails.InOutboundPointId);
+
+                original.InOutboundPointName = currentInOutboundPointDetails.InOutboundPointName;
+                original.IsInboundPoint = currentInOutboundPointDetails.IsInboundPoint;
+                original.IsOutboundPoint = currentInOutboundPointDetails.IsOutboundPoint;
+
+                if (context.ChangeTracker.HasChanges())
+                {
+                    context.SaveChanges();
+                }
+            }
+        }
+
+        public void DeleteInOutboundPoint(Guid inOutboundPointId)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var original = context.InOutboundPoints.FirstOrDefault(l => l.InOutboundPointId == inOutboundPointId);
+                original.EntityNotNull("InOutboundPoint", inOutboundPointId);
+
+                context.InOutboundPoints.Remove(original);
+                context.SaveChanges();
+            }
+        }
+        #endregion InOutboundPoint
+
         #region Security
         private void SetCountryOverviewSecurity(IEnumerable<CountryOverview> list)
         {
@@ -451,6 +549,66 @@ namespace FLS.Server.Service
             {
                 details.CanUpdateRecord = false;
                 details.CanDeleteRecord = false;
+            }
+        }
+
+        private void SetInOutboundPointDetailsSecurity(IEnumerable<InOutboundPointDetails> list)
+        {
+            if (CurrentAuthenticatedFLSUser == null)
+            {
+                Logger.Warn(string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
+                foreach (var overview in list)
+                {
+                    overview.CanUpdateRecord = false;
+                    overview.CanDeleteRecord = false;
+                }
+
+                return;
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                foreach (var overview in list)
+                {
+                    if (IsCurrentUserInRoleClubAdministrator ||
+                        IsOwner(context.InOutboundPoints.First(a => a.InOutboundPointId == overview.InOutboundPointId)))
+                    {
+                        overview.CanUpdateRecord = true;
+                        overview.CanDeleteRecord = true;
+                    }
+                    else
+                    {
+                        overview.CanUpdateRecord = false;
+                        overview.CanDeleteRecord = false;
+                    }
+                }
+            }
+        }
+
+        private void SetInOutboundPointDetailsSecurity(InOutboundPointDetails item)
+        {
+            if (CurrentAuthenticatedFLSUser == null)
+            {
+                Logger.Warn(string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
+                item.CanUpdateRecord = false;
+                item.CanDeleteRecord = false;
+
+                return;
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                if (IsCurrentUserInRoleClubAdministrator ||
+                        IsOwner(context.InOutboundPoints.First(a => a.InOutboundPointId == item.InOutboundPointId)))
+                {
+                    item.CanUpdateRecord = true;
+                    item.CanDeleteRecord = true;
+                }
+                else
+                {
+                    item.CanUpdateRecord = false;
+                    item.CanDeleteRecord = false;
+                }
             }
         }
         #endregion Security
