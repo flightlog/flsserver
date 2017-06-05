@@ -332,8 +332,8 @@ namespace FLS.Server.Service.Accounting
         /// 
         /// </summary>
         /// <param name="deliveryCreationTestId"></param>
-        /// <returns>AccountingRuleFilterTestResult</returns>
-        public void RunDeliveryCreationTest(Guid deliveryCreationTestId)
+        /// <returns>DeliveryCreationTestDetails</returns>
+        public DeliveryCreationTestDetails RunDeliveryCreationTest(Guid deliveryCreationTestId)
         {
             try
             {
@@ -626,6 +626,11 @@ namespace FLS.Server.Service.Accounting
                     {
                         context.SaveChanges();
                     }
+
+                    var deliveryCreationTestDetails = deliveryCreationTest.ToDeliveryCreationTestDetails();
+                    SetDeliveryCreationTestDetailsSecurity(deliveryCreationTestDetails);
+
+                    return deliveryCreationTestDetails;
                 }
             }
             catch (Exception ex)
@@ -633,6 +638,8 @@ namespace FLS.Server.Service.Accounting
                 var error = $"Error while trying to create accounting for flights. Message: {ex.Message}";
                 Logger.Error(ex, error);
             }
+
+            return null;
         }
         
         public PagedList<DeliveryCreationTestOverview> GetPagedDeliveryCreationTestOverview(int? pageStart, int? pageSize, PageableSearchFilter<DeliveryCreationTestOverviewSearchFilter> pageableSearchFilter)

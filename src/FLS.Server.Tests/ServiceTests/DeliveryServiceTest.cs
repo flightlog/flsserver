@@ -146,11 +146,8 @@ namespace FLS.Server.Tests.ServiceTests
                 expectedDelivery.MatchedAccountingRuleFilterIds;
 
             DeliveryService.InsertDeliveryCreationTestDetails(deliveryCreationTestDetails);
-            DeliveryService.RunDeliveryCreationTest(deliveryCreationTestDetails.DeliveryCreationTestId);
-
-            var testResult =
-                DeliveryService.GetDeliveryCreationTestDetails(deliveryCreationTestDetails.DeliveryCreationTestId);
-
+            var testResult = DeliveryService.RunDeliveryCreationTest(deliveryCreationTestDetails.DeliveryCreationTestId);
+            
             Assert.IsNotNull(testResult);
             Assert.IsNotNull(testResult.LastDeliveryCreationTestResult);
             Assert.IsNotNull(testResult.LastDeliveryCreationTestResult.LastTestSuccessful);
