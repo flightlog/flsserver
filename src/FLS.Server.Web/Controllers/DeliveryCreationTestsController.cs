@@ -72,12 +72,25 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
+        /// Runs all test delivery rules.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("run")]
+        [ResponseType(typeof(List<DeliveryCreationTestDetails>))]
+        public IHttpActionResult RunDeliveryCreationTest()
+        {
+            var result = DeliveryService.RunDeliveryCreationTests();
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Runs a test delivery rule for the specified delivery test rule.
         /// </summary>
         /// <param name="deliveryCreationTestId">Id of DeliveryCreationTest.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("rundeliverycreationtest/{deliveryCreationTestId}")]
+        [Route("run/{deliveryCreationTestId}")]
         [ResponseType(typeof(DeliveryCreationTestDetails))]
         public IHttpActionResult RunDeliveryCreationTest(Guid deliveryCreationTestId)
         {
