@@ -332,6 +332,41 @@ namespace FLS.Server.Service.Accounting
         /// 
         /// </summary>
         /// <param name="deliveryCreationTestId"></param>
+        /// <returns>List<DeliveryCreationTestDetails></returns>
+        public List<DeliveryCreationTestDetails> RunDeliveryCreationTests()
+        {
+            try
+            {
+                using (var context = _dataAccessService.CreateDbContext())
+                {
+                    var deliveryCreationTests =
+                        context.DeliveryCreationTests.Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId);
+
+                    var resultList = new List<DeliveryCreationTestDetails>();
+
+                    foreach (var deliveryCreationTest in deliveryCreationTests)
+                    {
+                        var result = RunDeliveryCreationTest(deliveryCreationTest.DeliveryCreationTestId);
+                        resultList.Add(result);
+                    }
+
+                    return resultList;
+                }
+            }
+            catch (Exception ex)
+            {
+                var error = $"Error while trying to create accounting for flights. Message: {ex.Message}";
+                Logger.Error(ex, error);
+            }
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deliveryCreationTestId"></param>
         /// <returns>DeliveryCreationTestDetails</returns>
         public DeliveryCreationTestDetails RunDeliveryCreationTest(Guid deliveryCreationTestId)
         {
