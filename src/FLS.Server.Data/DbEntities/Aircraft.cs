@@ -86,6 +86,8 @@ namespace FLS.Server.Data.DbEntities
 
         public bool IsFastEntryRecord { get; set; }
 
+        public Guid? HomebaseId { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 
@@ -126,6 +128,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual CounterUnitType FlightOperatingCounterUnitType { get; set; }
 
         public virtual CounterUnitType EngineOperatingCounterUnitType { get; set; }
+
+        public virtual Location Homebase { get; set; }
 
         /// <summary>
         /// actual status is newest status.

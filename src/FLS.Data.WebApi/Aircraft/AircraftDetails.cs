@@ -70,6 +70,8 @@ namespace FLS.Data.WebApi.Aircraft
         [StringLength(250)]
         public string SpotLink { get; set; }
 
+        public Guid? HomebaseId { get; set; }
+
         public override Guid Id
         {
             get { return AircraftId; }

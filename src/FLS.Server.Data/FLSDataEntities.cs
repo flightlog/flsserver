@@ -432,6 +432,11 @@ namespace FLS.Server.Data
                 .HasForeignKey(e => e.HomebaseId);
 
             modelBuilder.Entity<Location>()
+                .HasMany(e => e.HomebasedAircrafts)
+                .WithOptional(e => e.Homebase)
+                .HasForeignKey(e => e.HomebaseId);
+
+            modelBuilder.Entity<Location>()
                 .HasMany(e => e.LandedFlights)
                 .WithOptional(e => e.LdgLocation)
                 .HasForeignKey(e => e.LdgLocationId);

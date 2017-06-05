@@ -208,6 +208,7 @@ namespace FLS.Server.Data.Mapping
             details.EngineOperatingCounterUnitTypeId = entity.EngineOperatingCounterUnitTypeId;
             details.SpotLink = entity.SpotLink;
             details.HasEngine = entity.HasEngine;
+            details.HomebaseId = entity.HomebaseId;
 
             if (entity.CurrentAircraftAircraftState != null)
             {
@@ -264,6 +265,7 @@ namespace FLS.Server.Data.Mapping
             entity.FlightOperatingCounterUnitTypeId = details.FlightOperatingCounterUnitTypeId;
             entity.EngineOperatingCounterUnitTypeId = details.EngineOperatingCounterUnitTypeId;
             entity.SpotLink = details.SpotLink;
+            entity.HomebaseId = details.HomebaseId;
 
             //Check if aircraft state has changes and update it if required
             if (entity.HasAircraftStateChanges(details))

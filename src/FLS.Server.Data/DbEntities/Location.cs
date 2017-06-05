@@ -19,6 +19,7 @@ namespace FLS.Server.Data.DbEntities
             InOutboundPoints = new HashSet<InOutboundPoint>();
             PlanningDays = new HashSet<PlanningDay>();
             AircraftReservations = new HashSet<AircraftReservation>();
+            HomebasedAircrafts = new HashSet<Aircraft>();
         }
 
         public Guid LocationId { get; set; }
@@ -110,6 +111,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual ICollection<PlanningDay> PlanningDays { get; set; }
 
         public virtual ICollection<AircraftReservation> AircraftReservations { get; set; }
+
+        public virtual ICollection<Aircraft> HomebasedAircrafts { get; set; }
 
         public Guid Id
         {
