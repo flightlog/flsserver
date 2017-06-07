@@ -28,6 +28,8 @@ namespace FLS.Server.Service.Accounting
 
         public List<Guid> MatchedLdgLocationIds { get; set; }
 
+        public List<Guid> MatchedAircraftHomebaseIds { get; set; }
+
         public bool HasMatched { get; set; }
     }
 }

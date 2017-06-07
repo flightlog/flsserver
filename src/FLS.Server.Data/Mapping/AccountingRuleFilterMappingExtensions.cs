@@ -227,6 +227,13 @@ namespace FLS.Server.Data.Mapping
                 entity.UseRuleForAllStartTypesExceptListed;
             details.AccountingUnitTypeId = entity.AccountingUnitTypeId;
 
+            details.UseRuleForAllAircraftsOnHomebaseExceptListed =
+                entity.UseRuleForAllAircraftsOnHomebaseExceptListed;
+            details.UseRuleForAllMemberStatesExceptListed =
+                entity.UseRuleForAllMemberStatesExceptListed;
+            details.UseRuleForAllPersonCategoriesExceptListed =
+                entity.UseRuleForAllPersonCategoriesExceptListed;
+
             //Deserialize JSON lists to properties
             if (entity.MatchedAircraftImmatriculations != null) details.MatchedAircraftImmatriculations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedAircraftImmatriculations);
             if (entity.MatchedStartLocations != null) details.MatchedStartLocations = JsonConvert.DeserializeObject<List<string>>(entity.MatchedStartLocations);
@@ -235,6 +242,10 @@ namespace FLS.Server.Data.Mapping
             if (entity.MatchedClubMemberNumbers != null) details.MatchedClubMemberNumbers = JsonConvert.DeserializeObject<List<string>>(entity.MatchedClubMemberNumbers);
             if (entity.MatchedFlightCrewTypes != null) details.MatchedFlightCrewTypes = JsonConvert.DeserializeObject<List<int>>(entity.MatchedFlightCrewTypes);
             if (entity.MatchedStartTypes != null) details.MatchedStartTypes = JsonConvert.DeserializeObject<List<int>>(entity.MatchedStartTypes);
+
+            if (entity.MatchedAircraftsHomebase != null) details.MatchedAircraftsHomebase = JsonConvert.DeserializeObject<List<string>>(entity.MatchedAircraftsHomebase);
+            if (entity.MatchedMemberStates != null) details.MatchedMemberStates = JsonConvert.DeserializeObject<List<Guid>>(entity.MatchedMemberStates);
+            if (entity.MatchedPersonCategories != null) details.MatchedPersonCategories = JsonConvert.DeserializeObject<List<Guid>>(entity.MatchedPersonCategories);
 
             switch (entity.AccountingRuleFilterTypeId)
             {
@@ -309,6 +320,9 @@ namespace FLS.Server.Data.Mapping
             entity.UseRuleForAllStartTypesExceptListed =
                details.UseRuleForAllStartTypesExceptListed;
             entity.AccountingUnitTypeId = details.AccountingUnitTypeId;
+            entity.UseRuleForAllAircraftsOnHomebaseExceptListed = details.UseRuleForAllAircraftsOnHomebaseExceptListed;
+            entity.UseRuleForAllMemberStatesExceptListed = details.UseRuleForAllMemberStatesExceptListed;
+            entity.UseRuleForAllPersonCategoriesExceptListed = details.UseRuleForAllPersonCategoriesExceptListed;
 
             //Serialize JSON lists to properties
             entity.MatchedAircraftImmatriculations = JsonConvert.SerializeObject(details.MatchedAircraftImmatriculations);
@@ -318,6 +332,10 @@ namespace FLS.Server.Data.Mapping
             entity.MatchedClubMemberNumbers = JsonConvert.SerializeObject(details.MatchedClubMemberNumbers);
             entity.MatchedFlightCrewTypes = JsonConvert.SerializeObject(details.MatchedFlightCrewTypes);
             entity.MatchedStartTypes = JsonConvert.SerializeObject(details.MatchedStartTypes);
+            entity.MatchedAircraftsHomebase = JsonConvert.SerializeObject(details.MatchedAircraftsHomebase);
+            entity.MatchedMemberStates = JsonConvert.SerializeObject(details.MatchedMemberStates);
+            entity.MatchedPersonCategories = JsonConvert.SerializeObject(details.MatchedPersonCategories);
+
 
             switch (details.AccountingRuleFilterTypeId)
             {

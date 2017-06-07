@@ -80,6 +80,18 @@ namespace FLS.Server.Data.DbEntities
         //[Column("MatchedFlightCrewTypes")]
         public string MatchedFlightCrewTypes { get; set; }
 
+        public bool UseRuleForAllAircraftsOnHomebaseExceptListed { get; set; }
+
+        public string MatchedAircraftsHomebase { get; set; }
+
+        public bool UseRuleForAllMemberStatesExceptListed { get; set; }
+
+        public string MatchedMemberStates { get; set; }
+
+        public bool UseRuleForAllPersonCategoriesExceptListed { get; set; }
+
+        public string MatchedPersonCategories { get; set; }
+
         public bool IsChargedToClubInternal { get; set; }
 
         public int? MinFlightTimeInSecondsMatchingValue { get; set; }

@@ -213,6 +213,7 @@ namespace FLS.Server.Service.Accounting.Rules
                     flightCrewTypeSelection = _accountingRuleFilter.MatchedFlightCrewTypes;
                 }
 
+                // club member number filtering
                 if (_accountingRuleFilter.UseRuleForAllClubMemberNumbersExceptListed)
                 {
                     if (_accountingRuleFilter.MatchedClubMemberNumbers != null && _accountingRuleFilter.MatchedClubMemberNumbers.Any())
@@ -236,6 +237,90 @@ namespace FLS.Server.Service.Accounting.Rules
 
                     Conditions.Add(new IntersectAny<string>(_accountingRuleFilter.MatchedClubMemberNumbers,
                         personClubs.Select(pc => pc.MemberNumber)));
+                }
+
+                // club member state filtering
+                if (_accountingRuleFilter.UseRuleForAllMemberStatesExceptListed)
+                {
+                    if (_accountingRuleFilter.MatchedMemberStates != null && _accountingRuleFilter.MatchedMemberStates.Any())
+                    {
+                        //there are some excluded member states we have to filter for
+                        var persons = _flight.FlightCrews
+                                            .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                                            .Select(x => x.Person);
+                        var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
+
+                        Conditions.Add(new Inverter(new IntersectAny<Guid>(_accountingRuleFilter.MatchedMemberStates,
+                            personClubs.Select(pc => pc.MemberStateId.GetValueOrDefault()))));
+                    }
+                }
+                else
+                {
+                    var persons = _flight.FlightCrews
+                                        .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                                        .Select(x => x.Person);
+                    var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
+
+                    Conditions.Add(new IntersectAny<Guid>(_accountingRuleFilter.MatchedMemberStates,
+                        personClubs.Select(pc => pc.MemberStateId.GetValueOrDefault())));
+                }
+
+                //// club person category filtering
+                //if (_accountingRuleFilter.UseRuleForAllPersonCategoriesExceptListed)
+                //{
+                //    if (_accountingRuleFilter.MatchedPersonCategories != null && _accountingRuleFilter.MatchedPersonCategories.Any())
+                //    {
+                //        //there are some excluded person category we have to filter for
+                //        var persons = _flight.FlightCrews
+                //                            .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                //                            .Select(x => x.Person);
+                //        var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
+
+                //        Conditions.Add(new Inverter(new IntersectAny<Guid>(_accountingRuleFilter.MatchedPersonCategories,
+                //            personClubs.Select(pc => pc.MemberStateId.GetValueOrDefault()))));
+                //    }
+                //}
+                //else
+                //{
+                //    var persons = _flight.FlightCrews
+                //                        .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                //                        .Select(x => x.Person);
+                //    var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
+
+                //    Conditions.Add(new IntersectAny<Guid>(_accountingRuleFilter.MatchedMemberStates,
+                //        personClubs.Select(pc => pc.MemberStateId.GetValueOrDefault())));
+                //}
+            }
+
+            if (_accountingRuleFilter.UseRuleForAllAircraftsOnHomebaseExceptListed)
+            {
+                if (_accountingRuleFilter.MatchedAircraftHomebaseIds != null && _accountingRuleFilter.MatchedAircraftHomebaseIds.Any())
+                {
+                    if (_flight.Aircraft != null && _flight.Aircraft.HomebaseId.HasValue)
+                    {
+                        Conditions.Add(
+                            new Inverter(new Contains<Guid>(_accountingRuleFilter.MatchedAircraftHomebaseIds,
+                                _flight.Aircraft.HomebaseId.Value)));
+                    }
+                    else
+                    {
+                        Logger.Warn($"Aircraft of flight has no homebase location set. May we account something wrong!");
+                    }
+                }
+            }
+            else
+            {
+                if (_flight.Aircraft != null && _flight.Aircraft.HomebaseId.HasValue)
+                {
+                    Conditions.Add(new Contains<Guid>(_accountingRuleFilter.MatchedAircraftHomebaseIds,
+                        _flight.Aircraft.HomebaseId.Value));
+                }
+                else
+                {
+                    Logger.Warn($"Aircraft of flight has no homebase location set. May we account something wrong!");
+
+                    //add condition which is always false
+                    Conditions.Add(new Equals<bool>(false, true));
                 }
             }
         }

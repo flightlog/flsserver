@@ -17,6 +17,9 @@ namespace FLS.Data.WebApi.Accounting.RuleFilters
             MatchedClubMemberNumbers = new List<string>();
             MatchedFlightCrewTypes = new List<int>();
             MatchedStartTypes = new List<int>();
+            MatchedAircraftsHomebase = new List<string>();
+            MatchedMemberStates = new List<Guid>();
+            MatchedPersonCategories = new List<Guid>();
             UseRuleForAllStartLocationsExceptListed = true;
             UseRuleForAllLdgLocationsExceptListed = true;
             UseRuleForAllFlightCrewTypesExceptListed = true;
@@ -24,6 +27,9 @@ namespace FLS.Data.WebApi.Accounting.RuleFilters
             UseRuleForAllClubMemberNumbersExceptListed = true;
             UseRuleForAllFlightTypesExceptListed = true;
             UseRuleForAllStartTypesExceptListed = true;
+            UseRuleForAllAircraftsOnHomebaseExceptListed = true;
+            UseRuleForAllMemberStatesExceptListed = true;
+            UseRuleForAllPersonCategoriesExceptListed = true;
             MinFlightTimeInSecondsMatchingValue = 0;
             MaxFlightTimeInSecondsMatchingValue = int.MaxValue;
         }
@@ -78,6 +84,17 @@ namespace FLS.Data.WebApi.Accounting.RuleFilters
 
         public int? AccountingUnitTypeId { get; set; }
 
+        public bool UseRuleForAllAircraftsOnHomebaseExceptListed { get; set; }
+
+        public List<string> MatchedAircraftsHomebase { get; set; }
+
+        public bool UseRuleForAllMemberStatesExceptListed { get; set; }
+
+        public List<Guid> MatchedMemberStates { get; set; }
+
+        public bool UseRuleForAllPersonCategoriesExceptListed { get; set; }
+
+        public List<Guid> MatchedPersonCategories { get; set; }
 
         #region Recipient rule part
         public RecipientDetails RecipientTarget { get; set; }

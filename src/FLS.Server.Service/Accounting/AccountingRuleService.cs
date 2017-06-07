@@ -191,6 +191,7 @@ namespace FLS.Server.Service.Accounting
         {
             filter.MatchedStartLocationIds = new List<Guid>();
             filter.MatchedLdgLocationIds = new List<Guid>();
+            filter.MatchedAircraftHomebaseIds = new List<Guid>();
 
             foreach (var icaoCode in filter.MatchedLdgLocations)
             {
@@ -217,6 +218,20 @@ namespace FLS.Server.Service.Accounting
                 else
                 {
                     filter.MatchedStartLocationIds.Add(location.LocationId);
+                }
+            }
+
+            foreach (var icaoCode in filter.MatchedAircraftsHomebase)
+            {
+                var location = locationListItems.FirstOrDefault(q => q.IcaoCode != null && q.IcaoCode.ToUpper() == icaoCode.ToUpper());
+
+                if (location == null)
+                {
+                    Logger.Warn($"Location ICAO code {icaoCode} for accounting rule {filter.RuleFilterName} not found!");
+                }
+                else
+                {
+                    filter.MatchedAircraftHomebaseIds.Add(location.LocationId);
                 }
             }
 
