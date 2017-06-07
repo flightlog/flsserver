@@ -43,6 +43,8 @@ namespace FLS.Data.WebApi.User
 
         public bool ForcePasswordChangeNextLogon { get; set; }
 
+        public bool EmailConfirmed { get; set; }
+
         public override Guid Id
         {
             get { return UserId; }

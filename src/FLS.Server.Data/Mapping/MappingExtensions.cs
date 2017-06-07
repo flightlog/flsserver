@@ -3453,6 +3453,7 @@ namespace FLS.Server.Data.Mapping
             details.ForcePasswordChangeNextLogon = entity.ForcePasswordChangeNextLogon;
 
             details.AccountState = entity.AccountState;
+            details.EmailConfirmed = entity.EmailConfirmed;
 
             foreach (var userRole in entity.UserRoles)
             {
