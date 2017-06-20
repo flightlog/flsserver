@@ -1002,7 +1002,7 @@ namespace FLS.Server.Data
                 while (innerException != null)
                 {
                     message += $" InnerException: {innerException.Message}";
-                    innerException = ex.InnerException;
+                    innerException = innerException.InnerException;
                 }
 
                 Logger.Error(ex, $"Error while trying to save entity changes: {message}");
