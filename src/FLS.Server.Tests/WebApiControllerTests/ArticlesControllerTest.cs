@@ -57,7 +57,24 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var responseDetails = ConvertToModel<ArticleDetails>(response);
             Assert.IsTrue(responseDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", responseDetails));
         }
-        
+
+        [TestMethod]
+        [TestCategory("WebApi")]
+        public void InsertDuplicateArticleDetailsWebApiTest()
+        {
+            var article = new ArticleDetails();
+            article.ArticleNumber = "2481-S";
+            article.ArticleName = "Segelflugminuten Schulung DG1001M HB-2481";
+            article.ArticleInfo = "";
+            article.Description = "";
+            article.IsActive = true;
+            Assert.AreEqual(article.Id, Guid.Empty);
+
+            var response = PostAsync(article, "/api/v1/articles").Result;
+
+            Assert.IsFalse(response.IsSuccessStatusCode, string.Format("Error must be returned: {0}", response.StatusCode));
+        }
+
         [TestMethod]
         [TestCategory("WebApi")]
         public void UpdateArticleDetailsWebApiTest()
