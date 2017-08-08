@@ -13,5 +13,10 @@ namespace FLS.Common.Exceptions
             : base(string.Format("{0} with Id: {1} not found!", entityName, id))
         {
         }
+
+        public EntityNotFoundException(String entityName, string key)
+            : base(string.Format("{0} with Key: {1} not found!", entityName, key))
+        {
+        }
     }
 }

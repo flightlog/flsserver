@@ -26,7 +26,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
             if (ruleBasedDelivery.DeliveryItems.Any(x => x.ArticleNumber == AccountingRuleFilter.ArticleTarget.ArticleNumber))
             {
                 var line = ruleBasedDelivery.DeliveryItems.First(x => x.ArticleNumber == AccountingRuleFilter.ArticleTarget.ArticleNumber);
-                line.Quantity++;
+                line.Quantity += Flight.NrOfLdgs.GetValueOrDefault(1);
 
                 Logger.Info($"Delivery line for VSF fee already exists. Add quantity to the existing line! New line values: {line}");
             }
@@ -35,7 +35,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 var line = new DeliveryItemDetails();
                 line.Position = ruleBasedDelivery.DeliveryItems.Count + 1;
                 line.ArticleNumber = AccountingRuleFilter.ArticleTarget.ArticleNumber;
-                line.Quantity = 1.0m;
+                line.Quantity = Flight.NrOfLdgs.GetValueOrDefault(1);
                 line.UnitType = GetUnitTypeString();
                 line.ItemText = $"{AccountingRuleFilter.ArticleTarget.DeliveryLineText}";
 

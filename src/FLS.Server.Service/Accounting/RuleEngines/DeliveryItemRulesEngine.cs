@@ -144,6 +144,18 @@ namespace FLS.Server.Service.Accounting.RuleEngines
 
             Logger.Trace($"Run {rules.Count} rules of LandingTaxRuleFilter");
             _ruleBasedDelivery.ApplyRules(rules);
+
+            // landing taxes for landings on start location 
+            rules.Clear();
+
+            foreach (var filter in _accountingRuleFilters.Where(x => x.AccountingRuleFilterTypeId == (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter))
+            {
+                var rule = new LandingTaxOnStartLocationRule(_flight, filter);
+                rules.Add(rule);
+            }
+
+            Logger.Trace($"Run {rules.Count} rules of LandingTaxRuleFilter for landings on start location");
+            _ruleBasedDelivery.ApplyRules(rules);
             #endregion Landing taxes
 
             #region VSF fee
@@ -156,6 +168,18 @@ namespace FLS.Server.Service.Accounting.RuleEngines
             }
 
             Logger.Trace($"Run {rules.Count} rules of VsfFeeRuleFilter");
+            _ruleBasedDelivery.ApplyRules(rules);
+
+            // VSF fee for landings on start location
+            rules.Clear();
+
+            foreach (var filter in _accountingRuleFilters.Where(x => x.AccountingRuleFilterTypeId == (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter))
+            {
+                var rule = new VsfFeeOnStartLocationRule(_flight, filter);
+                rules.Add(rule);
+            }
+
+            Logger.Trace($"Run {rules.Count} rules of VsfFeeRuleFilter for landings on start location");
             _ruleBasedDelivery.ApplyRules(rules);
             #endregion VSF fee
 

@@ -40,6 +40,8 @@ using ElevationUnitType = FLS.Server.Data.DbEntities.ElevationUnitType;
 using LengthUnitType = FLS.Server.Data.DbEntities.LengthUnitType;
 using LocationType = FLS.Server.Data.DbEntities.LocationType;
 using System.Threading;
+using FLS.Common.Exceptions;
+using FLS.Common.Validators;
 using FLS.Server.Service.Accounting;
 using FLS.Server.Service.Exporting;
 
@@ -60,14 +62,8 @@ namespace FLS.Server.Tests
         ///</summary>
         public TestContext TestContext
         {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
+            get { return testContextInstance; }
+            set { testContextInstance = value; }
         }
 
         public IUnityContainer UnityContainer { get; protected set; }
@@ -104,7 +100,7 @@ namespace FLS.Server.Tests
             //UnityContainer = UnityConfig.GetEmptyContainer();
             UnityContainer = new UnityContainer();
             RegisterTypes(UnityContainer);
-            
+
         }
 
         public static void RegisterTypes(IUnityContainer container)
@@ -115,7 +111,8 @@ namespace FLS.Server.Tests
             //container.RegisterType<CheckModelForNullAttribute>();
             //container.RegisterType<UnhandledExceptionFilterAttribute>();
 
-            container.RegisterType<IDataProtectionProvider, MachineKeyDataProtectionProvider>(new HierarchicalLifetimeManager());
+            container.RegisterType<IDataProtectionProvider, MachineKeyDataProtectionProvider>(
+                new HierarchicalLifetimeManager());
 
             container.RegisterType<IIdentityMessageService, IdentityEmailService>();
             container.RegisterType<IIdentityService, IdentityService>(new HierarchicalLifetimeManager());
@@ -187,15 +184,17 @@ namespace FLS.Server.Tests
         protected void SetCurrentUser(string userName)
         {
             var user = _userStoreService.FindByNameAsync(userName).Result;
+            Assert.IsNotNull(user, $"User {userName} was not found in users table!");
             IdentityService.SetUser(user);
         }
-        
+
         protected User CurrentIdentityUser
         {
             get { return IdentityService.CurrentAuthenticatedFLSUser; }
         }
 
         #region Aircraft
+
         public Aircraft GetFirstAircraft()
         {
             using (var context = DataAccessService.CreateDbContext())
@@ -208,7 +207,9 @@ namespace FLS.Server.Tests
         {
             using (var context = DataAccessService.CreateDbContext())
             {
-                return context.Aircrafts.FirstOrDefault(a => a.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.Glider);
+                return
+                    context.Aircrafts.FirstOrDefault(
+                        a => a.AircraftTypeId == (int) FLS.Data.WebApi.Aircraft.AircraftType.Glider);
             }
         }
 
@@ -222,7 +223,8 @@ namespace FLS.Server.Tests
                     .Include("AircraftOwnerPerson")
                     .Include("AircraftOwnerClub")
                     .Include("AircraftType")
-                    .FirstOrDefault(a => a.Immatriculation.Replace("-", "").ToUpper() == immatriculation.Replace("-", "").ToUpper());
+                    .FirstOrDefault(
+                        a => a.Immatriculation.Replace("-", "").ToUpper() == immatriculation.Replace("-", "").ToUpper());
 
                 if (aircraft == null)
                 {
@@ -231,12 +233,52 @@ namespace FLS.Server.Tests
                     AircraftService.InsertAircraftDetails(aircraftDetails);
 
                     aircraft = context.Aircrafts
+                        .Include(Data.Resources.Constants.AircraftAircraftStates)
+                        .Include(Constants.AircraftAircraftStatesAircraftStateRelation)
+                        .Include("AircraftOwnerPerson")
+                        .Include("AircraftOwnerClub")
+                        .Include("AircraftType")
+                        .FirstOrDefault(
+                            a =>
+                                a.Immatriculation.Replace("-", "").ToUpper() ==
+                                immatriculation.Replace("-", "").ToUpper());
+                }
+
+                return aircraft;
+            }
+        }
+
+        public Aircraft GetMotorAircraft(string immatriculation, int flightOperatingCounterUnitTypeId = 1, int engineOperatingCounterUnitTypeId = 1)
+        {
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                var aircraft = context.Aircrafts
                     .Include(Data.Resources.Constants.AircraftAircraftStates)
                     .Include(Constants.AircraftAircraftStatesAircraftStateRelation)
                     .Include("AircraftOwnerPerson")
                     .Include("AircraftOwnerClub")
                     .Include("AircraftType")
-                    .FirstOrDefault(a => a.Immatriculation.Replace("-", "").ToUpper() == immatriculation.Replace("-", "").ToUpper());
+                    .FirstOrDefault(
+                        a => a.Immatriculation.Replace("-", "").ToUpper() == immatriculation.Replace("-", "").ToUpper());
+
+                if (aircraft == null)
+                {
+                    var aircraftDetails = CreateMotorAircraftDetails();
+                    aircraftDetails.Immatriculation = immatriculation;
+                    aircraftDetails.FlightOperatingCounterUnitTypeId = flightOperatingCounterUnitTypeId;
+                    aircraftDetails.EngineOperatingCounterUnitTypeId = engineOperatingCounterUnitTypeId;
+                    AircraftService.InsertAircraftDetails(aircraftDetails);
+
+                    aircraft = context.Aircrafts
+                        .Include(Data.Resources.Constants.AircraftAircraftStates)
+                        .Include(Constants.AircraftAircraftStatesAircraftStateRelation)
+                        .Include("AircraftOwnerPerson")
+                        .Include("AircraftOwnerClub")
+                        .Include("AircraftType")
+                        .FirstOrDefault(
+                            a =>
+                                a.Immatriculation.Replace("-", "").ToUpper() ==
+                                immatriculation.Replace("-", "").ToUpper());
                 }
 
                 return aircraft;
@@ -247,7 +289,9 @@ namespace FLS.Server.Tests
         {
             using (var context = DataAccessService.CreateDbContext())
             {
-                return context.Aircrafts.FirstOrDefault(a => a.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.Glider && a.NrOfSeats == 1);
+                return
+                    context.Aircrafts.FirstOrDefault(
+                        a => a.AircraftTypeId == (int) FLS.Data.WebApi.Aircraft.AircraftType.Glider && a.NrOfSeats == 1);
             }
         }
 
@@ -255,7 +299,9 @@ namespace FLS.Server.Tests
         {
             using (var context = DataAccessService.CreateDbContext())
             {
-                return context.Aircrafts.FirstOrDefault(a => a.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.Glider && a.NrOfSeats == 2);
+                return
+                    context.Aircrafts.FirstOrDefault(
+                        a => a.AircraftTypeId == (int) FLS.Data.WebApi.Aircraft.AircraftType.Glider && a.NrOfSeats == 2);
             }
         }
 
@@ -263,11 +309,16 @@ namespace FLS.Server.Tests
         {
             using (var context = DataAccessService.CreateDbContext())
             {
-                return context.Aircrafts.FirstOrDefault(a => a.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.MotorAircraft && a.IsTowingAircraft);
+                return
+                    context.Aircrafts.FirstOrDefault(
+                        a =>
+                            a.AircraftTypeId == (int) FLS.Data.WebApi.Aircraft.AircraftType.MotorAircraft &&
+                            a.IsTowingAircraft);
             }
         }
 
-        public AircraftDetails CreateGliderAircraftDetails(int nrOfSeats, FLS.Data.WebApi.Aircraft.AircraftType aircraftType = FLS.Data.WebApi.Aircraft.AircraftType.Glider,
+        public AircraftDetails CreateGliderAircraftDetails(int nrOfSeats,
+            FLS.Data.WebApi.Aircraft.AircraftType aircraftType = FLS.Data.WebApi.Aircraft.AircraftType.Glider,
             bool isTowingOrWinchRequired = true, bool isTowingstartAllowed = true, bool isWinchstartAllowed = true)
         {
             Assert.IsTrue(nrOfSeats > 0);
@@ -275,7 +326,7 @@ namespace FLS.Server.Tests
             var aircraftDetails = new AircraftDetails
             {
                 AircraftModel = "Test-Aircraft-Model",
-                AircraftType = (int)aircraftType,
+                AircraftType = (int) aircraftType,
                 Comment = "Test-Glider " + DateTime.Now.ToShortTimeString(),
                 CompetitionSign = GetCompetitionSign(),
                 DaecIndex = 99,
@@ -293,7 +344,8 @@ namespace FLS.Server.Tests
 
         private string GetCompetitionSign()
         {
-            Hydrator<CompetitionSignWrapper> hydrator = new Hydrator<CompetitionSignWrapper>().WithCompanyName(p => p.CompetitionSign);
+            Hydrator<CompetitionSignWrapper> hydrator =
+                new Hydrator<CompetitionSignWrapper>().WithCompanyName(p => p.CompetitionSign);
             var competitionSign = hydrator.Generate();
 
             competitionSign.CompetitionSign = competitionSign.CompetitionSign.Replace(" ", "");
@@ -314,7 +366,7 @@ namespace FLS.Server.Tests
             var aircraftDetails = new AircraftDetails
             {
                 AircraftModel = "Test-Motor-Aircraft-Model",
-                AircraftType = (int)FLS.Data.WebApi.Aircraft.AircraftType.MotorAircraft,
+                AircraftType = (int) FLS.Data.WebApi.Aircraft.AircraftType.MotorAircraft,
                 Comment = "Test-Motor-Aircraft " + DateTime.Now.ToShortTimeString(),
                 FLARMId = "ID" + DateTime.Now.Ticks,
                 Immatriculation = GetAvailableMotorImmatriculation(),
@@ -334,7 +386,7 @@ namespace FLS.Server.Tests
             var aircraftDetails = new AircraftDetails
             {
                 AircraftModel = "Test-Towing-Aircraft-Model",
-                AircraftType = (int)AircraftType.MotorAircraft,
+                AircraftType = (int) AircraftType.MotorAircraft,
                 Comment = "Test-Towing " + DateTime.Now.ToShortTimeString(),
                 FLARMId = "ID" + DateTime.Now.Ticks,
                 Immatriculation = GetAvailableMotorImmatriculation(),
@@ -387,9 +439,11 @@ namespace FLS.Server.Tests
 
             return immatriculation;
         }
+
         #endregion Aircraft
 
         #region AircraftReservation
+
         public AircraftReservationType GetFirstAircraftReservationType()
         {
             using (var context = DataAccessService.CreateDbContext())
@@ -413,21 +467,29 @@ namespace FLS.Server.Tests
 
             return reservation;
         }
-        
+
         #endregion AircraftReservation
 
         #region Club
+
         protected FlightType GetFlightType(string flightCode)
         {
             using (var context = DataAccessService.CreateDbContext())
             {
                 var clubId = CurrentIdentityUser.ClubId;
-                return
+                var flightType = 
                     context.FlightTypes.FirstOrDefault(
                         c => c.ClubId == clubId && c.FlightCode.ToLower() == flightCode.ToLower());
+
+                if (flightType == null)
+                {
+                    throw new EntityNotFoundException("FlightType", $"FlightCode = {flightCode}");
+                }
+
+                return flightType;
             }
         }
-        
+
 
         public ClubDetails CreateClubDetails()
         {
@@ -440,7 +502,7 @@ namespace FLS.Server.Tests
             club.DefaultStartType = null;
             club.DefaultGliderFlightTypeId = null; //can only be null during creation
             club.DefaultMotorFlightTypeId = null; //can only be null during creation
-            club.DefaultTowFlightTypeId = null;    //can only be null during creation
+            club.DefaultTowFlightTypeId = null; //can only be null during creation
 
             using (var context = DataAccessService.CreateDbContext())
             {
@@ -457,23 +519,23 @@ namespace FLS.Server.Tests
 
             return club;
         }
-        
+
         public FlightType GetFirstSoloGliderFlightType(Guid clubId)
         {
             using (var context = DataAccessService.CreateDbContext())
             {
                 return context.FlightTypes.FirstOrDefault(c => c.ClubId == clubId && c.IsForGliderFlights
-                    && c.IsSoloFlight);
+                                                               && c.IsSoloFlight);
             }
         }
-        
+
 
         public FlightType GetFirstInstructorRequiredGliderFlightType(Guid clubId)
         {
             using (var context = DataAccessService.CreateDbContext())
             {
                 return context.FlightTypes.FirstOrDefault(c => c.ClubId == clubId && c.IsForGliderFlights
-                    && c.InstructorRequired);
+                                                               && c.InstructorRequired);
             }
         }
 
@@ -482,14 +544,15 @@ namespace FLS.Server.Tests
             using (var context = DataAccessService.CreateDbContext())
             {
                 return context.FlightTypes.FirstOrDefault(c => c.ClubId == clubId
-                    && c.IsForTowFlights
-                    && c.InstructorRequired == instructorRequired);
+                                                               && c.IsForTowFlights
+                                                               && c.InstructorRequired == instructorRequired);
             }
         }
-        
+
         #endregion Club
 
         #region Flight
+
         public List<StartType> GetStartTypes()
         {
             using (var context = DataAccessService.CreateDbContext())
@@ -516,7 +579,7 @@ namespace FLS.Server.Tests
             gliderData.AircraftId = GetFirstGlider().AircraftId;
             gliderData.PilotPersonId = GetFirstGliderPilotPerson(clubId).PersonId;
             flightDetails.GliderFlightDetailsData = gliderData;
-            flightDetails.StartType = (int)FLS.Server.Data.Enums.AircraftStartType.TowingByAircraft;
+            flightDetails.StartType = (int) FLS.Server.Data.Enums.AircraftStartType.TowingByAircraft;
             return flightDetails;
         }
 
@@ -527,10 +590,10 @@ namespace FLS.Server.Tests
             gliderData.AircraftId = GetFirstOneSeatGlider().AircraftId;
             gliderData.PilotPersonId = GetFirstGliderPilotPerson(clubId).PersonId;
             flightDetails.GliderFlightDetailsData = gliderData;
-            flightDetails.StartType = (int)FLS.Server.Data.Enums.AircraftStartType.TowingByAircraft;
+            flightDetails.StartType = (int) FLS.Server.Data.Enums.AircraftStartType.TowingByAircraft;
             return flightDetails;
         }
-        
+
         public Flight CreateGliderFlight(Guid clubId, DateTime startTime)
         {
             var flightDetails = new FlightDetails();
@@ -548,8 +611,9 @@ namespace FLS.Server.Tests
 
             return flight;
         }
-        
-        public GliderFlightDetailsData CreateSchoolGliderFlightDetailsData(Guid clubId, string immatriculation, DateTime startTime, int flightDurationInMinutes = 90, string locationIcaoCode = "LSZK")
+
+        public GliderFlightDetailsData CreateSchoolGliderFlightDetailsData(Guid clubId, string immatriculation,
+            DateTime startTime, int flightDurationInMinutes = 90, string locationIcaoCode = "LSZK")
         {
             Aircraft glider = null;
 
@@ -597,7 +661,8 @@ namespace FLS.Server.Tests
             return gliderFlightDetailsData;
         }
 
-        public TowFlightDetailsData CreateTowFlightDetailsData(Guid clubId, string immatriculation, DateTime startTime, int flightDurationInMinutes = 12, string locationIcaoCode = "LSZK")
+        public TowFlightDetailsData CreateTowFlightDetailsData(Guid clubId, string immatriculation, DateTime startTime,
+            int flightDurationInMinutes = 12, string locationIcaoCode = "LSZK")
         {
             Aircraft towingAircraft = null;
 
@@ -669,10 +734,10 @@ namespace FLS.Server.Tests
             motorFlightData.StartLocationId = GetFirstLocation().LocationId;
             motorFlightData.LdgLocationId = motorFlightData.StartLocationId;
             flightDetails.MotorFlightDetailsData = motorFlightData;
-            flightDetails.StartType = (int)FLS.Server.Data.Enums.AircraftStartType.MotorFlightStart;
+            flightDetails.StartType = (int) FLS.Server.Data.Enums.AircraftStartType.MotorFlightStart;
             return flightDetails;
         }
-        
+
         protected void SetFlightAsLocked(FlightDetails flightDetails)
         {
             Assert.IsTrue(flightDetails.FlightId.IsValid());
@@ -684,7 +749,7 @@ namespace FLS.Server.Tests
             using (var context = DataAccessService.CreateDbContext())
             {
                 context.Flights.Attach(flight);
-                flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked;
+                flight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked;
 
                 if (context.ChangeTracker.HasChanges())
                 {
@@ -692,6 +757,7 @@ namespace FLS.Server.Tests
                 }
             }
         }
+
         #endregion Flight
 
         #region Location
@@ -752,7 +818,8 @@ namespace FLS.Server.Tests
             }
         }
 
-        public Location CreateLocation(Country country, LocationType locationType, ElevationUnitType elevationUnitType = null, LengthUnitType lengthUnitType = null)
+        public Location CreateLocation(Country country, LocationType locationType,
+            ElevationUnitType elevationUnitType = null, LengthUnitType lengthUnitType = null)
         {
             if (country == null)
             {
@@ -818,7 +885,7 @@ namespace FLS.Server.Tests
             entity.LocationTypeId = locationType.LocationTypeId;
             return entity;
         }
-        
+
         public Location GetLocation(string locationIcaoCode)
         {
             using (var context = DataAccessService.CreateDbContext())
@@ -853,9 +920,11 @@ namespace FLS.Server.Tests
                 return location;
             }
         }
+
         #endregion Location
 
         #region Person
+
         protected Person GetPerson(string displayname, string countryCode = "CH", bool createIfNotExists = true)
         {
             using (var context = DataAccessService.CreateDbContext())
@@ -865,9 +934,29 @@ namespace FLS.Server.Tests
                 var firstname = displayname.Split(' ')[1];
                 var lastname = displayname.Split(' ')[0];
 
-                var person = context.Persons.FirstOrDefault(p => p.Lastname.ToLower().Contains(lastname.ToLower())
+                var memberNumber = string.Empty;
+
+                try
+                {
+                    if (displayname.Contains("("))
+                        memberNumber = displayname.Split('(')[1].TrimEnd(')');
+                }
+                catch (Exception)
+                {
+                    
+                }
+                
+
+                var persons = context.Persons.Where(p => p.Lastname.ToLower().Contains(lastname.ToLower())
                         && p.Firstname.ToLower().Contains(firstname.ToLower())
                         && p.CountryId == country.CountryId);
+
+                if (string.IsNullOrWhiteSpace(memberNumber) == false)
+                {
+                    persons = persons.Where(p => p.PersonClubs.Any(x => x.MemberNumber == memberNumber && x.ClubId == clubId));
+                }
+
+                var person = persons.FirstOrDefault();
 
                 if (person == null)
                 {
@@ -877,6 +966,8 @@ namespace FLS.Server.Tests
                     personDetails.Firstname = firstname;
                     personDetails.Lastname = lastname;
                     personDetails.CountryId = country.CountryId;
+                    personDetails.ClubRelatedPersonDetails = new ClubRelatedPersonDetails();
+                    personDetails.ClubRelatedPersonDetails.MemberNumber = memberNumber;
                     person = personDetails.ToPerson(clubId);
                     context.Persons.Add(person);
                     context.SaveChanges();

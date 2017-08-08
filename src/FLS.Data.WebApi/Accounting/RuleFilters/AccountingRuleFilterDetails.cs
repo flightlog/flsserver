@@ -32,6 +32,8 @@ namespace FLS.Data.WebApi.Accounting.RuleFilters
             UseRuleForAllPersonCategoriesExceptListed = true;
             MinFlightTimeInSecondsMatchingValue = 0;
             MaxFlightTimeInSecondsMatchingValue = int.MaxValue;
+            MinEngineTimeInSecondsMatchingValue = 0;
+            MaxEngineTimeInSecondsMatchingValue = int.MaxValue;
         }
 
         public Guid AccountingRuleFilterId { get; set; }

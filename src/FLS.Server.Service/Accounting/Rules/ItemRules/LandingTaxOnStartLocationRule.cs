@@ -10,12 +10,12 @@ using System;
 
 namespace FLS.Server.Service.Accounting.Rules.ItemRules
 {
-    internal class LandingTaxRule : BaseAccountingRule
+    internal class LandingTaxOnStartLocationRule : BaseAccountingRule
     {
         private readonly long _minFlightTimeInSecondsMatchingValue;
         private readonly long _maxFlightTimeInSecondsMatchingValue;
 
-        internal LandingTaxRule(Flight flight, RuleBasedAccountingRuleFilterDetails landingTaxAccountingRuleFilter)
+        internal LandingTaxOnStartLocationRule(Flight flight, RuleBasedAccountingRuleFilterDetails landingTaxAccountingRuleFilter)
             : base(flight, landingTaxAccountingRuleFilter)
         {
             _minFlightTimeInSecondsMatchingValue = landingTaxAccountingRuleFilter.MinFlightTimeInSecondsMatchingValue ?? 0;
@@ -44,12 +44,55 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
             Conditions.Add(new Between<long>(Convert.ToInt64(Flight.FlightDurationZeroBased.TotalSeconds), _minFlightTimeInSecondsMatchingValue, _maxFlightTimeInSecondsMatchingValue, includeMinValue: false, includeMaxValue: true));
         }
 
+        /// <summary>
+        /// Overrides the initialisation of landing location conditions for nr of landings on start location
+        /// </summary>
+        /// <param name="ruleBasedDelivery"></param>
+        protected override void InitializeLdgLocationConditions(RuleBasedDeliveryDetails ruleBasedDelivery)
+        {
+            if (Flight.NrOfLdgsOnStartLocation.GetValueOrDefault(0) <= 0)
+            {
+                // no landings on start location set, disable rule (rule must not be applied)
+                Conditions.Add(new Equals<bool>(false, true));
+                return;
+            }
+
+            if (AccountingRuleFilter.UseRuleForAllLdgLocationsExceptListed)
+            {
+                if (AccountingRuleFilter.MatchedLdgLocationIds != null && AccountingRuleFilter.MatchedLdgLocationIds.Any())
+                {
+                    if (Flight.StartLocationId.HasValue == false)
+                    {
+                        Logger.Warn($"Flight has no start location set. May we account something wrong!");
+                    }
+                    else
+                    {
+                        Conditions.Add(
+                            new Inverter(new Contains<Guid>(AccountingRuleFilter.MatchedLdgLocationIds,
+                                Flight.StartLocationId.Value)));
+                    }
+                }
+            }
+            else
+            {
+                if (Flight.StartLocationId.HasValue == false)
+                {
+                    Logger.Warn($"Flight has no start location set. May we account something wrong!");
+                }
+                else
+                {
+                    Conditions.Add(new Contains<Guid>(AccountingRuleFilter.MatchedLdgLocationIds,
+                        Flight.StartLocationId.Value));
+                }
+            }
+        }
+
         public override RuleBasedDeliveryDetails Apply(RuleBasedDeliveryDetails ruleBasedDelivery)
         {
             if (ruleBasedDelivery.DeliveryItems.Any(x => x.ArticleNumber == AccountingRuleFilter.ArticleTarget.ArticleNumber))
             {
                 var line = ruleBasedDelivery.DeliveryItems.First(x => x.ArticleNumber == AccountingRuleFilter.ArticleTarget.ArticleNumber);
-                line.Quantity += Flight.NrOfLdgs.GetValueOrDefault(1);
+                line.Quantity += Flight.NrOfLdgsOnStartLocation.GetValueOrDefault(1);
 
                 Logger.Warn($"Delivery line for landing tax already exists. Add quantity to the existing line! New line value: {line}");
             }
@@ -58,7 +101,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 var line = new DeliveryItemDetails();
                 line.Position = ruleBasedDelivery.DeliveryItems.Count + 1;
                 line.ArticleNumber = AccountingRuleFilter.ArticleTarget.ArticleNumber;
-                line.Quantity = Flight.NrOfLdgs.GetValueOrDefault(1);
+                line.Quantity = Flight.NrOfLdgsOnStartLocation.GetValueOrDefault(1);
                 line.UnitType = GetUnitTypeString();
                 line.ItemText = $"{AccountingRuleFilter.ArticleTarget.DeliveryLineText}";
 

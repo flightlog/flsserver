@@ -12,188 +12,77 @@ namespace FLS.Server.Service.Accounting.Rules
 {
     internal abstract class BaseAccountingRule : BaseRule<RuleBasedDeliveryDetails>
     {
-        private readonly Flight _flight;
-        private readonly RuleBasedAccountingRuleFilterDetails _accountingRuleFilter;
+        protected Flight Flight { get; }
+        protected RuleBasedAccountingRuleFilterDetails AccountingRuleFilter { get; }
 
-        protected Flight Flight { get { return _flight; } }
-        protected RuleBasedAccountingRuleFilterDetails AccountingRuleFilter { get { return _accountingRuleFilter; } }
         internal BaseAccountingRule(Flight flight, RuleBasedAccountingRuleFilterDetails ruleBasedAccountingRuleFilter)
         {
-            _flight = flight;
-            _accountingRuleFilter = ruleBasedAccountingRuleFilter;
+            Flight = flight;
+            AccountingRuleFilter = ruleBasedAccountingRuleFilter;
             Logger = LogManager.GetLogger("FLS.Server.Service.Accounting.Rules.BaseAccountingRule");
         }
 
         public override void Initialize(RuleBasedDeliveryDetails ruleBasedDelivery)
         {
-            ICondition condition = null;
+            InitializeFlightAircraftTypeConditions(ruleBasedDelivery);
 
-            if (AccountingRuleFilter.IsRuleForGliderFlights)
-            {
-                condition = new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.GliderFlight);
-            }
-            else
-            {
-                condition = new Inverter(new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.GliderFlight));
-            }
+            InitializeAircraftConditions(ruleBasedDelivery);
 
-            if (AccountingRuleFilter.IsRuleForTowingFlights)
-            {
-                condition = new Or(condition, new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.TowFlight));
-            }
-            else
-            {
-                condition = new And(condition, new Inverter(new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.TowFlight)));
-            }
+            //Conditions.Add(new Between<double>(ruleBasedDelivery.ActiveFlightTime, AccountingRuleFilter.MinFlightTimeMatchingValue, AccountingRuleFilter.MaxFlightTimeMatchingValue, includeMinValue:false, includeMaxValue:true));
 
-            if (AccountingRuleFilter.IsRuleForMotorFlights)
-            {
-                condition = new Or(condition, new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.MotorFlight));
-            }
-            else
-            {
-                condition = new And(condition, new Inverter(new Equals<int>(_flight.FlightAircraftType, (int)FlightAircraftTypeValue.MotorFlight)));
-            }
+            InitializeFlightTypeConditions(ruleBasedDelivery);
 
-            Conditions.Add(condition);
+            InitializeStartLocationConditions(ruleBasedDelivery);
 
-            if (_accountingRuleFilter.UseRuleForAllAircraftsExceptListed)
+            InitializeLdgLocationConditions(ruleBasedDelivery);
+
+            InitializeFlightCrewConditions(ruleBasedDelivery);
+
+            InitializeAircraftHomebaseConditions(ruleBasedDelivery);
+        }
+
+        protected virtual void InitializeAircraftHomebaseConditions(RuleBasedDeliveryDetails ruleBasedDelivery)
+        {
+            if (AccountingRuleFilter.UseRuleForAllAircraftsOnHomebaseExceptListed)
             {
-                if (_accountingRuleFilter.MatchedAircraftIds != null && _accountingRuleFilter.MatchedAircraftIds.Any())
+                if (AccountingRuleFilter.MatchedAircraftHomebaseIds != null &&
+                    AccountingRuleFilter.MatchedAircraftHomebaseIds.Any())
                 {
-                    Conditions.Add(new Inverter(new Contains<Guid>(_accountingRuleFilter.MatchedAircraftIds, _flight.AircraftId)));
-                }
-            }
-            else
-            {
-                Conditions.Add(new Contains<Guid>(_accountingRuleFilter.MatchedAircraftIds, _flight.AircraftId));
-            }
-
-            if (_accountingRuleFilter.UseRuleForAllStartTypesExceptListed)
-            {
-                if (_accountingRuleFilter.MatchedStartTypes != null && _accountingRuleFilter.MatchedStartTypes.Any())
-                {
-                    Conditions.Add(new Inverter(new Contains<int>(_accountingRuleFilter.MatchedStartTypes, _flight.StartTypeId.GetValueOrDefault())));
-                }
-            }
-            else
-            {
-                Conditions.Add(new Contains<int>(_accountingRuleFilter.MatchedStartTypes, _flight.StartTypeId.GetValueOrDefault()));
-            }
-
-            //Conditions.Add(new Between<double>(ruleBasedDelivery.ActiveFlightTime, _accountingRuleFilter.MinFlightTimeMatchingValue, _accountingRuleFilter.MaxFlightTimeMatchingValue, includeMinValue:false, includeMaxValue:true));
-
-            if (_accountingRuleFilter.UseRuleForAllFlightTypesExceptListed)
-            {
-                if (_accountingRuleFilter.MatchedFlightTypeCodes != null && _accountingRuleFilter.MatchedFlightTypeCodes.Any())
-                {
-                    condition = null;
-
-                    if (_accountingRuleFilter.ExtendMatchingFlightTypeCodesToGliderAndTowFlight)
+                    if (Flight.Aircraft != null && Flight.Aircraft.HomebaseId.HasValue)
                     {
-                        foreach (var towedFlight in _flight.TowedFlights)
-                        {
-                            condition = new Or(condition,
-                                new Contains<string>(_accountingRuleFilter.MatchedFlightTypeCodes,
-                                    towedFlight.FlightType.FlightCode));
-                        }
-
-                        if (_flight.TowFlight != null)
-                        {
-                            condition = new Or(condition,
-                                new Contains<string>(_accountingRuleFilter.MatchedFlightTypeCodes,
-                                    _flight.TowFlight.FlightType.FlightCode));
-                        }
-                    }
-
-                    Conditions.Add(new Inverter(new Or(condition, new Contains<string>(_accountingRuleFilter.MatchedFlightTypeCodes, _flight.FlightType.FlightCode))));
-                }
-            }
-            else
-            {
-                condition = null;
-
-                if (_accountingRuleFilter.ExtendMatchingFlightTypeCodesToGliderAndTowFlight)
-                {
-                    foreach (var towedFlight in _flight.TowedFlights)
-                    {
-                        condition = new Or(condition,
-                            new Contains<string>(_accountingRuleFilter.MatchedFlightTypeCodes,
-                                towedFlight.FlightType.FlightCode));
-                    }
-
-                    if (_flight.TowFlight != null)
-                    {
-                        condition = new Or(condition,
-                            new Contains<string>(_accountingRuleFilter.MatchedFlightTypeCodes,
-                                _flight.TowFlight.FlightType.FlightCode));
-                    }
-                }
-
-                Conditions.Add(new Or(condition, new Contains<string>(_accountingRuleFilter.MatchedFlightTypeCodes, _flight.FlightType.FlightCode)));
-            }
-
-            if (_accountingRuleFilter.UseRuleForAllStartLocationsExceptListed)
-            {
-                if (_accountingRuleFilter.MatchedLdgLocationIds != null && _accountingRuleFilter.MatchedLdgLocationIds.Any())
-                {
-                    if (_flight.StartLocationId.HasValue == false)
-                    {
-                        Logger.Warn($"Flight has no start location set. May we account something wrong!");
+                        Conditions.Add(
+                            new Inverter(new Contains<Guid>(AccountingRuleFilter.MatchedAircraftHomebaseIds,
+                                Flight.Aircraft.HomebaseId.Value)));
                     }
                     else
                     {
-                        Conditions.Add(
-                            new Inverter(new Contains<Guid>(_accountingRuleFilter.MatchedStartLocationIds,
-                                _flight.StartLocationId.Value)));
+                        Logger.Warn($"Aircraft of flight has no homebase location set. May we account something wrong!");
                     }
                 }
             }
             else
             {
-                if (_flight.StartLocationId.HasValue == false)
+                if (Flight.Aircraft != null && Flight.Aircraft.HomebaseId.HasValue)
                 {
-                    Logger.Warn($"Flight has no start location set. May we account something wrong!");
+                    Conditions.Add(new Contains<Guid>(AccountingRuleFilter.MatchedAircraftHomebaseIds,
+                        Flight.Aircraft.HomebaseId.Value));
                 }
                 else
                 {
-                    Conditions.Add(new Contains<Guid>(_accountingRuleFilter.MatchedStartLocationIds,
-                        _flight.StartLocationId.Value));
-                }
-            }
+                    Logger.Warn($"Aircraft of flight has no homebase location set. May we account something wrong!");
 
-            if (_accountingRuleFilter.UseRuleForAllLdgLocationsExceptListed)
-            {
-                if (_accountingRuleFilter.MatchedLdgLocationIds != null && _accountingRuleFilter.MatchedLdgLocationIds.Any())
-                {
-                    if (_flight.LdgLocationId.HasValue == false)
-                    {
-                        Logger.Warn($"Flight has no landing location set. May we account something wrong!");
-                    }
-                    else
-                    {
-                        Conditions.Add(
-                            new Inverter(new Contains<Guid>(_accountingRuleFilter.MatchedLdgLocationIds,
-                                _flight.LdgLocationId.Value)));
-                    }
+                    //add condition which is always false
+                    Conditions.Add(new Equals<bool>(false, true));
                 }
             }
-            else
-            {
-                if (_flight.LdgLocationId.HasValue == false)
-                {
-                    Logger.Warn($"Flight has no landing location set. May we account something wrong!");
-                }
-                else
-                {
-                    Conditions.Add(new Contains<Guid>(_accountingRuleFilter.MatchedLdgLocationIds,
-                        _flight.LdgLocationId.Value));
-                }
-            }
+        }
 
-            if (_flight.FlightCrews.Any() == false)
+        protected virtual void InitializeFlightCrewConditions(RuleBasedDeliveryDetails ruleBasedDelivery)
+        {
+            if (Flight.FlightCrews.Any() == false)
             {
-                Logger.Warn($"Flight has no flight crew. May we account something wrong! Adding false condition to not fit rule!");
+                Logger.Warn(
+                    $"Flight has no flight crew. May we account something wrong! Adding false condition to not fit rule!");
                 Conditions.Add(new Equals<bool>(false, true));
             }
             else
@@ -201,74 +90,76 @@ namespace FLS.Server.Service.Accounting.Rules
                 // club members and flight crew types must be combined
                 var flightCrewTypes = Enum.GetValues(typeof(FLS.Data.WebApi.Flight.FlightCrewType)).Cast<int>().ToList();
                 var flightCrewTypeSelection = flightCrewTypes;
-                if (_accountingRuleFilter.UseRuleForAllFlightCrewTypesExceptListed)
+                if (AccountingRuleFilter.UseRuleForAllFlightCrewTypesExceptListed)
                 {
-                    if (_accountingRuleFilter.MatchedFlightCrewTypes != null && _accountingRuleFilter.MatchedFlightCrewTypes.Any())
+                    if (AccountingRuleFilter.MatchedFlightCrewTypes != null &&
+                        AccountingRuleFilter.MatchedFlightCrewTypes.Any())
                     {
-                        flightCrewTypeSelection = flightCrewTypes.Except(_accountingRuleFilter.MatchedFlightCrewTypes).ToList();
+                        flightCrewTypeSelection = flightCrewTypes.Except(AccountingRuleFilter.MatchedFlightCrewTypes).ToList();
                     }
                 }
                 else
                 {
-                    flightCrewTypeSelection = _accountingRuleFilter.MatchedFlightCrewTypes;
+                    flightCrewTypeSelection = AccountingRuleFilter.MatchedFlightCrewTypes;
                 }
 
                 // club member number filtering
-                if (_accountingRuleFilter.UseRuleForAllClubMemberNumbersExceptListed)
+                if (AccountingRuleFilter.UseRuleForAllClubMemberNumbersExceptListed)
                 {
-                    if (_accountingRuleFilter.MatchedClubMemberNumbers != null && _accountingRuleFilter.MatchedClubMemberNumbers.Any())
+                    if (AccountingRuleFilter.MatchedClubMemberNumbers != null &&
+                        AccountingRuleFilter.MatchedClubMemberNumbers.Any())
                     {
                         //there are some excluded member numbers we have to filter for
-                        var persons = _flight.FlightCrews
-                                            .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
-                                            .Select(x => x.Person);
+                        var persons = Flight.FlightCrews
+                            .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                            .Select(x => x.Person);
                         var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
 
-                        Conditions.Add(new Inverter(new IntersectAny<string>(_accountingRuleFilter.MatchedClubMemberNumbers,
+                        Conditions.Add(new Inverter(new IntersectAny<string>(AccountingRuleFilter.MatchedClubMemberNumbers,
                             personClubs.Select(pc => pc.MemberNumber))));
                     }
                 }
                 else
                 {
-                    var persons = _flight.FlightCrews
-                                        .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
-                                        .Select(x => x.Person);
+                    var persons = Flight.FlightCrews
+                        .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                        .Select(x => x.Person);
                     var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
 
-                    Conditions.Add(new IntersectAny<string>(_accountingRuleFilter.MatchedClubMemberNumbers,
+                    Conditions.Add(new IntersectAny<string>(AccountingRuleFilter.MatchedClubMemberNumbers,
                         personClubs.Select(pc => pc.MemberNumber)));
                 }
 
                 // club member state filtering
-                if (_accountingRuleFilter.UseRuleForAllMemberStatesExceptListed)
+                if (AccountingRuleFilter.UseRuleForAllMemberStatesExceptListed)
                 {
-                    if (_accountingRuleFilter.MatchedMemberStates != null && _accountingRuleFilter.MatchedMemberStates.Any())
+                    if (AccountingRuleFilter.MatchedMemberStates != null && AccountingRuleFilter.MatchedMemberStates.Any())
                     {
                         //there are some excluded member states we have to filter for
-                        var persons = _flight.FlightCrews
-                                            .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
-                                            .Select(x => x.Person);
+                        var persons = Flight.FlightCrews
+                            .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                            .Select(x => x.Person);
                         var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
 
-                        Conditions.Add(new Inverter(new IntersectAny<Guid>(_accountingRuleFilter.MatchedMemberStates,
+                        Conditions.Add(new Inverter(new IntersectAny<Guid>(AccountingRuleFilter.MatchedMemberStates,
                             personClubs.Select(pc => pc.MemberStateId.GetValueOrDefault()))));
                     }
                 }
                 else
                 {
-                    var persons = _flight.FlightCrews
-                                        .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
-                                        .Select(x => x.Person);
+                    var persons = Flight.FlightCrews
+                        .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                        .Select(x => x.Person);
                     var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
 
-                    Conditions.Add(new IntersectAny<Guid>(_accountingRuleFilter.MatchedMemberStates,
+                    Conditions.Add(new IntersectAny<Guid>(AccountingRuleFilter.MatchedMemberStates,
                         personClubs.Select(pc => pc.MemberStateId.GetValueOrDefault())));
                 }
 
                 //// club person category filtering
-                //if (_accountingRuleFilter.UseRuleForAllPersonCategoriesExceptListed)
+                //if (AccountingRuleFilter.UseRuleForAllPersonCategoriesExceptListed)
                 //{
-                //    if (_accountingRuleFilter.MatchedPersonCategories != null && _accountingRuleFilter.MatchedPersonCategories.Any())
+                //    if (AccountingRuleFilter.MatchedPersonCategories != null && AccountingRuleFilter.MatchedPersonCategories.Any())
                 //    {
                 //        //there are some excluded person category we have to filter for
                 //        var persons = _flight.FlightCrews
@@ -276,7 +167,7 @@ namespace FLS.Server.Service.Accounting.Rules
                 //                            .Select(x => x.Person);
                 //        var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
 
-                //        Conditions.Add(new Inverter(new IntersectAny<Guid>(_accountingRuleFilter.MatchedPersonCategories,
+                //        Conditions.Add(new Inverter(new IntersectAny<Guid>(AccountingRuleFilter.MatchedPersonCategories,
                 //            personClubs.Select(pc => pc.MemberStateId.GetValueOrDefault()))));
                 //    }
                 //}
@@ -287,42 +178,200 @@ namespace FLS.Server.Service.Accounting.Rules
                 //                        .Select(x => x.Person);
                 //    var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
 
-                //    Conditions.Add(new IntersectAny<Guid>(_accountingRuleFilter.MatchedMemberStates,
+                //    Conditions.Add(new IntersectAny<Guid>(AccountingRuleFilter.MatchedMemberStates,
                 //        personClubs.Select(pc => pc.MemberStateId.GetValueOrDefault())));
                 //}
             }
+        }
 
-            if (_accountingRuleFilter.UseRuleForAllAircraftsOnHomebaseExceptListed)
+        protected virtual void InitializeLdgLocationConditions(RuleBasedDeliveryDetails ruleBasedDelivery)
+        {
+            if (AccountingRuleFilter.UseRuleForAllLdgLocationsExceptListed)
             {
-                if (_accountingRuleFilter.MatchedAircraftHomebaseIds != null && _accountingRuleFilter.MatchedAircraftHomebaseIds.Any())
+                if (AccountingRuleFilter.MatchedLdgLocationIds != null && AccountingRuleFilter.MatchedLdgLocationIds.Any())
                 {
-                    if (_flight.Aircraft != null && _flight.Aircraft.HomebaseId.HasValue)
+                    if (Flight.LdgLocationId.HasValue == false)
                     {
-                        Conditions.Add(
-                            new Inverter(new Contains<Guid>(_accountingRuleFilter.MatchedAircraftHomebaseIds,
-                                _flight.Aircraft.HomebaseId.Value)));
+                        Logger.Warn($"Flight has no landing location set. May we account something wrong!");
                     }
                     else
                     {
-                        Logger.Warn($"Aircraft of flight has no homebase location set. May we account something wrong!");
+                        Conditions.Add(
+                            new Inverter(new Contains<Guid>(AccountingRuleFilter.MatchedLdgLocationIds,
+                                Flight.LdgLocationId.Value)));
                     }
                 }
             }
             else
             {
-                if (_flight.Aircraft != null && _flight.Aircraft.HomebaseId.HasValue)
+                if (Flight.LdgLocationId.HasValue == false)
                 {
-                    Conditions.Add(new Contains<Guid>(_accountingRuleFilter.MatchedAircraftHomebaseIds,
-                        _flight.Aircraft.HomebaseId.Value));
+                    Logger.Warn($"Flight has no landing location set. May we account something wrong!");
                 }
                 else
                 {
-                    Logger.Warn($"Aircraft of flight has no homebase location set. May we account something wrong!");
-
-                    //add condition which is always false
-                    Conditions.Add(new Equals<bool>(false, true));
+                    Conditions.Add(new Contains<Guid>(AccountingRuleFilter.MatchedLdgLocationIds,
+                        Flight.LdgLocationId.Value));
                 }
             }
+        }
+
+        protected virtual void InitializeStartLocationConditions(RuleBasedDeliveryDetails ruleBasedDelivery)
+        {
+            if (AccountingRuleFilter.UseRuleForAllStartLocationsExceptListed)
+            {
+                if (AccountingRuleFilter.MatchedLdgLocationIds != null && AccountingRuleFilter.MatchedLdgLocationIds.Any())
+                {
+                    if (Flight.StartLocationId.HasValue == false)
+                    {
+                        Logger.Warn($"Flight has no start location set. May we account something wrong!");
+                    }
+                    else
+                    {
+                        Conditions.Add(
+                            new Inverter(new Contains<Guid>(AccountingRuleFilter.MatchedStartLocationIds,
+                                Flight.StartLocationId.Value)));
+                    }
+                }
+            }
+            else
+            {
+                if (Flight.StartLocationId.HasValue == false)
+                {
+                    Logger.Warn($"Flight has no start location set. May we account something wrong!");
+                }
+                else
+                {
+                    Conditions.Add(new Contains<Guid>(AccountingRuleFilter.MatchedStartLocationIds,
+                        Flight.StartLocationId.Value));
+                }
+            }
+        }
+
+        protected virtual void InitializeFlightTypeConditions(RuleBasedDeliveryDetails ruleBasedDelivery)
+        {
+            ICondition condition;
+
+            if (AccountingRuleFilter.UseRuleForAllFlightTypesExceptListed)
+            {
+                if (AccountingRuleFilter.MatchedFlightTypeCodes != null && AccountingRuleFilter.MatchedFlightTypeCodes.Any())
+                {
+                    condition = null;
+
+                    if (AccountingRuleFilter.ExtendMatchingFlightTypeCodesToGliderAndTowFlight)
+                    {
+                        foreach (var towedFlight in Flight.TowedFlights)
+                        {
+                            condition = new Or(condition,
+                                new Contains<string>(AccountingRuleFilter.MatchedFlightTypeCodes,
+                                    towedFlight.FlightType.FlightCode));
+                        }
+
+                        if (Flight.TowFlight != null)
+                        {
+                            condition = new Or(condition,
+                                new Contains<string>(AccountingRuleFilter.MatchedFlightTypeCodes,
+                                    Flight.TowFlight.FlightType.FlightCode));
+                        }
+                    }
+
+                    Conditions.Add(
+                        new Inverter(new Or(condition,
+                            new Contains<string>(AccountingRuleFilter.MatchedFlightTypeCodes, Flight.FlightType.FlightCode))));
+                }
+            }
+            else
+            {
+                condition = null;
+
+                if (AccountingRuleFilter.ExtendMatchingFlightTypeCodesToGliderAndTowFlight)
+                {
+                    foreach (var towedFlight in Flight.TowedFlights)
+                    {
+                        condition = new Or(condition,
+                            new Contains<string>(AccountingRuleFilter.MatchedFlightTypeCodes,
+                                towedFlight.FlightType.FlightCode));
+                    }
+
+                    if (Flight.TowFlight != null)
+                    {
+                        condition = new Or(condition,
+                            new Contains<string>(AccountingRuleFilter.MatchedFlightTypeCodes,
+                                Flight.TowFlight.FlightType.FlightCode));
+                    }
+                }
+
+                Conditions.Add(new Or(condition,
+                    new Contains<string>(AccountingRuleFilter.MatchedFlightTypeCodes, Flight.FlightType.FlightCode)));
+            }
+        }
+
+        protected virtual void InitializeAircraftConditions(RuleBasedDeliveryDetails ruleBasedDelivery)
+        {
+            if (AccountingRuleFilter.UseRuleForAllAircraftsExceptListed)
+            {
+                if (AccountingRuleFilter.MatchedAircraftIds != null && AccountingRuleFilter.MatchedAircraftIds.Any())
+                {
+                    Conditions.Add(new Inverter(new Contains<Guid>(AccountingRuleFilter.MatchedAircraftIds, Flight.AircraftId)));
+                }
+            }
+            else
+            {
+                Conditions.Add(new Contains<Guid>(AccountingRuleFilter.MatchedAircraftIds, Flight.AircraftId));
+            }
+
+            if (AccountingRuleFilter.UseRuleForAllStartTypesExceptListed)
+            {
+                if (AccountingRuleFilter.MatchedStartTypes != null && AccountingRuleFilter.MatchedStartTypes.Any())
+                {
+                    Conditions.Add(
+                        new Inverter(new Contains<int>(AccountingRuleFilter.MatchedStartTypes,
+                            Flight.StartTypeId.GetValueOrDefault())));
+                }
+            }
+            else
+            {
+                Conditions.Add(new Contains<int>(AccountingRuleFilter.MatchedStartTypes,
+                    Flight.StartTypeId.GetValueOrDefault()));
+            }
+        }
+
+        protected virtual void InitializeFlightAircraftTypeConditions(RuleBasedDeliveryDetails ruleBasedDelivery)
+        {
+            ICondition condition = null;
+
+            if (AccountingRuleFilter.IsRuleForGliderFlights)
+            {
+                condition = new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.GliderFlight);
+            }
+            else
+            {
+                condition = new Inverter(new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.GliderFlight));
+            }
+
+            if (AccountingRuleFilter.IsRuleForTowingFlights)
+            {
+                condition = new Or(condition,
+                    new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.TowFlight));
+            }
+            else
+            {
+                condition = new And(condition,
+                    new Inverter(new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.TowFlight)));
+            }
+
+            if (AccountingRuleFilter.IsRuleForMotorFlights)
+            {
+                condition = new Or(condition,
+                    new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.MotorFlight));
+            }
+            else
+            {
+                condition = new And(condition,
+                    new Inverter(new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.MotorFlight)));
+            }
+
+            Conditions.Add(condition);
         }
 
         protected Decimal GetUnitQuantity(decimal quantity, FLS.Data.WebApi.Accounting.AccountingUnitType baseUnitType)
@@ -402,7 +451,7 @@ namespace FLS.Server.Service.Accounting.Rules
         public override string ToString()
         {
             return
-                $"{base.ToString()}, Rule-Filter: {_accountingRuleFilter.RuleFilterName} of type: {this.GetType()} has conditions: '{string.Join(",", Conditions.Select(x => x))}' for Flight: {Flight}";
+                $"{base.ToString()}, Rule-Filter: {AccountingRuleFilter.RuleFilterName} of type: {this.GetType()} has conditions: '{string.Join(",", Conditions.Select(x => x))}' for Flight: {Flight}";
         }
     }
 }

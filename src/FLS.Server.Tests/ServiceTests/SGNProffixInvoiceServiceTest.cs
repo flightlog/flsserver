@@ -16,7 +16,9 @@ using Microsoft.Practices.Unity;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Accounting;
 using FLS.Server.Data;
+using FLS.Server.Service.Extensions;
 using FLS.Server.Tests.Infrastructure;
+using OfficeOpenXml;
 
 namespace FLS.Server.Tests.ServiceTests
 {
@@ -67,351 +69,93 @@ namespace FLS.Server.Tests.ServiceTests
                 {
                     var baseDir = AppDomain.CurrentDomain.BaseDirectory;
 
-                    using (var file = new StreamReader(Path.Combine(baseDir, "AccountingRuleFilters_SGN.csv")))
+                    using (var package = new ExcelPackage(new FileInfo(Path.Combine(baseDir, "AccountingRuleFilters_SGN.xlsx"))))
                     {
+                        var workSheet = package.Workbook.Worksheets[1];
                         var entityType = typeof(AccountingRuleFilter);
-                        var headerLine = file.ReadLine();
-                        var columnNames = headerLine.Split(new string[] {";"}, StringSplitOptions.None);
-
-                        while (!file.EndOfStream)
+                        var ignoreColumns = new List<string>()
                         {
-                            try
-                            {
-                                var dbEntity = new AccountingRuleFilter();
-                                var curLineValues = file.ReadLine().Split(new string[] {";"}, StringSplitOptions.None);
-                                for (int i = 0; i < columnNames.Length; i++)
-                                {
-                                    var property = entityType.GetProperty(columnNames[i]);
-                                    ParseStringValue(property, dbEntity, curLineValues[i]);
-                                }
+                            "CreatedOn",
+                            "CreatedByUserId",
+                            "ModifiedOn",
+                            "ModifiedByUserId",
+                            "DeletedOn",
+                            "DeletedByUserId",
+                            "RecordState",
+                            "OwnerId",
+                            "OwnershipType",
+                            "IsDeleted"
+                        };
 
-                                dbEntity.ClubId = club.ClubId;
-                                dbEntity.Club = club;
+                        var entityList = workSheet.ToList<AccountingRuleFilter>(ignoreColumns);
 
-                                context.AccountingRuleFilters.Add(dbEntity);
-                            }
-                            catch (Exception exception)
+                        try
+                        {
+
+                            foreach (var accountingRuleFilter in entityList)
                             {
-                                Logger.Error(exception, "Error while trying to create new AccountingRuleFilter");
-                                Assert.Fail($"Exception occured while reading accounting rule filters! Message: {exception.Message}{Environment.NewLine}Stacktrace:{exception.StackTrace}");
+                                accountingRuleFilter.ClubId = club.ClubId;
+                                accountingRuleFilter.Club = club;
+                                context.AccountingRuleFilters.Add(accountingRuleFilter);
                             }
+                        }
+                        catch (Exception exception)
+                        {
+                            Logger.Error(exception, "Error while trying to create new AccountingRuleFilter");
+                            Assert.Fail(
+                                $"Exception occured while reading accounting rule filters! Message: {exception.Message}{Environment.NewLine}Stacktrace:{exception.StackTrace}");
                         }
                     }
                 }
 
+                #region Handle FlightTypes
+
                 if (context.FlightTypes.Any(x => x.ClubId == club.ClubId) == false)
                 {
                     //Insert FlightTypes for Club
-                    var flightType = new FlightType()
+                    var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                    using (var package = new ExcelPackage(new FileInfo(Path.Combine(baseDir, "FlightTypes_SGN.xlsx"))))
                     {
-                        FlightCode = "54",
-                        FlightTypeName = "Windenstart Extern (WSE)",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = true,
-                        IsForTowFlights = false,
-                        IsForMotorFlights = false,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 0
-                    };
-                    context.FlightTypes.Add(flightType);
+                        var workSheet = package.Workbook.Worksheets[1];
+                        var entityType = typeof(FlightType);
+                        var ignoreColumns = new List<string>()
+                        {
+                            "FlightTypeId",
+                            "ClubId",
+                            "CreatedOn",
+                            "CreatedByUserId",
+                            "ModifiedOn",
+                            "ModifiedByUserId",
+                            "DeletedOn",
+                            "DeletedByUserId",
+                            "RecordState",
+                            "OwnerId",
+                            "OwnershipType",
+                            "IsDeleted"
+                        };
 
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "100",
-                        FlightTypeName = "Marketingflug",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = true,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = true,
-                        IsForTowFlights = false,
-                        IsForMotorFlights = true,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 2
-                    };
-                    context.FlightTypes.Add(flightType);
+                        var flightTypes = workSheet.ToList<FlightType>(ignoreColumns);
 
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "95",
-                        FlightTypeName = "Schlepp Fremdflugzeuge",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = false,
-                        IsForTowFlights = true,
-                        IsForMotorFlights = false,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 1
-                    };
-                    context.FlightTypes.Add(flightType);
+                        try
+                        {
 
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "90",
-                        FlightTypeName = "Schleppflug (FSS, FSG, FSP)",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = false,
-                        IsForTowFlights = true,
-                        IsForMotorFlights = false,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 0
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "63",
-                        FlightTypeName = "Passagierflug",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = true,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = true,
-                        IsForTowFlights = false,
-                        IsForMotorFlights = false,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 2
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "92",
-                        FlightTypeName = "Schleppstart Externer Flugplatz",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = false,
-                        IsForTowFlights = true,
-                        IsForMotorFlights = false,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 0
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "91 (old)",
-                        FlightTypeName = "Schleppcheck",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = true,
-                        IsCheckFlight = true,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = false,
-                        IsForTowFlights = true,
-                        IsForMotorFlights = false,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 0
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "71",
-                        FlightTypeName = "Schulung TMG",
-                        Club = club,
-                        InstructorRequired = true,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = false,
-                        IsForTowFlights = true,
-                        IsForMotorFlights = true,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 1
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "78",
-                        FlightTypeName = "Checkflug",
-                        Club = club,
-                        InstructorRequired = true,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = true,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = true,
-                        IsForTowFlights = false,
-                        IsForMotorFlights = true,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 2
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "65",
-                        FlightTypeName = "Fremdflugzeuge (nicht Platzansässige)",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = true,
-                        IsForTowFlights = false,
-                        IsForMotorFlights = false,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 1
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "94",
-                        FlightTypeName = "SGOW Überführungsschlepp",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = false,
-                        IsForTowFlights = true,
-                        IsForMotorFlights = false,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 1
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "62",
-                        FlightTypeName = "Passagierflug mit Gutschein",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = true,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = true,
-                        IsForTowFlights = false,
-                        IsForMotorFlights = true,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = true,
-                        MinNrOfAircraftSeatsRequired = 2
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "91",
-                        FlightTypeName = "SGN Überführungsschlepp",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = false,
-                        IsForTowFlights = true,
-                        IsForMotorFlights = false,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 1
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "70",
-                        FlightTypeName = "Schulung",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = true,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = true,
-                        IsForTowFlights = false,
-                        IsForMotorFlights = true,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 1
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "60",
-                        FlightTypeName = "Clubflugzeug",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = true,
-                        IsForTowFlights = false,
-                        IsForMotorFlights = true,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 1
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "93",
-                        FlightTypeName = "Schlepp SGOW",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = false,
-                        IsForTowFlights = true,
-                        IsForMotorFlights = false,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 0
-                    };
-                    context.FlightTypes.Add(flightType);
-                    flightType = new FlightType()
-                    {
-                        FlightCode = "61",
-                        FlightTypeName = "Privatflugzeug",
-                        Club = club,
-                        InstructorRequired = false,
-                        ObserverPilotOrInstructorRequired = false,
-                        IsCheckFlight = false,
-                        IsPassengerFlight = false,
-                        IsSoloFlight = false,
-                        IsForGliderFlights = true,
-                        IsForTowFlights = false,
-                        IsForMotorFlights = true,
-                        IsFlightCostBalanceSelectable = false,
-                        IsCouponNumberRequired = false,
-                        MinNrOfAircraftSeatsRequired = 1
-                    };
-                    context.FlightTypes.Add(flightType);
+                            foreach (var flightType in flightTypes)
+                            {
+                                flightType.ClubId = club.ClubId;
+                                flightType.Club = club;
+                                context.FlightTypes.Add(flightType);
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Logger.Error(exception, "Error while trying to create new FlightTypes");
+                            Assert.Fail(
+                                $"Exception occured while reading FlightTypes! Message: {exception.Message}{Environment.NewLine}Stacktrace:{exception.StackTrace}");
+                        }
+                    }
                 }
+
+                #endregion Handle FlightTypes
 
                 User user = context.Users.FirstOrDefault(x => x.UserName == "sgn");
 
@@ -480,11 +224,12 @@ namespace FLS.Server.Tests.ServiceTests
                 else
                 {
                     Type parseMethodType = p.PropertyType;
-                    if (parseMethodType.IsGenericType) // normally Nullable<T> - extract parse method of T (NULL is handled above)
+                    if (parseMethodType.IsGenericType)
+                        // normally Nullable<T> - extract parse method of T (NULL is handled above)
                         parseMethodType = parseMethodType.GenericTypeArguments.First();
 
-                    var parseMethod = parseMethodType.GetMethod("Parse", new Type[] { typeof(string) });
-                    parsed = parseMethod.Invoke(null, new[] { value });
+                    var parseMethod = parseMethodType.GetMethod("Parse", new Type[] {typeof(string)});
+                    parsed = parseMethod.Invoke(null, new[] {value});
                 }
             }
 
@@ -499,7 +244,9 @@ namespace FLS.Server.Tests.ServiceTests
             //set not invoiced flights to valid flights, so that it will not invoiced during next run in ProffixInvoiceTest test data line
             using (var context = DataAccessService.CreateDbContext())
             {
-                var lockedFlights = context.Flights.Where(x => x.ProcessStateId == (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked);
+                var lockedFlights =
+                    context.Flights.Where(
+                        x => x.ProcessStateId == (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked);
 
                 if (lockedFlights.Any())
                 {
@@ -527,16 +274,20 @@ namespace FLS.Server.Tests.ServiceTests
         [TestMethod]
         //[DeploymentItem(@"TestData\schema.ini")]
         [DeploymentItem(@"TestData\FlightInvoiceTestdata_SGN.xlsx")]
-        [DeploymentItem(@"Resources\AccountingRuleFilters_SGN.csv")]
-        [DataSource("System.Data.Odbc", @"Dsn=Excel Files;dbq=.\FlightInvoiceTestdata_SGN.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5", "FlightInvoiceTestdata_SGN$", DataAccessMethod.Sequential)]
+        [DeploymentItem(@"Resources\AccountingRuleFilters_SGN.xlsx")]
+        [DeploymentItem(@"Resources\FlightTypes_SGN.xlsx")]
+        [DataSource("System.Data.Odbc",
+             @"Dsn=Excel Files;dbq=.\FlightInvoiceTestdata_SGN.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5",
+             "FlightInvoiceTestdata_SGN$", DataAccessMethod.Sequential)]
         public void SGNProffixGliderInvoiceTest()
         {
-            
+
             var useCase = TestContext.DataRow["UseCase"].ToString();
 
             if (string.IsNullOrWhiteSpace(useCase))
             {
-                Logger.Debug($"Use case number is not set, so expect use case is not described correctly. Exit ProffixInvoiceTest for this use case.");
+                Logger.Debug(
+                    $"Use case number is not set, so expect use case is not described correctly. Exit ProffixInvoiceTest for this use case.");
                 return;
             }
 
@@ -547,11 +298,13 @@ namespace FLS.Server.Tests.ServiceTests
 
             if (includeInTest != "1")
             {
-                Logger.Debug($"Use case {useCase}{subUseCase} is excluded from Test. Exit ProffixInvoiceTest for this use case.");
+                Logger.Debug(
+                    $"Use case {useCase}{subUseCase} is excluded from Test. Exit ProffixInvoiceTest for this use case.");
                 return;
             }
 
             #region Flight preparation
+
             var startTime = DateTime.Today.AddDays(-34).AddHours(10);
             var flightDetails = new FlightDetails();
             flightDetails.StartType = Convert.ToInt32(TestContext.DataRow["StartType"].ToString());
@@ -616,7 +369,7 @@ namespace FLS.Server.Tests.ServiceTests
                 }
             }
 
-            if (Convert.ToInt32(TestContext.DataRow["StartType"]) == (int)AircraftStartType.TowingByAircraft)
+            if (Convert.ToInt32(TestContext.DataRow["StartType"]) == (int) AircraftStartType.TowingByAircraft)
             {
                 flightDetails.TowFlightDetailsData = new TowFlightDetailsData();
                 flightDetails.TowFlightDetailsData.AircraftId =
@@ -637,14 +390,24 @@ namespace FLS.Server.Tests.ServiceTests
 
             FlightService.InsertFlightDetails(flightDetails);
             SetFlightAsLocked(flightDetails);
+
             #endregion Flight preparation
 
+            CheckCreatedInvoice();
+        }
+
+        private void CheckCreatedInvoice()
+        {
             #region invoice check
-            var invoices = DeliveryService.CreateDeliveriesFromFlights(IdentityService.CurrentAuthenticatedFLSUser.ClubId);
+
+            var invoices =
+                DeliveryService.CreateDeliveriesFromFlights(IdentityService.CurrentAuthenticatedFLSUser.ClubId);
 
             var expectInvoice = TestContext.DataRow["ExpectInvoice"].ToString();
-            var expectedInvoiceLineItemsCount = Convert.ToInt32(TestContext.DataRow["ExpectedInvoiceLineItemsCount"].ToString());
-            var expectedInvoiceAircraftImmatriculation = TestContext.DataRow["ExpectedInvoiceAircraftImmatriculation"].ToString();
+            var expectedInvoiceLineItemsCount =
+                Convert.ToInt32(TestContext.DataRow["ExpectedInvoiceLineItemsCount"].ToString());
+            var expectedInvoiceAircraftImmatriculation =
+                TestContext.DataRow["ExpectedInvoiceAircraftImmatriculation"].ToString();
             var expectedInvoiceRecipientName = TestContext.DataRow["ExpectedInvoiceRecipientName"].ToString();
             var expectedInvoiceFlightInfo = TestContext.DataRow["ExpectedInvoiceFlightInfo"].ToString();
             var expectedInvoiceAdditionalInfo = TestContext.DataRow["ExpectedInvoiceAdditionalInfo"].ToString();
@@ -668,8 +431,9 @@ namespace FLS.Server.Tests.ServiceTests
                 };
                 expectedInvoiceLines.Add(i, expectedInvoiceLine);
             }
-            
-            Assert.AreEqual(expectedInvoiceLineItemsCount, expectedInvoiceLines.Count, 0, "Value in column ExpectedInvoiceLineItemsCount in test data does not fit with expected line values. Check FlightInvoiceTestdata.csv");
+
+            Assert.AreEqual(expectedInvoiceLineItemsCount, expectedInvoiceLines.Count, 0,
+                "Value in column ExpectedInvoiceLineItemsCount in test data does not fit with expected line values. Check Test data file.");
 
             if (expectInvoice == "1")
             {
@@ -682,17 +446,22 @@ namespace FLS.Server.Tests.ServiceTests
 
             foreach (var flightInvoiceDetails in invoices)
             {
-                Assert.AreEqual(expectedInvoiceRecipientName, flightInvoiceDetails.RecipientDetails.RecipientName, "Wrong recipient person in invoice");
-                Assert.AreEqual(expectedInvoiceFlightInfo, flightInvoiceDetails.DeliveryInformation, "Wrong invoice information in invoice");
-                Assert.AreEqual(expectedInvoiceAdditionalInfo, flightInvoiceDetails.AdditionalInformation, "Wrong additional information in invoice");
-                Assert.AreEqual(expectedInvoiceAircraftImmatriculation, flightInvoiceDetails.FlightInformation.AircraftImmatriculation, "Wrong aircraft immatriculation reported in invoice");
+                Assert.AreEqual(expectedInvoiceRecipientName, flightInvoiceDetails.RecipientDetails.RecipientName,
+                    "Wrong recipient person in invoice");
+                Assert.AreEqual(expectedInvoiceFlightInfo, flightInvoiceDetails.DeliveryInformation,
+                    "Wrong invoice information in invoice");
+                Assert.AreEqual(expectedInvoiceAdditionalInfo, flightInvoiceDetails.AdditionalInformation,
+                    "Wrong additional information in invoice");
+                Assert.AreEqual(expectedInvoiceAircraftImmatriculation,
+                    flightInvoiceDetails.FlightInformation.AircraftImmatriculation,
+                    "Wrong aircraft immatriculation reported in invoice");
 
                 if (expectedInvoiceLineItemsCount != flightInvoiceDetails.DeliveryItems.Count)
                 {
                     if (flightInvoiceDetails.DeliveryItems.Count == 0)
                     {
                         Assert.AreEqual(expectedInvoiceLineItemsCount, flightInvoiceDetails.DeliveryItems.Count,
-                        $"Number of invoice lines is not as expected. No invoice lines created.");
+                            $"Number of invoice lines is not as expected. No invoice lines created.");
                     }
                     else
                     {
@@ -703,9 +472,12 @@ namespace FLS.Server.Tests.ServiceTests
 
                 foreach (var line in flightInvoiceDetails.DeliveryItems.OrderBy(o => o.Position))
                 {
-                    Assert.AreEqual(expectedInvoiceLines[line.Position].ERPArticleNumber, line.ArticleNumber, $"Article number in invoice line {line.Position} is wrong.");
-                    Assert.AreEqual(expectedInvoiceLines[line.Position].Quantity, line.Quantity, $"Quantity in invoice line {line.Position} is wrong.");
-                    Assert.AreEqual(expectedInvoiceLines[line.Position].UnitType, line.UnitType, $"Unittype in invoice line {line.Position} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.Position].ERPArticleNumber, line.ArticleNumber,
+                        $"Article number in invoice line {line.Position} is wrong.");
+                    Assert.AreEqual((double)expectedInvoiceLines[line.Position].Quantity, (double)line.Quantity, (double)0.0001, 
+                        $"Quantity in invoice line {line.Position} is wrong.");
+                    Assert.AreEqual(expectedInvoiceLines[line.Position].UnitType, line.UnitType,
+                        $"Unittype in invoice line {line.Position} is wrong.");
                 }
 
                 var deliveryBooking = new DeliveryBooking()
@@ -716,11 +488,13 @@ namespace FLS.Server.Tests.ServiceTests
                 };
 
                 var isFlightInvoiced = DeliveryService.SetDeliveryAsDelivered(deliveryBooking);
-                Assert.IsTrue(isFlightInvoiced, $"Flight with Id: {flightInvoiceDetails.FlightInformation.FlightId} could not be set as invoiced");
+                Assert.IsTrue(isFlightInvoiced,
+                    $"Flight with Id: {flightInvoiceDetails.FlightInformation.FlightId} could not be set as invoiced");
 
                 //check flight state
                 var invoicedFlight = FlightService.GetFlight(flightInvoiceDetails.FlightInformation.FlightId);
-                Assert.AreEqual((int)FLS.Data.WebApi.Flight.FlightProcessState.Delivered, invoicedFlight.ProcessStateId, $"Flight process state of master flight {invoicedFlight} was not set correctly after delivering.");
+                Assert.AreEqual((int) FLS.Data.WebApi.Flight.FlightProcessState.Delivered, invoicedFlight.ProcessStateId,
+                    $"Flight process state of master flight {invoicedFlight} was not set correctly after delivering.");
 
                 if (invoicedFlight.TowFlightId.HasValue)
                 {
@@ -733,6 +507,122 @@ namespace FLS.Server.Tests.ServiceTests
             }
 
             #endregion invoice check
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"TestData\MotorFlightInvoiceTestdata_SGN.xlsx")]
+        [DeploymentItem(@"Resources\AccountingRuleFilters_SGN.xlsx")]
+        [DeploymentItem(@"Resources\FlightTypes_SGN.xlsx")]
+        [DataSource("System.Data.Odbc",
+             @"Dsn=Excel Files;dbq=.\MotorFlightInvoiceTestdata_SGN.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5",
+             "FlightInvoiceTestdata$", DataAccessMethod.Sequential)]
+        public void SGNProffixMotorInvoiceTest()
+        {
+
+            var useCase = TestContext.DataRow["UseCase"].ToString();
+
+            if (string.IsNullOrWhiteSpace(useCase))
+            {
+                Logger.Debug(
+                    $"Use case number is not set, so expect use case is not described correctly. Exit SGNProffixMotorInvoiceTest for this use case.");
+                return;
+            }
+
+            var subUseCase = TestContext.DataRow["UC-Variante"].ToString();
+            var includeInTest = TestContext.DataRow["IncludeInTest"].ToString();
+
+            Logger.Debug($"SGNProffixMotorInvoiceTest for Use Case: {useCase}, UC-Variation: {subUseCase}");
+
+            if (includeInTest != "1")
+            {
+                Logger.Debug(
+                    $"Use case {useCase}{subUseCase} is excluded from Test. Exit SGNProffixMotorInvoiceTest for this use case.");
+                return;
+            }
+
+            #region Flight preparation
+
+            var startTime = DateTime.Today.AddDays(-34).AddHours(10);
+            var flightDetails = new FlightDetails();
+            flightDetails.StartType = Convert.ToInt32(TestContext.DataRow["StartType"].ToString());
+
+            flightDetails.MotorFlightDetailsData = new MotorFlightDetailsData();
+            flightDetails.MotorFlightDetailsData.AircraftId =
+                GetMotorAircraft(TestContext.DataRow["AircraftImmatriculation"].ToString(),
+                    Convert.ToInt32(TestContext.DataRow["FlightOperatingCounterUnitTypeId"]),
+                    Convert.ToInt32(TestContext.DataRow["EngineOperatingCounterUnitTypeId"])).AircraftId;
+            flightDetails.MotorFlightDetailsData.FlightComment = TestContext.DataRow["FlightComment"].ToString();
+            flightDetails.MotorFlightDetailsData.StartDateTime = startTime;
+            flightDetails.MotorFlightDetailsData.LdgDateTime =
+                startTime.AddMinutes(Convert.ToInt32(TestContext.DataRow["FlightDuration"]));
+            flightDetails.MotorFlightDetailsData.PilotPersonId =
+                GetPerson(TestContext.DataRow["PilotName"].ToString()).PersonId;
+            flightDetails.MotorFlightDetailsData.StartLocationId =
+                GetLocation(TestContext.DataRow["StartLocation"].ToString()).LocationId;
+            flightDetails.MotorFlightDetailsData.LdgLocationId =
+                GetLocation(TestContext.DataRow["LdgLocation"].ToString()).LocationId;
+            flightDetails.MotorFlightDetailsData.FlightTypeId =
+                GetFlightType(TestContext.DataRow["FlightCode"].ToString()).FlightTypeId;
+
+            try
+            {
+                var engineTimeInSeconds = Convert.ToInt32(TestContext.DataRow["EngineTimeInSeconds"]);
+
+                if (engineTimeInSeconds > 0)
+                {
+                    flightDetails.MotorFlightDetailsData.EngineStartOperatingCounterInSeconds = 0;
+                    flightDetails.MotorFlightDetailsData.EngineEndOperatingCounterInSeconds = engineTimeInSeconds;
+                }
+            }
+            catch (Exception exception)
+            {
+            }
+
+            flightDetails.MotorFlightDetailsData.NrOfLdgs = Convert.ToInt32(TestContext.DataRow["NrOfLdgs"]);
+            flightDetails.MotorFlightDetailsData.NrOfLdgsOnStartLocation = Convert.ToInt32(TestContext.DataRow["NrOfLdgsOnStartLocation"]);
+
+            var displayname = TestContext.DataRow["InstructorName"].ToString();
+
+            if (string.IsNullOrWhiteSpace(displayname) == false)
+            {
+                var instructor = GetPerson(displayname);
+                //don't throw an exception
+                if (instructor != null)
+                {
+                    flightDetails.MotorFlightDetailsData.InstructorPersonId = instructor.PersonId;
+                }
+            }
+
+            displayname = TestContext.DataRow["CopilotName"].ToString();
+
+            if (string.IsNullOrWhiteSpace(displayname) == false)
+            {
+                var copilot = GetPerson(displayname);
+                //don't throw an exception
+                if (copilot != null)
+                {
+                    flightDetails.MotorFlightDetailsData.CoPilotPersonId = copilot.PersonId;
+                }
+            }
+
+            //TODO: needs separation
+            //displayname = TestContext.DataRow["PassengerName(s)"].ToString();
+
+            //if (string.IsNullOrWhiteSpace(displayname) == false)
+            //{
+            //    var passenger = GetPerson(displayname);
+            //    //don't throw an exception
+            //    if (passenger != null)
+            //    {
+            //        flightDetails.MotorFlightDetailsData.PassengerPersonIds.Add(passenger.PersonId);
+            //    }
+            //}
+            
+            FlightService.InsertFlightDetails(flightDetails);
+            SetFlightAsLocked(flightDetails);
+            #endregion Flight preparation
+
+            CheckCreatedInvoice();
         }
 
         private string GetInvoiceLinesForLogging(DeliveryDetails flightInvoiceDetails)

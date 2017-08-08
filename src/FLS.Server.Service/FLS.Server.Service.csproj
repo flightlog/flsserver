@@ -114,6 +114,8 @@
   <ItemGroup>
     <Compile Include="Accounting\RuleBasedAccountingRuleFilterDetails.cs" />
     <Compile Include="Accounting\Rules\ItemRules\AircraftEngineTimeRule.cs" />
+    <Compile Include="Accounting\Rules\ItemRules\LandingTaxOnStartLocationRule.cs" />
+    <Compile Include="Accounting\Rules\ItemRules\VsfFeeOnStartLocationRule.cs" />
     <Compile Include="Email\AddressListEmailBuildService.cs" />
     <Compile Include="Email\AccountingEmailBuildService.cs" />
     <Compile Include="Email\Model\PlanningDayAssignmentModel.cs" />
