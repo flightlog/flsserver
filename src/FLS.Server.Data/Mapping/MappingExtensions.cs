@@ -1957,7 +1957,8 @@ namespace FLS.Server.Data.Mapping
             }
 
 
-            if (details.InvoiceRecipientPersonId.HasValue && details.InvoiceRecipientPersonId.Value.IsValid())
+            if (details.InvoiceRecipientPersonId.HasValue && details.InvoiceRecipientPersonId.Value.IsValid()
+                && details.FlightCostBalanceType.HasValue && details.FlightCostBalanceType.Value == (int)FLS.Data.WebApi.Flight.FlightCostBalanceType.CostsPaidByPerson)
             {
                 if (entity.InvoiceRecipient != null)
                 {
