@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FLS.Common.Comparer;
+using FLS.Common.Extensions;
 using FLS.Data.WebApi;
 using FLS.Data.WebApi.Flight;
 using FLS.Server.Service;
@@ -129,6 +130,25 @@ namespace FLS.Server.Tests.ServiceTests
             var report = FlightService.GetAircraftFlightReport(filterCriteria);
             Assert.IsNotNull(report);
             
+        }
+
+        [TestMethod]
+        [TestCategory("Service")]
+        public void ValidateFlightsTest()
+        {
+            var flightDetails = CreateGliderFlightDetails(CurrentIdentityUser.ClubId);
+            flightDetails.GliderFlightDetailsData.CoPilotPersonId = GetDifferentPerson(GetFirstPerson().PersonId).PersonId;
+
+            flightDetails.GliderFlightDetailsData.StartDateTime = null;
+
+            FlightService.InsertFlightDetails(flightDetails);
+
+            Assert.IsTrue(flightDetails.FlightId.IsValid());
+
+            FlightService.ValidateFlight(flightDetails.FlightId);
+
+            var errors = FlightService.GetFlight(flightDetails.FlightId);
+
         }
 
     }

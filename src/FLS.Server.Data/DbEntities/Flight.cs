@@ -105,7 +105,9 @@ namespace FLS.Server.Data.DbEntities
         
         [Column(TypeName = "datetime2")]
         public DateTime? ValidatedOn { get; set; }
-        
+
+        public string ValidationErrors { get; set; }
+
         public int? NrOfPassengers { get; set; }
 
         [Column(TypeName = "datetime2")]

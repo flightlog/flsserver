@@ -1263,6 +1263,7 @@ namespace FLS.Server.Data.Mapping
             flightDetailsData.NoLdgTimeInformation = flight.NoLdgTimeInformation;
 
             flightDetailsData.FlightComment = flight.Comment;
+            flightDetailsData.ValidationErrors = flight.ValidationErrors;
 
             flightDetailsData.FlightCostBalanceType = flight.FlightCostBalanceTypeId;
 
@@ -1451,6 +1452,7 @@ namespace FLS.Server.Data.Mapping
             entity.FlightCostBalanceTypeId = details.FlightCostBalanceType;
             entity.NoStartTimeInformation = details.NoStartTimeInformation;
             entity.NoLdgTimeInformation = details.NoLdgTimeInformation;
+            entity.ValidationErrors = details.ValidationErrors;
 
             entity.IsSoloFlight = details.IsSoloFlight;
 

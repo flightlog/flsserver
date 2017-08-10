@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
@@ -788,40 +789,163 @@ namespace FLS.Server.Service
             return flights;
         }
 
+        /// <summary>
+        /// Validate flights of the current club which are not validated or are invalid and have been modified since last validation date
+        /// </summary>
         public void ValidateFlights()
         {
-            ValidateFlights(CurrentAuthenticatedFLSUserClubId);
+            ValidateFlight(CurrentAuthenticatedFLSUserClubId);
         }
 
+        /// <summary>
+        /// Validate flights of a club which are not validated or are invalid and have been modified since last validation date
+        /// </summary>
+        /// <param name="clubId"></param>
         public void ValidateFlights(Guid clubId)
         {
             try
             {
-                //Flights which are not validated or are invalid and have been modified since last validation date
-                var flightsToValidate = GetFlights(flight => flight.OwnerId == clubId 
-                    && (flight.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.NotProcessed
-                    || (flight.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.Invalid && flight.ModifiedOn.HasValue && flight.ValidatedOn.HasValue && (flight.ModifiedOn >= flight.ValidatedOn))));
-
                 using (var context = _dataAccessService.CreateDbContext())
                 {
                     var flightValidationStates = context.FlightProcessStates.ToList();
 
-                    foreach (var flight in flightsToValidate)
+                    var flightIdsToValidate = context.Flights.Where(flight => flight.OwnerId == clubId
+                                                                              &&
+                                                                              (flight.ProcessStateId ==
+                                                                               (int)
+                                                                               FLS.Data.WebApi.Flight.FlightProcessState
+                                                                                   .NotProcessed
+                                                                               ||
+                                                                               (flight.ProcessStateId ==
+                                                                                (int)
+                                                                                FLS.Data.WebApi.Flight
+                                                                                    .FlightProcessState.Invalid
+                                                                                && flight.ModifiedOn.HasValue &&
+                                                                                flight.ValidatedOn.HasValue &&
+                                                                                (flight.ModifiedOn >= flight.ValidatedOn))))
+                        .Select(x => x.FlightId)
+                        .ToList();
+
+                    foreach (var flightId in flightIdsToValidate)
                     {
-                        context.Flights.Attach(flight);
+                        ValidateFlight(flightId);
+                    }
+                }
 
-                        flight.ValidateFlight();
-                        flight.DoNotUpdateMetaData = true;
+                Logger.Info(string.Format("Saved the validated flights of today to database."));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, $"Error while processing today flights for validating. Error: {ex.Message}");
+            }
+        }
 
-                        try
+        public void ValidateFlight(Guid flightId)
+        {
+            var validationResults = new List<ValidationResult>();
+
+            try
+            {
+                using (var context = _dataAccessService.CreateDbContext())
+                {
+                    var flightValidationStates = context.FlightProcessStates.ToList();
+
+                    var flight = context.Flights
+                        .Include(Constants.Aircraft)
+                        .Include(Constants.FlightType)
+                        .Include(Constants.FlightCrews)
+                        .Include(Constants.FlightCrews + "." + Constants.Person)
+                        .Include(Constants.StartType)
+                        .Include(Constants.StartLocation)
+                        .Include(Constants.LdgLocation)
+                        .Include(Constants.TowFlight)
+                        .Include(Constants.TowFlight + "." + Constants.Aircraft)
+                        .Include(Constants.TowFlight + "." + Constants.FlightType)
+                        .Include(Constants.TowFlight + "." + Constants.FlightCrews)
+                        .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person)
+                        .Include(Constants.TowFlight + "." + Constants.StartLocation)
+                        .Include(Constants.TowFlight + "." + Constants.LdgLocation)
+                        .FirstOrDefault(a => a.FlightId == flightId);
+
+                    flight.EntityNotNull("Flight", flightId);
+
+                    flight.ValidatedOn = DateTime.UtcNow;
+                    flight.DoNotUpdateMetaData = true;
+
+                    ValidateFlightBasics(flight, validationResults);
+
+                    if (flight.StartTypeId.Value == (int)AircraftStartType.TowingByAircraft)
+                    {
+                        if (flight.TowFlightId == Guid.Empty
+                            || flight.TowFlight == null)
                         {
-                            Logger.Info(
-                            $"The currently validated flight {flight} has now the following Process-State: {flight.ProcessStateId} ({flightValidationStates.First(q => q.FlightProcessStateId == flight.ProcessStateId).FlightProcessStateName})");
+                            validationResults.Add(new ValidationResult("No towing flight referenced for towed glider flight!"));
                         }
-                        catch (Exception exception)
+
+                        if (flight.TowFlight != null)
                         {
-                            Logger.Error(exception);
+                            //handle tow flight validation
+                            var towflightValidationResults = new List<ValidationResult>();
+                            flight.TowFlight.ValidatedOn = DateTime.UtcNow;
+                            flight.TowFlight.DoNotUpdateMetaData = true;
+
+                            ValidateFlightBasics(flight.TowFlight, towflightValidationResults);
+
+                            if (towflightValidationResults.Any())
+                            {
+                                flight.TowFlight.ValidationErrors = string.Join(";", towflightValidationResults.Select(x => x.ErrorMessage));
+                                flight.TowFlight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Invalid;
+                            }
+                            else
+                            {
+                                flight.TowFlight.ValidationErrors = String.Empty;
+                                flight.TowFlight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid;
+                            }
                         }
+                    }
+                    else if (flight.StartTypeId.Value == (int)AircraftStartType.ExternalStart)
+                    {
+                        if (flight.TowFlightId.HasValue)
+                        {
+                            validationResults.Add(new ValidationResult("Towing flight referenced for externally started glider flight!"));
+                        }
+                    }
+                    else if (flight.StartTypeId.Value == (int)AircraftStartType.WinchLaunch)
+                    {
+                        if (flight.WinchOperator == null
+                            || flight.WinchOperator.HasPerson == false)
+                        {
+                            validationResults.Add(new ValidationResult("No winch operator set for winch started glider flight!"));
+                        }
+                    }
+                    else if (flight.StartTypeId.Value == (int)AircraftStartType.SelfStart)
+                    {
+
+                    }
+                    else if (flight.StartTypeId.Value == (int)AircraftStartType.MotorFlightStart)
+                    {
+
+                    }
+
+                    if (validationResults.Any())
+                    {
+                        flight.ValidationErrors = string.Join(";", validationResults.Select(x => x.ErrorMessage));
+                        flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Invalid;
+                    }
+                    else
+                    {
+                        flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid;
+                        flight.ValidationErrors = String.Empty;
+                    }
+
+                    try
+                    {
+                        Logger.Info(
+                        $"The currently validated flight {flight} has now the following Process-State: {flight.ProcessStateId} ({flightValidationStates.First(q => q.FlightProcessStateId == flight.ProcessStateId).FlightProcessStateName})");
+                    }
+                    catch (Exception exception)
+                    {
+                        Logger.Error(exception);
                     }
 
                     context.SaveChanges();
@@ -833,6 +957,42 @@ namespace FLS.Server.Service
             {
                 Logger.Error(ex, $"Error while processing today flights for validating. Error: {ex.Message}");
             }
+        }
+
+        private void ValidateFlightBasics(Flight flight, List<ValidationResult> validationResults)
+        {
+            if (flight.FlightDate.HasValue == false)
+                validationResults.Add(new ValidationResult("No flight date set!"));
+
+            if (flight.AircraftId.IsValid() == false)
+                validationResults.Add(new ValidationResult("No aircraft set!"));
+
+            if (flight.Pilot == null || flight.Pilot.PersonId.IsValid() == false)
+                validationResults.Add(new ValidationResult("No pilot set!"));
+
+            if (flight.StartDateTime.HasValue == false && flight.NoStartTimeInformation == false)
+                validationResults.Add(new ValidationResult("No start time information set!"));
+
+            if (flight.LdgDateTime.HasValue == false && flight.NoLdgTimeInformation == false)
+                validationResults.Add(new ValidationResult("No landing time information set!"));
+
+            if (flight.StartLocationId.HasValue == false)
+                validationResults.Add(new ValidationResult("No start location set!"));
+
+            if (flight.LdgLocationId.HasValue == false)
+                validationResults.Add(new ValidationResult("No landing location set!"));
+
+            if (flight.StartTypeId.HasValue == false)
+                validationResults.Add(new ValidationResult("No start type set!"));
+
+            if (flight.FlightTypeId.HasValue == false)
+                validationResults.Add(new ValidationResult("No flight type set!"));
+
+            if (flight.NrOfLdgs.HasValue == false)
+                validationResults.Add(new ValidationResult("Number of landings not set!"));
+
+            if (flight.NrOfLdgs.HasValue && flight.NrOfLdgs.Value < 1)
+                validationResults.Add(new ValidationResult("Number of landings is less then 1!"));
         }
 
         public void LockFlights(bool forceLockNow = false)
