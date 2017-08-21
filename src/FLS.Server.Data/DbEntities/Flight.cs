@@ -519,6 +519,8 @@ namespace FLS.Server.Data.DbEntities
                 sb.Append(FlightType.FlightCode);
             }
 
+            sb.Append($", Nr of Ldgs: {NrOfLdgs.GetValueOrDefault(0)}/{NrOfLdgsOnStartLocation.GetValueOrDefault(0)}");
+
             sb.Append(", Flight-Air-State: ");
             sb.Append(AirStateId);
             sb.Append(", Flight-Process-State: ");
