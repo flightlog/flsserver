@@ -156,12 +156,14 @@ namespace FLS.Server.Service.Accounting
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var accountingRuleFilters = context.AccountingRuleFilters.Where(q => q.ClubId == clubId);
-
+                
                 foreach (var accountingRuleFilter in accountingRuleFilters)
                 {
                     var filter = accountingRuleFilter.ToAccountingRuleFilterDetails(aicrafts, locations);
                     filters.Add(filter);
                 }
+
+                Logger.Debug($"Get {filters.Count} AccountingRuleFilters of clubId: {clubId}");
             }
 
             return filters;
