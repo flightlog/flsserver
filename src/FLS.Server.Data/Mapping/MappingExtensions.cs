@@ -111,6 +111,7 @@ namespace FLS.Server.Data.Mapping
             listItem.IsWinchstartAllowed = entity.IsWinchstartAllowed;
             listItem.NrOfSeats = entity.NrOfSeats;
             listItem.HasEngine = entity.HasEngine;
+            listItem.AircraftType = entity.AircraftTypeId;
             //listItem.EngineOperatorCounterPrecision = entity.EngineOperatorCounterPrecision;
 
             if (entity.CurrentAircraftAircraftState == null)
