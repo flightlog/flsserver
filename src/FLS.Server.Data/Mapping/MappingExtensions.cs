@@ -3427,6 +3427,13 @@ namespace FLS.Server.Data.Mapping
                 LogManager.GetCurrentClassLogger().Error($"User: {entity.UserName} has no relation to club or club might be set as deleted!");
             }
 
+            if (entity.LockoutEnabled
+                && entity.LockoutEndDateUtc.HasValue
+                && entity.LockoutEndDateUtc.Value > DateTime.UtcNow)
+            {
+                entity.AccountState = (int)FLS.Data.WebApi.User.UserAccountState.Locked;
+            }
+
             overview.AccountState = entity.GetUserAccountStateString();
 
             if (entity.Person != null)
@@ -3448,7 +3455,6 @@ namespace FLS.Server.Data.Mapping
 
             details.UserId = entity.UserId;
             details.UserName = entity.UserName;
-            details.AccountState = entity.AccountState;
             details.ClubId = entity.ClubId;
             details.FriendlyName = entity.FriendlyName;
             details.NotificationEmail = entity.NotificationEmail;
@@ -3458,7 +3464,17 @@ namespace FLS.Server.Data.Mapping
             details.LastPasswordChangeOn = entity.LastPasswordChangeOn;
             details.ForcePasswordChangeNextLogon = entity.ForcePasswordChangeNextLogon;
 
-            details.AccountState = entity.AccountState;
+            if (entity.LockoutEnabled 
+                && entity.LockoutEndDateUtc.HasValue 
+                && entity.LockoutEndDateUtc.Value > DateTime.UtcNow)
+            {
+                details.AccountState = (int) FLS.Data.WebApi.User.UserAccountState.Locked;
+            }
+            else
+            {
+                details.AccountState = entity.AccountState;
+            }
+
             details.EmailConfirmed = entity.EmailConfirmed;
             details.LanguageId = entity.LanguageId;
 
@@ -3496,6 +3512,27 @@ namespace FLS.Server.Data.Mapping
             entity.ForcePasswordChangeNextLogon = details.ForcePasswordChangeNextLogon;
 
             entity.AccountState = details.AccountState;
+
+            if (entity.AccountState == (int) FLS.Data.WebApi.User.UserAccountState.Disabled)
+            {
+                entity.LockoutEnabled = true;
+                entity.LockoutEndDateUtc = DateTime.MaxValue;
+            }
+            else if (entity.AccountState == (int)FLS.Data.WebApi.User.UserAccountState.Active)
+            {
+                entity.LockoutEnabled = true;
+                entity.LockoutEndDateUtc = null;
+                entity.AccessFailedCount = 0;
+            }
+            else if (entity.AccountState == (int)FLS.Data.WebApi.User.UserAccountState.Locked)
+            {
+                entity.LockoutEnabled = true;
+
+                if (entity.LockoutEndDateUtc.HasValue == false)
+                {
+                    entity.LockoutEndDateUtc = DateTime.MaxValue;
+                }
+            }
 
             return entity;
         }
