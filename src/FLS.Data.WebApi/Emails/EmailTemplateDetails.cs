@@ -17,6 +17,8 @@ namespace FLS.Data.WebApi.Emails
 
         public string Description { get; set; }
 
+        public int LanguageId { get; set; }
+
         [Required]
         [StringLength(256)]
         public string FromAddress { get; set; }

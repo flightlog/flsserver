@@ -26,14 +26,16 @@ namespace FLS.Server.Service
     {
         private readonly DataAccessService _dataAccessService;
         private readonly AircraftService _aircraftService;
+        private readonly LanguageService _languageService;
         private readonly ClubService _clubService;
 
         public FlightService(DataAccessService dataAccessService, AircraftService aircraftService,
-            ClubService clubService, IdentityService identityService)
+            LanguageService languageService, ClubService clubService, IdentityService identityService)
             : base(dataAccessService, identityService)
         {
             _dataAccessService = dataAccessService;
             _aircraftService = aircraftService;
+            _languageService = languageService;
             _clubService = clubService;
             Logger = LogManager.GetCurrentClassLogger();
         }
@@ -545,7 +547,9 @@ namespace FLS.Server.Service
                 //when sorting for flight date only, we sort for StartDateTime as second to get more valuable result
                 pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
             }
-            
+
+            var translation = _languageService.GetTranslation(CurrentAuthenticatedFLSUser.LanguageId);
+
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var includedFlightCrewTypes = new int[]
@@ -728,6 +732,7 @@ namespace FLS.Server.Service
                         StartDateTime = f.f.StartDateTime,
                         LdgDateTime = f.f.LdgDateTime,
                         GliderFlightDurationInSeconds = DbFunctions.DiffSeconds(f.f.StartDateTime, f.f.LdgDateTime),
+                        ValidationErrors = f.f.ValidationErrors,
                         TowFlightId = f.f.TowFlightId,
                         TowAircraftImmatriculation = f.f.TowFlight.Aircraft.Immatriculation,
                         TowFlightStartDateTime = f.f.TowFlight.StartDateTime,
@@ -737,6 +742,7 @@ namespace FLS.Server.Service
                         TowFlightLdgLocation = f.f.TowFlight.LdgLocation.LocationName,
                         TowFlightAirState = f.f.TowFlight.AirStateId,
                         TowFlightProcessState = f.f.TowFlight.ProcessStateId,
+                        TowFlightValidationErrors = f.f.TowFlight.ValidationErrors,
                         TowPilotName = f.f.TowFlight.FlightCrews.Any(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent) ?
                                 f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname
                                 + " " + f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname : null,
@@ -754,6 +760,34 @@ namespace FLS.Server.Service
                 var pagedList = new PagedList<GliderFlightOverview>(overviewList, pagedQuery.PageStart,
                     pagedQuery.PageSize, pagedQuery.TotalRows);
 
+                foreach (var gliderFlightOverview in pagedList.Items)
+                {
+                    if (string.IsNullOrEmpty(gliderFlightOverview.ValidationErrors) == false)
+                    {
+                        var validationErrors = gliderFlightOverview.ValidationErrors.Split(';').ToList();
+                        var translatedErrors = new List<string>();
+
+                        foreach (var validationError in validationErrors)
+                        {
+                            translatedErrors.Add(translation.GetOrReturnKey(validationError));
+                        }
+
+                        gliderFlightOverview.ValidationErrors = string.Join(";", translatedErrors);
+                    }
+
+                    if (string.IsNullOrEmpty(gliderFlightOverview.TowFlightValidationErrors) == false)
+                    {
+                        var validationErrors = gliderFlightOverview.TowFlightValidationErrors.Split(';').ToList();
+                        var translatedErrors = new List<string>();
+
+                        foreach (var validationError in validationErrors)
+                        {
+                            translatedErrors.Add(translation.GetOrReturnKey(validationError));
+                        }
+
+                        gliderFlightOverview.TowFlightValidationErrors = string.Join(";", translatedErrors);
+                    }
+                }
                 return pagedList;
             }
         }
@@ -879,7 +913,7 @@ namespace FLS.Server.Service
                         if (flight.TowFlightId == Guid.Empty
                             || flight.TowFlight == null)
                         {
-                            validationResults.Add(new ValidationResult("No towing flight referenced for towed glider flight!"));
+                            validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_towing_flight_referenced_for_towed_glider_flight"));
                         }
 
                         if (flight.TowFlight != null)
@@ -907,7 +941,7 @@ namespace FLS.Server.Service
                     {
                         if (flight.TowFlightId.HasValue)
                         {
-                            validationResults.Add(new ValidationResult("Towing flight referenced for externally started glider flight!"));
+                            validationResults.Add(new ValidationResult("VALIDATION_ERROR_Towing_flight_referenced_for_externally_started_glider_flight"));
                         }
                     }
                     else if (flight.StartTypeId.Value == (int)AircraftStartType.WinchLaunch)
@@ -915,7 +949,7 @@ namespace FLS.Server.Service
                         if (flight.WinchOperator == null
                             || flight.WinchOperator.HasPerson == false)
                         {
-                            validationResults.Add(new ValidationResult("No winch operator set for winch started glider flight!"));
+                            validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_winch_operator_set_for_winch_started_glider_flight"));
                         }
                     }
                     else if (flight.StartTypeId.Value == (int)AircraftStartType.SelfStart)
@@ -962,37 +996,37 @@ namespace FLS.Server.Service
         private void ValidateFlightBasics(Flight flight, List<ValidationResult> validationResults)
         {
             if (flight.FlightDate.HasValue == false)
-                validationResults.Add(new ValidationResult("No flight date set!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_flight_date_set"));
 
             if (flight.AircraftId.IsValid() == false)
-                validationResults.Add(new ValidationResult("No aircraft set!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_aircraft_set"));
 
             if (flight.Pilot == null || flight.Pilot.PersonId.IsValid() == false)
-                validationResults.Add(new ValidationResult("No pilot set!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_pilot_set"));
 
             if (flight.StartDateTime.HasValue == false && flight.NoStartTimeInformation == false)
-                validationResults.Add(new ValidationResult("No start time information set!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_start_time_information_set"));
 
             if (flight.LdgDateTime.HasValue == false && flight.NoLdgTimeInformation == false)
-                validationResults.Add(new ValidationResult("No landing time information set!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_landing_time_information_set"));
 
             if (flight.StartLocationId.HasValue == false)
-                validationResults.Add(new ValidationResult("No start location set!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_start_location_set"));
 
             if (flight.LdgLocationId.HasValue == false)
-                validationResults.Add(new ValidationResult("No landing location set!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_landing_location_set"));
 
             if (flight.StartTypeId.HasValue == false)
-                validationResults.Add(new ValidationResult("No start type set!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_start_type_set"));
 
             if (flight.FlightTypeId.HasValue == false)
-                validationResults.Add(new ValidationResult("No flight type set!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_flight_type_set"));
 
             if (flight.NrOfLdgs.HasValue == false)
-                validationResults.Add(new ValidationResult("Number of landings not set!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_Number_of_landings_not_set"));
 
             if (flight.NrOfLdgs.HasValue && flight.NrOfLdgs.Value < 1)
-                validationResults.Add(new ValidationResult("Number of landings is less then 1!"));
+                validationResults.Add(new ValidationResult("VALIDATION_ERROR_Number_of_landings_is_less_then_1"));
         }
 
         public void LockFlights(bool forceLockNow = false)

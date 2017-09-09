@@ -41,6 +41,10 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual ICollection<LanguageTranslation> LanguageTranslations { get; set; }
 
+        public virtual ICollection<User> Users { get; set; }
+
+        public virtual ICollection<EmailTemplate> EmailTemplates { get; set; }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

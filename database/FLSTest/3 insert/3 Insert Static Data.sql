@@ -113,6 +113,16 @@ DELETE FROM ClubStates
 DELETE FROM CounterUnitTypes
 DELETE FROM AccountingUnitTypes
 
+PRINT 'Insert Languages'
+SET IDENTITY_INSERT [Languages] ON
+INSERT INTO [dbo].[Languages]
+           ([LanguageId],[LanguageKey], [LanguageName], [Remarks]
+           ,[CreatedOn],[ModifiedOn])
+     VALUES
+           (1,'DE','Deutsch', null, SYSDATETIME(), null)
+
+SET IDENTITY_INSERT [Languages] OFF
+
 PRINT 'Insert CounterUnitTypes'
 INSERT INTO [dbo].[CounterUnitTypes] ([CounterUnitTypeId], [CounterUnitTypeName], [CounterUnitTypeKeyName],[Comment],[IsActive],[CreatedOn])
      VALUES (1, 'Minutes','Min',NULL,1,SYSUTCDATETIME())
@@ -849,16 +859,6 @@ INSERT INTO [dbo].[AircraftReservationTypes]
      VALUES
            (2,'Check-Flug',null, SYSDATETIME(), null, 1)
 SET IDENTITY_INSERT [AircraftReservationTypes] OFF
-
-SET IDENTITY_INSERT [Languages] ON
-INSERT INTO [dbo].[Languages]
-           ([LanguageId],[LanguageKey], [LanguageName], [Remarks]
-           ,[CreatedOn],[ModifiedOn])
-     VALUES
-           (1,'DE','Deutsch', null, SYSDATETIME(), null)
-
-SET IDENTITY_INSERT [Languages] OFF
-
 
 
 PRINT 'Insert AuditLogEventTypes'

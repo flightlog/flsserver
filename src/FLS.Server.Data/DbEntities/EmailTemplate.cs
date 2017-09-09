@@ -51,6 +51,8 @@ namespace FLS.Server.Data.DbEntities
 
         public bool IsCustomizable { get; set; }
 
+        public int LanguageId { get; set; }
+
 
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
@@ -76,6 +78,8 @@ namespace FLS.Server.Data.DbEntities
         public bool IsDeleted { get; set; }
 
         public virtual Club Club { get; set; }
+
+        public virtual Language Language { get; set; }
 
         public Guid Id
         {

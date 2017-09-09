@@ -65,17 +65,35 @@ namespace FLS.Server.Service
                                     .Where(l => l.LanguageId == language.LanguageId)
                                     .OrderBy(l => l.TranslationKey);
 
-                var translation = new Translation();
-                translation.LanguageKey = languageKey;
-                translation.Translations = new Dictionary<string, string>();
+                var translationDic = new Dictionary<string, string>();
 
                 foreach (var languageTranslation in translations)
                 {
-                    translation.Translations.Add(languageTranslation.TranslationKey,
+                    translationDic.Add(languageTranslation.TranslationKey,
                         languageTranslation.TranslationValue);
                 }
 
-                return translation.Translations;
+                return translationDic;
+            }
+        }
+
+        public Dictionary<string, string> GetTranslation(int languageId)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var translations = context.LanguageTranslations
+                                    .Where(l => l.LanguageId == languageId)
+                                    .OrderBy(l => l.TranslationKey);
+
+                var translationDic = new Dictionary<string, string>();
+
+                foreach (var languageTranslation in translations)
+                {
+                    translationDic.Add(languageTranslation.TranslationKey,
+                        languageTranslation.TranslationValue);
+                }
+
+                return translationDic;
             }
         }
 

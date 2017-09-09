@@ -421,6 +421,18 @@ namespace FLS.Server.Data
                .HasForeignKey(e => e.LanguageId)
                .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Language>()
+               .HasMany(e => e.Users)
+               .WithRequired(e => e.Language)
+               .HasForeignKey(e => e.LanguageId)
+               .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Language>()
+               .HasMany(e => e.EmailTemplates)
+               .WithRequired(e => e.Language)
+               .HasForeignKey(e => e.LanguageId)
+               .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<LengthUnitType>()
                 .HasMany(e => e.Locations)
                 .WithOptional(e => e.LengthUnitType)

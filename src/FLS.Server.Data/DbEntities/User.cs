@@ -72,6 +72,8 @@ namespace FLS.Server.Data.DbEntities
 
         public bool ForcePasswordChangeNextLogon { get; set; }
 
+        public int LanguageId { get; set; }
+
         /// <summary>
         /// Gets or sets a value indicating whether [do not update meta data].
         /// Used for workflow processes to not create a modified user error when trying to save records.
@@ -112,6 +114,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual UserAccountState UserAccountState { get; set; }
 
         public virtual ICollection<UserRole> UserRoles { get; set; }
+
+        public virtual Language Language { get; set; }
 
         public Guid Id
         {

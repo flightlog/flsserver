@@ -1068,6 +1068,7 @@ namespace FLS.Server.Data.Mapping
             details.Subject = entity.Subject;
             details.HtmlBody = entity.HtmlBody;
             details.TextBody = entity.TextBody;
+            details.LanguageId = entity.LanguageId;
 
             return details;
         }
@@ -1091,6 +1092,7 @@ namespace FLS.Server.Data.Mapping
             entity.Subject = details.Subject;
             entity.HtmlBody = details.HtmlBody;
             entity.TextBody = details.TextBody;
+            entity.LanguageId = details.LanguageId;
 
             return entity;
         }
@@ -3458,6 +3460,7 @@ namespace FLS.Server.Data.Mapping
 
             details.AccountState = entity.AccountState;
             details.EmailConfirmed = entity.EmailConfirmed;
+            details.LanguageId = entity.LanguageId;
 
             foreach (var userRole in entity.UserRoles)
             {
@@ -3484,6 +3487,9 @@ namespace FLS.Server.Data.Mapping
             entity.NotificationEmail = details.NotificationEmail;
             entity.PersonId = details.PersonId;
             entity.Remarks = details.Remarks;
+
+            //TODO: Implement language settings on client
+            entity.LanguageId = 1; //details.LanguageId;
 
             //set by server
             //entity.LastPasswordChangeOn = details.LastPasswordChangeOn;

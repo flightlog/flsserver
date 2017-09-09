@@ -141,6 +141,9 @@ namespace FLS.Server.Tests.ServiceTests
 
             flightDetails.GliderFlightDetailsData.StartDateTime = null;
 
+            var towFlightDetails = CreateTowFlightDetailsData(CurrentIdentityUser.ClubId, "HB-XXX", DateTime.Now);
+            towFlightDetails.PilotPersonId = Guid.Empty;
+            flightDetails.TowFlightDetailsData = towFlightDetails;
             FlightService.InsertFlightDetails(flightDetails);
 
             Assert.IsTrue(flightDetails.FlightId.IsValid());
@@ -148,6 +151,8 @@ namespace FLS.Server.Tests.ServiceTests
             FlightService.ValidateFlight(flightDetails.FlightId);
 
             var errors = FlightService.GetFlight(flightDetails.FlightId);
+
+            var overview = FlightService.GetGliderFlightOverviews();
 
         }
 

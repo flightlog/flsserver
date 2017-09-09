@@ -27,11 +27,11 @@ namespace FLS.Data.WebApi.Flight
 
         public int AirState { get; set; }
 
-        public int ValidationState { get; set; }
-
         public int ProcessState { get; set; }
 
         public string FlightCode { get; set; }
+
+        public string ValidationErrors { get; set; }
 
         public Nullable<DateTime> LdgDateTime
         {
@@ -59,8 +59,6 @@ namespace FLS.Data.WebApi.Flight
 
         public Nullable<int> TowFlightAirState { get; set; }
 
-        public Nullable<int> TowFlightValidationState { get; set; }
-
         public Nullable<int> TowFlightProcessState { get; set; }
 
         public string TowAircraftImmatriculation { get; set; }
@@ -85,7 +83,9 @@ namespace FLS.Data.WebApi.Flight
 
         public TimeSpan? TowFlightDuration { get; set; }
 
-        
+        public string TowFlightValidationErrors { get; set; }
+
+
         public override Guid Id
         {
             get { return FlightId; }

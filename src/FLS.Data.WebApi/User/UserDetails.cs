@@ -45,6 +45,8 @@ namespace FLS.Data.WebApi.User
 
         public bool EmailConfirmed { get; set; }
 
+        public int LanguageId { get; set; }
+
         public override Guid Id
         {
             get { return UserId; }
