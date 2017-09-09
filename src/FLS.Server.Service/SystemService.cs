@@ -70,29 +70,6 @@ namespace FLS.Server.Service
                 return list;
             }
         }
-        
-        internal List<SystemLog> GetAuditLogs()
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var list = context.SystemLogs.OrderByDescending(c => c.LogId).Take(2000).ToList();
-
-                return list;
-            }
-        }
-
-        internal SystemLog GetAuditLog(long logId)
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                
-
-                var systemLog = context.SystemLogs.FirstOrDefault(q => q.LogId == logId);
-
-                return systemLog;
-            }
-        }
-
         #endregion AuditLog
 
         #region SystemData
