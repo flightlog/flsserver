@@ -1168,9 +1168,8 @@ namespace FLS.Server.Service
 
             if (originalFlight.ProcessStateId > (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked)
             {
-                var message = $"Flight with Id: {originalFlight.Id} has already been invoiced and can not be updated!";
-                Logger.Warn(message);
-                throw new LockedFlightException(message);
+                Logger.Warn($"Flight with Id: {originalFlight.Id} has already been invoiced and can not be updated!");
+                throw new LockedFlightException($"Flight has already been invoiced and can not be updated!");
             }
             
             using (var context = _dataAccessService.CreateDbContext())
@@ -1201,9 +1200,8 @@ namespace FLS.Server.Service
 
                 if (original.ProcessStateId > (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked)
                 {
-                    var message = $"Flight with Id: {original.Id} has already been invoiced and can not be deleted!";
-                    Logger.Warn(message);
-                    throw new LockedFlightException(message);
+                    Logger.Warn($"Flight with Id: {original.Id} has already been invoiced and can not be deleted!");
+                    throw new LockedFlightException($"Flight has already been invoiced and can not be deleted!");
                 }
 
                 //manual cascade on delete as SQL Server does not support cascade delete with parent/child relation to the same entity
