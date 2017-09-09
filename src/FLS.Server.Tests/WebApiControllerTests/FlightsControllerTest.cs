@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Flight;
+using FLS.Server.Data.Enums;
 using FLS.Server.Service;
 using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
@@ -683,6 +684,42 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
                 var lockedFlights2 = context.Flights.Where(q => q.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked);
                 Assert.IsTrue(lockedFlights2.Any());
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("WebApi")]
+        public void UpdateLockedFlightsDetailsWebApiTest()
+        {
+            InsertAndUpdateSchoolFlightDetailsWebApiTest();
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                var validateFlights = GetAsync("/api/v1/flights/validate").Result;
+                var lockFlights = GetAsync("/api/v1/flights/lock/force").Result;
+
+                var flight =
+                    context.Flights.First(
+                        x => x.ProcessStateId == (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked
+                            && x.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight);
+
+                Assert.IsNotNull(flight);
+
+                flight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.Delivered;
+                context.SaveChanges();
+
+                var flightDetails = GetAsync<FlightDetails>("/api/v1/flights/" + flight.Id).Result;
+
+                Assert.AreEqual(flight.Id, flightDetails.Id);
+
+                if (flightDetails.GliderFlightDetailsData != null)
+                {
+                    var flightComment = DateTime.Now.ToShortTimeString();
+                    flightDetails.GliderFlightDetailsData.FlightComment = flightComment;
+
+                    var putResult = PutAsync(flightDetails, "/api/v1/flights/" + flightDetails.FlightId).Result;
+
+                    Assert.IsFalse(putResult.IsSuccessStatusCode);
+                }
             }
         }
 
