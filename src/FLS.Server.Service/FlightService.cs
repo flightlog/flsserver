@@ -828,7 +828,7 @@ namespace FLS.Server.Service
         /// </summary>
         public void ValidateFlights()
         {
-            ValidateFlight(CurrentAuthenticatedFLSUserClubId);
+            ValidateFlights(CurrentAuthenticatedFLSUserClubId);
         }
 
         /// <summary>
@@ -1198,6 +1198,13 @@ namespace FLS.Server.Service
             {
                 var original = context.Flights.Include(Constants.TowFlight).FirstOrDefault(l => l.FlightId == flightId);
                 original.EntityNotNull("Flight", flightId);
+
+                if (original.ProcessStateId > (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked)
+                {
+                    var message = $"Flight with Id: {original.Id} has already been invoiced and can not be deleted!";
+                    Logger.Warn(message);
+                    throw new LockedFlightException(message);
+                }
 
                 //manual cascade on delete as SQL Server does not support cascade delete with parent/child relation to the same entity
                 if (original.TowFlight != null)
