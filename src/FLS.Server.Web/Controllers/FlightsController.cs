@@ -264,7 +264,7 @@ namespace FLS.Server.WebApi.Controllers
         /// Validates the flights which are not already validated.
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Route("validate")]
         [ResponseType(typeof(void))]
         public IHttpActionResult ValidateFlights()
