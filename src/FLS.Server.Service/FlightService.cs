@@ -906,12 +906,14 @@ namespace FLS.Server.Service
                     flight.ValidatedOn = DateTime.UtcNow;
                     flight.DoNotUpdateMetaData = true;
 
+                    //do basic flight data validation stuff
                     ValidateFlightBasics(flight, validationResults);
 
                     if (flight.StartTypeId.Value == (int)AircraftStartType.TowingByAircraft)
                     {
-                        if (flight.TowFlightId == Guid.Empty
-                            || flight.TowFlight == null)
+                        if (flight.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight
+                            && (flight.TowFlightId == Guid.Empty
+                            || flight.TowFlight == null))
                         {
                             validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_towing_flight_referenced_for_towed_glider_flight"));
                         }
@@ -1022,11 +1024,15 @@ namespace FLS.Server.Service
             if (flight.FlightTypeId.HasValue == false)
                 validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_flight_type_set"));
 
-            if (flight.NrOfLdgs.HasValue == false)
-                validationResults.Add(new ValidationResult("VALIDATION_ERROR_Number_of_landings_not_set"));
+            if (flight.LdgDateTime.HasValue && flight.NoLdgTimeInformation == false)
+            {
+                //only check number of landings when landing time is set
+                if (flight.NrOfLdgs.HasValue == false)
+                    validationResults.Add(new ValidationResult("VALIDATION_ERROR_Number_of_landings_not_set"));
 
-            if (flight.NrOfLdgs.HasValue && flight.NrOfLdgs.Value < 1)
-                validationResults.Add(new ValidationResult("VALIDATION_ERROR_Number_of_landings_is_less_then_1"));
+                if (flight.NrOfLdgs.HasValue && flight.NrOfLdgs.Value < 1)
+                    validationResults.Add(new ValidationResult("VALIDATION_ERROR_Number_of_landings_is_less_then_1"));
+            }
         }
 
         public void LockFlights(bool forceLockNow = false)
