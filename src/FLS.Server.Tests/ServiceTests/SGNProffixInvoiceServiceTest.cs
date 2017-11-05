@@ -167,7 +167,8 @@ namespace FLS.Server.Tests.ServiceTests
                         FriendlyName = "sgn",
                         NotificationEmail = "sgn@glider-fls.ch",
                         Club = club,
-                        AccountState = 1
+                        AccountState = 1,
+                        LanguageId = 1
                     };
 
                     context.Users.Add(user);
