@@ -1442,7 +1442,8 @@ namespace FLS.Server.Service
                 foreach (var flightOverview in list)
                 {
                     if (flightOverview.ProcessState < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
-                        || IsCurrentUserInRoleClubAdministrator)
+                        || (IsCurrentUserInRoleClubAdministrator 
+                            && flightOverview.ProcessState < (int)FLS.Data.WebApi.Flight.FlightProcessState.Delivered))
                     {
                         flightOverview.CanUpdateRecord = true;
                         flightOverview.CanDeleteRecord = true;
