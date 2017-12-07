@@ -2740,6 +2740,10 @@ namespace FLS.Server.Data.Mapping
             entity.Zip = details.ZipCode;
 
             entity.Birthday = details.Birthday;
+
+            if (entity.Birthday.HasValue)
+                entity.Birthday = entity.Birthday.Value.Date.AddHours(12);  //set birthday to mid day for time zone handling
+
             entity.FaxNumber = details.FaxNumber;
             entity.ReceiveOwnedAircraftStatisticReports = details.ReceiveOwnedAircraftStatisticReports;
             entity.EnableAddress = details.EnableAddress;
