@@ -5,41 +5,59 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using FLS.Data.WebApi;
 
 namespace FLS.Server.Data.DbEntities
 {
-    public partial class LanguageTranslation
+    public partial class Setting : IFLSMetaData
     {
-        public LanguageTranslation()
-        {
-            
-        }
+        public Guid SettingId { get; set; }
 
-        public Guid LanguageTranslationId { get; set; }
+        public Guid? ClubId { get; set; }
+
+        public Guid? UserId { get; set; }
 
         [Required]
         [StringLength(250)]
-        public string TranslationKey { get; set; }
+        public string SettingKey { get; set; }
 
-        [Required]
-        public string TranslationValue { get; set; }
+        public string SettingValue { get; set; }
 
-        [Required]
-        public int LanguageId { get; set; }
+        public bool IsPublic { get; set; }
+        
 
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 
+        public Guid CreatedByUserId { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime? ModifiedOn { get; set; }
 
+        public Guid? ModifiedByUserId { get; set; }
+
+        [Column(TypeName = "datetime2")]
+        public DateTime? DeletedOn { get; set; }
+
+        public Guid? DeletedByUserId { get; set; }
+
+        public int? RecordState { get; set; }
+
+        public Guid OwnerId { get; set; }
+
+        public int OwnershipType { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public virtual Club Club { get; set; }
+
+        public virtual User User { get; set; }
+
         public Guid Id
         {
-            get { return LanguageTranslationId; }
-            set { LanguageTranslationId = value; }
+            get { return SettingId; }
+            set { SettingId = value; }
         }
-
-        public virtual Language Language { get; set; }
 
         public override string ToString()
         {

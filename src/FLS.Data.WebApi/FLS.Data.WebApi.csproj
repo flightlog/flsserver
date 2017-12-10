@@ -186,6 +186,8 @@
     <Compile Include="Reporting\FlightReportData.cs" />
     <Compile Include="Resources\ConstantUIStrings.cs" />
     <Compile Include="Resources\RoleApplicationKeyStrings.cs" />
+    <Compile Include="Settings\SettingDetails.cs" />
+    <Compile Include="Settings\SettingDetailsSearchFilter.cs" />
     <Compile Include="System\AssemblyInfo.cs" />
     <Compile Include="System\SystemLogOverviewSearchFilter.cs" />
     <Compile Include="System\SystemVersionInfoOverview.cs" />

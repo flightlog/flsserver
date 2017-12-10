@@ -29,6 +29,7 @@ using FLS.Server.Data.Extensions;
 using Newtonsoft.Json;
 using NLog;
 using TrackerEnabledDbContext.Common.Models;
+using FLS.Data.WebApi.Settings;
 
 namespace FLS.Server.Data.Mapping
 {
@@ -3233,6 +3234,46 @@ namespace FLS.Server.Data.Mapping
         }
 
         #endregion Role
+
+        #region Setting
+
+        public static SettingDetails ToSettingDetails(this Setting entity, SettingDetails details = null)
+        {
+            entity.ArgumentNotNull("entity");
+
+            if (details == null)
+            {
+                details = new SettingDetails();
+            }
+
+            details.SettingId = entity.SettingId;
+            details.SettingKey = entity.SettingKey;
+            details.SettingValue = entity.SettingValue;
+            details.ClubId = entity.ClubId;
+            details.UserId = entity.UserId;
+
+            return details;
+        }
+
+        public static Setting ToSetting(this SettingDetails details, Setting entity = null, bool overwriteSettingId = false)
+        {
+            details.ArgumentNotNull("details");
+
+            if (entity == null)
+            {
+                entity = new Setting();
+            }
+
+            if (overwriteSettingId) entity.SettingId = details.SettingId;
+            entity.SettingKey = details.SettingKey;
+            entity.SettingValue = details.SettingValue;
+            entity.ClubId = details.ClubId;
+            entity.UserId = details.UserId;
+
+            return entity;
+        }
+
+        #endregion Setting
 
         #region StartType
 

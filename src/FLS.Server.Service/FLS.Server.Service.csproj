@@ -125,6 +125,7 @@
     <Compile Include="Email\Model\LicenceExpireModel.cs" />
     <Compile Include="Email\LicenceExpireEmailBuildService.cs" />
     <Compile Include="Email\RegistrationEmailBuildService.cs" />
+    <Compile Include="SettingService.cs" />
     <Compile Include="Extensions\ExcelPackageExtensions.cs" />
     <Compile Include="Identity\EntityStore.cs" />
     <Compile Include="Identity\IdentityRoleStoreService.cs" />
