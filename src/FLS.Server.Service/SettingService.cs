@@ -31,8 +31,6 @@ namespace FLS.Server.Service
             {
                 var record = context.Settings.FirstOrDefault(x => x.SettingKey.ToLower() == key.ToLower() && x.ClubId == clubId && x.UserId == userId);
 
-                CheckSecurity(record);
-
                 if (record == null)
                 {
                     throw new EntityNotFoundException("Setting", key);
