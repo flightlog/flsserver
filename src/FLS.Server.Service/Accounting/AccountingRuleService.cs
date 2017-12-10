@@ -158,6 +158,8 @@ namespace FLS.Server.Service.Accounting
                 .Where(obj => obj != null)
                 .ToList();
 
+                SetAccountingRuleFilterOverviewSecurity(overviewList);
+
                 var pagedList = new PagedList<AccountingRuleFilterOverview>(overviewList, pagedQuery.PageStart,
                     pagedQuery.PageSize, pagedQuery.TotalRows);
 
