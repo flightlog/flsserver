@@ -144,6 +144,14 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
                 .PostAsync();
         }
 
+        protected override async Task<HttpResponseMessage> PostFileAsync(HttpContent content, string uri)
+        {
+            return await TestServer.CreateRequest(uri)
+                .AddHeader("Authorization", "Bearer " + _token)
+                .And(request => request.Content = content)
+                .PostAsync();
+        }
+
         protected override async Task<HttpResponseMessage> PutAsync<TModel>(TModel model, string uri)
         {
             //maybe it is a hack, but it works

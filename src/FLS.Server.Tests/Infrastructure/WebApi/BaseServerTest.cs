@@ -99,6 +99,13 @@ namespace FLS.Server.Tests.Infrastructure.WebApi
                 .PostAsync();
         }
 
+        protected virtual async Task<HttpResponseMessage> PostFileAsync(HttpContent content, string uri)
+        {
+            return await TestServer.CreateRequest(uri)
+                .And(request => request.Content = content)
+                .PostAsync();
+        }
+
         protected virtual async Task<HttpResponseMessage> PutAsync<TModel>(TModel model, string uri)
         {
             //maybe it is a hack, but it works
