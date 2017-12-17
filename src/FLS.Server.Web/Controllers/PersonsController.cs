@@ -10,6 +10,8 @@ using System.Web.Http.Description;
 using FLS.Data.WebApi;
 using FLS.Data.WebApi.Person;
 using FLS.Server.Service;
+using FLS.Server.WebApi.ActionFilters;
+using System.Threading.Tasks;
 
 namespace FLS.Server.WebApi.Controllers
 {
@@ -608,5 +610,27 @@ namespace FLS.Server.WebApi.Controllers
         //    //    new ContentDispositionHeaderValue("fileName") { FileName = fileName };
         //    //return Ok(response);
         //}
+
+        /// <summary>
+        /// Upload a excel file for importing of person data.
+        /// </summary>
+        /// <returns></returns>
+        [Route("upload")]
+        [HttpPost]
+        [ValidateMimeMultipartContentFilter]
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> UploadPersonFile()
+        {
+
+            var streamProvider = new MultipartFormDataStreamProvider("C:\\Temp");
+            await Request.Content.ReadAsMultipartAsync(streamProvider);
+            var formData = streamProvider.FormData;
+            var files = streamProvider.FileData;
+            var content = streamProvider.Contents;
+            var bytes = File.ReadAllBytes(files[0].LocalFileName);
+            _personService.ImportPersonExcelFile(bytes);
+
+            return Ok();
+        }
     }
 }

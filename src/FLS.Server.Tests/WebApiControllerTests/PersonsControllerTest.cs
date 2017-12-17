@@ -12,6 +12,7 @@ using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Practices.Unity;
+using System.IO;
 
 namespace FLS.Server.Tests.WebApiControllerTests
 {
@@ -283,6 +284,22 @@ namespace FLS.Server.Tests.WebApiControllerTests
             var personFullDetails = ConvertToModel<PersonFullDetails>(putResult);
             Assert.IsTrue(personFullDetails.ModifiedByUserId == MyUserDetails.UserId);
             Assert.IsTrue(personFullDetails.ModifiedOn.SetAsUtc() == timeStamp.SetAsUtc());
+        }
+
+        [TestMethod]
+        [TestCategory("WebApi")]
+        public void UploadPersonExcelFileWebApiTest()
+        {
+            var content = new MultipartFormDataContent();
+            var fullfilename = @"C:\Projects\flsserver\FGZOAdressexportFLSformatted.xlsx";
+            var filename = "FGZOAdressexportFLSformatted.xlsx";
+            var filestream = new FileStream(fullfilename, FileMode.Open);
+            var fileName = System.IO.Path.GetFileName(filename);
+            content.Add(new StreamContent(filestream), "file", fileName);
+
+            var result = PostFileAsync(content, "/api/v1/persons/upload").Result;
+
+            Assert.IsTrue(result.IsSuccessStatusCode);
         }
 
         protected override string Uri

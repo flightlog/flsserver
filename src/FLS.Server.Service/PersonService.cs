@@ -19,6 +19,8 @@ using FLS.Server.Interfaces;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Exporting;
 using NLog;
+using OfficeOpenXml;
+using FLS.Server.Service.Extensions;
 
 namespace FLS.Server.Service
 {
@@ -679,14 +681,19 @@ namespace FLS.Server.Service
                 if (IsCurrentUserInRoleSystemAdministrator || controlAccess == false)
                 {
                     person = context.Persons.Include(Constants.Users)
-                        .Include(Constants.PersonPersonCategories).Include(Constants.PersonClubs).Where(p => p.PersonId == personId)
+                        .Include(Constants.PersonPersonCategories)
+                        .Include(Constants.PersonPersonCategories + ".PersonCategory")
+                        .Include(Constants.PersonClubs)
+                        .Where(p => p.PersonId == personId)
                         .ToList()
                         .FirstOrDefault();
                 }
                 else
                 {
                     person = context.Persons.Include(Constants.Users)
-                        .Include(Constants.PersonPersonCategories).Include(Constants.PersonClubs)
+                        .Include(Constants.PersonPersonCategories)
+                        .Include(Constants.PersonPersonCategories + ".PersonCategory")
+                        .Include(Constants.PersonClubs)
                                 .Where(p => p.PersonId == personId && p.PersonClubs
                                 .Any(pc => pc.ClubId == CurrentAuthenticatedFLSUser.ClubId))
                                 .ToList()
@@ -963,6 +970,51 @@ namespace FLS.Server.Service
             var bytes = ExcelExporter.GetPersonExcelPackage(personList, $"Adressliste");
             var message = _addressListEmailBuildService.CreateAddressListEmail(CurrentAuthenticatedFLSUser, bytes);
             _addressListEmailBuildService.SendEmail(message);
+        }
+
+        public void ImportPersonExcelFile(byte[] fileContentBytes)
+        {
+            using (var package = new ExcelPackage(fileContentBytes.ToMemoryStream()))
+            {
+                var workSheet = package.Workbook.Worksheets[1];
+                var entityType = typeof(PersonDetails);
+                var ignoreColumns = new List<string>()
+                {
+                    "ErstelltAm"
+                };
+
+                var mapping = new Dictionary<string, string>()
+                {
+                    { "AdressNrADR", "ClubRelatedPersonDetails.MemberNumber" },
+                    { "Adresszeile1", "AddressLine1" },
+                    { "EMail", "PrivateEmail" },
+                    { "Fax", "FaxNumber" },
+                    { "GeburtsDatum", "Birthday" },
+                    { "LandPRO", "LicenceNumber" },
+                    { "Natel", "MobilePhoneNumber" },
+                    { "Name", "Lastname" },
+                    { "Ort", "City" },
+                    { "PLZ", "ZipCode" },
+                    { "KantonPRO", "Region" },
+                    { "Strasse", "AddressLine2" },
+                    { "TelDir", "BusinessPhoneNumber" },
+                    { "TelPrivat", "PrivatePhoneNumber" },
+                    { "TelZentrale", "BusinessPhoneNumber" },
+                    { "Vorname", "Firstname" },
+                    { "Homepage", "SpotLink" }
+                };
+
+                var entityList = workSheet.ToList<PersonDetails>(ignoreColumns, mapping);
+
+                try
+                {
+                    
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "Error while trying to create new AccountingRuleFilter");
+                }
+            }
         }
     }
 }

@@ -58,25 +58,43 @@ namespace FLS.Server.Tests.WebApiControllerTests
         [TestCategory("WebApi")]
         public void InsertPersonCategoryHierarchyDetailsWebApiTest()
         {
-            var root = new PersonCategoryDetails();
-            root.CategoryName = "Root-PersonCategory @ " + DateTime.Now.Ticks;
-            root.Remarks = "Root";
+            var activeMemberCategory = new PersonCategoryDetails();
+            activeMemberCategory.CategoryName = "Active member";
+            activeMemberCategory.Remarks = "active members";
 
-            var response = PostAsync(root, "/api/v1/personcategories").Result;
+            var response = PostAsync(activeMemberCategory, "/api/v1/personcategories").Result;
 
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
             var rootDetails = ConvertToModel<PersonCategoryDetails>(response);
             Assert.IsTrue(rootDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", rootDetails));
 
             var category = new PersonCategoryDetails();
-            category.CategoryName = "PersonCategory @ " + DateTime.Now.Ticks;
-            category.Remarks = "Test";
+            category.CategoryName = "Gliderpilots";
             category.ParentPersonCategoryId = rootDetails.PersonCategoryId;
 
             response = PostAsync(category, "/api/v1/personcategories").Result;
 
             Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
             var responseDetails = ConvertToModel<PersonCategoryDetails>(response);
+            Assert.IsTrue(responseDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", responseDetails));
+
+            var category2 = new PersonCategoryDetails();
+            category2.CategoryName = "Motorpilots";
+            category2.ParentPersonCategoryId = rootDetails.PersonCategoryId;
+
+            response = PostAsync(category2, "/api/v1/personcategories").Result;
+
+            Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
+            responseDetails = ConvertToModel<PersonCategoryDetails>(response);
+            Assert.IsTrue(responseDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", responseDetails));
+
+            var passant = new PersonCategoryDetails();
+            passant.CategoryName = "Passant";
+
+            response = PostAsync(passant, "/api/v1/personcategories").Result;
+
+            Assert.IsTrue(response.IsSuccessStatusCode, string.Format("Error with Status Code: {0}", response.StatusCode));
+            responseDetails = ConvertToModel<PersonCategoryDetails>(response);
             Assert.IsTrue(responseDetails.Id.IsValid(), string.Format("Primary key not set/mapped after insert or update. Entity-Info: {0}", responseDetails));
         }
         
