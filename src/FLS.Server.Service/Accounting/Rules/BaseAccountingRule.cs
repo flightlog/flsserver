@@ -338,39 +338,12 @@ namespace FLS.Server.Service.Accounting.Rules
 
         protected virtual void InitializeFlightAircraftTypeConditions(RuleBasedDeliveryDetails ruleBasedDelivery)
         {
-            ICondition condition = null;
+            int ruleAircraftTypeValue = Convert.ToInt32(AccountingRuleFilter.IsRuleForGliderFlights)*1;
+            ruleAircraftTypeValue += Convert.ToInt32(AccountingRuleFilter.IsRuleForTowingFlights) * 2;
+            ruleAircraftTypeValue += Convert.ToInt32(AccountingRuleFilter.IsRuleForMotorFlights) * 4;
 
-            if (AccountingRuleFilter.IsRuleForGliderFlights)
-            {
-                condition = new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.GliderFlight);
-            }
-            else
-            {
-                condition = new Inverter(new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.GliderFlight));
-            }
-
-            if (AccountingRuleFilter.IsRuleForTowingFlights)
-            {
-                condition = new Or(condition,
-                    new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.TowFlight));
-            }
-            else
-            {
-                condition = new And(condition,
-                    new Inverter(new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.TowFlight)));
-            }
-
-            if (AccountingRuleFilter.IsRuleForMotorFlights)
-            {
-                condition = new Or(condition,
-                    new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.MotorFlight));
-            }
-            else
-            {
-                condition = new And(condition,
-                    new Inverter(new Equals<int>(Flight.FlightAircraftType, (int) FlightAircraftTypeValue.MotorFlight)));
-            }
-
+            var condition = new Equals<int>(Flight.FlightAircraftType & ruleAircraftTypeValue, Flight.FlightAircraftType);
+            
             Conditions.Add(condition);
         }
 
