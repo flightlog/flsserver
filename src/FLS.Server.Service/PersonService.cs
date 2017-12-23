@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Entity;
 using System.IO;
@@ -9,6 +10,7 @@ using FLS.Common.Extensions;
 using FLS.Common.Paging;
 using FLS.Common.Validators;
 using FLS.Data.WebApi;
+using FLS.Data.WebApi.DataExchange;
 using FLS.Data.WebApi.Person;
 using FLS.Data.WebApi.User;
 using FLS.Server.Data.DbEntities;
@@ -41,6 +43,7 @@ namespace FLS.Server.Service
         }
 
         #region Person
+
         /// <summary>
         /// Get the persons ordered by lastname. If all persons will be queried but the user has no system admin rights
         /// only the main data of each person is be returned (no email, no phone numbers, etc.) 
@@ -61,7 +64,8 @@ namespace FLS.Server.Service
         /// <returns></returns>
         public List<PersonListItem> GetGliderPilotPersonListItems(bool onlyClubRelatedPilots)
         {
-            return GetPilotPersonListItemInternal(onlyClubRelatedPilots, person => person.HasGliderPilotLicence || person.HasGliderTraineeLicence);
+            return GetPilotPersonListItemInternal(onlyClubRelatedPilots,
+                person => person.HasGliderPilotLicence || person.HasGliderTraineeLicence);
         }
 
         /// <summary>
@@ -105,7 +109,8 @@ namespace FLS.Server.Service
         /// <returns></returns>
         public List<PersonListItem> GetMotorPilotPersonListItems(bool onlyClubRelatedPilots)
         {
-            return GetPilotPersonListItemInternal(onlyClubRelatedPilots, person => person.HasMotorPilotLicence || person.HasTMGLicence);
+            return GetPilotPersonListItemInternal(onlyClubRelatedPilots,
+                person => person.HasMotorPilotLicence || person.HasTMGLicence);
         }
 
         public List<PersonListItem> GetMotorInstructorPersonListItems(bool onlyClubRelatedInstuctors)
@@ -132,7 +137,8 @@ namespace FLS.Server.Service
         /// <returns></returns>
         public List<PersonListItem> GetWinchOperatorPersonListItems(bool onlyClubRelatedWinchOperators)
         {
-            return GetPilotPersonListItemInternal(onlyClubRelatedWinchOperators, person => person.HasWinchOperatorLicence);
+            return GetPilotPersonListItemInternal(onlyClubRelatedWinchOperators,
+                person => person.HasWinchOperatorLicence);
         }
 
         /// <summary>
@@ -144,13 +150,13 @@ namespace FLS.Server.Service
         public List<PersonListItem> GetPassengerListItems(bool onlyClubRelatedPassengers)
         {
             var persons = GetPersons(onlyClubRelatedPassengers, person => person.HasGliderInstructorLicence == false
-                && person.HasGliderPAXLicence == false
-                && person.HasGliderPilotLicence == false
-                && person.HasGliderTraineeLicence == false
-                && person.HasMotorPilotLicence == false
-                && person.HasTMGLicence == false
-                && person.HasTowPilotLicence == false
-                && person.HasWinchOperatorLicence == false);
+                                                                          && person.HasGliderPAXLicence == false
+                                                                          && person.HasGliderPilotLicence == false
+                                                                          && person.HasGliderTraineeLicence == false
+                                                                          && person.HasMotorPilotLicence == false
+                                                                          && person.HasTMGLicence == false
+                                                                          && person.HasTowPilotLicence == false
+                                                                          && person.HasWinchOperatorLicence == false);
             return persons.Select(p => p.ToPersonListItem()).ToList();
         }
 
@@ -173,7 +179,8 @@ namespace FLS.Server.Service
         /// <returns></returns>
         public List<PersonOverview> GetGliderPilotPersonOverviews(bool onlyClubRelatedPilots)
         {
-            return GetPersonOverviewsInternal(onlyClubRelatedPilots, person => person.HasGliderPilotLicence || person.HasGliderTraineeLicence);
+            return GetPersonOverviewsInternal(onlyClubRelatedPilots,
+                person => person.HasGliderPilotLicence || person.HasGliderTraineeLicence);
         }
 
         /// <summary>
@@ -228,23 +235,26 @@ namespace FLS.Server.Service
         public List<PersonOverview> GetPassengerOverviews(bool onlyClubRelatedPassengers)
         {
             var persons = GetPersons(onlyClubRelatedPassengers, person => person.HasGliderInstructorLicence == false
-                && person.HasGliderPAXLicence == false
-                && person.HasGliderPilotLicence == false
-                && person.HasGliderTraineeLicence == false
-                && person.HasMotorPilotLicence == false
-                && person.HasTMGLicence == false
-                && person.HasTowPilotLicence == false
-                && person.HasWinchOperatorLicence == false);
+                                                                          && person.HasGliderPAXLicence == false
+                                                                          && person.HasGliderPilotLicence == false
+                                                                          && person.HasGliderTraineeLicence == false
+                                                                          && person.HasMotorPilotLicence == false
+                                                                          && person.HasTMGLicence == false
+                                                                          && person.HasTowPilotLicence == false
+                                                                          && person.HasWinchOperatorLicence == false);
 
             var personOverviewList = persons.Select(p => p.ToPersonOverview(CurrentAuthenticatedFLSUserClubId)).ToList();
             SetPersonOverviewSecurity(personOverviewList);
             return personOverviewList.ToList();
         }
 
-        public PagedList<PersonOverview> GetPagedPersonOverview(int? pageStart, int? pageSize, PageableSearchFilter<PersonOverviewSearchFilter> pageableSearchFilter)
+        public PagedList<PersonOverview> GetPagedPersonOverview(int? pageStart, int? pageSize,
+            PageableSearchFilter<PersonOverviewSearchFilter> pageableSearchFilter)
         {
-            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<PersonOverviewSearchFilter>();
-            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new PersonOverviewSearchFilter();
+            if (pageableSearchFilter == null)
+                pageableSearchFilter = new PageableSearchFilter<PersonOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null)
+                pageableSearchFilter.SearchFilter = new PersonOverviewSearchFilter();
             if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
@@ -299,38 +309,42 @@ namespace FLS.Server.Service
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var persons = context.Persons.Include(Constants.Country).Include(Constants.PersonClubs)
-                        .Include($"{Constants.PersonClubs}.MemberState")
-                        .OrderByPropertyNames(pageableSearchFilter.Sorting);
+                    .Include($"{Constants.PersonClubs}.MemberState")
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
 
                 var filter = pageableSearchFilter.SearchFilter;
                 persons = persons.WhereIf(filter.Lastname,
-                        person => person.Lastname.Contains(filter.Lastname));
+                    person => person.Lastname.Contains(filter.Lastname));
                 persons = persons.WhereIf(filter.Firstname,
-                        person => person.Firstname.Contains(filter.Firstname));
+                    person => person.Firstname.Contains(filter.Firstname));
                 persons = persons.WhereIf(filter.AddressLine,
-                        person => person.AddressLine1.Contains(filter.AddressLine)
-                            || person.AddressLine2.Contains(filter.AddressLine));
+                    person => person.AddressLine1.Contains(filter.AddressLine)
+                              || person.AddressLine2.Contains(filter.AddressLine));
                 persons = persons.WhereIf(filter.ZipCode,
-                        person => person.Zip.Contains(filter.ZipCode));
+                    person => person.Zip.Contains(filter.ZipCode));
                 persons = persons.WhereIf(filter.City,
-                        person => person.City.Contains(filter.City));
+                    person => person.City.Contains(filter.City));
                 persons = persons.WhereIf(filter.CountryName,
-                        person => person.Country.CountryName.Contains(filter.CountryName));
+                    person => person.Country.CountryName.Contains(filter.CountryName));
                 persons = persons.WhereIf(filter.PrivateEmail,
-                        person => person.EmailPrivate.Contains(filter.PrivateEmail));
+                    person => person.EmailPrivate.Contains(filter.PrivateEmail));
                 persons = persons.WhereIf(filter.MobilePhoneNumber,
-                        person => person.MobilePhone.Contains(filter.MobilePhoneNumber));
+                    person => person.MobilePhone.Contains(filter.MobilePhoneNumber));
                 persons = persons.WhereIf(filter.MemberStateName,
-                        person => person.PersonClubs.Any(x => x.MemberState.MemberStateName.Contains(filter.MemberStateName)));
+                    person =>
+                            person.PersonClubs.Any(x => x.MemberState.MemberStateName.Contains(filter.MemberStateName)));
                 persons = persons.WhereIf(filter.LicenceNumber,
-                        person => person.LicenceNumber.Contains(filter.LicenceNumber));
+                    person => person.LicenceNumber.Contains(filter.LicenceNumber));
 
                 if (filter.HasGliderInstructorLicence.HasValue)
-                    persons = persons.Where(person => person.HasGliderInstructorLicence == filter.HasGliderInstructorLicence.Value);
+                    persons =
+                        persons.Where(
+                            person => person.HasGliderInstructorLicence == filter.HasGliderInstructorLicence.Value);
                 if (filter.HasGliderPilotLicence.HasValue)
                     persons = persons.Where(person => person.HasGliderPilotLicence == filter.HasGliderPilotLicence.Value);
                 if (filter.HasGliderTraineeLicence.HasValue)
-                    persons = persons.Where(person => person.HasGliderTraineeLicence == filter.HasGliderTraineeLicence.Value);
+                    persons =
+                        persons.Where(person => person.HasGliderTraineeLicence == filter.HasGliderTraineeLicence.Value);
                 if (filter.HasMotorPilotLicence.HasValue)
                     persons = persons.Where(person => person.HasMotorPilotLicence == filter.HasMotorPilotLicence.Value);
                 if (filter.HasTMGLicence.HasValue)
@@ -338,11 +352,15 @@ namespace FLS.Server.Service
                 if (filter.HasTowPilotLicence.HasValue)
                     persons = persons.Where(person => person.HasTowPilotLicence == filter.HasTowPilotLicence.Value);
                 if (filter.HasGliderPassengerLicence.HasValue)
-                    persons = persons.Where(person => person.HasGliderPAXLicence == filter.HasGliderPassengerLicence.Value);
+                    persons =
+                        persons.Where(person => person.HasGliderPAXLicence == filter.HasGliderPassengerLicence.Value);
                 if (filter.HasWinchOperatorLicence.HasValue)
-                    persons = persons.Where(person => person.HasWinchOperatorLicence == filter.HasWinchOperatorLicence.Value);
+                    persons =
+                        persons.Where(person => person.HasWinchOperatorLicence == filter.HasWinchOperatorLicence.Value);
                 if (filter.HasMotorInstructorLicence.HasValue)
-                    persons = persons.Where(person => person.HasMotorInstructorLicence == filter.HasMotorInstructorLicence.Value);
+                    persons =
+                        persons.Where(
+                            person => person.HasMotorInstructorLicence == filter.HasMotorInstructorLicence.Value);
 
                 if (filter.OnlyClubRelatedPersons.HasValue == false || filter.OnlyClubRelatedPersons.Value)
                 {
@@ -352,9 +370,10 @@ namespace FLS.Server.Service
 
                 var pagedQuery = new PagedQuery<Person>(persons, pageStart, pageSize);
 
-                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToPersonOverview(CurrentAuthenticatedFLSUserClubId))
-                .Where(obj => obj != null)
-                .ToList();
+                var overviewList =
+                    pagedQuery.Items.ToList().Select(x => x.ToPersonOverview(CurrentAuthenticatedFLSUserClubId))
+                        .Where(obj => obj != null)
+                        .ToList();
 
                 SetPersonOverviewSecurity(overviewList);
 
@@ -366,26 +385,26 @@ namespace FLS.Server.Service
         }
 
         private List<PersonListItem> GetPilotPersonListItemInternal(bool onlyClubPersons,
-                                                                      Expression<Func<Person, bool>> personTypeFilter)
+            Expression<Func<Person, bool>> personTypeFilter)
         {
             var persons = GetPersons(onlyClubPersons, personTypeFilter);
             return PreparePersonListItems(persons);
         }
-        
+
         private List<PersonOverview> GetPersonOverviewsInternal(bool onlyClubPersons,
-                                                                      Expression<Func<Person, bool>> personTypeFilter)
+            Expression<Func<Person, bool>> personTypeFilter)
         {
             var persons = GetPersons(onlyClubPersons, personTypeFilter);
             var personOverviewList = persons.Select(p => p.ToPersonOverview(CurrentAuthenticatedFLSUserClubId)).ToList();
             SetPersonOverviewSecurity(personOverviewList);
             return personOverviewList.ToList();
         }
-        
+
         private List<PersonListItem> PreparePersonListItems(List<Person> persons)
         {
             return persons.Select(p => p.ToPersonListItem()).ToList();
         }
-        
+
         internal PersonDetails GetPilotPersonDetailsInternal(Guid personId, Guid clubId, bool controlAccess = true)
         {
             var person = GetPerson(personId, controlAccess);
@@ -445,7 +464,7 @@ namespace FLS.Server.Service
 
             return personFullDetails;
         }
-        
+
         public List<PersonDetails> GetPersonDetailsModifiedSince(DateTime modifiedSince)
         {
             List<Person> personResult = null;
@@ -556,16 +575,17 @@ namespace FLS.Server.Service
                 List<Person> persons = null;
 
                 persons = context.Persons
-                        .Where(p => (p.MedicalClass1ExpireDate.HasValue 
-                        && DbFunctions.TruncateTime(p.MedicalClass1ExpireDate.Value) == expireDate.Date)
-                            || (p.MedicalClass2ExpireDate.HasValue &&
-                            DbFunctions.TruncateTime(p.MedicalClass2ExpireDate.Value) == expireDate.Date)
-                            || (p.MedicalLaplExpireDate.HasValue &&
-                            DbFunctions.TruncateTime(p.MedicalLaplExpireDate.Value) == expireDate.Date)
-                            || (p.GliderInstructorLicenceExpireDate.HasValue &&
-                            DbFunctions.TruncateTime(p.GliderInstructorLicenceExpireDate.Value) == expireDate.Date))
-                        .OrderBy(pe => pe.Lastname)
-                        .ToList();
+                    .Where(p => (p.MedicalClass1ExpireDate.HasValue
+                                 && DbFunctions.TruncateTime(p.MedicalClass1ExpireDate.Value) == expireDate.Date)
+                                || (p.MedicalClass2ExpireDate.HasValue &&
+                                    DbFunctions.TruncateTime(p.MedicalClass2ExpireDate.Value) == expireDate.Date)
+                                || (p.MedicalLaplExpireDate.HasValue &&
+                                    DbFunctions.TruncateTime(p.MedicalLaplExpireDate.Value) == expireDate.Date)
+                                || (p.GliderInstructorLicenceExpireDate.HasValue &&
+                                    DbFunctions.TruncateTime(p.GliderInstructorLicenceExpireDate.Value) ==
+                                    expireDate.Date))
+                    .OrderBy(pe => pe.Lastname)
+                    .ToList();
 
                 return persons;
             }
@@ -655,7 +675,9 @@ namespace FLS.Server.Service
                 if (IsCurrentUserInRoleSystemAdministrator || controlAccess == false)
                 {
                     person = context.Persons.Include(Constants.Users)
-                        .Include(Constants.PersonPersonCategories).Include(Constants.PersonClubs).Where(p => p.PersonClubs.Any(pc => pc.MemberNumber == memberNumber))
+                        .Include(Constants.PersonPersonCategories)
+                        .Include(Constants.PersonClubs)
+                        .Where(p => p.PersonClubs.Any(pc => pc.MemberNumber == memberNumber))
                         .ToList()
                         .FirstOrDefault();
                 }
@@ -663,9 +685,14 @@ namespace FLS.Server.Service
                 {
                     person = context.Persons.Include(Constants.Users)
                         .Include(Constants.PersonPersonCategories).Include(Constants.PersonClubs)
-                                .Where(p => p.PersonClubs.Any(pc => pc.MemberNumber == memberNumber && pc.ClubId == CurrentAuthenticatedFLSUserClubId))
-                                .ToList()
-                                .FirstOrDefault();
+                        .Where(
+                            p =>
+                                p.PersonClubs.Any(
+                                    pc =>
+                                        pc.MemberNumber == memberNumber &&
+                                        pc.ClubId == CurrentAuthenticatedFLSUserClubId))
+                        .ToList()
+                        .FirstOrDefault();
                 }
 
                 return person;
@@ -694,16 +721,16 @@ namespace FLS.Server.Service
                         .Include(Constants.PersonPersonCategories)
                         .Include(Constants.PersonPersonCategories + ".PersonCategory")
                         .Include(Constants.PersonClubs)
-                                .Where(p => p.PersonId == personId && p.PersonClubs
-                                .Any(pc => pc.ClubId == CurrentAuthenticatedFLSUser.ClubId))
-                                .ToList()
-                                .FirstOrDefault(); 
+                        .Where(p => p.PersonId == personId && p.PersonClubs
+                                        .Any(pc => pc.ClubId == CurrentAuthenticatedFLSUser.ClubId))
+                        .ToList()
+                        .FirstOrDefault();
                 }
-                
+
                 return person;
             }
         }
-        
+
         public void InsertPersonDetails(PersonDetails personDetails)
         {
             personDetails.ArgumentNotNull("personDetails");
@@ -767,7 +794,7 @@ namespace FLS.Server.Service
             {
                 context.Persons.Attach(original);
                 currentPersonDetails.ToPerson(CurrentAuthenticatedFLSUserClubId, original);
-                
+
                 if (context.ChangeTracker.HasChanges())
                 {
                     context.SaveChanges();
@@ -798,7 +825,7 @@ namespace FLS.Server.Service
                 }
             }
         }
-        
+
         public void UpdatePassengerDetails(PersonDetails currentPassengerDetails)
         {
             currentPassengerDetails.ArgumentNotNull("currentPassengerDetails");
@@ -824,7 +851,8 @@ namespace FLS.Server.Service
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var original = context.Persons.Include(Constants.PersonClubs).FirstOrDefault(l => l.PersonId == personId);
+                var original = context.Persons.Include(Constants.PersonClubs)
+                    .FirstOrDefault(l => l.PersonId == personId);
                 original.EntityNotNull("Person", personId);
 
                 if (context.FlightCrews.Any(x => x.PersonId == original.PersonId)
@@ -835,7 +863,8 @@ namespace FLS.Server.Service
                             (x.InstructorPersonId.HasValue && x.InstructorPersonId == original.PersonId))
                     || context.PlanningDayAssignments.Any(x => x.AssignedPersonId == original.PersonId))
                 {
-                    throw new ConstraintException($"The person {original.DisplayName} has some related active data records and can not be deleted!");
+                    throw new ConstraintException(
+                        $"The person {original.DisplayName} has some related active data records and can not be deleted!");
                 }
 
                 context.Persons.Remove(original);
@@ -847,7 +876,8 @@ namespace FLS.Server.Service
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var original = context.Persons.Include(Constants.PersonClubs).ToList().FirstOrDefault(l => l.PersonId == personId);
+                var original =
+                    context.Persons.Include(Constants.PersonClubs).ToList().FirstOrDefault(l => l.PersonId == personId);
                 original.EntityNotNull("Person", personId);
 
                 if (original.CreatedOn.SetAsUtc() > deletedOn.SetAsUtc())
@@ -863,7 +893,8 @@ namespace FLS.Server.Service
                             (x.InstructorPersonId.HasValue && x.InstructorPersonId == original.PersonId))
                     || context.PlanningDayAssignments.Any(x => x.AssignedPersonId == original.PersonId))
                 {
-                    throw new ConstraintException($"The person {original.DisplayName} has some related active data records and can not be deleted!");
+                    throw new ConstraintException(
+                        $"The person {original.DisplayName} has some related active data records and can not be deleted!");
                 }
 
                 original.SetPropertyValue("DeletedOn", deletedOn.SetAsUtc());
@@ -872,14 +903,17 @@ namespace FLS.Server.Service
                 context.SaveChanges();
             }
         }
+
         #endregion Person
 
         #region Security
+
         private void SetPersonOverviewSecurity(IEnumerable<PersonOverview> list)
         {
             if (CurrentAuthenticatedFLSUser == null)
             {
-                Logger.Warn(string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
+                Logger.Warn(
+                    string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
                 foreach (var overview in list)
                 {
                     overview.CanUpdateRecord = false;
@@ -927,7 +961,8 @@ namespace FLS.Server.Service
 
             if (CurrentAuthenticatedFLSUser == null)
             {
-                Logger.Warn(string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
+                Logger.Warn(
+                    string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
                 details.CanUpdateRecord = false;
                 details.CanDeleteRecord = false;
                 return;
@@ -945,6 +980,7 @@ namespace FLS.Server.Service
                 details.CanDeleteRecord = false;
             }
         }
+
         #endregion Security
 
         public PersonDetails GetMyPersonDetails()
@@ -985,30 +1021,135 @@ namespace FLS.Server.Service
 
                 var mapping = new Dictionary<string, string>()
                 {
-                    { "AdressNrADR", "ClubRelatedPersonDetails.MemberNumber" },
-                    { "Adresszeile1", "AddressLine1" },
-                    { "EMail", "PrivateEmail" },
-                    { "Fax", "FaxNumber" },
-                    { "GeburtsDatum", "Birthday" },
-                    { "LandPRO", "LicenceNumber" },
-                    { "Natel", "MobilePhoneNumber" },
-                    { "Name", "Lastname" },
-                    { "Ort", "City" },
-                    { "PLZ", "ZipCode" },
-                    { "KantonPRO", "Region" },
-                    { "Strasse", "AddressLine2" },
-                    { "TelDir", "BusinessPhoneNumber" },
-                    { "TelPrivat", "PrivatePhoneNumber" },
-                    { "TelZentrale", "BusinessPhoneNumber" },
-                    { "Vorname", "Firstname" },
-                    { "Homepage", "SpotLink" }
+                    {"AdressNrADR", "ClubRelatedPersonDetails.MemberNumber"},
+                    {"Adresszeile1", "AddressLine1"},
+                    {"EMail", "PrivateEmail"},
+                    {"Fax", "FaxNumber"},
+                    {"GeburtsDatum", "Birthday"},
+                    {"LandPRO", "LicenceNumber"},
+                    {"Natel", "MobilePhoneNumber"},
+                    {"Name", "Lastname"},
+                    {"Ort", "City"},
+                    {"PLZ", "ZipCode"},
+                    {"KantonPRO", "Region"},
+                    {"Strasse", "AddressLine2"},
+                    {"TelDir", "BusinessPhoneNumber"},
+                    {"TelPrivat", "PrivatePhoneNumber"},
+                    {"TelZentrale", "BusinessPhoneNumber"},
+                    {"Vorname", "Firstname"},
+                    {"Homepage", "SpotLink"}
                 };
 
                 var entityList = workSheet.ToList<PersonDetails>(ignoreColumns, mapping);
 
                 try
                 {
-                    
+                    var persons = new List<Person>();
+
+                    using (var context = _dataAccessService.CreateDbContext())
+                    {
+                        persons = context.Persons.Include(Constants.Country)
+                            .Include(Constants.PersonPersonCategories)
+                            .Include(Constants.PersonPersonCategories + ".PersonCategory")
+                            .Include(Constants.PersonClubs)
+                            .Include($"{Constants.PersonClubs}.MemberState")
+                            .OrderBy(pe => pe.Lastname).ToList();
+
+                        var importList = new List<ImportObject<PersonDetails>>();
+                        foreach (var personDetail in entityList)
+                        {
+                            var importObj = new ImportObject<PersonDetails>()
+                            {
+                                ImportDataRecord = personDetail
+                            };
+
+                            importList.Add(importObj);
+
+                            var validationResult = new List<ValidationResult>();
+                            var validatorContext = new ValidationContext(personDetail);
+                            if (Validator.TryValidateObject(personDetail, validatorContext, validationResult, true) == false)
+                            {
+                                importObj.ImportState = ImportState.ValidationError;
+                                importObj.ErrorMessage = "";
+
+                                foreach (var result in validationResult)
+                                {
+                                    var props = string.Join(",", result.MemberNames);
+                                    importObj.ErrorMessage += $"Error: {result.ErrorMessage}, Properties: {props}";
+                                }
+
+                                importObj.HasError = true;
+                                continue;
+                            }
+                            
+                            if (string.IsNullOrWhiteSpace(personDetail.ZipCode))
+                            {
+                                importObj.ImportState = ImportState.ImportError;
+                                importObj.ErrorMessage = "ZipCode is empty";
+                                importObj.HasError = true;
+                                continue;
+                            }
+
+                            try
+                            {
+                                //entityList.FindDuplicates(x => x.Lastname.ToLower() && x.Firstname.ToLower());
+
+                                var matchedPersons =
+                                    persons.FindAll(x => x.Lastname.ToLower() == personDetail.Lastname.ToLower()
+                                                         && x.Firstname.ToLower() == personDetail.Firstname.ToLower());
+
+                                if (matchedPersons.Count == 0)
+                                {
+                                    importObj.ImportState = ImportState.ImportedSuccessfully;
+                                    var newRecord = importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId);
+                                    context.Persons.Add(newRecord);
+                                }
+                                else if (matchedPersons.Count == 1)
+                                {
+                                    importObj.ImportState = ImportState.UpdatedSuccessfully;
+                                    importObj.ServerDataRecord = matchedPersons[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
+                                    importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, matchedPersons[0]);
+                                }
+                                else
+                                {
+                                    var matchedPersonsZip = matchedPersons.FindAll(x => x.Zip == personDetail.ZipCode);
+
+                                    if (matchedPersonsZip.Count == 0)
+                                    {
+                                        importObj.ImportState = ImportState.ImportedSuccessfully;
+                                        var newRecord = importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId);
+                                        context.Persons.Add(newRecord);
+                                    }
+                                    else if (matchedPersonsZip.Count == 1)
+                                    {
+                                        importObj.ImportState = ImportState.UpdatedSuccessfully;
+                                        importObj.ServerDataRecord = matchedPersonsZip[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
+                                        importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, matchedPersonsZip[0]);
+                                    }
+                                    else
+                                    {
+                                        importObj.ImportState = ImportState.Duplicate;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                if (importObj.ImportState == ImportState.UpdatedSuccessfully)
+                                    importObj.ImportState = ImportState.UpdateError;
+                                else
+                                    importObj.ImportState = ImportState.ImportError;
+
+                                importObj.ErrorMessage = ex.Message;
+                                importObj.HasError = true;
+                                Logger.Trace(ex, $"Error while trying to import PersonDetails: {importObj.ImportDataRecord}");
+                            }
+                        }
+
+                        if (context.ChangeTracker.HasChanges())
+                        {
+                            context.SaveChanges();
+                        }
+                    }
                 }
                 catch (Exception exception)
                 {

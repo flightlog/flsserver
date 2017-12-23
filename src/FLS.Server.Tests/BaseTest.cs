@@ -87,6 +87,7 @@ namespace FLS.Server.Tests
         protected AircraftReportEmailBuildService AircraftReportEmailService { get; set; }
         protected FlightInformationEmailBuildService FlightInformationEmailService { get; set; }
         protected UserService UserService { get; set; }
+        protected PersonService PersonService { get; set; }
 
 
         [AssemblyInitialize()]
@@ -170,6 +171,7 @@ namespace FLS.Server.Tests
             AccountingRuleService = UnityContainer.Resolve<AccountingRuleService>();
             AccountingRuleFilterFactory = UnityContainer.Resolve<AccountingRuleFilterFactory>();
             ClubService = UnityContainer.Resolve<ClubService>();
+            PersonService = UnityContainer.Resolve<PersonService>();
         }
 
         [TestCleanup]
