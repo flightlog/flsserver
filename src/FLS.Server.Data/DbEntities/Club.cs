@@ -29,6 +29,7 @@ namespace FLS.Server.Data.DbEntities
             Articles = new HashSet<Article>();
             Deliveries = new HashSet<Delivery>();
             DeliveryCreationTests = new HashSet<DeliveryCreationTest>();
+            Settings = new HashSet<Setting>();
         }
 
         public Guid ClubId { get; set; }
@@ -172,6 +173,7 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual ICollection<DeliveryCreationTest> DeliveryCreationTests { get; set; }
 
+        public virtual ICollection<Setting> Settings { get; set; }
 
         public virtual ClubState ClubState { get; set; }
 

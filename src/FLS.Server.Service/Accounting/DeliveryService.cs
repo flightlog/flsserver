@@ -131,7 +131,7 @@ namespace FLS.Server.Service.Accounting
 
                             if (delivery.DeliveryItems.Any() == false)
                             {
-                                Logger.Warn($"Delivery without Items created for FlightId: {flight.FlightId}!");
+                                Logger.Warn($"Delivery without Items created for FlightId/Flight: {flight.FlightId} / {flight}!");
                             }
 
                             context.Deliveries.Add(delivery);

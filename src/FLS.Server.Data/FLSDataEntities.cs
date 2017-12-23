@@ -87,6 +87,7 @@ namespace FLS.Server.Data
         public virtual DbSet<PlanningDayAssignmentType> PlanningDayAssignmentTypes { get; set; }
         public virtual DbSet<Person> Persons { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<StartType> StartTypes { get; set; }
         public virtual DbSet<SystemData> SystemDatas { get; set; }
         public virtual DbSet<SystemLog> SystemLogs { get; set; }
@@ -164,6 +165,7 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Role>().Ignore(t => t.Id);
             modelBuilder.Entity<Role>().Ignore(t => t.Name);
             modelBuilder.Entity<StartType>().Ignore(t => t.Id);
+            modelBuilder.Entity<Setting>().Ignore(t => t.Id);
             modelBuilder.Entity<User>().Ignore(t => t.Id);
 
             modelBuilder.Entity<Aircraft>()
@@ -266,6 +268,12 @@ namespace FLS.Server.Data
 
             modelBuilder.Entity<Club>()
                 .HasMany(e => e.Articles)
+                .WithRequired(e => e.Club)
+                .HasForeignKey(e => e.ClubId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Club>()
+                .HasMany(e => e.Settings)
                 .WithRequired(e => e.Club)
                 .HasForeignKey(e => e.ClubId)
                 .WillCascadeOnDelete(false);
@@ -560,6 +568,12 @@ namespace FLS.Server.Data
                 .HasForeignKey(e => e.AccountState)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Settings)
+                .WithRequired(e => e.User)
+                .HasForeignKey(e => e.UserId)
+                .WillCascadeOnDelete(false);
+
             SetIsDeletedMapping(modelBuilder, false);
 
             #region Audit Tracking Settings
@@ -816,6 +830,16 @@ namespace FLS.Server.Data
                 .And(x => x.OwnerId)
                 .And(x => x.OwnershipType)
                 .And(x => x.RecordState);
+            EntityTracker.TrackAllProperties<Setting>().Except(x => x.Id)
+                .And(x => x.CreatedByUserId)
+                .And(x => x.CreatedOn)
+                .And(x => x.ModifiedByUserId)
+                .And(x => x.ModifiedOn)
+                .And(x => x.DeletedByUserId)
+                .And(x => x.DeletedOn)
+                .And(x => x.OwnerId)
+                .And(x => x.OwnershipType)
+                .And(x => x.RecordState);
             EntityTracker.TrackAllProperties<UserRole>();
             EntityTracker.TrackAllProperties<User>().Except(x => x.Id)
                 .And(x => x.CreatedByUserId)
@@ -894,9 +918,6 @@ namespace FLS.Server.Data
             modelBuilder.Entity<InOutboundPoint>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
-            modelBuilder.Entity<LanguageTranslation>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Location>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
@@ -928,6 +949,9 @@ namespace FLS.Server.Data
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<User>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<Setting>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
 

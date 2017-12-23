@@ -13,6 +13,7 @@ using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
 using FLS.Server.Interfaces;
 using Newtonsoft.Json;
+using FLS.Data.WebApi.Accounting;
 
 namespace FLS.Server.Service.Accounting
 {
@@ -52,6 +53,24 @@ namespace FLS.Server.Service.Accounting
             }
         }
         #endregion AccountingRuleFilterType
+
+        #region AccountingUnitType
+        public List<AccountingUnitTypeListItem> GetAccountingUnitTypeListItems()
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var entities = context.AccountingUnitTypes.OrderBy(l => l.AccountingUnitTypeId).ToList();
+
+                var items = entities.Select(x => new AccountingUnitTypeListItem()
+                {
+                    AccountingUnitTypeId = x.AccountingUnitTypeId,
+                    AccountingUnitTypeName = x.AccountingUnitTypeName
+                }).ToList();
+
+                return items;
+            }
+        }
+        #endregion AccountingUnitType
 
         #region AccountingRuleFilter
         public List<AccountingRuleFilterOverview> GetAccountingRuleFilterOverview()
@@ -138,6 +157,8 @@ namespace FLS.Server.Service.Accounting
                 var overviewList = pagedQuery.Items.ToList().Select(x => x.ToAccountingRuleFilterOverview(aicrafts, locations))
                 .Where(obj => obj != null)
                 .ToList();
+
+                SetAccountingRuleFilterOverviewSecurity(overviewList);
 
                 var pagedList = new PagedList<AccountingRuleFilterOverview>(overviewList, pagedQuery.PageStart,
                     pagedQuery.PageSize, pagedQuery.TotalRows);

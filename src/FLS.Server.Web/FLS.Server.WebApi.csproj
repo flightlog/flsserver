@@ -232,6 +232,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionFilters\NoCacheActionFilter.cs" />
+    <Compile Include="ActionFilters\ValidateMimeMultipartContentFilterAttribute.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityFilterProvider.cs" />
@@ -269,9 +270,11 @@
     <Compile Include="ActionFilters\UserInitActionFilter.cs" />
     <Compile Include="ActionFilters\ValidateModelStateAttribute.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="Controllers\AccountingUnitTypesController.cs" />
     <Compile Include="Controllers\AccountingRuleFilterTypesController.cs" />
     <Compile Include="Controllers\AircraftOperatingCountersController.cs" />
     <Compile Include="Controllers\AccountingRuleFiltersController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\FlightCrewTypesController.cs" />
     <Compile Include="Controllers\AuditLogsController.cs" />
     <Compile Include="Controllers\DashboardsController.cs" />

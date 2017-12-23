@@ -4,6 +4,6 @@
     {
         GliderFlight = 1,
         TowFlight = 2,
-        MotorFlight = 3
+        MotorFlight = 4
     }
 }

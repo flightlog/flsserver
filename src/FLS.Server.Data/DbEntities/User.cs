@@ -17,6 +17,7 @@ namespace FLS.Server.Data.DbEntities
         public User()
         {
             UserRoles = new HashSet<UserRole>();
+            Settings = new HashSet<Setting>();
         }
         
         public Guid UserId { get; set; }
@@ -116,6 +117,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual ICollection<UserRole> UserRoles { get; set; }
 
         public virtual Language Language { get; set; }
+
+        public virtual ICollection<Setting> Settings { get; set; }
 
         public Guid Id
         {
