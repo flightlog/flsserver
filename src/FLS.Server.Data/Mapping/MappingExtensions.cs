@@ -30,6 +30,8 @@ using Newtonsoft.Json;
 using NLog;
 using TrackerEnabledDbContext.Common.Models;
 using FLS.Data.WebApi.Settings;
+using AutoMapper.Configuration;
+using AutoMapper;
 
 namespace FLS.Server.Data.Mapping
 {
@@ -2843,7 +2845,121 @@ namespace FLS.Server.Data.Mapping
 
             return entity;
         }
-        
+
+        public static Person ToPerson(this PersonDetails details, Guid clubId, List<string> mappedProperties, Person entity = null, bool overwritePersonId = false)
+        {
+            details.ArgumentNotNull("details");
+
+            if (entity == null)
+            {
+                entity = new Person();
+            }
+
+            if (overwritePersonId) entity.PersonId = details.PersonId;
+
+            var cfg = new MapperConfigurationExpression();
+            var map = cfg.CreateMap<PersonDetails, Person>();
+            if (mappedProperties.Contains("Lastname"))
+                map.ForMember(d => d.Lastname, o => o.MapFrom(s => s.Lastname));
+            if (mappedProperties.Contains("Firstname"))
+                map.ForMember(d => d.Firstname, o => o.MapFrom(s => s.Firstname));
+            if (mappedProperties.Contains("AddressLine1"))
+                map.ForMember(d => d.AddressLine1, o => o.MapFrom(s => s.AddressLine1));
+            if (mappedProperties.Contains("AddressLine2"))
+                map.ForMember(d => d.AddressLine2, o => o.MapFrom(s => s.AddressLine2));
+            if (mappedProperties.Contains("ZipCode"))
+                map.ForMember(d => d.Zip, o => o.MapFrom(s => s.ZipCode));
+            if (mappedProperties.Contains("City"))
+                map.ForMember(d => d.City, o => o.MapFrom(s => s.City));
+            if (mappedProperties.Contains("Birthday"))
+                map.ForMember(d => d.Birthday, o => o.MapFrom(s => s.Birthday));
+            if (mappedProperties.Contains("FaxNumber"))
+                map.ForMember(d => d.FaxNumber, o => o.MapFrom(s => s.FaxNumber));
+            if (mappedProperties.Contains("MobilePhoneNumber"))
+                map.ForMember(d => d.MobilePhone, o => o.MapFrom(s => s.MobilePhoneNumber));
+            if (mappedProperties.Contains("PrivatePhoneNumber"))
+                map.ForMember(d => d.PrivatePhone, o => o.MapFrom(s => s.PrivatePhoneNumber));
+            if (mappedProperties.Contains("BusinessPhoneNumber"))
+                map.ForMember(d => d.BusinessPhone, o => o.MapFrom(s => s.BusinessPhoneNumber));
+            if (mappedProperties.Contains("Region"))
+                map.ForMember(d => d.Region, o => o.MapFrom(s => s.Region));
+            if (mappedProperties.Contains("PrivateEmail"))
+                map.ForMember(d => d.EmailPrivate, o => o.MapFrom(s => s.PrivateEmail));
+            if (mappedProperties.Contains("CountryId"))
+                map.ForMember(d => d.CountryId, o => o.MapFrom(s => s.CountryId));
+
+            map.ForAllOtherMembers(opts => opts.Ignore());
+
+            var mapperConfig = new MapperConfiguration(cfg);
+            var mapper = mapperConfig.CreateMapper();
+
+            mapper.Map<PersonDetails, Person>(details, entity);
+            
+            if (entity.Birthday.HasValue)
+                entity.Birthday = entity.Birthday.Value.Date.AddHours(12);  //set birthday to mid day for time zone handling
+            
+            if (details.ClubRelatedPersonDetails != null)
+            {
+                var personClub = entity.PersonClubs.FirstOrDefault(pc => pc.ClubId == clubId);
+
+                if (personClub == null)
+                {
+                    personClub = new PersonClub { ClubId = clubId };
+                    entity.PersonClubs.Add(personClub);
+                }
+
+                if (mappedProperties.Contains("ClubRelatedPersonDetails.MemberNumber"))
+                    personClub.MemberNumber = details.ClubRelatedPersonDetails.MemberNumber;
+
+                //TODO: Handle person categories
+                if (details.ClubRelatedPersonDetails.PersonCategoryIds != null && details.ClubRelatedPersonDetails.PersonCategoryIds.Any())
+                {
+                    //we have some personCategories
+                    foreach (var personCategoryId in details.ClubRelatedPersonDetails.PersonCategoryIds)
+                    {
+                        if (entity.PersonPersonCategories.Any(ppc => ppc.PersonCategoryId == personCategoryId) == false)
+                        {
+                            //personCategory not found, add it
+                            var personPersonCategory = new PersonPersonCategory();
+                            personPersonCategory.PersonId = entity.PersonId;
+                            personPersonCategory.PersonCategoryId = personCategoryId;
+                            entity.PersonPersonCategories.Add(personPersonCategory);
+                        }
+                    }
+
+                    //remove all personPersonCategories which are not found in current list
+                    foreach (var personPersonCategory in entity.PersonPersonCategories.ToList())
+                    {
+                        if (details.ClubRelatedPersonDetails.PersonCategoryIds.Any(id => id == personPersonCategory.PersonCategoryId) == false)
+                        {
+                            entity.PersonPersonCategories.Remove(personPersonCategory);
+                        }
+                    }
+                }
+                else
+                {
+                    //we haven't any selected personCategoryIds, so remove all from database
+                    foreach (var personPersonCategory in entity.PersonPersonCategories.ToList())
+                    {
+                        entity.PersonPersonCategories.Remove(personPersonCategory);
+                    }
+                }
+            }
+            else
+            {
+                //we require minimum one PersonClub relation to have the relation to our club
+                var personClub = entity.PersonClubs.FirstOrDefault(pc => pc.ClubId == clubId);
+
+                if (personClub == null)
+                {
+                    personClub = new PersonClub { ClubId = clubId };
+                    entity.PersonClubs.Add(personClub);
+                }
+            }
+
+            return entity;
+        }
+
         public static Person ToPerson(this PersonFullDetails details, Guid clubId, Person entity = null, bool overwritePersonId = false)
         {
             details.ArgumentNotNull("details");

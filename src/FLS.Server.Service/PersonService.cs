@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using AutoMapper;
 using FLS.Common.Extensions;
 using FLS.Common.Paging;
 using FLS.Common.Validators;
@@ -23,6 +24,8 @@ using FLS.Server.Service.Exporting;
 using NLog;
 using OfficeOpenXml;
 using FLS.Server.Service.Extensions;
+using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
+using FLS.Server.Data.Objects.Person;
 
 namespace FLS.Server.Service
 {
@@ -1013,7 +1016,6 @@ namespace FLS.Server.Service
             using (var package = new ExcelPackage(fileContentBytes.ToMemoryStream()))
             {
                 var workSheet = package.Workbook.Worksheets[1];
-                var entityType = typeof(PersonDetails);
                 var ignoreColumns = new List<string>()
                 {
                     "ErstelltAm"
@@ -1022,25 +1024,29 @@ namespace FLS.Server.Service
                 var mapping = new Dictionary<string, string>()
                 {
                     {"AdressNrADR", "ClubRelatedPersonDetails.MemberNumber"},
-                    {"Adresszeile1", "AddressLine1"},
+                    {"Adresszeile1", "AddressLine2"},
                     {"EMail", "PrivateEmail"},
                     {"Fax", "FaxNumber"},
                     {"GeburtsDatum", "Birthday"},
-                    {"LandPRO", "LicenceNumber"},
+                    {"LandPRO", "CountryCode"},
                     {"Natel", "MobilePhoneNumber"},
                     {"Name", "Lastname"},
                     {"Ort", "City"},
                     {"PLZ", "ZipCode"},
                     {"KantonPRO", "Region"},
-                    {"Strasse", "AddressLine2"},
+                    {"Strasse", "AddressLine1"},
                     {"TelDir", "BusinessPhoneNumber"},
                     {"TelPrivat", "PrivatePhoneNumber"},
                     {"TelZentrale", "BusinessPhoneNumber"},
                     {"Vorname", "Firstname"},
-                    {"Homepage", "SpotLink"}
+                    {"AdressGruppen", "AddressCategories" }
                 };
 
-                var entityList = workSheet.ToList<PersonDetails>(ignoreColumns, mapping);
+                var entityList = workSheet.ToList<ImportPersonDetails>(ignoreColumns, mapping);
+
+                //re-map temporary mappings for country
+                mapping["LandPRO"] = "CountryId";
+                var mappedProperties = mapping.Values.ToList();
 
                 try
                 {
@@ -1055,6 +1061,9 @@ namespace FLS.Server.Service
                             .Include($"{Constants.PersonClubs}.MemberState")
                             .OrderBy(pe => pe.Lastname).ToList();
 
+                        var countries = context.Countries.ToList();
+                        var personCategories = context.PersonCategories.ToList();
+
                         var importList = new List<ImportObject<PersonDetails>>();
                         foreach (var personDetail in entityList)
                         {
@@ -1064,6 +1073,58 @@ namespace FLS.Server.Service
                             };
 
                             importList.Add(importObj);
+
+                            if (string.IsNullOrWhiteSpace(personDetail.CountryCode) == false)
+                            {
+                                var country =
+                                    countries.FirstOrDefault(
+                                        x => x.CountryCodeIso2.ToUpper() == personDetail.CountryCode.ToUpper());
+
+                                if (country != null)
+                                {
+                                    personDetail.CountryId = country.CountryId;
+                                    personDetail.CountryCode = string.Empty;
+                                }
+                            }
+
+                            if (string.IsNullOrWhiteSpace(personDetail.AddressCategories) == false)
+                            {
+                                string[] groups = personDetail.AddressCategories.Split(',');
+                                foreach (var group in groups)
+                                {
+                                    if (string.IsNullOrWhiteSpace(group)) continue;
+
+                                    var personCategory =
+                                        personCategories.FirstOrDefault(x => x.CategoryName.ToLower() == group.ToLower());
+
+                                    if (personCategory == null)
+                                    {
+                                        //create new category
+                                        personCategory = new PersonCategory()
+                                        {
+                                            CategoryName = group,
+                                            ClubId = CurrentAuthenticatedFLSUserClubId,
+                                            PersonCategoryId = Guid.NewGuid()
+                                        };
+
+                                        personCategories.Add(personCategory);
+                                        context.PersonCategories.Add(personCategory);
+
+                                        if (personDetail.ClubRelatedPersonDetails == null)
+                                            personDetail.ClubRelatedPersonDetails = new ClubRelatedPersonDetails();
+                                            
+                                        personDetail.ClubRelatedPersonDetails.PersonCategoryIds.Add(personCategory.PersonCategoryId);
+                                    }
+                                    else
+                                    {
+                                        if (personDetail.ClubRelatedPersonDetails == null)
+                                            personDetail.ClubRelatedPersonDetails = new ClubRelatedPersonDetails();
+
+                                        personDetail.ClubRelatedPersonDetails.PersonCategoryIds.Add(
+                                            personCategory.PersonCategoryId);
+                                    }
+                                }
+                            }
 
                             var validationResult = new List<ValidationResult>();
                             var validatorContext = new ValidationContext(personDetail);
@@ -1101,14 +1162,14 @@ namespace FLS.Server.Service
                                 if (matchedPersons.Count == 0)
                                 {
                                     importObj.ImportState = ImportState.ImportedSuccessfully;
-                                    var newRecord = importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId);
+                                    var newRecord = importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties);
                                     context.Persons.Add(newRecord);
                                 }
                                 else if (matchedPersons.Count == 1)
                                 {
                                     importObj.ImportState = ImportState.UpdatedSuccessfully;
                                     importObj.ServerDataRecord = matchedPersons[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
-                                    importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, matchedPersons[0]);
+                                    importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties, matchedPersons[0]);
                                 }
                                 else
                                 {
@@ -1117,17 +1178,18 @@ namespace FLS.Server.Service
                                     if (matchedPersonsZip.Count == 0)
                                     {
                                         importObj.ImportState = ImportState.ImportedSuccessfully;
-                                        var newRecord = importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId);
+                                        var newRecord = importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties);
                                         context.Persons.Add(newRecord);
                                     }
                                     else if (matchedPersonsZip.Count == 1)
                                     {
                                         importObj.ImportState = ImportState.UpdatedSuccessfully;
                                         importObj.ServerDataRecord = matchedPersonsZip[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
-                                        importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, matchedPersonsZip[0]);
+                                        importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties, matchedPersonsZip[0]);
                                     }
                                     else
                                     {
+                                        //TODO: Search also for MemberNumber
                                         importObj.ImportState = ImportState.Duplicate;
                                     }
                                 }
