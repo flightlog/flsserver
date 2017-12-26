@@ -35,10 +35,6 @@ namespace FLS.Data.WebApi.Flight
 
         public string GliderFlightDuration { get; set; }
         
-        public List<int> TowFlightAirStates { get; set; }
-
-        public List<int> TowFlightProcessStates { get; set; }
-
         public string TowAircraftImmatriculation { get; set; }
 
         public string TowPilotName { get; set; }
