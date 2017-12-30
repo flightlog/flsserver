@@ -116,6 +116,7 @@ namespace FLS.Server.Service.Extensions
                                 if (target == null && propertyToGet.PropertyType.IsClass)
                                 {
                                     target = Activator.CreateInstance(propertyToGet.PropertyType);
+                                    propertyToGet.SetValue(item, target);
                                 }
                             }
                             PropertyInfo propertyToSet = target.GetType().GetProperty(bits.Last());
