@@ -1086,6 +1086,10 @@ namespace FLS.Server.Service
                                     personDetail.CountryCode = string.Empty;
                                 }
                             }
+                            else
+                            {
+                                personDetail.CountryId = countries.First(x => x.CountryCodeIso2 == "CH").CountryId;
+                            }
 
                             if (string.IsNullOrWhiteSpace(personDetail.AddressCategories) == false)
                             {
@@ -1170,6 +1174,12 @@ namespace FLS.Server.Service
                                     importObj.ImportState = ImportState.UpdatedSuccessfully;
                                     importObj.ServerDataRecord = matchedPersons[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
                                     importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties, matchedPersons[0]);
+
+                                    if (string.IsNullOrWhiteSpace(matchedPersons[0].Zip))
+                                    {
+                                        Logger.Warn(
+                                            $"Imported person may not matching correctly: {personDetail} / Matched server record: {matchedPersons[0]}");
+                                    }
                                 }
                                 else
                                 {

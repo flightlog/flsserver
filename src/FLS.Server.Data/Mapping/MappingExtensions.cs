@@ -38,6 +38,7 @@ namespace FLS.Server.Data.Mapping
     public static class MappingExtensions
     {
         #region Metadata
+
         public static void MapMetaData(this IFLSMetaData source, IFLSMetaData destination)
         {
             source.ArgumentNotNull("source");
@@ -94,9 +95,11 @@ namespace FLS.Server.Data.Mapping
                 destination.SetPropertyValue("DeletedOn", source.DeletedOn.SetAsUtc());
             }
         }
+
         #endregion Metadata
 
         #region Aircraft
+
         public static AircraftListItem ToAircraftListItem(this Aircraft entity, AircraftListItem listItem = null)
         {
             entity.ArgumentNotNull("entity");
@@ -231,11 +234,12 @@ namespace FLS.Server.Data.Mapping
                 detailState.ValidTo = currentState.ValidTo.SetAsUtc();
                 detailState.Remarks = currentState.Remarks;
             }
-      
+
             return details;
         }
 
-        public static Aircraft ToAircraft(this AircraftDetails details, Aircraft entity = null, bool overwriteAircraftReservationId = false)
+        public static Aircraft ToAircraft(this AircraftDetails details, Aircraft entity = null,
+            bool overwriteAircraftReservationId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -288,16 +292,19 @@ namespace FLS.Server.Data.Mapping
                 aircraftAircraftState.Remarks = details.AircraftStateData.Remarks;
                 aircraftAircraftState.ValidFrom = details.AircraftStateData.ValidFrom;
                 aircraftAircraftState.ValidTo = details.AircraftStateData.ValidTo;
-                
+
                 entity.AircraftAircraftStates.Add(aircraftAircraftState);
             }
 
             return entity;
         }
+
         #endregion Aircraft
 
         #region AircraftReservation
-        public static AircraftReservationOverview ToAircraftReservationOverview(this AircraftReservation entity, AircraftReservationOverview overview = null)
+
+        public static AircraftReservationOverview ToAircraftReservationOverview(this AircraftReservation entity,
+            AircraftReservationOverview overview = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -341,7 +348,8 @@ namespace FLS.Server.Data.Mapping
             return overview;
         }
 
-        public static AircraftReservationDetails ToAircraftReservationDetails(this AircraftReservation entity, AircraftReservationDetails details = null)
+        public static AircraftReservationDetails ToAircraftReservationDetails(this AircraftReservation entity,
+            AircraftReservationDetails details = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -365,7 +373,8 @@ namespace FLS.Server.Data.Mapping
             return details;
         }
 
-        public static AircraftReservation ToAircraftReservation(this AircraftReservationDetails details, AircraftReservation entity = null, bool overwriteAircraftReservationId = false)
+        public static AircraftReservation ToAircraftReservation(this AircraftReservationDetails details,
+            AircraftReservation entity = null, bool overwriteAircraftReservationId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -388,10 +397,13 @@ namespace FLS.Server.Data.Mapping
 
             return entity;
         }
+
         #endregion AircraftReservation
 
         #region AircraftReservationType
-        public static AircraftReservationTypeListItem ToAircraftReservationTypeListItem(this AircraftReservationType entity, AircraftReservationTypeListItem listItem = null)
+
+        public static AircraftReservationTypeListItem ToAircraftReservationTypeListItem(
+            this AircraftReservationType entity, AircraftReservationTypeListItem listItem = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -407,10 +419,13 @@ namespace FLS.Server.Data.Mapping
 
             return listItem;
         }
+
         #endregion AircraftReservationType
 
         #region AircraftState
-        public static AircraftStateListItem ToAircraftStateListItem(this AircraftState entity, AircraftStateListItem listItem = null)
+
+        public static AircraftStateListItem ToAircraftStateListItem(this AircraftState entity,
+            AircraftStateListItem listItem = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -425,10 +440,13 @@ namespace FLS.Server.Data.Mapping
             listItem.IsAircraftFlyable = entity.IsAircraftFlyable;
             return listItem;
         }
+
         #endregion AircraftState
 
         #region AircraftType
-        public static AircraftTypeListItem ToAircraftTypeListItem(this DbEntities.AircraftType entity, AircraftTypeListItem listItem = null)
+
+        public static AircraftTypeListItem ToAircraftTypeListItem(this DbEntities.AircraftType entity,
+            AircraftTypeListItem listItem = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -446,11 +464,12 @@ namespace FLS.Server.Data.Mapping
 
             return listItem;
         }
+
         #endregion AircraftType
 
 
         #region Article
-        
+
         public static ArticleDetails ToArticleDetails(this Article entity, ArticleDetails details = null)
         {
             entity.ArgumentNotNull("entity");
@@ -470,7 +489,8 @@ namespace FLS.Server.Data.Mapping
             return details;
         }
 
-        public static Article ToArticle(this ArticleDetails details, Guid clubId, Article entity = null, bool overwriteArticleId = false)
+        public static Article ToArticle(this ArticleDetails details, Guid clubId, Article entity = null,
+            bool overwriteArticleId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -494,7 +514,9 @@ namespace FLS.Server.Data.Mapping
         #endregion Article
 
         #region AssemblyInfo
-        public static AssemblyInfo ToAssemblyInfo(this AssemblyBuildInfo assemblyBuildInfo, AssemblyInfo assemblyInfo = null)
+
+        public static AssemblyInfo ToAssemblyInfo(this AssemblyBuildInfo assemblyBuildInfo,
+            AssemblyInfo assemblyInfo = null)
         {
             assemblyBuildInfo.ArgumentNotNull("assemblyBuildInfo");
 
@@ -512,9 +534,11 @@ namespace FLS.Server.Data.Mapping
 
             return assemblyInfo;
         }
+
         #endregion AssemblyInfo
 
         #region AuditLog
+
         public static AuditLogOverview ToAuditLogOverview(this AuditLog entity)
         {
             entity.ArgumentNotNull("entity");
@@ -583,6 +607,7 @@ namespace FLS.Server.Data.Mapping
 
             return "FLS.Server.Data.DbEntities." + entityName;
         }
+
         #endregion AuditLog
 
         #region Club
@@ -757,9 +782,12 @@ namespace FLS.Server.Data.Mapping
                     overview.FlightInformation.FlightTypeName = entity.Flight.FlightType.FlightTypeName;
                 }
 
-                if (entity.Flight.Passenger != null) overview.FlightInformation.SecondCrewName = entity.Flight.PassengerDisplayName;
-                if (entity.Flight.CoPilot != null) overview.FlightInformation.SecondCrewName = entity.Flight.CoPilotDisplayName;
-                if (entity.Flight.Instructor != null) overview.FlightInformation.SecondCrewName = entity.Flight.InstructorDisplayName;
+                if (entity.Flight.Passenger != null)
+                    overview.FlightInformation.SecondCrewName = entity.Flight.PassengerDisplayName;
+                if (entity.Flight.CoPilot != null)
+                    overview.FlightInformation.SecondCrewName = entity.Flight.CoPilotDisplayName;
+                if (entity.Flight.Instructor != null)
+                    overview.FlightInformation.SecondCrewName = entity.Flight.InstructorDisplayName;
             }
 
             overview.DeliveryInformation = entity.DeliveryInformation;
@@ -792,13 +820,18 @@ namespace FLS.Server.Data.Mapping
             }
             else
             {
-                if (entity.Flight != null) details.FlightInformation.AircraftImmatriculation = entity.Flight.AircraftImmatriculation;
-                if (entity.Flight != null && entity.Flight.FlightDate.HasValue) details.FlightInformation.FlightDate = entity.Flight.FlightDate.Value;
+                if (entity.Flight != null)
+                    details.FlightInformation.AircraftImmatriculation = entity.Flight.AircraftImmatriculation;
+                if (entity.Flight != null && entity.Flight.FlightDate.HasValue)
+                    details.FlightInformation.FlightDate = entity.Flight.FlightDate.Value;
                 if (entity.FlightId.HasValue) details.FlightInformation.FlightId = entity.FlightId.Value;
                 if (entity.Flight != null) details.FlightInformation.PilotName = entity.Flight.PilotDisplayName;
-                if (entity.Flight != null && entity.Flight.Passenger != null) details.FlightInformation.SecondCrewName = entity.Flight.PassengerDisplayName;
-                if (entity.Flight != null && entity.Flight.CoPilot != null) details.FlightInformation.SecondCrewName = entity.Flight.CoPilotDisplayName;
-                if (entity.Flight != null && entity.Flight.Instructor != null) details.FlightInformation.SecondCrewName = entity.Flight.InstructorDisplayName;
+                if (entity.Flight != null && entity.Flight.Passenger != null)
+                    details.FlightInformation.SecondCrewName = entity.Flight.PassengerDisplayName;
+                if (entity.Flight != null && entity.Flight.CoPilot != null)
+                    details.FlightInformation.SecondCrewName = entity.Flight.CoPilotDisplayName;
+                if (entity.Flight != null && entity.Flight.Instructor != null)
+                    details.FlightInformation.SecondCrewName = entity.Flight.InstructorDisplayName;
 
                 if (entity.Flight != null
                     && entity.Flight.Pilot != null
@@ -832,7 +865,7 @@ namespace FLS.Server.Data.Mapping
                 var recipient = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientDetails);
                 details.RecipientDetails = recipient;
             }
-            
+
             details.DeliveryItems = new List<DeliveryItemDetails>();
 
             foreach (var item in entity.DeliveryItems)
@@ -855,7 +888,8 @@ namespace FLS.Server.Data.Mapping
             return details;
         }
 
-        public static Delivery ToDelivery(this DeliveryDetails details, Guid clubId, Delivery entity = null, bool overwriteDeliveryId = false)
+        public static Delivery ToDelivery(this DeliveryDetails details, Guid clubId, Delivery entity = null,
+            bool overwriteDeliveryId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -888,11 +922,12 @@ namespace FLS.Server.Data.Mapping
                 //Serialize property to JSON 
                 entity.RecipientDetails = JsonConvert.SerializeObject(details.RecipientDetails);
             }
-            
+
             //check for new delivery items
             foreach (var item in details.DeliveryItems)
             {
-                if (item.DeliveryItemId == Guid.Empty || entity.DeliveryItems.Any(i => i.DeliveryItemId == item.DeliveryItemId) == false)
+                if (item.DeliveryItemId == Guid.Empty ||
+                    entity.DeliveryItems.Any(i => i.DeliveryItemId == item.DeliveryItemId) == false)
                 {
                     //item not found, add it
                     var deliveryItem = new DeliveryItem()
@@ -926,7 +961,8 @@ namespace FLS.Server.Data.Mapping
 
         #region DeliveryCreationTest
 
-        public static DeliveryCreationTestDetails ToDeliveryCreationTestDetails(this DeliveryCreationTest entity, DeliveryCreationTestDetails details = null)
+        public static DeliveryCreationTestDetails ToDeliveryCreationTestDetails(this DeliveryCreationTest entity,
+            DeliveryCreationTestDetails details = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -940,7 +976,8 @@ namespace FLS.Server.Data.Mapping
             details.DeliveryCreationTestName = entity.DeliveryCreationTestName;
             details.Description = entity.Description;
             details.IsActive = entity.IsActive;
-            details.ExpectedDeliveryDetails = JsonConvert.DeserializeObject<DeliveryDetails>(entity.ExpectedDeliveryDetails);
+            details.ExpectedDeliveryDetails =
+                JsonConvert.DeserializeObject<DeliveryDetails>(entity.ExpectedDeliveryDetails);
             details.ExpectedMatchedAccountingRuleFilterIds =
                 JsonConvert.DeserializeObject<List<Guid>>(entity.ExpectedMatchedAccountingRuleFilterIds);
             details.MustNotCreateDeliveryForFlight = entity.MustNotCreateDeliveryForFlight;
@@ -960,15 +997,18 @@ namespace FLS.Server.Data.Mapping
                 lastTestResult.LastTestRunOn = entity.LastTestRunOn;
                 lastTestResult.LastTestSuccessful = entity.LastTestSuccessful;
                 lastTestResult.LastTestResultMessage = entity.LastTestResultMessage;
-                lastTestResult.LastTestCreatedDeliveryDetails = JsonConvert.DeserializeObject<DeliveryDetails>(entity.LastTestCreatedDeliveryDetails);
-                lastTestResult.LastTestMatchedAccountingRuleFilterIds = JsonConvert.DeserializeObject<List<Guid>>(entity.LastTestMatchedAccountingRuleFilterIds);
+                lastTestResult.LastTestCreatedDeliveryDetails =
+                    JsonConvert.DeserializeObject<DeliveryDetails>(entity.LastTestCreatedDeliveryDetails);
+                lastTestResult.LastTestMatchedAccountingRuleFilterIds =
+                    JsonConvert.DeserializeObject<List<Guid>>(entity.LastTestMatchedAccountingRuleFilterIds);
                 details.LastDeliveryCreationTestResult = lastTestResult;
             }
 
             return details;
         }
 
-        public static DeliveryCreationTest ToDeliveryCreationTest(this DeliveryCreationTestDetails details, Guid clubId, DeliveryCreationTest entity = null, bool overwriteDeliveryCreationTestId = false)
+        public static DeliveryCreationTest ToDeliveryCreationTest(this DeliveryCreationTestDetails details, Guid clubId,
+            DeliveryCreationTest entity = null, bool overwriteDeliveryCreationTestId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -1003,8 +1043,11 @@ namespace FLS.Server.Data.Mapping
                 entity.LastTestRunOn = details.LastDeliveryCreationTestResult.LastTestRunOn;
                 entity.LastTestSuccessful = details.LastDeliveryCreationTestResult.LastTestSuccessful;
                 entity.LastTestResultMessage = details.LastDeliveryCreationTestResult.LastTestResultMessage;
-                entity.LastTestCreatedDeliveryDetails = JsonConvert.SerializeObject(details.LastDeliveryCreationTestResult.LastTestCreatedDeliveryDetails);
-                entity.LastTestMatchedAccountingRuleFilterIds = JsonConvert.SerializeObject(details.LastDeliveryCreationTestResult.LastTestMatchedAccountingRuleFilterIds);
+                entity.LastTestCreatedDeliveryDetails =
+                    JsonConvert.SerializeObject(details.LastDeliveryCreationTestResult.LastTestCreatedDeliveryDetails);
+                entity.LastTestMatchedAccountingRuleFilterIds =
+                    JsonConvert.SerializeObject(
+                        details.LastDeliveryCreationTestResult.LastTestMatchedAccountingRuleFilterIds);
             }
 
             return entity;
@@ -1014,7 +1057,8 @@ namespace FLS.Server.Data.Mapping
 
         #region ElevationUnitType
 
-        public static ElevationUnitTypeListItem ToElevationUnitTypeListItem(this DbEntities.ElevationUnitType entity, ElevationUnitTypeListItem listItem = null)
+        public static ElevationUnitTypeListItem ToElevationUnitTypeListItem(this DbEntities.ElevationUnitType entity,
+            ElevationUnitTypeListItem listItem = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -1034,7 +1078,8 @@ namespace FLS.Server.Data.Mapping
 
         #region EmailTemplate
 
-        public static EmailTemplateOverview ToEmailTemplateOverview(this EmailTemplate entity, EmailTemplateOverview overview = null)
+        public static EmailTemplateOverview ToEmailTemplateOverview(this EmailTemplate entity,
+            EmailTemplateOverview overview = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -1053,7 +1098,8 @@ namespace FLS.Server.Data.Mapping
             return overview;
         }
 
-        public static EmailTemplateDetails ToEmailTemplateDetails(this EmailTemplate entity, EmailTemplateDetails details = null)
+        public static EmailTemplateDetails ToEmailTemplateDetails(this EmailTemplate entity,
+            EmailTemplateDetails details = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -1076,7 +1122,8 @@ namespace FLS.Server.Data.Mapping
             return details;
         }
 
-        public static EmailTemplate ToEmailTemplate(this EmailTemplateDetails details, EmailTemplate entity = null, bool overwriteEmailTemplateId = false)
+        public static EmailTemplate ToEmailTemplate(this EmailTemplateDetails details, EmailTemplate entity = null,
+            bool overwriteEmailTemplateId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -1103,7 +1150,7 @@ namespace FLS.Server.Data.Mapping
         #endregion EmailTemplate
 
         #region Flight
-        
+
         public static FlightDetails ToFlightDetails(this Flight entity, FlightDetails details = null)
         {
             entity.ArgumentNotNull("entity");
@@ -1141,8 +1188,10 @@ namespace FLS.Server.Data.Mapping
 
                         if (details.FlightDate.HasValue == false)
                         {
-                            if (entity.TowFlight.StartDateTime.HasValue) details.FlightDate = entity.TowFlight.StartDateTime.Value.Date;
-                            else if (entity.TowFlight.LdgDateTime.HasValue) details.FlightDate = entity.TowFlight.LdgDateTime.Value.Date;
+                            if (entity.TowFlight.StartDateTime.HasValue)
+                                details.FlightDate = entity.TowFlight.StartDateTime.Value.Date;
+                            else if (entity.TowFlight.LdgDateTime.HasValue)
+                                details.FlightDate = entity.TowFlight.LdgDateTime.Value.Date;
                         }
                     }
                     details.TowFlightDetailsData = towFlightDetailsData;
@@ -1174,11 +1223,12 @@ namespace FLS.Server.Data.Mapping
                     else if (entity.LdgDateTime.HasValue) details.FlightDate = entity.LdgDateTime.Value.Date;
                 }
             }
-            
+
             return details;
         }
 
-        public static GliderFlightDetailsData ToGliderFlightDetailsData(this Flight flight, GliderFlightDetailsData gliderFlightDetailsData = null)
+        public static GliderFlightDetailsData ToGliderFlightDetailsData(this Flight flight,
+            GliderFlightDetailsData gliderFlightDetailsData = null)
         {
             flight.ArgumentNotNull("flight");
 
@@ -1196,7 +1246,8 @@ namespace FLS.Server.Data.Mapping
             return gliderFlightDetailsData;
         }
 
-        public static TowFlightDetailsData ToTowFlightDetailsData(this Flight flight, TowFlightDetailsData towFlightDetailsData = null)
+        public static TowFlightDetailsData ToTowFlightDetailsData(this Flight flight,
+            TowFlightDetailsData towFlightDetailsData = null)
         {
             flight.ArgumentNotNull("flight");
 
@@ -1210,7 +1261,8 @@ namespace FLS.Server.Data.Mapping
             return towFlightDetailsData;
         }
 
-        public static MotorFlightDetailsData ToMotorFlightDetailsData(this Flight flight, MotorFlightDetailsData motorFlightDetailsData = null)
+        public static MotorFlightDetailsData ToMotorFlightDetailsData(this Flight flight,
+            MotorFlightDetailsData motorFlightDetailsData = null)
         {
             flight.ArgumentNotNull("flight");
 
@@ -1241,7 +1293,8 @@ namespace FLS.Server.Data.Mapping
             return motorFlightDetailsData;
         }
 
-        public static FlightDetailsData ToFlightDetailsData(this Flight flight, FlightDetailsData flightDetailsData = null)
+        public static FlightDetailsData ToFlightDetailsData(this Flight flight,
+            FlightDetailsData flightDetailsData = null)
         {
             flight.ArgumentNotNull("flight");
 
@@ -1291,13 +1344,16 @@ namespace FLS.Server.Data.Mapping
             if (flight.Pilot != null) flightDetailsData.PilotPersonId = flight.Pilot.PersonId;
             if (flight.CoPilot != null) flightDetailsData.CoPilotPersonId = flight.CoPilot.PersonId;
             if (flight.Instructor != null) flightDetailsData.InstructorPersonId = flight.Instructor.PersonId;
-            if (flight.InvoiceRecipient != null) flightDetailsData.InvoiceRecipientPersonId = flight.InvoiceRecipient.PersonId;
+            if (flight.InvoiceRecipient != null)
+                flightDetailsData.InvoiceRecipientPersonId = flight.InvoiceRecipient.PersonId;
             if (flight.ObserverPerson != null) flightDetailsData.ObserverPersonId = flight.ObserverPerson.PersonId;
 
             return flightDetailsData;
         }
 
-        public static Flight ToFlight(this FlightDetails details, Flight entity = null, List<Aircraft> detailsRelatedAircrafts = null, List<FlightType> detailsRelatedFlightTypes = null, bool overwriteFlightId = false)
+        public static Flight ToFlight(this FlightDetails details, Flight entity = null,
+            List<Aircraft> detailsRelatedAircrafts = null, List<FlightType> detailsRelatedFlightTypes = null,
+            bool overwriteFlightId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -1313,9 +1369,16 @@ namespace FLS.Server.Data.Mapping
             entity.StartTypeId = details.StartType;
             entity.FlightDate = details.FlightDate;
 
-            if (details.GliderFlightDetailsData != null && (details.StartType.HasValue == false || details.StartType.Value == (int) AircraftStartType.TowingByAircraft || details.StartType.Value == (int) AircraftStartType.WinchLaunch || details.StartType.Value == (int) AircraftStartType.SelfStart || details.StartType.Value == (int) AircraftStartType.ExternalStart))
+            if (details.GliderFlightDetailsData != null &&
+                (details.StartType.HasValue == false ||
+                 details.StartType.Value == (int) AircraftStartType.TowingByAircraft ||
+                 details.StartType.Value == (int) AircraftStartType.WinchLaunch ||
+                 details.StartType.Value == (int) AircraftStartType.SelfStart ||
+                 details.StartType.Value == (int) AircraftStartType.ExternalStart))
             {
-                if (details.TowFlightDetailsData != null && (details.StartType.HasValue == false || details.StartType.Value == (int) AircraftStartType.TowingByAircraft))
+                if (details.TowFlightDetailsData != null &&
+                    (details.StartType.HasValue == false ||
+                     details.StartType.Value == (int) AircraftStartType.TowingByAircraft))
                 {
                     //it is a towed glider flight
                     entity.StartTypeId = (int) AircraftStartType.TowingByAircraft;
@@ -1329,41 +1392,48 @@ namespace FLS.Server.Data.Mapping
                     relatedFlightType = GetRelatedFlightType(detailsRelatedFlightTypes, details.TowFlightDetailsData);
 
                     //check if start locations are equal
-                    if (details.TowFlightDetailsData.StartLocationId.HasValue == false && details.GliderFlightDetailsData.StartLocationId.HasValue)
+                    if (details.TowFlightDetailsData.StartLocationId.HasValue == false &&
+                        details.GliderFlightDetailsData.StartLocationId.HasValue)
                     {
                         //set towing flight start location to the same location as the glider flight
                         details.TowFlightDetailsData.StartLocationId = details.GliderFlightDetailsData.StartLocationId;
                     }
-                    else if (details.GliderFlightDetailsData.StartLocationId.HasValue == false && details.TowFlightDetailsData.StartLocationId.HasValue)
+                    else if (details.GliderFlightDetailsData.StartLocationId.HasValue == false &&
+                             details.TowFlightDetailsData.StartLocationId.HasValue)
                     {
                         //set glider flight start location to the same location as towing flight
                         details.GliderFlightDetailsData.StartLocationId = details.TowFlightDetailsData.StartLocationId;
                     }
                     else if (details.GliderFlightDetailsData.StartLocationId != details.TowFlightDetailsData.StartLocationId)
                     {
-                        throw new InvalidDataException("Start location is not equal between glider flight and towing flight!");
+                        throw new InvalidDataException(
+                            "Start location is not equal between glider flight and towing flight!");
                     }
 
                     //set start time to the same time as the glider flight (if required)
-                    if (details.TowFlightDetailsData.StartDateTime.HasValue == false && details.GliderFlightDetailsData.StartDateTime.HasValue)
+                    if (details.TowFlightDetailsData.StartDateTime.HasValue == false &&
+                        details.GliderFlightDetailsData.StartDateTime.HasValue)
                     {
                         details.TowFlightDetailsData.StartDateTime = details.GliderFlightDetailsData.StartDateTime;
                     }
 
                     //check if start time are equal
-                    if (details.TowFlightDetailsData.StartDateTime.HasValue == false && details.GliderFlightDetailsData.StartDateTime.HasValue)
+                    if (details.TowFlightDetailsData.StartDateTime.HasValue == false &&
+                        details.GliderFlightDetailsData.StartDateTime.HasValue)
                     {
                         //set towing flight start time to the same time as the glider flight
                         details.TowFlightDetailsData.StartDateTime = details.GliderFlightDetailsData.StartDateTime;
                     }
-                    else if (details.GliderFlightDetailsData.StartDateTime.HasValue == false && details.TowFlightDetailsData.StartDateTime.HasValue)
+                    else if (details.GliderFlightDetailsData.StartDateTime.HasValue == false &&
+                             details.TowFlightDetailsData.StartDateTime.HasValue)
                     {
                         //set glider flight start time to the same time as towing flight
                         details.GliderFlightDetailsData.StartDateTime = details.TowFlightDetailsData.StartDateTime;
                     }
                     else if (details.GliderFlightDetailsData.StartDateTime != details.TowFlightDetailsData.StartDateTime)
                     {
-                        throw new InvalidDataException("Start time is not equal between glider flight and towing flight!");
+                        throw new InvalidDataException(
+                            "Start time is not equal between glider flight and towing flight!");
                     }
 
                     details.TowFlightDetailsData.ToFlight(entity.TowFlight, relatedAircraft, relatedFlightType);
@@ -1373,7 +1443,9 @@ namespace FLS.Server.Data.Mapping
                     //remove any tow flight, it is NO towed glider flight
                     entity.TowFlight = null;
 
-                    if (details.GliderFlightDetailsData.WinchOperatorPersonId.HasValue && (details.StartType.HasValue == false || details.StartType.Value == (int) AircraftStartType.WinchLaunch))
+                    if (details.GliderFlightDetailsData.WinchOperatorPersonId.HasValue &&
+                        (details.StartType.HasValue == false ||
+                         details.StartType.Value == (int) AircraftStartType.WinchLaunch))
                     {
                         //it is a winch launch
                         entity.StartTypeId = (int) AircraftStartType.WinchLaunch;
@@ -1389,7 +1461,8 @@ namespace FLS.Server.Data.Mapping
                 relatedAircraft = GetRelatedAircraft(detailsRelatedAircrafts, details.GliderFlightDetailsData);
                 relatedFlightType = GetRelatedFlightType(detailsRelatedFlightTypes, details.GliderFlightDetailsData);
 
-                details.GliderFlightDetailsData.ToFlight(entity, (AircraftStartType?) entity.StartTypeId, relatedAircraft, relatedFlightType);
+                details.GliderFlightDetailsData.ToFlight(entity, (AircraftStartType?) entity.StartTypeId,
+                    relatedAircraft, relatedFlightType);
             }
             else if (details.MotorFlightDetailsData != null)
             {
@@ -1409,19 +1482,23 @@ namespace FLS.Server.Data.Mapping
             return entity;
         }
 
-        public static Flight ToFlight(this FlightDetailsData details, Flight entity = null, AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null, FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
+        public static Flight ToFlight(this FlightDetailsData details, Flight entity = null,
+            AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null,
+            FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
         {
             details.ArgumentNotNull("details");
             detailsRelatedAircraft.ArgumentNotNull("detailsRelatedAircraft");
 
             if (detailsRelatedAircraft.AircraftId != details.AircraftId)
             {
-                throw new InvalidConstraintException("FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
+                throw new InvalidConstraintException(
+                    "FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
             }
 
             if (detailsRelatedFlightType != null && detailsRelatedFlightType.FlightTypeId != details.FlightTypeId)
             {
-                throw new InvalidConstraintException("FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
+                throw new InvalidConstraintException(
+                    "FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
             }
 
             if (entity == null)
@@ -1433,7 +1510,7 @@ namespace FLS.Server.Data.Mapping
             if (startType.HasValue) entity.StartTypeId = (int) startType;
 
             entity.AircraftId = details.AircraftId;
-            
+
             entity.EngineStartOperatingCounterInSeconds = details.EngineStartOperatingCounterInSeconds;
             entity.EngineEndOperatingCounterInSeconds = details.EngineEndOperatingCounterInSeconds;
 
@@ -1472,7 +1549,8 @@ namespace FLS.Server.Data.Mapping
             entity.InboundRoute = details.InboundRoute;
 
             //if no FlightCostBalanceType is set, set default
-            if (entity.FlightCostBalanceType == null && entity.FlightCostBalanceTypeId.HasValue == false && details.FlightCostBalanceType.HasValue == false)
+            if (entity.FlightCostBalanceType == null && entity.FlightCostBalanceTypeId.HasValue == false &&
+                details.FlightCostBalanceType.HasValue == false)
             {
                 entity.FlightCostBalanceTypeId = (int) FLS.Data.WebApi.Flight.FlightCostBalanceType.PilotPaysAllCosts;
             }
@@ -1493,7 +1571,9 @@ namespace FLS.Server.Data.Mapping
             return entity;
         }
 
-        public static Flight ToFlight(this GliderFlightDetailsData details, Flight entity = null, AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null, FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
+        public static Flight ToFlight(this GliderFlightDetailsData details, Flight entity = null,
+            AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null,
+            FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -1528,7 +1608,9 @@ namespace FLS.Server.Data.Mapping
             return entity;
         }
 
-        public static Flight ToFlight(this MotorFlightDetailsData details, Flight entity = null, Aircraft detailsRelatedAircraft = null, FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
+        public static Flight ToFlight(this MotorFlightDetailsData details, Flight entity = null,
+            Aircraft detailsRelatedAircraft = null, FlightType detailsRelatedFlightType = null,
+            bool overwriteFlightId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -1552,10 +1634,12 @@ namespace FLS.Server.Data.Mapping
             }
 
             //converts the base flight stuff to the flight entity
-            ((FlightDetailsData) details).ToFlight(entity, AircraftStartType.MotorFlightStart, detailsRelatedAircraft, detailsRelatedFlightType);
+            ((FlightDetailsData) details).ToFlight(entity, AircraftStartType.MotorFlightStart, detailsRelatedAircraft,
+                detailsRelatedFlightType);
 
             //Convert Flightcrews
-            details.ToFlightCrewsInFlight(entity, AircraftStartType.MotorFlightStart, detailsRelatedAircraft, detailsRelatedFlightType);
+            details.ToFlightCrewsInFlight(entity, AircraftStartType.MotorFlightStart, detailsRelatedAircraft,
+                detailsRelatedFlightType);
 
             if (entity.FlightDate.HasValue == false)
             {
@@ -1566,7 +1650,9 @@ namespace FLS.Server.Data.Mapping
             return entity;
         }
 
-        public static Flight ToFlight(this TowFlightDetailsData details, Flight entity = null, Aircraft detailsRelatedAircraft = null, FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
+        public static Flight ToFlight(this TowFlightDetailsData details, Flight entity = null,
+            Aircraft detailsRelatedAircraft = null, FlightType detailsRelatedFlightType = null,
+            bool overwriteFlightId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -1579,7 +1665,8 @@ namespace FLS.Server.Data.Mapping
             entity.FlightAircraftType = (int) FlightAircraftTypeValue.TowFlight;
 
             //converts the base flight stuff to the flight entity
-            ((FlightDetailsData) details).ToFlight(entity, AircraftStartType.TowingByAircraft, detailsRelatedAircraft, detailsRelatedFlightType);
+            ((FlightDetailsData) details).ToFlight(entity, AircraftStartType.TowingByAircraft, detailsRelatedAircraft,
+                detailsRelatedFlightType);
 
             if (detailsRelatedFlightType != null && detailsRelatedFlightType.InstructorRequired == false)
             {
@@ -1587,10 +1674,12 @@ namespace FLS.Server.Data.Mapping
             }
 
             //Convert Flightcrews
-            details.ToFlightCrewsInFlight(entity, AircraftStartType.TowingByAircraft, detailsRelatedAircraft, detailsRelatedFlightType);
+            details.ToFlightCrewsInFlight(entity, AircraftStartType.TowingByAircraft, detailsRelatedAircraft,
+                detailsRelatedFlightType);
 
             return entity;
         }
+
         public static FlightExchangeData ToFlightExchangeData(this Flight entity, Guid clubId)
         {
             entity.ArgumentNotNull("entity");
@@ -1640,7 +1729,8 @@ namespace FLS.Server.Data.Mapping
             exchangeData.FlightComment = entity.Comment;
 
             exchangeData.AirState = ((FLS.Data.WebApi.Flight.FlightAirState) entity.AirStateId).ToFlightAirState();
-            exchangeData.ProcessState = ((FLS.Data.WebApi.Flight.FlightProcessState) entity.ProcessStateId).ToFlightProcessState();
+            exchangeData.ProcessState =
+                ((FLS.Data.WebApi.Flight.FlightProcessState) entity.ProcessStateId).ToFlightProcessState();
 
             if (entity.FlightType != null)
             {
@@ -1688,7 +1778,7 @@ namespace FLS.Server.Data.Mapping
             exchangeData.NoLdgTimeInformation = entity.NoLdgTimeInformation;
             exchangeData.CouponNumber = entity.CouponNumber;
             exchangeData.CreatedOn = entity.CreatedOn;
-            exchangeData.ModifiedOn = entity.ModifiedOn;    
+            exchangeData.ModifiedOn = entity.ModifiedOn;
 
 
             if (entity.TowFlight != null)
@@ -1702,18 +1792,21 @@ namespace FLS.Server.Data.Mapping
                 {
                     exchangeData.TowFlightPilot = towFlight.Pilot.Person.ToFlightCrewData(clubId);
                 }
-                
+
                 if (towFlight.Instructor != null && towFlight.Instructor.Person != null)
                 {
                     exchangeData.TowFlightInstructor = towFlight.Instructor.Person.ToFlightCrewData(clubId);
                 }
-                
-                exchangeData.TowFlightEngineStartOperatingCounterInSeconds = towFlight.EngineStartOperatingCounterInSeconds;
+
+                exchangeData.TowFlightEngineStartOperatingCounterInSeconds =
+                    towFlight.EngineStartOperatingCounterInSeconds;
                 exchangeData.TowFlightEngineEndOperatingCounterInSeconds = towFlight.EngineEndOperatingCounterInSeconds;
                 exchangeData.TowFlightFlightComment = towFlight.Comment;
 
-                exchangeData.TowFlightAirState = ((FLS.Data.WebApi.Flight.FlightAirState)towFlight.AirStateId).ToFlightAirState();
-                exchangeData.TowFlightProcessState = ((FLS.Data.WebApi.Flight.FlightProcessState)towFlight.ProcessStateId).ToFlightProcessState();
+                exchangeData.TowFlightAirState =
+                    ((FLS.Data.WebApi.Flight.FlightAirState) towFlight.AirStateId).ToFlightAirState();
+                exchangeData.TowFlightProcessState =
+                    ((FLS.Data.WebApi.Flight.FlightProcessState) towFlight.ProcessStateId).ToFlightProcessState();
 
                 if (towFlight.FlightType != null)
                 {
@@ -1788,9 +1881,11 @@ namespace FLS.Server.Data.Mapping
 
             return recipientDetails;
         }
+
         #endregion Flight
 
         #region FlightCrewData
+
         public static FlightCrewData ToFlightCrewData(this Person person, Guid clubId)
         {
             var flightCrewData = new FlightCrewData();
@@ -1806,25 +1901,30 @@ namespace FLS.Server.Data.Mapping
             var personClub = person.PersonClubs.FirstOrDefault(e => e.ClubId == clubId);
 
             if (personClub != null) flightCrewData.PersonClubMemberNumber = personClub.MemberNumber;
-            
+
             return flightCrewData;
         }
+
         #endregion FlightCrewData
 
         #region FlightCrew
 
-        public static Flight ToFlightCrewsInFlight(this FlightDetailsData details, Flight entity = null, AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null, FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
+        public static Flight ToFlightCrewsInFlight(this FlightDetailsData details, Flight entity = null,
+            AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null,
+            FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
         {
             details.ArgumentNotNull("details");
 
             if (detailsRelatedAircraft != null && detailsRelatedAircraft.AircraftId != details.AircraftId)
             {
-                throw new InvalidConstraintException("FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
+                throw new InvalidConstraintException(
+                    "FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
             }
 
             if (detailsRelatedFlightType != null && detailsRelatedFlightType.FlightTypeId != details.FlightTypeId)
             {
-                throw new InvalidConstraintException("FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
+                throw new InvalidConstraintException(
+                    "FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
             }
 
             if (entity == null)
@@ -1864,7 +1964,12 @@ namespace FLS.Server.Data.Mapping
                 entity.FlightCrews.Remove(entity.Pilot);
             }
 
-            if ((detailsRelatedAircraft != null && detailsRelatedAircraft.NrOfSeats.HasValue && detailsRelatedAircraft.NrOfSeats.Value < 2) || (detailsRelatedFlightType != null && detailsRelatedFlightType.InstructorRequired && details.CoPilotPersonId.HasValue && details.CoPilotPersonId.Value.IsValid()) || (detailsRelatedFlightType != null && detailsRelatedFlightType.ObserverPilotOrInstructorRequired && details.ObserverPersonId.HasValue && details.ObserverPersonId.Value.IsValid()))
+            if ((detailsRelatedAircraft != null && detailsRelatedAircraft.NrOfSeats.HasValue &&
+                 detailsRelatedAircraft.NrOfSeats.Value < 2) ||
+                (detailsRelatedFlightType != null && detailsRelatedFlightType.InstructorRequired &&
+                 details.CoPilotPersonId.HasValue && details.CoPilotPersonId.Value.IsValid()) ||
+                (detailsRelatedFlightType != null && detailsRelatedFlightType.ObserverPilotOrInstructorRequired &&
+                 details.ObserverPersonId.HasValue && details.ObserverPersonId.Value.IsValid()))
             {
                 //we only have a one seat aircraft
                 //or we have an instructor or observer required flight
@@ -1900,7 +2005,8 @@ namespace FLS.Server.Data.Mapping
             }
 
 
-            if (detailsRelatedFlightType != null && detailsRelatedFlightType.InstructorRequired && details.InstructorPersonId.HasValue && details.InstructorPersonId.Value.IsValid())
+            if (detailsRelatedFlightType != null && detailsRelatedFlightType.InstructorRequired &&
+                details.InstructorPersonId.HasValue && details.InstructorPersonId.Value.IsValid())
             {
                 if (entity.Instructor != null)
                 {
@@ -1937,7 +2043,8 @@ namespace FLS.Server.Data.Mapping
                 }
             }
 
-            if (detailsRelatedFlightType != null && detailsRelatedFlightType.ObserverPilotOrInstructorRequired && details.ObserverPersonId.HasValue && details.ObserverPersonId.Value.IsValid())
+            if (detailsRelatedFlightType != null && detailsRelatedFlightType.ObserverPilotOrInstructorRequired &&
+                details.ObserverPersonId.HasValue && details.ObserverPersonId.Value.IsValid())
             {
                 if (entity.ObserverPerson != null)
                 {
@@ -1966,7 +2073,9 @@ namespace FLS.Server.Data.Mapping
 
 
             if (details.InvoiceRecipientPersonId.HasValue && details.InvoiceRecipientPersonId.Value.IsValid()
-                && details.FlightCostBalanceType.HasValue && details.FlightCostBalanceType.Value == (int)FLS.Data.WebApi.Flight.FlightCostBalanceType.CostsPaidByPerson)
+                && details.FlightCostBalanceType.HasValue &&
+                details.FlightCostBalanceType.Value ==
+                (int) FLS.Data.WebApi.Flight.FlightCostBalanceType.CostsPaidByPerson)
             {
                 if (entity.InvoiceRecipient != null)
                 {
@@ -1992,18 +2101,22 @@ namespace FLS.Server.Data.Mapping
             return entity;
         }
 
-        public static Flight ToFlightCrewsInFlight(this GliderFlightDetailsData details, Flight entity = null, AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null, FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
+        public static Flight ToFlightCrewsInFlight(this GliderFlightDetailsData details, Flight entity = null,
+            AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null,
+            FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
         {
             details.ArgumentNotNull("details");
 
             if (detailsRelatedAircraft != null && detailsRelatedAircraft.AircraftId != details.AircraftId)
             {
-                throw new InvalidConstraintException("FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
+                throw new InvalidConstraintException(
+                    "FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
             }
 
             if (detailsRelatedFlightType != null && detailsRelatedFlightType.FlightTypeId != details.FlightTypeId)
             {
-                throw new InvalidConstraintException("FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
+                throw new InvalidConstraintException(
+                    "FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
             }
 
             if (entity == null)
@@ -2013,10 +2126,12 @@ namespace FLS.Server.Data.Mapping
 
             FlightCrew flightCrew = null;
 
-            ((FlightDetailsData) details).ToFlightCrewsInFlight(entity, startType, detailsRelatedAircraft, detailsRelatedFlightType);
+            ((FlightDetailsData) details).ToFlightCrewsInFlight(entity, startType, detailsRelatedAircraft,
+                detailsRelatedFlightType);
 
             //handle winch operator
-            if (startType.HasValue && startType.Value == AircraftStartType.WinchLaunch && details.WinchOperatorPersonId.HasValue && details.WinchOperatorPersonId.Value.IsValid())
+            if (startType.HasValue && startType.Value == AircraftStartType.WinchLaunch &&
+                details.WinchOperatorPersonId.HasValue && details.WinchOperatorPersonId.Value.IsValid())
             {
                 if (entity.WinchOperator != null)
                 {
@@ -2043,7 +2158,9 @@ namespace FLS.Server.Data.Mapping
             }
 
             //handle glider passenger
-            if (detailsRelatedFlightType != null && detailsRelatedFlightType.IsPassengerFlight && detailsRelatedAircraft != null && detailsRelatedAircraft.NrOfSeats == 2 && details.PassengerPersonId.HasValue)
+            if (detailsRelatedFlightType != null && detailsRelatedFlightType.IsPassengerFlight &&
+                detailsRelatedAircraft != null && detailsRelatedAircraft.NrOfSeats == 2 &&
+                details.PassengerPersonId.HasValue)
             {
                 //is passenger flight
 
@@ -2106,18 +2223,22 @@ namespace FLS.Server.Data.Mapping
             return entity;
         }
 
-        public static Flight ToFlightCrewsInFlight(this MotorFlightDetailsData details, Flight entity = null, AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null, FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
+        public static Flight ToFlightCrewsInFlight(this MotorFlightDetailsData details, Flight entity = null,
+            AircraftStartType? startType = null, Aircraft detailsRelatedAircraft = null,
+            FlightType detailsRelatedFlightType = null, bool overwriteFlightId = false)
         {
             details.ArgumentNotNull("details");
 
             if (detailsRelatedAircraft != null && detailsRelatedAircraft.AircraftId != details.AircraftId)
             {
-                throw new InvalidConstraintException("FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
+                throw new InvalidConstraintException(
+                    "FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
             }
 
             if (detailsRelatedFlightType != null && detailsRelatedFlightType.FlightTypeId != details.FlightTypeId)
             {
-                throw new InvalidConstraintException("FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
+                throw new InvalidConstraintException(
+                    "FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
             }
 
             if (entity == null)
@@ -2125,15 +2246,19 @@ namespace FLS.Server.Data.Mapping
                 entity = new Flight();
             }
 
-            ((FlightDetailsData) details).ToFlightCrewsInFlight(entity, startType, detailsRelatedAircraft, detailsRelatedFlightType);
+            ((FlightDetailsData) details).ToFlightCrewsInFlight(entity, startType, detailsRelatedAircraft,
+                detailsRelatedFlightType);
 
             //handle motor flight passengers
-            if (detailsRelatedAircraft != null && detailsRelatedAircraft.NrOfSeats > 2 && detailsRelatedFlightType != null && detailsRelatedFlightType.IsPassengerFlight && details.PassengerPersonIds != null && details.PassengerPersonIds.Any())
+            if (detailsRelatedAircraft != null && detailsRelatedAircraft.NrOfSeats > 2 &&
+                detailsRelatedFlightType != null && detailsRelatedFlightType.IsPassengerFlight &&
+                details.PassengerPersonIds != null && details.PassengerPersonIds.Any())
             {
                 //it is a passenger flight and we have some passengers
                 foreach (var passengerPersonId in details.PassengerPersonIds)
                 {
-                    if (passengerPersonId == Guid.Empty || entity.Passengers.Any(flightPassenger => flightPassenger.PersonId == passengerPersonId) == false)
+                    if (passengerPersonId == Guid.Empty ||
+                        entity.Passengers.Any(flightPassenger => flightPassenger.PersonId == passengerPersonId) == false)
                     {
                         //passenger not found, add it
                         var flightCrew = new FlightCrew();
@@ -2147,7 +2272,8 @@ namespace FLS.Server.Data.Mapping
                 //remove all flight crews which are not found in current flight
                 foreach (var passenger in entity.Passengers.ToList())
                 {
-                    if (details.PassengerPersonIds.Any(passengerPersonId => passengerPersonId == passenger.PersonId) == false)
+                    if (details.PassengerPersonIds.Any(passengerPersonId => passengerPersonId == passenger.PersonId) ==
+                        false)
                     {
                         entity.FlightCrews.Remove(passenger);
                     }
@@ -2169,7 +2295,8 @@ namespace FLS.Server.Data.Mapping
 
         #region FlightCostBalanceType
 
-        public static FlightCostBalanceTypeListItem ToFlightCostBalanceTypeListItem(this DbEntities.FlightCostBalanceType entity, FlightCostBalanceTypeListItem listItem = null)
+        public static FlightCostBalanceTypeListItem ToFlightCostBalanceTypeListItem(
+            this DbEntities.FlightCostBalanceType entity, FlightCostBalanceTypeListItem listItem = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -2264,7 +2391,8 @@ namespace FLS.Server.Data.Mapping
             return details;
         }
 
-        public static FlightType ToFlightType(this FlightTypeDetails details, Guid clubId, FlightType entity = null, bool overwriteFlightTypeId = false)
+        public static FlightType ToFlightType(this FlightTypeDetails details, Guid clubId, FlightType entity = null,
+            bool overwriteFlightTypeId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -2296,7 +2424,8 @@ namespace FLS.Server.Data.Mapping
 
         #region Language
 
-        public static LanguageListItem ToLanguageListItem(this DbEntities.Language entity, LanguageListItem listItem = null)
+        public static LanguageListItem ToLanguageListItem(this DbEntities.Language entity,
+            LanguageListItem listItem = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -2316,7 +2445,8 @@ namespace FLS.Server.Data.Mapping
 
         #region LengthUnitType
 
-        public static LengthUnitTypeListItem ToLengthUnitTypeListItem(this DbEntities.LengthUnitType entity, LengthUnitTypeListItem listItem = null)
+        public static LengthUnitTypeListItem ToLengthUnitTypeListItem(this DbEntities.LengthUnitType entity,
+            LengthUnitTypeListItem listItem = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -2452,7 +2582,8 @@ namespace FLS.Server.Data.Mapping
             return details;
         }
 
-        public static Location ToLocation(this LocationDetails details, Location entity = null, bool overwriteLocationId = false)
+        public static Location ToLocation(this LocationDetails details, Location entity = null,
+            bool overwriteLocationId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -2486,7 +2617,8 @@ namespace FLS.Server.Data.Mapping
 
         #region LocationType
 
-        public static LocationTypeListItem ToLocationTypeListItem(this DbEntities.LocationType entity, LocationTypeListItem listItem = null)
+        public static LocationTypeListItem ToLocationTypeListItem(this DbEntities.LocationType entity,
+            LocationTypeListItem listItem = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -2507,7 +2639,8 @@ namespace FLS.Server.Data.Mapping
 
         #region MemberState
 
-        public static MemberStateOverview ToMemberStateOverview(this MemberState entity, MemberStateOverview overview = null)
+        public static MemberStateOverview ToMemberStateOverview(this MemberState entity,
+            MemberStateOverview overview = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -2538,7 +2671,8 @@ namespace FLS.Server.Data.Mapping
             return details;
         }
 
-        public static MemberState ToMemberState(this MemberStateDetails details, Guid clubId, MemberState entity = null, bool overwriteMemberStateId = false)
+        public static MemberState ToMemberState(this MemberStateDetails details, Guid clubId, MemberState entity = null,
+            bool overwriteMemberStateId = false)
         {
             details.ArgumentNotNull("details");
 
@@ -2577,7 +2711,7 @@ namespace FLS.Server.Data.Mapping
 
             return listItem;
         }
-        
+
         public static PersonOverview ToPersonOverview(this Person entity, Guid clubId, PersonOverview overview = null)
         {
             entity.ArgumentNotNull("entity");
@@ -2629,7 +2763,7 @@ namespace FLS.Server.Data.Mapping
 
             return overview;
         }
-        
+
         public static PersonDetails ToPersonDetails(this Person entity, Guid clubId, PersonDetails details = null)
         {
             entity.ArgumentNotNull("entity");
@@ -2702,14 +2836,26 @@ namespace FLS.Server.Data.Mapping
                 details.ClubRelatedPersonDetails.IsWinchOperator = personClub.IsWinchOperator;
                 details.ClubRelatedPersonDetails.IsMotorInstructor = personClub.IsMotorInstructor;
                 details.ClubRelatedPersonDetails.ReceiveFlightReports = personClub.ReceiveFlightReports;
-                details.ClubRelatedPersonDetails.ReceiveAircraftReservationNotifications = personClub.ReceiveAircraftReservationNotifications;
-                details.ClubRelatedPersonDetails.ReceivePlanningDayRoleReminder = personClub.ReceivePlanningDayRoleReminder;
+                details.ClubRelatedPersonDetails.ReceiveAircraftReservationNotifications =
+                    personClub.ReceiveAircraftReservationNotifications;
+                details.ClubRelatedPersonDetails.ReceivePlanningDayRoleReminder =
+                    personClub.ReceivePlanningDayRoleReminder;
                 details.ClubRelatedPersonDetails.IsActive = personClub.IsActive;
 
-                foreach (var entityPersonCategory in entity.PersonPersonCategories.Where(entityPersonCategory => entityPersonCategory.PersonCategory.ClubId == clubId))
+                try
                 {
-                    details.ClubRelatedPersonDetails.PersonCategoryIds.Add(entityPersonCategory.PersonCategoryId);
+                    foreach (var entityPersonCategory in entity.PersonPersonCategories.Where(entityPersonCategory => entityPersonCategory.PersonCategory.ClubId == clubId))
+                    {
+                        details.ClubRelatedPersonDetails.PersonCategoryIds.Add(entityPersonCategory.PersonCategoryId);
+                    }
                 }
+                catch (Exception exception)
+                {
+                    var logger = new LogFactory().GetCurrentClassLogger();
+                    logger.Error(exception, $"Entity: {entity}; entity.PPC->Count: {entity.PersonPersonCategories.Count}");
+
+                }
+                
             }
 
             return details;

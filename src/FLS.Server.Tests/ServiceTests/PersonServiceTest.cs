@@ -13,6 +13,8 @@ using System.IO;
 using AutoMapper;
 using FLS.Server.Data.DbEntities;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using AutoMapper.Configuration;
 using AutoMapper.Mappers;
 using FLS.Server.Data.Mapping;
@@ -56,13 +58,15 @@ namespace FLS.Server.Tests.ServiceTests
         {
             var csvFileName = @"C:\Projects\flsserver\Data\AdressexportFLS 2017-11-27.csv";
             var excelFileName = @"C:\Projects\flsserver\Data\AdressexportFLS 2017-11-27.xls";
-
+            
             string worksheetsName = "TEST";
 
             bool firstRowIsHeader = true;
 
             var format = new ExcelTextFormat();
             format.Delimiter = ';';
+            format.Encoding = Encoding.GetEncoding("Windows-1250");
+           
             //format.EOL = "\r";              // DEFAULT IS "\r\n";
                                             // format.TextQualifier = '"';
 
