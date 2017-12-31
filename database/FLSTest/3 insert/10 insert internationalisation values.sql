@@ -1123,7 +1123,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'VALIDATION', 'Validierung', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'CONFIRM_VALIDATE', 'ACHTUNG: Mit dieser Funktion werden alle Flüge validiert und für die Rechnungsstellung freigegeben. Danach können die Flüge nicht mehr geändert werden!', 1, SYSDATETIME())
+     VALUES (NEWID(), 'CONFIRM_VALIDATE', 'Flugtag Abschluss. ACHTUNG: Mit dieser Funktion werden alle Flüge validiert und für die Rechnungsstellung freigegeben. Bitte bestätigen ob der Tag wirklich abgeschlossen werden soll.', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'PERSON_CATEGORY', 'Personen Kategorie', 1, SYSDATETIME())
