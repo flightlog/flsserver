@@ -600,13 +600,10 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.FlightComment,
                     flight => flight.Comment.Contains(filter.FlightComment));
 
-                if ((filter.AirStates != null && filter.AirStates.Any())
-                    || (filter.ProcessStates != null && filter.ProcessStates.Any()))
-                        flights = flights.Where(flight => filter.AirStates.Contains(flight.AirStateId)
-                    || (flight.TowFlight != null && filter.AirStates.Contains(flight.TowFlight.AirStateId))
-                    || filter.ProcessStates.Contains(flight.ProcessStateId)
+                if (filter.AirStates != null && filter.AirStates.Any()) flights = flights.Where(flight => filter.AirStates.Contains(flight.AirStateId)
+                    || (flight.TowFlight != null && filter.AirStates.Contains(flight.TowFlight.AirStateId)));
+                if (filter.ProcessStates != null && filter.ProcessStates.Any()) flights = flights.Where(flight => filter.ProcessStates.Contains(flight.ProcessStateId)
                     || (flight.TowFlight != null && filter.ProcessStates.Contains(flight.TowFlight.ProcessStateId)));
-                
                 
                 flights = flights.WhereIf(filter.FlightCode,
                     flight => flight.FlightType.FlightCode.Contains(filter.FlightCode));
