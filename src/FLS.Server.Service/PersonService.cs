@@ -118,7 +118,8 @@ namespace FLS.Server.Service
 
         public List<PersonListItem> GetMotorInstructorPersonListItems(bool onlyClubRelatedInstuctors)
         {
-            return GetPilotPersonListItemInternal(onlyClubRelatedInstuctors, person => person.HasMotorInstructorLicence);
+            return GetPilotPersonListItemInternal(onlyClubRelatedInstuctors, person => person.HasMotorInstructorLicence
+                || (person.HasGliderInstructorLicence && person.HasTMGLicence));
         }
 
         /// <summary>
