@@ -599,6 +599,12 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'STATUS', 'Status', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'FLIGHT_STATUS', 'Flug Status', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'PROCESS_STATUS', 'Verarbeitung', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'MY_DASHBOARD', 'Mein Dashboard', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
@@ -995,76 +1001,31 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'BACK_TO_HOMEPAGE', 'Zurück zur Homepage', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'GLIDER_STATES', 'Segelflug Status', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'TOW_STATES', 'Schleppflug Status', 1, SYSDATETIME())
+     VALUES (NEWID(), 'FLIGHT_STATES', 'Flug Status', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'MOTOR_STATES', 'Motorflug Status', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'GLIDER_READY', 'Segelflugzeug bereit', 1, SYSDATETIME())
+     VALUES (NEWID(), 'FLIGHT_READY', 'Flugzeug bereit', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'GLIDER_IN_AIR', 'Segelflugzeug in der Luft', 1, SYSDATETIME())
+     VALUES (NEWID(), 'FLIGHT_IN_AIR', 'Flugzeug in der Luft', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'GLIDER_LANDED', 'Segelflugzeug gelandet', 1, SYSDATETIME())
+     VALUES (NEWID(), 'FLIGHT_LANDED', 'Flugzeug gelandet', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'GLIDER_INVALID', 'Segelflug unvollständig', 1, SYSDATETIME())
+     VALUES (NEWID(), 'FLIGHT_INVALID', 'Flug unvollständig', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'GLIDER_VALID', 'Segelflug gültig', 1, SYSDATETIME())
+     VALUES (NEWID(), 'FLIGHT_VALID', 'Flug gültig', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'GLIDER_LOCKED', 'Segelflug gesperrt', 1, SYSDATETIME())
+     VALUES (NEWID(), 'FLIGHT_LOCKED', 'Flug gesperrt', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'GLIDER_DELIVERED', 'Segelflug verrechnet', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'TOW_READY', 'Schleppflugzeug bereit', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'TOW_IN_AIR', 'Schleppflugzeug in der Luft', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'TOW_LANDED', 'Schleppflugzeug gelandet', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'TOW_INVALID', 'Schleppflug unvollständig', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'TOW_VALID', 'Schleppflug gültig', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'TOW_LOCKED', 'Schleppflug gesperrt', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'TOW_DELIVERED', 'Schleppflug verrechnet', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'MOTOR_READY', 'Motorflugzeug bereit', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'MOTOR_IN_AIR', 'Motorflugzeug in der Luft', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'MOTOR_LANDED', 'Motorflugzeug gelandet', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'MOTOR_INVALID', 'Motorflug unvollständig', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'MOTOR_VALID', 'Motorflug gültig', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'MOTOR_LOCKED', 'Motorflug gesperrt', 1, SYSDATETIME())
-
-INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'MOTOR_DELIVERED', 'Motorflug verrechnet', 1, SYSDATETIME())
+     VALUES (NEWID(), 'FLIGHT_DELIVERED', 'Flug verrechnet', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'COPY_FROM_LAST_FLIGHT', 'Vom letzten Flug kopieren', 1, SYSDATETIME())
@@ -1162,7 +1123,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'VALIDATION', 'Validierung', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'CONFIRM_VALIDATE', 'ACHTUNG: Mit dieser Funktion werden alle Flüge validiert und für die Rechnungsstellung freigegeben. Danach können die Flüge nicht mehr geändert werden!', 1, SYSDATETIME())
+     VALUES (NEWID(), 'CONFIRM_VALIDATE', 'Flugtag Abschluss. ACHTUNG: Mit dieser Funktion werden alle Flüge validiert und für die Rechnungsstellung freigegeben. Bitte bestätigen ob der Tag wirklich abgeschlossen werden soll.', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'PERSON_CATEGORY', 'Personen Kategorie', 1, SYSDATETIME())
