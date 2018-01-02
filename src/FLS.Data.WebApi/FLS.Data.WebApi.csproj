@@ -107,6 +107,7 @@
     <Compile Include="Dashboard\GliderLicenceStateDetails.cs" />
     <Compile Include="Dashboard\SafetyDashboardDetails.cs" />
     <Compile Include="Dashboard\PersonDashboardDetails.cs" />
+    <Compile Include="DataExchange\ImportJob.cs" />
     <Compile Include="DataExchange\ImportObject.cs" />
     <Compile Include="DataExchange\ImportState.cs" />
     <Compile Include="DateTimeFilter.cs" />

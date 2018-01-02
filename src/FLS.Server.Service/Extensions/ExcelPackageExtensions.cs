@@ -272,7 +272,14 @@ namespace FLS.Server.Service.Extensions
             }
             else if (propertyType == typeof(string))
             {
-                parsedValue = valueStr;
+                if (string.IsNullOrWhiteSpace(valueStr))
+                {
+                    parsedValue = null;
+                }
+                else
+                {
+                    parsedValue = valueStr;
+                }
             }
             else
             {

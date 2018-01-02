@@ -1011,8 +1011,14 @@ namespace FLS.Server.Service
             _addressListEmailBuildService.SendEmail(message);
         }
 
-        public void ImportPersonExcelFile(byte[] fileContentBytes)
+        public ImportJob<PersonDetails> ImportPersonExcelFile(byte[] fileContentBytes, bool realImport = false)
         {
+            var importJob = new ImportJob<PersonDetails>()
+            {
+                ImportObjects = new List<ImportObject<PersonDetails>>(),
+                AdditionalEntitiesToCreate = new SortedDictionary<int, List<object>>()
+            };
+
             using (var package = new ExcelPackage(fileContentBytes.ToMemoryStream()))
             {
                 var workSheet = package.Workbook.Worksheets[1];
@@ -1063,8 +1069,8 @@ namespace FLS.Server.Service
 
                         var countries = context.Countries.ToList();
                         var personCategories = context.PersonCategories.ToList();
+                        var countryIdCh = countries.First(x => x.CountryCodeIso2 == "CH").CountryId;
 
-                        var importList = new List<ImportObject<PersonDetails>>();
                         foreach (var personDetail in entityList)
                         {
                             var importObj = new ImportObject<PersonDetails>()
@@ -1072,7 +1078,7 @@ namespace FLS.Server.Service
                                 ImportDataRecord = personDetail
                             };
 
-                            importList.Add(importObj);
+                            importJob.ImportObjects.Add(importObj);
 
                             if (string.IsNullOrWhiteSpace(personDetail.CountryCode) == false)
                             {
@@ -1083,12 +1089,11 @@ namespace FLS.Server.Service
                                 if (country != null)
                                 {
                                     personDetail.CountryId = country.CountryId;
-                                    personDetail.CountryCode = string.Empty;
                                 }
                             }
                             else
                             {
-                                personDetail.CountryId = countries.First(x => x.CountryCodeIso2 == "CH").CountryId;
+                                personDetail.CountryId = countryIdCh;
                             }
 
                             if (string.IsNullOrWhiteSpace(personDetail.AddressCategories) == false)
@@ -1171,14 +1176,30 @@ namespace FLS.Server.Service
                                 }
                                 else if (matchedPersons.Count == 1)
                                 {
-                                    importObj.ImportState = ImportState.UpdatedSuccessfully;
-                                    importObj.ServerDataRecord = matchedPersons[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
-                                    importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties, matchedPersons[0]);
-
-                                    if (string.IsNullOrWhiteSpace(matchedPersons[0].Zip))
+                                    if (string.IsNullOrWhiteSpace(matchedPersons[0].EmailPrivate) == false
+                                        && matchedPersons[0].EmailPrivate == personDetail.PrivateEmail)
                                     {
-                                        Logger.Warn(
-                                            $"Imported person may not matching correctly: {personDetail} / Matched server record: {matchedPersons[0]}");
+                                        //update record
+                                        importObj.ImportState = ImportState.UpdatedSuccessfully;
+                                        importObj.ServerDataRecord = matchedPersons[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
+                                        importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties, matchedPersons[0]);
+
+                                    }
+                                    else if (string.IsNullOrWhiteSpace(matchedPersons[0].Zip) == false
+                                        && matchedPersons[0].Zip != personDetail.ZipCode)
+                                    {
+                                        // datarecords does not match with ZipCode --> create new record
+                                        importObj.ImportState = ImportState.ImportedSuccessfully;
+                                        var newRecord =
+                                            importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId,
+                                                mappedProperties);
+                                        context.Persons.Add(newRecord);
+                                    }
+                                    else
+                                    {
+                                        importObj.ImportState = ImportState.UpdatedSuccessfully;
+                                        importObj.ServerDataRecord = matchedPersons[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
+                                        importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties, matchedPersons[0]);
                                     }
                                 }
                                 else
@@ -1219,15 +1240,18 @@ namespace FLS.Server.Service
 
                         if (context.ChangeTracker.HasChanges())
                         {
+                            context.GetValidationErrors();
                             context.SaveChanges();
                         }
                     }
                 }
                 catch (Exception exception)
                 {
-                    Logger.Error(exception, "Error while trying to create new AccountingRuleFilter");
+                    Logger.Error(exception, "Error while trying to import person excel list");
                 }
             }
+
+            return importJob;
         }
     }
 }
