@@ -5,7 +5,7 @@
         public string AircraftImmatriculation { get; set; }
         public string PilotName { get; set; }
         public string ReservationPeriod { get; set; }
-        public string InstructorName { get; set; }
+        public string SecondCrewName { get; set; }
         public string ReservationTypeName { get; set; }
     }
 }

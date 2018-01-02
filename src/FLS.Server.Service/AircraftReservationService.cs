@@ -149,13 +149,13 @@ namespace FLS.Server.Service
                 reservations = reservations.WhereIf(filter.PilotName,
                     reservation => reservation.PilotPerson.Lastname.Contains(filter.PilotName)
                                    || reservation.PilotPerson.Firstname.Contains(filter.PilotName));
-                reservations = reservations.WhereIf(filter.InstructorName,
-                    reservation => reservation.InstructorPerson.Lastname.Contains(filter.InstructorName)
-                                   || reservation.InstructorPerson.Firstname.Contains(filter.InstructorName));
+                reservations = reservations.WhereIf(filter.SecondCrewName,
+                    reservation => reservation.SecondCrewPerson.Lastname.Contains(filter.SecondCrewName)
+                                   || reservation.SecondCrewPerson.Firstname.Contains(filter.SecondCrewName));
                 reservations = reservations.WhereIf(filter.Remarks,
                     reservation => reservation.Remarks.Contains(filter.Remarks));
                 reservations = reservations.WhereIf(filter.ReservationTypeName,
-                    reservation => reservation.ReservationType.AircraftReservationTypeName.Contains(filter.ReservationTypeName));
+                    reservation => reservation.AircraftReservationType.AircraftReservationTypeName.Contains(filter.ReservationTypeName));
                 
                 var pagedQuery = new PagedQuery<AircraftReservation>(reservations, pageStart, pageSize);
 
@@ -191,8 +191,9 @@ namespace FLS.Server.Service
                     .Include(Constants.Aircraft)
                     .Include("PilotPerson")
                     .Include("Location")
-                    .Include("InstructorPerson")
-                    .Include("ReservationType")
+                    .Include("SecondCrewPerson")
+                    .Include("FlightType")
+                    .Include("AircraftReservationType")
                     .Where(r => r.ClubId == planningDay.ClubId 
                         && DbFunctions.TruncateTime(r.Start) == planningDay.Day.Date
                         && r.LocationId == planningDay.LocationId)
@@ -230,8 +231,9 @@ namespace FLS.Server.Service
                     .Include(Constants.Aircraft)
                     .Include("PilotPerson")
                     .Include("Location")
-                    .Include("InstructorPerson")
-                    .Include("ReservationType")
+                    .Include("SecondCrewPerson")
+                    .Include("FlightType")
+                    .Include("AircraftReservationType")
                     .Where(r => r.ClubId == CurrentAuthenticatedFLSUserClubId 
                         && DbFunctions.TruncateTime(r.Start) >= fromDate.Date)
                     .OrderBy(pe => pe.Start).ToList();
@@ -254,8 +256,9 @@ namespace FLS.Server.Service
                     .Include(Constants.Aircraft)
                     .Include("PilotPerson")
                     .Include("Location")
-                    .Include("InstructorPerson")
-                    .Include("ReservationType")
+                    .Include("SecondCrewPerson")
+                    .Include("FlightType")
+                    .Include("AircraftReservationType")
                     .Where(r => r.ClubId == CurrentAuthenticatedFLSUserClubId
                         && DbFunctions.TruncateTime(r.Start) == day.Date)
                     .OrderBy(pe => pe.Start).ToList();
@@ -266,24 +269,22 @@ namespace FLS.Server.Service
 
         public void InsertAircraftReservationDetails(AircraftReservationDetails aircraftReservationDetails)
         {
-            var aircraftReservation = aircraftReservationDetails.ToAircraftReservation();
-            InsertAircraftReservation(aircraftReservation);
-
-            //Map it back to details
-            aircraftReservation.ToAircraftReservationDetails(aircraftReservationDetails);
-        }
-
-        internal void InsertAircraftReservation(AircraftReservation aircraftReservation)
-        {
-            aircraftReservation.ClubId = CurrentAuthenticatedFLSUserClubId;
-
             using (var context = _dataAccessService.CreateDbContext())
             {
+                var flightTypes = context.FlightTypes.ToList();
+                var reservationTypes = context.AircraftReservationTypes.ToList();
+
+                var aircraftReservation = aircraftReservationDetails.ToAircraftReservation(reservationTypes, flightTypes);
+                aircraftReservation.ClubId = CurrentAuthenticatedFLSUserClubId;
+
                 context.AircraftReservations.Add(aircraftReservation);
                 context.SaveChanges();
+
+                //Map it back to details
+                aircraftReservation.ToAircraftReservationDetails(aircraftReservationDetails);
             }
         }
-
+        
         public void UpdateAircraftReservationDetails(AircraftReservationDetails currentAircraftReservationDetails)
         {
             currentAircraftReservationDetails.ArgumentNotNull("currentAircraftReservationDetails");
@@ -292,8 +293,11 @@ namespace FLS.Server.Service
 
             using (var context = _dataAccessService.CreateDbContext())
             {
+                var flightTypes = context.FlightTypes.ToList();
+                var reservationTypes = context.AircraftReservationTypes.ToList();
+
                 context.AircraftReservations.Attach(original);
-                currentAircraftReservationDetails.ToAircraftReservation(original);
+                currentAircraftReservationDetails.ToAircraftReservation(reservationTypes, flightTypes, original);
 
                 if (context.ChangeTracker.HasChanges())
                 {
@@ -318,31 +322,43 @@ namespace FLS.Server.Service
         }
         #endregion AircraftReservation
 
-        #region AircraftReservationAssignmentType
+        #region AircraftReservationTypes
         public List<AircraftReservationTypeListItem> GetAircraftReservationTypeListItems()
-        {
-            var entities = GetAircraftReservationTypes();
-
-            var listItems = entities.Select(entity => entity.ToAircraftReservationTypeListItem()).ToList();
-
-            return listItems;
-        }
-
-        /// <summary>
-        /// Gets the planning days assignment types from the current users club.
-        /// </summary>
-        /// <returns></returns>
-        internal List<AircraftReservationType> GetAircraftReservationTypes()
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                List<AircraftReservationType> entities = null;
-                entities = context.AircraftReservationTypes.OrderBy(pe => pe.AircraftReservationTypeName).ToList();
+                var aircraftReservationTypes = context.AircraftReservationTypes
+                    .Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderBy(pe => pe.AircraftReservationTypeName).ToList();
 
-                return entities;
+                var flightTypes = context.FlightTypes
+                    .Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId
+                        && x.IsForAircraftReservationType)
+                    .OrderBy(pe => pe.FlightTypeName).ToList();
+
+                var listItems = aircraftReservationTypes.Select(x => new AircraftReservationTypeListItem()
+                {
+                    AircraftReservationTypeId = x.AircraftReservationTypeId,
+                    AircraftReservationTypeName = x.AircraftReservationTypeName,
+                    Remarks = x.Remarks,
+                    IsInstructorRequired = x.IsInstructorRequired,
+                    IsObserverPilotOrInstructorRequired = false,
+                    IsPassengerRequired = false
+                }).ToList();
+
+                listItems.AddRange(flightTypes.Select(x => new AircraftReservationTypeListItem()
+                {
+                    AircraftReservationTypeId = x.FlightTypeId,
+                    AircraftReservationTypeName = x.FlightTypeName,
+                    IsInstructorRequired = x.InstructorRequired,
+                    IsObserverPilotOrInstructorRequired = x.ObserverPilotOrInstructorRequired,
+                    IsPassengerRequired = x.IsPassengerFlight
+                }));
+
+                return listItems;
             }
         }
-        #endregion AircraftReservationAssignmentType
+        #endregion AircraftReservationTypes
 
         #region Security
         private void SetAircraftReservationOverviewSecurity(IEnumerable<AircraftReservationOverview> list)

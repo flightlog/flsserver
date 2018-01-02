@@ -5,34 +5,65 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using FLS.Data.WebApi;
 
 namespace FLS.Server.Data.DbEntities
 {
-    public class AircraftReservationType
+    public class AircraftReservationType : IFLSMetaData
     {
         public AircraftReservationType()
         {
             AircraftReservations = new HashSet<AircraftReservation>();
         }
 
-        public int AircraftReservationTypeId { get; set; }
+        public Guid AircraftReservationTypeId { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public string AircraftReservationTypeName { get; set; }
+
+        public bool IsInstructorRequired { get; set; }
+
+        public bool IsMaintenance { get; set; }
+
+        public bool IsActive { get; set; }
 
         public string Remarks { get; set; }
 
-
-        public bool IsInstructorRequired { get; set; }
+        public Guid ClubId { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 
+        public Guid CreatedByUserId { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime? ModifiedOn { get; set; }
 
+        public Guid? ModifiedByUserId { get; set; }
+
+        [Column(TypeName = "datetime2")]
+        public DateTime? DeletedOn { get; set; }
+
+        public Guid? DeletedByUserId { get; set; }
+
+        public int? RecordState { get; set; }
+
+        public Guid OwnerId { get; set; }
+
+        public int OwnershipType { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public virtual Club Club { get; set; }
+
         public virtual ICollection<AircraftReservation> AircraftReservations { get; set; }
+
+        public Guid Id
+        {
+            get { return AircraftReservationTypeId; }
+            private set { AircraftReservationTypeId = value; }
+        }
 
         public override string ToString()
         {

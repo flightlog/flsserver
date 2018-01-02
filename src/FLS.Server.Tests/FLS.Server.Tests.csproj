@@ -195,6 +195,7 @@
     <Compile Include="ServiceTests\PlanningDayServiceTest.cs" />
     <Compile Include="ServiceTests\DeliveryServiceTest.cs" />
     <Compile Include="ServiceTests\SGNProffixInvoiceServiceTest.cs" />
+    <Compile Include="ServiceTests\SettingServiceTest.cs" />
     <Compile Include="ServiceTests\SystemServiceTest.cs" />
     <Compile Include="ServiceTests\ProffixInvoiceServiceTest.cs" />
     <Compile Include="ServiceTests\WorkflowServiceTest.cs" />

@@ -32,6 +32,7 @@ using TrackerEnabledDbContext.Common.Models;
 using FLS.Data.WebApi.Settings;
 using AutoMapper.Configuration;
 using AutoMapper;
+using FLS.Server.Data.Exceptions;
 
 namespace FLS.Server.Data.Mapping
 {
@@ -335,14 +336,18 @@ namespace FLS.Server.Data.Mapping
                 overview.LocationName = entity.Location.LocationName;
             }
 
-            if (entity.InstructorPerson != null)
+            if (entity.SecondCrewPerson != null)
             {
-                overview.InstructorName = entity.InstructorPerson.DisplayName;
+                overview.SecondCrewName = entity.SecondCrewPerson.DisplayName;
             }
 
-            if (entity.ReservationType != null)
+            if (entity.FlightType != null)
             {
-                overview.ReservationTypeName = entity.ReservationType.AircraftReservationTypeName;
+                overview.ReservationTypeName = entity.FlightType.FlightTypeName;
+            }
+            else if (entity.AircraftReservationType != null)
+            {
+                overview.ReservationTypeName = entity.AircraftReservationType.AircraftReservationTypeName;
             }
 
             return overview;
@@ -366,14 +371,24 @@ namespace FLS.Server.Data.Mapping
             details.AircraftId = entity.AircraftId;
             details.PilotPersonId = entity.PilotPersonId;
             details.LocationId = entity.LocationId;
-            details.InstructorPersonId = entity.InstructorPersonId;
-            details.ReservationTypeId = entity.ReservationTypeId;
+            details.SecondCrewPersonId = entity.SecondCrewPersonId;
+
+            if (entity.FlightTypeId.HasValue)
+            {
+                details.ReservationTypeId = entity.FlightTypeId.Value;
+            }
+            else
+            {
+                details.ReservationTypeId = entity.AircraftReservationTypeId.Value;
+            }
+
             details.Remarks = entity.Remarks;
 
             return details;
         }
 
-        public static AircraftReservation ToAircraftReservation(this AircraftReservationDetails details,
+        public static AircraftReservation ToAircraftReservation(this AircraftReservationDetails details, 
+            List<AircraftReservationType> aircraftReservationTypes, List<FlightType> flightTypes,
             AircraftReservation entity = null, bool overwriteAircraftReservationId = false)
         {
             details.ArgumentNotNull("details");
@@ -391,36 +406,33 @@ namespace FLS.Server.Data.Mapping
             entity.AircraftId = details.AircraftId;
             entity.PilotPersonId = details.PilotPersonId;
             entity.LocationId = details.LocationId;
-            entity.InstructorPersonId = details.InstructorPersonId;
-            entity.ReservationTypeId = details.ReservationTypeId;
+            entity.SecondCrewPersonId = details.SecondCrewPersonId;
             entity.Remarks = details.Remarks;
+
+            var flightType = flightTypes.FirstOrDefault(x => x.FlightTypeId == details.ReservationTypeId);
+
+            if (flightType != null)
+            {
+                entity.FlightTypeId = flightType.FlightTypeId;
+            }
+            else
+            {
+                var aircraftReservationType = aircraftReservationTypes.FirstOrDefault(x => x.AircraftReservationTypeId == details.ReservationTypeId);
+
+                if (aircraftReservationType != null)
+                {
+                    entity.AircraftReservationTypeId = aircraftReservationType.AircraftReservationTypeId;
+                }
+                else
+                {
+                    throw new BadRequestException("Reservation type is not set correctly!");
+                }
+            }
 
             return entity;
         }
 
         #endregion AircraftReservation
-
-        #region AircraftReservationType
-
-        public static AircraftReservationTypeListItem ToAircraftReservationTypeListItem(
-            this AircraftReservationType entity, AircraftReservationTypeListItem listItem = null)
-        {
-            entity.ArgumentNotNull("entity");
-
-            if (listItem == null)
-            {
-                listItem = new AircraftReservationTypeListItem();
-            }
-
-            listItem.AircraftReservationTypeId = entity.AircraftReservationTypeId;
-            listItem.AircraftReservationTypeName = entity.AircraftReservationTypeName;
-            listItem.Remarks = entity.Remarks;
-            listItem.IsInstructorRequired = entity.IsInstructorRequired;
-
-            return listItem;
-        }
-
-        #endregion AircraftReservationType
 
         #region AircraftState
 

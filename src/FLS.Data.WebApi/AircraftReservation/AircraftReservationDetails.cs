@@ -29,10 +29,12 @@ namespace FLS.Data.WebApi.AircraftReservation
         [GuidNotEmptyValidator]
         public Guid LocationId { get; set; }
         
-        public Guid? InstructorPersonId { get; set; }
+        public Guid? SecondCrewPersonId { get; set; }
 
         [Required]
-        public int ReservationTypeId { get; set; }
+        [GuidNotEmptyValidator]
+        public Guid ReservationTypeId { get; set; }
+
         public string Remarks { get; set; }
 
         public override Guid Id

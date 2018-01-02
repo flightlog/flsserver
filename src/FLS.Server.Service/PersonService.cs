@@ -864,7 +864,7 @@ namespace FLS.Server.Service
                     context.AircraftReservations.Any(
                         x =>
                             x.PilotPersonId == original.PersonId ||
-                            (x.InstructorPersonId.HasValue && x.InstructorPersonId == original.PersonId))
+                            (x.SecondCrewPersonId.HasValue && x.SecondCrewPersonId.Value == original.PersonId))
                     || context.PlanningDayAssignments.Any(x => x.AssignedPersonId == original.PersonId))
                 {
                     throw new ConstraintException(
@@ -894,7 +894,7 @@ namespace FLS.Server.Service
                     context.AircraftReservations.Any(
                         x =>
                             x.PilotPersonId == original.PersonId ||
-                            (x.InstructorPersonId.HasValue && x.InstructorPersonId == original.PersonId))
+                            (x.SecondCrewPersonId.HasValue && x.SecondCrewPersonId.Value == original.PersonId))
                     || context.PlanningDayAssignments.Any(x => x.AssignedPersonId == original.PersonId))
                 {
                     throw new ConstraintException(

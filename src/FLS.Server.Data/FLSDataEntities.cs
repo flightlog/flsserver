@@ -107,6 +107,7 @@ namespace FLS.Server.Data
             modelBuilder.Entity<AccountingRuleFilter>().Ignore(t => t.Id);
             modelBuilder.Entity<AircraftAircraftState>().Ignore(t => t.Id);
             modelBuilder.Entity<AircraftReservation>().Ignore(t => t.Id);
+            modelBuilder.Entity<AircraftReservationType>().Ignore(t => t.Id);
             modelBuilder.Entity<AircraftOperatingCounter>().Ignore(t => t.Id);
             modelBuilder.Entity<AircraftState>().Ignore(t => t.Id);
             modelBuilder.Entity<Article>().Ignore(t => t.Id);
@@ -193,8 +194,14 @@ namespace FLS.Server.Data
             
             modelBuilder.Entity<AircraftReservationType>()
                .HasMany(e => e.AircraftReservations)
-               .WithRequired(e => e.ReservationType)
-               .HasForeignKey(e => e.ReservationTypeId)
+               .WithOptional(e => e.AircraftReservationType)
+               .HasForeignKey(e => e.AircraftReservationTypeId)
+               .WillCascadeOnDelete(false);
+            
+            modelBuilder.Entity<FlightType>()
+               .HasMany(e => e.AircraftReservations)
+               .WithOptional(e => e.FlightType)
+               .HasForeignKey(e => e.FlightTypeId)
                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<AircraftState>()
@@ -215,6 +222,12 @@ namespace FLS.Server.Data
 
             modelBuilder.Entity<Club>()
                 .HasMany(e => e.AircraftReservations)
+                .WithRequired(e => e.Club)
+                .HasForeignKey(e => e.ClubId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Club>()
+                .HasMany(e => e.AircraftReservationTypes)
                 .WithRequired(e => e.Club)
                 .HasForeignKey(e => e.ClubId)
                 .WillCascadeOnDelete(false);
@@ -525,10 +538,10 @@ namespace FLS.Server.Data
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Person>()
-                .HasMany(e => e.InstructorAssignedAircraftReservations)
-                .WithOptional(e => e.InstructorPerson)
-                .HasForeignKey(e => e.InstructorPersonId);
-
+                .HasMany(e => e.SecondCrewAssignedAircraftReservations)
+                .WithOptional(e => e.SecondCrewPerson)
+                .HasForeignKey(e => e.SecondCrewPersonId);
+            
             modelBuilder.Entity<Person>()
                 .HasMany(e => e.PlanningDayAssignments)
                 .WithRequired(e => e.AssignedPerson)
@@ -610,6 +623,16 @@ namespace FLS.Server.Data
                 .And(x => x.OwnershipType)
                 .And(x => x.RecordState);
             EntityTracker.TrackAllProperties<AircraftReservation>().Except(x => x.Id)
+                .And(x => x.CreatedByUserId)
+                .And(x => x.CreatedOn)
+                .And(x => x.ModifiedByUserId)
+                .And(x => x.ModifiedOn)
+                .And(x => x.DeletedByUserId)
+                .And(x => x.DeletedOn)
+                .And(x => x.OwnerId)
+                .And(x => x.OwnershipType)
+                .And(x => x.RecordState);
+            EntityTracker.TrackAllProperties<AircraftReservationType>().Except(x => x.Id)
                 .And(x => x.CreatedByUserId)
                 .And(x => x.CreatedOn)
                 .And(x => x.ModifiedByUserId)
@@ -874,6 +897,9 @@ namespace FLS.Server.Data
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<AircraftReservation>()
+                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                        .Ignore(m => m.IsDeleted);
+            modelBuilder.Entity<AircraftReservationType>()
                         .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
                         .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Article>()

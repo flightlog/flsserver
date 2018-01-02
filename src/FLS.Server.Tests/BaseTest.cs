@@ -88,6 +88,7 @@ namespace FLS.Server.Tests
         protected FlightInformationEmailBuildService FlightInformationEmailService { get; set; }
         protected UserService UserService { get; set; }
         protected PersonService PersonService { get; set; }
+        protected SettingService SettingService { get; set; }
 
 
         [AssemblyInitialize()]
@@ -172,6 +173,7 @@ namespace FLS.Server.Tests
             AccountingRuleFilterFactory = UnityContainer.Resolve<AccountingRuleFilterFactory>();
             ClubService = UnityContainer.Resolve<ClubService>();
             PersonService = UnityContainer.Resolve<PersonService>();
+            SettingService = UnityContainer.Resolve<SettingService>();
         }
 
         [TestCleanup]
@@ -464,7 +466,7 @@ namespace FLS.Server.Tests
             reservation.IsAllDayReservation = false;
             reservation.PilotPersonId = GetFirstPerson().PersonId;
             reservation.LocationId = GetFirstLocation().LocationId;
-            reservation.InstructorPersonId = GetFirstPerson().PersonId;
+            reservation.SecondCrewPersonId = GetFirstPerson().PersonId;
             reservation.ReservationTypeId = GetFirstAircraftReservationType().AircraftReservationTypeId;
 
             return reservation;

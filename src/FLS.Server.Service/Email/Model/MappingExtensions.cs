@@ -41,7 +41,7 @@ namespace FLS.Server.Service.Email.Model
                             AircraftImmatriculation = reservation.Immatriculation,
                             PilotName = reservation.PilotName,
                             ReservationTypeName = reservation.ReservationTypeName,
-                            InstructorName = reservation.InstructorName
+                            SecondCrewName = reservation.SecondCrewName
                         };
 
                     if (reservation.IsAllDayReservation)

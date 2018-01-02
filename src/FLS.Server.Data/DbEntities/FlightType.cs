@@ -17,6 +17,7 @@ namespace FLS.Server.Data.DbEntities
             ClubsDefaultMotorFlightType = new HashSet<Club>();
             ClubsDefaultTowFlightType = new HashSet<Club>();
             Flights = new HashSet<Flight>();
+            AircraftReservations = new HashSet<AircraftReservation>();
         }
 
         public Guid FlightTypeId { get; set; }
@@ -52,6 +53,8 @@ namespace FLS.Server.Data.DbEntities
 
         public int? MinNrOfAircraftSeatsRequired { get; set; }
 
+        public bool IsForAircraftReservationType { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 
@@ -80,6 +83,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual ICollection<Club> ClubsDefaultMotorFlightType { get; set; }
 
         public virtual ICollection<Club> ClubsDefaultTowFlightType { get; set; }
+
+        public virtual ICollection<AircraftReservation> AircraftReservations { get; set; }
 
         public virtual Club Club { get; set; }
 

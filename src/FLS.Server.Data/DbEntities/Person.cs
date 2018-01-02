@@ -21,7 +21,7 @@ namespace FLS.Server.Data.DbEntities
             PersonPersonCategories = new HashSet<PersonPersonCategory>();
             Users = new HashSet<User>();
             AircraftReservations = new HashSet<AircraftReservation>();
-            InstructorAssignedAircraftReservations = new HashSet<AircraftReservation>();
+            SecondCrewAssignedAircraftReservations = new HashSet<AircraftReservation>();
             PlanningDayAssignments = new HashSet<PlanningDayAssignment>();
         }
 
@@ -164,7 +164,7 @@ namespace FLS.Server.Data.DbEntities
 
         public virtual ICollection<AircraftReservation> AircraftReservations { get; set; }
 
-        public virtual ICollection<AircraftReservation> InstructorAssignedAircraftReservations { get; set; }
+        public virtual ICollection<AircraftReservation> SecondCrewAssignedAircraftReservations { get; set; }
 
         public virtual ICollection<PlanningDayAssignment> PlanningDayAssignments { get; set; }
 

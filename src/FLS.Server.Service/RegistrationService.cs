@@ -53,7 +53,8 @@ namespace FLS.Server.Service
             {
                 try
                 {
-                    Logger.Info($"New trial flight registration with following data (JSON): {JsonConvert.SerializeObject(trialFlightRegistrationDetails)}");
+                    Logger.Info(
+                        $"New trial flight registration with following data (JSON): {JsonConvert.SerializeObject(trialFlightRegistrationDetails)}");
                 }
                 catch (Exception exception)
                 {
@@ -144,7 +145,11 @@ namespace FLS.Server.Service
                         context.Persons.Add(invoicePerson);
                     }
 
-                    var aircraft = context.Aircrafts.FirstOrDefault(x => x.AircraftOwnerClubId == club.ClubId && x.NrOfSeats == 2 && x.AircraftTypeId == (int)AircraftType.Glider);
+                    var aircraft =
+                        context.Aircrafts.FirstOrDefault(
+                            x =>
+                                x.AircraftOwnerClubId == club.ClubId && x.NrOfSeats == 2 &&
+                                x.AircraftTypeId == (int) AircraftType.Glider);
                     var aircraftReservationInfo = string.Empty;
 
                     if (aircraft == null)
@@ -160,7 +165,8 @@ namespace FLS.Server.Service
 
                         if (aircraft == null)
                         {
-                            aircraftReservationInfo = "Reservation konnte NICHT gemacht werden. Grund: Kein Doppelsitzer für Club gefunden und kein Heimflugplatz für Club definiert!";
+                            aircraftReservationInfo =
+                                "Reservation konnte NICHT gemacht werden. Grund: Kein Doppelsitzer für Club gefunden und kein Heimflugplatz für Club definiert!";
                         }
                         else
                         {
@@ -168,7 +174,12 @@ namespace FLS.Server.Service
                                 "Reservation konnte NICHT gemacht werden. Grund: Keine Heimflugplatz für Club definiert!";
                         }
                     }
-                    
+
+                    var trialFlightSetting =
+                        context.Settings.FirstOrDefault(
+                            x => x.SettingKey == SettingKey.TrialFlightAircraftReservationFlightTypeId
+                                 && x.ClubId == club.ClubId);
+
                     if (aircraft != null && club.HomebaseId.HasValue)
                     {
                         var reservation = new AircraftReservation()
@@ -180,9 +191,21 @@ namespace FLS.Server.Service
                             IsAllDayReservation = true,
                             PilotPerson = person,
                             LocationId = club.HomebaseId.Value,
-                            ReservationTypeId = 2, //Schulung/Check-Flug
                             Remarks = "Schnupperflug-Kandidat"
                         };
+
+                        if (trialFlightSetting != null && string.IsNullOrWhiteSpace(trialFlightSetting.SettingValue) == false)
+                        {
+                            try
+                            {
+                                var id = JsonConvert.DeserializeObject<Guid>(trialFlightSetting.SettingValue);
+                                reservation.FlightTypeId = id;
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Error(ex, "Could not deserialize FlightTypeId from settings value");
+                            }
+                        }
 
                         context.AircraftReservations.Add(reservation);
 

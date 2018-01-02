@@ -167,6 +167,7 @@
     <Compile Include="DbEntities\UserAccountState.cs" />
     <Compile Include="DbEntities\UserRole.cs" />
     <Compile Include="Resources\Constants.Designer.cs" />
+    <Compile Include="Resources\SettingKey.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

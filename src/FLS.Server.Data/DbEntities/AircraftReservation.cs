@@ -27,8 +27,9 @@ namespace FLS.Server.Data.DbEntities
         public Guid AircraftId { get; set; }
         public Guid PilotPersonId { get; set; }
         public Guid LocationId { get; set; }
-        public Guid? InstructorPersonId { get; set; }
-        public int ReservationTypeId { get; set; }
+        public Guid? SecondCrewPersonId { get; set; }
+        public Guid? AircraftReservationTypeId { get; set; }
+        public Guid? FlightTypeId { get; set; }
         public string Remarks { get; set; }
         public Guid ClubId { get; set; }
 
@@ -65,8 +66,9 @@ namespace FLS.Server.Data.DbEntities
         public virtual Aircraft Aircraft { get; set; }
         public virtual Person PilotPerson { get; set; }
         public virtual Location Location { get; set; }
-        public virtual Person InstructorPerson { get; set; }
-        public virtual AircraftReservationType ReservationType { get; set; }
+        public virtual Person SecondCrewPerson { get; set; }
+        public virtual AircraftReservationType AircraftReservationType { get; set; }
+        public virtual FlightType FlightType { get; set; }
 
         public override string ToString()
         {
