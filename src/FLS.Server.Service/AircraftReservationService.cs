@@ -82,15 +82,15 @@ namespace FLS.Server.Service
                     pageableSearchFilter.Sorting.Add("Location.LocationName", pageableSearchFilter.Sorting[sort]);
                     pageableSearchFilter.Sorting.Remove(sort);
                 }
-                else if (sort == "InstructorName")
+                else if (sort == "SecondCrewName")
                 {
-                    pageableSearchFilter.Sorting.Add("InstructorPerson.Lastname", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Add("InstructorPerson.Firstname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Add("SecondCrewPerson.Lastname", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Add("SecondCrewPerson.Firstname", pageableSearchFilter.Sorting[sort]);
                     pageableSearchFilter.Sorting.Remove(sort);
                 }
                 else if (sort == "ReservationTypeName")
                 {
-                    pageableSearchFilter.Sorting.Add("ReservationType.AircraftReservationTypeName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Add("AircraftReservationType.AircraftReservationTypeName", pageableSearchFilter.Sorting[sort]);
                     pageableSearchFilter.Sorting.Remove(sort);
                 }
             }
@@ -107,8 +107,8 @@ namespace FLS.Server.Service
                     .Include(Constants.Aircraft)
                     .Include("PilotPerson")
                     .Include("Location")
-                    .Include("InstructorPerson")
-                    .Include("ReservationType")
+                    .Include("SecondCrewPerson")
+                    .Include("AircraftReservationType")
                     .Where(r => r.ClubId == CurrentAuthenticatedFLSUserClubId)
                     .OrderByPropertyNames(pageableSearchFilter.Sorting);
 
