@@ -1,4 +1,6 @@
 ﻿using System;
+using FLS.Data.WebApi.AircraftReservation;
+using System.Collections.Generic;
 
 namespace FLS.Data.WebApi.Dashboard
 {
@@ -15,5 +17,7 @@ namespace FLS.Data.WebApi.Dashboard
         public FlightStatisticDashboardDetails MotorPilotFlightStatisticDashboardDetails { get; set; }
 
         public GliderLicenceStateDetails GliderLicenceStateDetails { get; set; }
+
+        public List<AircraftReservationOverview> MyNextAircraftReservations { get; set; }
     }
 }

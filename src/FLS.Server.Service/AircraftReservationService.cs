@@ -172,6 +172,44 @@ namespace FLS.Server.Service
             }
         }
 
+        public PagedList<AircraftReservationOverview> GetMyNextAircraftReservationOverview(int? pageStart, int? pageSize)
+        {
+            if (CurrentAuthenticatedFLSUser.PersonId.HasValue == false)
+            {
+                //user is not related with a person, return empty list
+                return new PagedList<AircraftReservationOverview>(new List<AircraftReservationOverview>(), 0, pageSize.GetValueOrDefault(0), 0);    
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var personId = CurrentAuthenticatedFLSUser.PersonId.Value;
+
+                var reservations = context.AircraftReservations
+                    .Include(Constants.Aircraft)
+                    .Include("PilotPerson")
+                    .Include("Location")
+                    .Include("SecondCrewPerson")
+                    .Include("AircraftReservationType")
+                    .Where(r => r.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .Where(reservation => DbFunctions.TruncateTime(reservation.Start) >= DbFunctions.TruncateTime(DateTime.Now))
+                    .Where(x => x.PilotPersonId == personId || x.SecondCrewPersonId == personId)
+                    .OrderBy(x => x.Start);
+
+                var pagedQuery = new PagedQuery<AircraftReservation>(reservations, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList().Select(x => x.ToAircraftReservationOverview())
+                .Where(obj => obj != null)
+                .ToList();
+
+                SetAircraftReservationOverviewSecurity(overviewList);
+
+                var pagedList = new PagedList<AircraftReservationOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+
+                return pagedList;
+            }
+        }
+
         public AircraftReservationDetails GetAircraftReservationDetails(Guid aircraftReservationId)
         {
             var aircraftReservation = GetAircraftReservation(aircraftReservationId);

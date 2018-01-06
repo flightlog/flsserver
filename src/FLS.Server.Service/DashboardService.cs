@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.Dashboard;
 using FLS.Data.WebApi.Flight;
 using FLS.Data.WebApi.Licensing;
@@ -14,13 +15,15 @@ namespace FLS.Server.Service
     {
         private readonly FlightService _flightService;
         private readonly PersonService _personService;
+        private readonly AircraftReservationService _aircraftReservationService;
 
         public DashboardService(DataAccessService dataAccessService, IdentityService identityService, 
-            FlightService flightService, PersonService personService)
+            FlightService flightService, PersonService personService, AircraftReservationService aircraftReservationService)
             : base(dataAccessService, identityService)
         {
             _flightService = flightService;
             _personService = personService;
+            _aircraftReservationService = aircraftReservationService;
             Logger = LogManager.GetCurrentClassLogger();
         }
         
@@ -226,6 +229,12 @@ namespace FLS.Server.Service
                 }
 
                 dashboardDetails.MotorPilotFlightStatisticDashboardDetails = statistic;
+
+
+                //get aircraft reservations
+                var myReservations = _aircraftReservationService.GetMyNextAircraftReservationOverview(pageStart:0, pageSize:3);
+                dashboardDetails.MyNextAircraftReservations = myReservations.Items;
+
             }
 
             return dashboardDetails;
