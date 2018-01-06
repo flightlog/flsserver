@@ -11,6 +11,7 @@ using FLS.Common.Exceptions;
 using FLS.Common.Extensions;
 using FLS.Common.Paging;
 using FLS.Common.Validators;
+using Newtonsoft.Json;
 
 namespace FLS.Server.Service
 {
@@ -25,11 +26,47 @@ namespace FLS.Server.Service
             Logger = LogManager.GetCurrentClassLogger();
         }
 
+        public T GetSettingValue<T>(string key, string clubKey)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var record = context.Settings.FirstOrDefault(x => x.SettingKey.ToLower() == key.ToLower()
+                    && x.Club.ClubKey.ToUpper() == clubKey.ToUpper());
+
+                if (record == null)
+                {
+                    throw new EntityNotFoundException("Setting", key);
+                }
+
+                T value = JsonConvert.DeserializeObject<T>(record.SettingValue);
+                return value;
+            }
+        }
+
+        public string GetSettingValue(string key, string clubKey)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var record = context.Settings.FirstOrDefault(x => x.SettingKey.ToLower() == key.ToLower()
+                    && x.Club.ClubKey.ToUpper() == clubKey.ToUpper());
+
+                if (record == null)
+                {
+                    throw new EntityNotFoundException("Setting", key);
+                }
+
+                return record.SettingValue;
+            }
+        }
+
         public string GetSettingValue(string key, Guid? clubId, Guid? userId)
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var record = context.Settings.FirstOrDefault(x => x.SettingKey.ToLower() == key.ToLower() && x.ClubId == clubId && x.UserId == userId);
+                var record = context.Settings
+                    .WhereIf(clubId.HasValue, x => x.ClubId == clubId)
+                    .WhereIf(userId.HasValue, x => x.UserId == userId)
+                    .FirstOrDefault(x => x.SettingKey.ToLower() == key.ToLower());
 
                 if (record == null)
                 {

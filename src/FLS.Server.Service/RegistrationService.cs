@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using NLog;
 using AircraftType = FLS.Data.WebApi.Aircraft.AircraftType;
 using UserAccountState = FLS.Data.WebApi.User.UserAccountState;
+using FLS.Common.Exceptions;
 
 namespace FLS.Server.Service
 {
@@ -21,30 +22,33 @@ namespace FLS.Server.Service
         private readonly DataAccessService _dataAccessService;
         private readonly PersonService _personService;
         private readonly RegistrationEmailBuildService _registrationEmailBuildService;
+        private readonly SettingService _settingService;
 
         public RegistrationService(DataAccessService dataAccessService, IdentityService identityService,
-            PersonService personService, RegistrationEmailBuildService registrationEmailBuildService)
+            PersonService personService, RegistrationEmailBuildService registrationEmailBuildService,
+            SettingService settingService)
             : base(dataAccessService, identityService)
         {
             _personService = personService;
             _registrationEmailBuildService = registrationEmailBuildService;
+            _settingService = settingService;
             _dataAccessService = dataAccessService;
             Logger = LogManager.GetCurrentClassLogger();
         }
 
         public List<DateTime> GetTrialFlightsDates(string clubKey)
         {
-
-            var trialFlightDates = new List<DateTime>();
-
-            if (clubKey.ToUpper() == "FGZO")
+            try
             {
-                trialFlightDates.Add(new DateTime(2017, 5, 6));
-                trialFlightDates.Add(new DateTime(2017, 7, 1));
-                trialFlightDates.Add(new DateTime(2017, 9, 2));
-            }
+                var eventDates = _settingService.GetSettingValue<List<DateTime>>(SettingKey.TrialFlightEventDates, clubKey);
 
-            return trialFlightDates;
+                return eventDates;
+            }
+            catch (EntityNotFoundException entityNotFoundException)
+            {
+                Logger.Error(entityNotFoundException);
+                return new List<DateTime>();
+            }
         }
 
         public void RegisterForTrialFlight(TrialFlightRegistrationDetails trialFlightRegistrationDetails)
