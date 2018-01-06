@@ -3,6 +3,7 @@ using FLS.Server.Data.DbEntities;
 using FLS.Server.Interfaces;
 using NLog;
 using System;
+using System.CodeDom;
 using FLS.Server.Data.Mapping;
 using FLS.Data.WebApi.Settings;
 using FLS.Data.WebApi;
@@ -38,8 +39,13 @@ namespace FLS.Server.Service
                     throw new EntityNotFoundException("Setting", key);
                 }
 
-                T value = JsonConvert.DeserializeObject<T>(record.SettingValue);
-                return value;
+                if (typeof(T) != typeof(string))
+                {
+                    T value = JsonConvert.DeserializeObject<T>(record.SettingValue);
+                    return value;
+                }
+
+                return (T) Convert.ChangeType(record.SettingValue, typeof(T));
             }
         }
 
@@ -147,23 +153,32 @@ namespace FLS.Server.Service
             setting.ToSettingDetails(settingDetails);
         }
 
-        public void UpdateSettingDetails(SettingDetails currentSettingDetails)
+        public void InsertOrUpdateSettingDetails(SettingDetails settingDetails)
         {
-            currentSettingDetails.ArgumentNotNull("currentSettingDetails");
+            settingDetails.ArgumentNotNull("settingDetails");
 
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var original = context.Settings.FirstOrDefault(x => x.SettingId == currentSettingDetails.SettingId);
-                original.EntityNotNull("Setting", currentSettingDetails.SettingId);
+                var original = context.Settings.FirstOrDefault(x => x.SettingId == settingDetails.SettingId);
 
-                CheckSecurity(original);
-
-                currentSettingDetails.ToSetting(original);
+                if (original == null)
+                {
+                    //insert new setting
+                    original = settingDetails.ToSetting();
+                    CheckSecurity(original);
+                    context.Settings.Add(original);
+                }
+                else
+                {
+                    //update setting
+                    CheckSecurity(original);
+                    settingDetails.ToSetting(original);
+                }
 
                 if (context.ChangeTracker.HasChanges())
                 {
                     context.SaveChanges();
-                    original.ToSettingDetails(currentSettingDetails);
+                    original.ToSettingDetails(settingDetails);
                 }
             }
         }

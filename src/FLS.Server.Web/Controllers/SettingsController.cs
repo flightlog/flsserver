@@ -64,7 +64,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(SettingDetails))]
         public IHttpActionResult Insert([FromBody] SettingDetails settingDetails)
         {
-            _settingService.InsertSettingDetails(settingDetails);
+            _settingService.InsertOrUpdateSettingDetails(settingDetails);
             return Ok(settingDetails);
         }
 
@@ -79,7 +79,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(SettingDetails))]
         public IHttpActionResult Update(Guid settingId, [FromBody]SettingDetails settingDetails)
         {
-            _settingService.UpdateSettingDetails(settingDetails);
+            _settingService.InsertOrUpdateSettingDetails(settingDetails);
             return Ok(settingDetails);
         }
 

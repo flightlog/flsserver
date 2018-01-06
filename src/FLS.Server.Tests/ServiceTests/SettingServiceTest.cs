@@ -14,24 +14,41 @@ namespace FLS.Server.Tests.ServiceTests
     {
         [TestMethod]
         [TestCategory("Service")]
-        public void SetSettingServiceTest()
+        public void InsertOrUpdateSettingDetailsTest()
         {
             var id = Guid.NewGuid();
 
             var json = JsonConvert.SerializeObject(id);
-
             var settingDetails = new SettingDetails()
             {
                 ClubId = CurrentIdentityUser.ClubId,
-                SettingKey = SettingKey.TrialFlightAircraftReservationFlightTypeId,
+                SettingKey = $"Test_{DateTime.Now.Ticks}",
                 SettingValue = json
             };
 
-            SettingService.InsertSettingDetails(settingDetails);
+            SettingService.InsertOrUpdateSettingDetails(settingDetails);
 
             var setting = SettingService.GetSettingValue(settingDetails.SettingKey, settingDetails.ClubId,
                 settingDetails.UserId);
 
+            Assert.IsFalse(string.IsNullOrWhiteSpace(setting));
+
+            var settingValue = JsonConvert.DeserializeObject<Guid>(setting);
+
+            Assert.AreEqual(id, settingValue);
+
+            var newValue = "TestValue";
+
+            settingDetails.SettingValue = newValue;
+
+            SettingService.InsertOrUpdateSettingDetails(settingDetails);
+
+            var settingValue2 = SettingService.GetSettingValue(settingDetails.SettingKey, settingDetails.ClubId,
+                settingDetails.UserId);
+
+            Assert.IsFalse(string.IsNullOrWhiteSpace(settingValue2));
+
+            Assert.AreEqual(newValue, settingValue2);
         }
     }
 }
