@@ -316,5 +316,20 @@ namespace FLS.Server.WebApi.Controllers
             var flights = _flightService.GetFlightsModifiedSince(modifiedSince);
             return Ok(flights);
         }
+
+        /// <summary>
+        /// Updates the process state manually of a specified flight.
+        /// </summary>
+        /// <param name="flightId">The flight identifier.</param>
+        /// <param name="newProcessState">The new process state.</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("changeprocessstate/{flightId}")]
+        [ResponseType(typeof(FlightDetails))]
+        public IHttpActionResult Update(Guid flightId, [FromBody]int newProcessState)
+        {
+            var flightDetails = _flightService.ManuallySetFlightProcessState(flightId, newProcessState);
+            return Ok(flightDetails);
+        }
     }
 }

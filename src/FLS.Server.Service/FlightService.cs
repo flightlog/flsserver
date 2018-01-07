@@ -1264,6 +1264,130 @@ namespace FLS.Server.Service
 
         #endregion Flight
 
+        #region Update Flight Process State
+
+        public FlightDetails ManuallySetFlightProcessState(Guid flightId, int newProcessState)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var flight = context.Flights
+                    .FirstOrDefault(a => a.FlightId == flightId);
+
+                switch (flight.ProcessStateId)
+                {
+                    case (int)FLS.Data.WebApi.Flight.FlightProcessState.NotProcessed:
+                        throw new BadRequestException("New state can not be set!");
+                        break;
+                    case (int)FLS.Data.WebApi.Flight.FlightProcessState.Invalid:
+                        throw new BadRequestException("New state can not be set!");
+                        break;
+                    case (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid:
+                        if (newProcessState ==
+                            (int) FLS.Data.WebApi.Flight.FlightProcessState.ExcludedFromDeliveryProcess)
+                        {
+                            flight.ProcessStateId = newProcessState;
+                        }
+                        else
+                        {
+                            throw new BadRequestException("New state can not be set!");
+                        }
+                        break;
+                    case (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked:
+                        if (newProcessState ==
+                            (int)FLS.Data.WebApi.Flight.FlightProcessState.ExcludedFromDeliveryProcess)
+                        {
+                            flight.ProcessStateId = newProcessState;
+                        }
+                        else
+                        {
+                            throw new BadRequestException("New state can not be set!");
+                        }
+                        break;
+                    case (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryPreparationError:
+                        if (newProcessState == (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
+                            || newProcessState == (int)FLS.Data.WebApi.Flight.FlightProcessState.ExcludedFromDeliveryProcess)
+                        {
+                            flight.ProcessStateId = newProcessState;
+                        }
+                        else
+                        {
+                            throw new BadRequestException("New state can not be set!");
+                        }
+                        break;
+                    case (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryPrepared:
+                        if (newProcessState == (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
+                            || newProcessState == (int)FLS.Data.WebApi.Flight.FlightProcessState.ExcludedFromDeliveryProcess)
+                        {
+                            DeleteDeliveriesAndUpdateProcessStatesOfFlight(flightId, newProcessState);
+                        }
+                        else
+                        {
+                            throw new BadRequestException("New state can not be set!");
+                        }
+                        break;
+                    case (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryBooked:
+                        throw new BadRequestException("New state can not be set!");
+                        break;
+                    case (int)FLS.Data.WebApi.Flight.FlightProcessState.ExcludedFromDeliveryProcess:
+                        if (newProcessState ==
+                            (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid)
+                        {
+                            flight.ProcessStateId = newProcessState;
+                        }
+                        else
+                        {
+                            throw new BadRequestException("New state can not be set!");
+                        }
+                        break;
+                    default:
+                        break;
+
+                }
+            }
+
+            return GetFlightDetails(flightId);
+        }
+
+        public void DeleteDeliveriesAndUpdateProcessStatesOfFlight(Guid flightId, int newProcessState)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var deliveries = context.Deliveries.Where(x => x.FlightId == flightId);
+
+                if (deliveries != null && deliveries.Any())
+                {
+                    foreach (var delivery in deliveries)
+                    {
+                        if (delivery.FlightId.HasValue)
+                        {
+                            var flight =
+                            context.Flights.FirstOrDefault(x => x.FlightId == delivery.FlightId);
+
+                            if (flight != null)
+                            {
+                                flight.ProcessStateId = newProcessState;
+                            }
+                        }
+
+                        if (delivery.IncludesTowFlightId.HasValue)
+                        {
+                            var flight =
+                            context.Flights.FirstOrDefault(x => x.FlightId == delivery.IncludesTowFlightId);
+
+                            if (flight != null)
+                            {
+                                flight.ProcessStateId = newProcessState;
+                            }
+                        }
+                    }
+
+                    context.Deliveries.RemoveRange(deliveries);
+                }
+
+            }
+        }
+        #endregion Update Flight Process State
+
         #region ReportingData
         public AircraftFlightReport GetAircraftFlightReport(AircraftFlightReportFilterCriteria filterCriteria)
         {
