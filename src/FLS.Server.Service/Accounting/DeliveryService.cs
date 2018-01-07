@@ -136,14 +136,14 @@ namespace FLS.Server.Service.Accounting
 
                             context.Deliveries.Add(delivery);
 
-                            flight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.Delivered;
+                            flight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.DeliveryPrepared;
                             flight.DeliveryCreatedOn = DateTime.UtcNow;
                             flight.DoNotUpdateMetaData = true;
 
                             if (flight.TowFlight != null)
                             {
                                 flight.TowFlight.ProcessStateId =
-                                    (int) FLS.Data.WebApi.Flight.FlightProcessState.Delivered;
+                                    (int) FLS.Data.WebApi.Flight.FlightProcessState.DeliveryPrepared;
                                 flight.TowFlight.DeliveryCreatedOn = DateTime.UtcNow;
                                 flight.TowFlight.DoNotUpdateMetaData = true;
                             }
@@ -253,6 +253,8 @@ namespace FLS.Server.Service.Accounting
                 delivery.DeliveredOn = flightDeliveryBooking.DeliveryDateTime;
 
                 delivery.IsFurtherProcessed = true;
+                
+                
 
                 context.SaveChanges();
 

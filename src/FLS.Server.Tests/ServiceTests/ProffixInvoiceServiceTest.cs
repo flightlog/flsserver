@@ -265,13 +265,13 @@ namespace FLS.Server.Tests.ServiceTests
 
                 //check flight state
                 var invoicedFlight = FlightService.GetFlight(flightInvoiceDetails.FlightInformation.FlightId);
-                Assert.AreEqual((int)FLS.Data.WebApi.Flight.FlightProcessState.Delivered, invoicedFlight.ProcessStateId, $"Flight process state of master flight {invoicedFlight} was not set correctly after delivering.");
+                Assert.AreEqual((int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryPrepared, invoicedFlight.ProcessStateId, $"Flight process state of master flight {invoicedFlight} was not set correctly after delivering.");
 
                 if (invoicedFlight.TowFlightId.HasValue)
                 {
                     Assert.IsNotNull(invoicedFlight.TowFlight, "The invoiced flight has no loaded tow flight reference.");
 
-                    Assert.AreEqual((int) FLS.Data.WebApi.Flight.FlightProcessState.Delivered,
+                    Assert.AreEqual((int) FLS.Data.WebApi.Flight.FlightProcessState.DeliveryPrepared,
                         invoicedFlight.TowFlight.ProcessStateId,
                         $"Flight state of tow flight {invoicedFlight.TowFlight} was not set correctly after delivering");
                 }

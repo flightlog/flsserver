@@ -23,6 +23,8 @@ namespace FLS.Server.Data.DbEntities
 
         public Guid? FlightId { get; set; }
 
+        public Guid? IncludesTowFlightId { get; set; }
+
         public string RecipientDetails { get; set; }
 
         [StringLength(250)]
@@ -68,6 +70,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual Club Club { get; set; }
 
         public virtual Flight Flight { get; set; }
+
+        public virtual Flight IncludesTowFlight { get; set; }
 
         public virtual ICollection<DeliveryItem> DeliveryItems { get; set; }
 

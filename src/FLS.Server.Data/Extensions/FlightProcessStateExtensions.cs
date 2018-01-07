@@ -23,7 +23,7 @@ namespace FLS.Server.Data.Extensions
                 case FlightProcessState.Locked:
                     returnValue = "Locked";
                     break;
-                case FlightProcessState.Delivered:
+                case FlightProcessState.DeliveryPrepared:
                     returnValue = "Delivered";
                     break;
                 default:

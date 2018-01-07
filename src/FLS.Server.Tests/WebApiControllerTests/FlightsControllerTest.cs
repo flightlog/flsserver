@@ -704,7 +704,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
 
                 Assert.IsNotNull(flight);
 
-                flight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.Delivered;
+                flight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.DeliveryPrepared;
                 context.SaveChanges();
 
                 var flightDetails = GetAsync<FlightDetails>("/api/v1/flights/" + flight.Id).Result;
