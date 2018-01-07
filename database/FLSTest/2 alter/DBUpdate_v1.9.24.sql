@@ -30,13 +30,13 @@ GO
 
 PRINT 'Update Process States'
 INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) 
-	VALUES (45, N'DeliveryPreparationError', N'Delivery seems to be incorrect (no items)', SYSUTCDATETIME())
+	VALUES (45, N'Lieferschein-Fehler', N'Delivery seems to be incorrect (no items)', SYSUTCDATETIME())
 GO
 INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) 
-	VALUES (60, N'DeliveryBooked', N'Delivery is further processed external and is booked.', SYSUTCDATETIME())
+	VALUES (60, N'Lieferschein verbucht', N'Delivery is further processed external and is booked.', SYSUTCDATETIME())
 GO
 INSERT [dbo].[FlightProcessStates] ([FlightProcessStateId], [FlightProcessStateName], [Comment], [CreatedOn]) 
-	VALUES (99, N'ExcludedFromDeliveryProcess', N'No delivery will be created for this flight.', SYSUTCDATETIME())
+	VALUES (99, N'Ausschluss von Lieferschein-Prozess', N'No delivery will be created for this flight.', SYSUTCDATETIME())
 GO
 
 UPDATE [dbo].[FlightProcessStates]
