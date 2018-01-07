@@ -4,6 +4,7 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using FLS.Data.WebApi.Flight;
+using FLS.Data.WebApi.Processing;
 using FLS.Server.Service;
 
 namespace FLS.Server.WebApi.Controllers
@@ -53,6 +54,19 @@ namespace FLS.Server.WebApi.Controllers
         {
             var flightStates = _flightService.GetFlightProcessStateListItems();
             return Ok(flightStates);
+        }
+
+        /// <summary>
+        /// Gets the flight process state actions.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("processactions")]
+        [ResponseType(typeof(List<FlightProcessAction>))]
+        public IHttpActionResult GetFlightProcessActions()
+        {
+            var flightProcessActions = _flightService.GetFlightProcessActions();
+            return Ok(flightProcessActions);
         }
     }
 }

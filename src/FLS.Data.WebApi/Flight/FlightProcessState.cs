@@ -3,6 +3,7 @@ namespace FLS.Data.WebApi.Flight
 {
     /// <summary>
     /// Defines the values of the flight status.
+    /// </summary>
     /// <remarks>
     /// After the flight has been validated, it new status will be <code>Valid</code> or <code>Invalid</code>.
     /// An invalid flight must be edited from an user to be re-validated during the next process workflow job and may result in a <code>Valid</code> process state.
@@ -16,7 +17,6 @@ namespace FLS.Data.WebApi.Flight
     /// A flight in process state <code>ExcludedFromDeliveryProcess</code> is excluded from delivery creation. It can be set to this state from valid, locked or any delivery states except <code>DeliveryBooked</code>.
     /// From the state <code>ExcludedFromDeliveryProcess</code> it is possible to set the flight back to the state <code>Locked</code>.
     /// </remarks>
-    /// </summary>
     public enum FlightProcessState
     {
         NotProcessed = 0,

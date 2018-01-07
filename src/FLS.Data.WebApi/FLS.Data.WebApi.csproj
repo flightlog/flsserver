@@ -170,6 +170,8 @@
     <Compile Include="PagedList.cs" />
     <Compile Include="Person\ClubRelatedPersonFullDetails.cs" />
     <Compile Include="Person\ClubRelatedPersonDetails.cs" />
+    <Compile Include="Processing\FlightProcessActionDetails.cs" />
+    <Compile Include="Processing\FlightProcessAction.cs" />
     <Compile Include="Registrations\TrialFlightRegistrationDetails.cs" />
     <Compile Include="Person\PersonDetails.cs" />
     <Compile Include="Person\PersonOverviewSearchFilter.cs" />

@@ -11,6 +11,7 @@ using FLS.Common.Validators;
 using FLS.Data.WebApi;
 using FLS.Data.WebApi.Aircraft;
 using FLS.Data.WebApi.Flight;
+using FLS.Data.WebApi.Processing;
 using FLS.Data.WebApi.Reporting;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
@@ -19,6 +20,7 @@ using FLS.Server.Data.Mapping;
 using FLS.Server.Data.Resources;
 using LinqKit;
 using NLog;
+using FlightProcessState = FLS.Data.WebApi.Flight.FlightProcessState;
 
 namespace FLS.Server.Service
 {
@@ -185,6 +187,114 @@ namespace FLS.Server.Service
 
                 return flightStateListItems;
             }
+        }
+
+        internal List<FlightProcessAction> GetFlightProcessActions()
+        {
+            var flightProcessActions = new List<FlightProcessAction>();
+
+            var flightProcessAction = new FlightProcessAction()
+            {
+                CurrentFlightProcessState = FlightProcessState.Locked,
+            };
+
+            var details = new FlightProcessActionDetails()
+            {
+                NewFlightProcessState = FlightProcessState.NotProcessed,
+                Action = "Exclude",
+                Message = "Exclude flight from delivery creation process.",
+                WillDeleteDeliveries = false
+            };
+
+            flightProcessAction.PossibleFlightProcessActions.Add(details);
+            flightProcessActions.Add(flightProcessAction);
+
+
+            flightProcessAction = new FlightProcessAction()
+            {
+                CurrentFlightProcessState = FlightProcessState.DeliveryPreparationError,
+            };
+
+            details = new FlightProcessActionDetails()
+            {
+                NewFlightProcessState = FlightProcessState.Locked,
+                Action = "Lock flight",
+                Message = "Reset flight to locked state for another delivery creation process",
+                WillDeleteDeliveries = false
+            };
+
+            flightProcessAction.PossibleFlightProcessActions.Add(details);
+            flightProcessActions.Add(flightProcessAction);
+
+
+            flightProcessAction = new FlightProcessAction()
+            {
+                CurrentFlightProcessState = FlightProcessState.DeliveryPreparationError,
+            };
+
+            details = new FlightProcessActionDetails()
+            {
+                NewFlightProcessState = FlightProcessState.ExcludedFromDeliveryProcess,
+                Action = "Exclude flight from delivery",
+                Message = "Exclude flight from delivery creation process.",
+                WillDeleteDeliveries = false
+            };
+
+            flightProcessAction.PossibleFlightProcessActions.Add(details);
+            flightProcessActions.Add(flightProcessAction);
+
+
+            flightProcessAction = new FlightProcessAction()
+            {
+                CurrentFlightProcessState = FlightProcessState.DeliveryPrepared,
+            };
+
+            details = new FlightProcessActionDetails()
+            {
+                NewFlightProcessState = FlightProcessState.Locked,
+                Action = "Lock flight",
+                Message = "Reset flight to locked state for another delivery creation process and delete already created deliveries",
+                WillDeleteDeliveries = true
+            };
+
+            flightProcessAction.PossibleFlightProcessActions.Add(details);
+            flightProcessActions.Add(flightProcessAction);
+
+
+            flightProcessAction = new FlightProcessAction()
+            {
+                CurrentFlightProcessState = FlightProcessState.DeliveryPrepared,
+            };
+
+            details = new FlightProcessActionDetails()
+            {
+                NewFlightProcessState = FlightProcessState.ExcludedFromDeliveryProcess,
+                Action = "Exclude flight from delivery",
+                Message = "Delete already created deliveries and exclude flight from delivery creation process.",
+                WillDeleteDeliveries = true
+            };
+
+            flightProcessAction.PossibleFlightProcessActions.Add(details);
+            flightProcessActions.Add(flightProcessAction);
+
+
+            flightProcessAction = new FlightProcessAction()
+            {
+                CurrentFlightProcessState = FlightProcessState.ExcludedFromDeliveryProcess,
+            };
+
+            details = new FlightProcessActionDetails()
+            {
+                NewFlightProcessState = FlightProcessState.Valid,
+                Action = "Reset to valid flight",
+                Message = "Sets the flight process state to valid.",
+                WillDeleteDeliveries = false
+            };
+
+            flightProcessAction.PossibleFlightProcessActions.Add(details);
+            flightProcessActions.Add(flightProcessAction);
+
+            return flightProcessActions;
         }
         #endregion FlightState
 
