@@ -324,6 +324,20 @@ namespace FLS.Server.Data.Mapping
             if (entity.Aircraft != null)
             {
                 overview.Immatriculation = entity.Aircraft.Immatriculation;
+
+                if (entity.Aircraft.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.Glider
+                    || entity.Aircraft.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.GliderWithMotor)
+                {
+                    overview.FlightCategory = FlightCategory.GliderFlight;
+                }
+                else if(entity.Aircraft.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.MotorAircraft
+                    || entity.Aircraft.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.MotorGlider
+                    || entity.Aircraft.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.MultiEngineAircraft
+                    || entity.Aircraft.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.Jet
+                    || entity.Aircraft.AircraftTypeId == (int)FLS.Data.WebApi.Aircraft.AircraftType.Helicopter)
+                {
+                    overview.FlightCategory = FlightCategory.MotorFlight;
+                }
             }
 
             if (entity.PilotPerson != null)
@@ -344,6 +358,14 @@ namespace FLS.Server.Data.Mapping
             if (entity.FlightType != null)
             {
                 overview.ReservationTypeName = entity.FlightType.FlightTypeName;
+
+                if (overview.FlightCategory == FlightCategory.MotorFlight 
+                    && entity.FlightType.IsForTowFlights 
+                    && entity.FlightType.IsForMotorFlights == false)
+                {
+                    //it is a Tow flight
+                    overview.FlightCategory = FlightCategory.TowFlight;
+                }
             }
             else if (entity.AircraftReservationType != null)
             {

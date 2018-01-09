@@ -1,4 +1,7 @@
 ﻿using System;
+using FLS.Data.WebApi.Flight;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace FLS.Data.WebApi.AircraftReservation
 {
@@ -19,6 +22,9 @@ namespace FLS.Data.WebApi.AircraftReservation
         public string SecondCrewName { get; set; }
         public string ReservationTypeName { get; set; }
         public string Remarks { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public FlightCategory FlightCategory { get; set; }
 
         public override Guid Id
         {
