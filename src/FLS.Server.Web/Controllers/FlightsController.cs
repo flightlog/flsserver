@@ -4,6 +4,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using FLS.Data.WebApi;
 using FLS.Data.WebApi.Flight;
+using FLS.Data.WebApi.Processing;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Service;
 using FLS.Server.WebApi.ActionFilters;
@@ -321,14 +322,14 @@ namespace FLS.Server.WebApi.Controllers
         /// Updates the process state manually of a specified flight.
         /// </summary>
         /// <param name="flightId">The flight identifier.</param>
-        /// <param name="newProcessState">The new process state.</param>
+        /// <param name="flightProcessRequest">The flight process request.</param>
         /// <returns></returns>
         [HttpPut]
         [Route("changeprocessstate/{flightId}")]
         [ResponseType(typeof(FlightDetails))]
-        public IHttpActionResult Update(Guid flightId, [FromBody]int newProcessState)
+        public IHttpActionResult Update(Guid flightId, [FromBody]FlightProcessRequest flightProcessRequest)
         {
-            var flightDetails = _flightService.ManuallySetFlightProcessState(flightId, newProcessState);
+            var flightDetails = _flightService.ManuallySetFlightProcessState(flightId, (int)flightProcessRequest.NewFlightProcessState);
             return Ok(flightDetails);
         }
     }
