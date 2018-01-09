@@ -109,6 +109,7 @@ namespace FLS.Server.Service
                     .Include("Location")
                     .Include("SecondCrewPerson")
                     .Include("AircraftReservationType")
+                    .Include("FlightType")
                     .Where(r => r.ClubId == CurrentAuthenticatedFLSUserClubId)
                     .OrderByPropertyNames(pageableSearchFilter.Sorting);
 
@@ -190,6 +191,7 @@ namespace FLS.Server.Service
                     .Include("Location")
                     .Include("SecondCrewPerson")
                     .Include("AircraftReservationType")
+                    .Include("FlightType")
                     .Where(r => r.ClubId == CurrentAuthenticatedFLSUserClubId)
                     .Where(reservation => DbFunctions.TruncateTime(reservation.Start) >= DbFunctions.TruncateTime(DateTime.Now))
                     .Where(x => x.PilotPersonId == personId || x.SecondCrewPersonId == personId)
