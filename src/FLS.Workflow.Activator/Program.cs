@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using NLog;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace FLS.Workflow.Activator
 {
@@ -64,6 +65,18 @@ namespace FLS.Workflow.Activator
                         Logger.Debug("Wrong argument passed.");
                     }
                 }
+                else if (args.Length == 2)
+                {
+                    Logger.Debug($"Parsing argument: {args[0]}, {args[1]}");
+                    if (args[0].ToLower() == "importpersons")
+                    {
+                        if (File.Exists(args[1]) == false)
+                        {
+                            Logger.Info($"File: {args[1]} in argument does not exist!");
+                            return;
+                        } 
+                    }
+                }
 
                 using (var client = new HttpClient())
                 {
@@ -79,16 +92,43 @@ namespace FLS.Workflow.Activator
                     //sets the Bearer authorization header with the access token value 
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-
-                    var response = client.GetAsync(AppSettings.Default.BaseUri + AppSettings.Default.WorkflowControllerUri + actionUri).Result;
-
-                    if (response.IsSuccessStatusCode == false)
+                    if (args.Length < 2)
                     {
-                        Logger.Error(string.Format("Error while trying to execute workflows: {0}, Message: {1}", response.StatusCode, response.ReasonPhrase));
+                        var response =
+                            client.GetAsync(AppSettings.Default.BaseUri + AppSettings.Default.WorkflowControllerUri +
+                                            actionUri).Result;
+
+                        if (response.IsSuccessStatusCode == false)
+                        {
+                            Logger.Error(string.Format("Error while trying to execute workflows: {0}, Message: {1}",
+                                response.StatusCode, response.ReasonPhrase));
+                        }
+                        else
+                        {
+                            Logger.Info(
+                                "Started workflows successfully. For details please have a look in the database system logs.");
+                        }
                     }
-                    else
+                    else if (args[0].ToLower() == "importpersons")
                     {
-                        Logger.Info("Started workflows successfully. For details please have a look in the database system logs.");
+                        //set timeout to 5min
+                        client.Timeout = new TimeSpan(0, 5, 0);
+                        var content = new MultipartFormDataContent();
+                        var filestream = new FileStream(args[1], FileMode.Open);
+                        var fileName = Path.GetFileName(args[1]);
+                        content.Add(new StreamContent(filestream), "file", fileName);
+                        var response = client.PostAsync(AppSettings.Default.BaseUri + "api/v1/persons/upload/", content).Result;
+
+                        if (response.IsSuccessStatusCode == false)
+                        {
+                            Logger.Error(string.Format("Error while trying to execute file upload: {0}, Message: {1}",
+                                response.StatusCode, response.ReasonPhrase));
+                        }
+                        else
+                        {
+                            Logger.Info(
+                                "Started upload successfully. For details please have a look in the database system logs.");
+                        }
                     }
                 }
             }

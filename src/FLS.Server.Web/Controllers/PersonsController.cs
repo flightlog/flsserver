@@ -621,7 +621,7 @@ namespace FLS.Server.WebApi.Controllers
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> UploadPersonFile()
         {
-
+            //TODO: use system settings for temp path
             var streamProvider = new MultipartFormDataStreamProvider("C:\\Temp");
             await Request.Content.ReadAsMultipartAsync(streamProvider);
             var formData = streamProvider.FormData;
