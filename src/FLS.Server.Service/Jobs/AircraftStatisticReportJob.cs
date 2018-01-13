@@ -110,7 +110,7 @@ namespace FLS.Server.Service.Jobs
         {
             try
             {
-                var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 1, 1);
+                var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
                 var endDate = startDate.AddMonths(1).AddTicks(-1);
 
                 var filterCriteria = new AircraftFlightReportFilterCriteria();
