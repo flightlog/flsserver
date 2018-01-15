@@ -15,6 +15,7 @@ using FLS.Server.Data;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Exceptions;
 using FLS.Server.Data.Mapping;
+using FLS.Server.Data.Resources;
 using FLS.Server.Service.Email;
 using Microsoft.AspNet.Identity;
 using NLog;
@@ -221,7 +222,7 @@ namespace FLS.Server.Service
                 }
                 else
                 {
-                    throw new UnauthorizedAccessException("User is not allowed to get users");
+                    throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
                 }
                 
                 var filter = pageableSearchFilter.SearchFilter;
@@ -327,7 +328,7 @@ namespace FLS.Server.Service
             }
             else
             {
-                throw new UnauthorizedAccessException("User is not allowed to get users of club");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
         }
 

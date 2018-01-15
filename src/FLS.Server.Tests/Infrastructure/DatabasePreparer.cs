@@ -31,6 +31,8 @@ namespace FLS.Server.Tests.Infrastructure
 
         public void PrepareDatabaseForTests()
         {
+            return;
+
             _logger.Info("Preparing database...");
             var scriptName = "3 Insert Static Data.sql";
 

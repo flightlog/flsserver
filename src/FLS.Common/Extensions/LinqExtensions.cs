@@ -38,7 +38,7 @@ namespace FLS.Common.Extensions
         {
             if (query == null)
             {
-                throw new ArgumentNullException("query", "Data query is empty.");
+                throw new ArgumentNullException("query", "Data query is null.");
             }
 
             if (string.IsNullOrEmpty(sortString))
@@ -72,7 +72,7 @@ namespace FLS.Common.Extensions
         {
             if (query == null)
             {
-                throw new ArgumentNullException("query", "Data query is empty.");
+                throw new ArgumentNullException("query", "Data query is null.");
             }
 
             if (sorting == null || sorting.Any() == false)

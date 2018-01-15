@@ -1140,4 +1140,46 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'ACCOUNTING_UNIT_TYPE', 'Accounting Einheit', 1, SYSDATETIME())
 
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_DbEntityValidationException', 'Datenbank-Validierungs-Fehler. Datensatz konnte nicht gespeichert oder aktualisiert werden!', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_GeneralDatabaseException', 'Genereller Datenbank-Fehler. Datensatz konnte nicht gespeichert oder aktualisiert werden!', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_UserNotAuthenticated', 'Benutzer ist nicht authentiziert.', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_SoftDeleteDatabaseException', 'Datenbank-Fehler. Datensatz konnte nicht gelöscht bzw. aktualisiert werden.', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_ArgumentOutOfRange', 'Das Argument ist ausserhalb des gültigen Wertebereichs. Argument: {{ArgumentName}}', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_ReservationTypeNotFound', 'Reservierungs-Typ nicht gefunden!', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_StartLocationsOfGliderAndTowFlightsNotEqual', 'Start-Flugplatz ist nicht gleich zwischen Segelflug und Schleppflug!', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_StartTimeOfGliderAndTowFlightsNotEqual', 'Start-Zeit ist nicht gleich zwischen Segelflug und Schleppflug!', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_TowFlightWithoutGliderFlightIsNotValid', 'Schleppflug ohne Segelflug ist nicht gültig und kann nicht abgespeichert werden.', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_InternalServerException', 'Ein interner Server-Fehler ist aufgetreten. Das Entwickler-Team wurde informiert.', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_NotInRole_ClubAdmin', 'Keine Berechtigung! Zum Ausführen dieser Aktion musst du Club-Administrator sein.', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_InvalidCastException', 'Fehler bei der Konvertierung eines Wertes.', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_CantDeleteClubDueToActiveUsers', 'Club kann nicht gelöscht werden, da er noch aktivierte Benutzer hat.', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'Error_NotInSameClub', 'Keine Berechtigung zum Ausführen dieser Aktion.', 1, SYSDATETIME())
+
 GO

@@ -9,6 +9,7 @@ using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.Articles;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
+using FLS.Server.Data.Resources;
 using NLog;
 
 namespace FLS.Server.Service
@@ -109,7 +110,7 @@ namespace FLS.Server.Service
 
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to insert a new article!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -144,7 +145,7 @@ namespace FLS.Server.Service
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to delete a article!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -161,7 +162,7 @@ namespace FLS.Server.Service
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to set the last article synchronisation datetime value!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -177,7 +178,7 @@ namespace FLS.Server.Service
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to set the last article synchronisation datetime value!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())

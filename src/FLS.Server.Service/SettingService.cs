@@ -12,6 +12,7 @@ using FLS.Common.Exceptions;
 using FLS.Common.Extensions;
 using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Server.Data.Resources;
 using Newtonsoft.Json;
 
 namespace FLS.Server.Service
@@ -273,24 +274,24 @@ namespace FLS.Server.Service
             if (setting.ClubId.HasValue == false && setting.UserId.HasValue == false
                 && IsCurrentUserInRoleSystemAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a system administrator to edit this setting!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleSystemAdmin);
             }
 
             if (setting.ClubId.HasValue && setting.ClubId.Value != CurrentAuthenticatedFLSUserClubId
                 && IsCurrentUserInRoleSystemAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a system administrator to edit this setting!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleSystemAdmin);
             }
 
             if (setting.ClubId.HasValue && setting.ClubId.Value == CurrentAuthenticatedFLSUserClubId
                 && IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to edit this setting!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             if (setting.UserId.HasValue && setting.UserId.Value != CurrentAuthenticatedFLSUser.UserId)
             {
-                throw new UnauthorizedAccessException("You are not allowed to edit this user setting!");
+                throw new UnauthorizedAccessException();
             }
         }
     }

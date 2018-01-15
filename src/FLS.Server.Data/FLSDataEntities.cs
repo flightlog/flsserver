@@ -14,9 +14,11 @@ using FLS.Common.Extensions;
 using FLS.Data.WebApi;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
+using FLS.Server.Data.Exceptions;
 using NLog;
 using TrackerEnabledDbContext;
 using TrackerEnabledDbContext.Common.Configuration;
+using FLS.Server.Data.Resources;
 
 namespace FLS.Server.Data
 {
@@ -30,7 +32,7 @@ namespace FLS.Server.Data
             get { return _logger; }
             set { _logger = value; }
         }
-        
+
         public FLSDataEntities(IIdentityService identityService)
             : base("name=FLSDataEntities")
         {
@@ -41,6 +43,7 @@ namespace FLS.Server.Data
         }
 
         #region DbSet Entity Properties
+
         public virtual DbSet<AccountingRuleFilter> AccountingRuleFilters { get; set; }
         public virtual DbSet<AccountingRuleFilterType> AccountingRuleFilterTypes { get; set; }
         public virtual DbSet<AccountingUnitType> AccountingUnitTypes { get; set; }
@@ -95,6 +98,7 @@ namespace FLS.Server.Data
         public virtual DbSet<UserAccountState> UserAccountStates { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<User> Users { get; set; }
+
         #endregion DbSet Entity Properties
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -153,7 +157,7 @@ namespace FLS.Server.Data
             modelBuilder.Entity<PlanningDay>().Ignore(t => t.Id);
             modelBuilder.Entity<PlanningDayAssignment>().Ignore(t => t.Id);
             modelBuilder.Entity<PlanningDayAssignment>().Ignore(t => t.EntityState);
-            modelBuilder.Entity<PlanningDayAssignmentType>().Ignore(t => t.Id); 
+            modelBuilder.Entity<PlanningDayAssignmentType>().Ignore(t => t.Id);
             modelBuilder.Entity<Person>().Ignore(t => t.Id);
             modelBuilder.Entity<Person>().Ignore(t => t.DisplayName);
             modelBuilder.Entity<Person>().Ignore(t => t.EmailAddressForCommunication);
@@ -161,7 +165,7 @@ namespace FLS.Server.Data
 
             modelBuilder.Entity<PersonCategory>().Ignore(t => t.Id);
             modelBuilder.Entity<PersonClub>().Ignore(t => t.Id);
-            modelBuilder.Entity<PersonClub>().Ignore(t => t.DoNotUpdateTimeStampsInMetaData); 
+            modelBuilder.Entity<PersonClub>().Ignore(t => t.DoNotUpdateTimeStampsInMetaData);
             modelBuilder.Entity<PersonPersonCategory>().Ignore(t => t.Id);
             modelBuilder.Entity<Role>().Ignore(t => t.Id);
             modelBuilder.Entity<Role>().Ignore(t => t.Name);
@@ -183,26 +187,26 @@ namespace FLS.Server.Data
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Aircraft>()
-               .HasMany(e => e.AircraftReservations)
-               .WithRequired(e => e.Aircraft)
-               .WillCascadeOnDelete(false);
+                .HasMany(e => e.AircraftReservations)
+                .WithRequired(e => e.Aircraft)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Aircraft>()
-               .HasMany(e => e.AircraftOperatingCounters)
-               .WithRequired(e => e.Aircraft)
-               .WillCascadeOnDelete();
-            
+                .HasMany(e => e.AircraftOperatingCounters)
+                .WithRequired(e => e.Aircraft)
+                .WillCascadeOnDelete();
+
             modelBuilder.Entity<AircraftReservationType>()
-               .HasMany(e => e.AircraftReservations)
-               .WithOptional(e => e.AircraftReservationType)
-               .HasForeignKey(e => e.AircraftReservationTypeId)
-               .WillCascadeOnDelete(false);
-            
+                .HasMany(e => e.AircraftReservations)
+                .WithOptional(e => e.AircraftReservationType)
+                .HasForeignKey(e => e.AircraftReservationTypeId)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<FlightType>()
-               .HasMany(e => e.AircraftReservations)
-               .WithOptional(e => e.FlightType)
-               .HasForeignKey(e => e.FlightTypeId)
-               .WillCascadeOnDelete(false);
+                .HasMany(e => e.AircraftReservations)
+                .WithOptional(e => e.FlightType)
+                .HasForeignKey(e => e.FlightTypeId)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<AircraftState>()
                 .HasMany(e => e.AircraftAircraftStates)
@@ -351,12 +355,12 @@ namespace FLS.Server.Data
                 .HasMany(e => e.Locations)
                 .WithOptional(e => e.ElevationUnitType)
                 .HasForeignKey(e => e.ElevationUnitTypeId);
-            
+
             modelBuilder.Entity<Extension>()
                 .HasMany(e => e.ClubExtensions)
                 .WithRequired(e => e.Extension)
                 .WillCascadeOnDelete(false);
-            
+
             modelBuilder.Entity<ExtensionType>()
                 .HasMany(e => e.Extensions)
                 .WithRequired(e => e.ExtensionType)
@@ -409,23 +413,23 @@ namespace FLS.Server.Data
 
             modelBuilder.Entity<FlightCrew>()
                 .HasRequired(e => e.Flight);
-            
+
             modelBuilder.Entity<Flight>()
                 .HasMany(e => e.TowedFlights)
                 .WithOptional(e => e.TowFlight)
                 .HasForeignKey(e => e.TowFlightId);
-            
+
             modelBuilder.Entity<FlightAirState>()
                 .HasMany(e => e.Flights)
                 .WithRequired(e => e.FlightAirState)
                 .HasForeignKey(e => e.AirStateId)
                 .WillCascadeOnDelete(false);
-            
+
             modelBuilder.Entity<FlightProcessState>()
-               .HasMany(e => e.Flights)
-               .WithRequired(e => e.FlightProcessState)
-               .HasForeignKey(e => e.ProcessStateId)
-               .WillCascadeOnDelete(false);
+                .HasMany(e => e.Flights)
+                .WithRequired(e => e.FlightProcessState)
+                .HasForeignKey(e => e.ProcessStateId)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<FlightType>()
                 .HasMany(e => e.ClubsDefaultGliderFlightType)
@@ -443,28 +447,28 @@ namespace FLS.Server.Data
                 .HasForeignKey(e => e.DefaultTowFlightTypeId);
 
             modelBuilder.Entity<Language>()
-               .HasMany(e => e.LanguageTranslations)
-               .WithRequired(e => e.Language)
-               .HasForeignKey(e => e.LanguageId)
-               .WillCascadeOnDelete(false);
+                .HasMany(e => e.LanguageTranslations)
+                .WithRequired(e => e.Language)
+                .HasForeignKey(e => e.LanguageId)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Language>()
-               .HasMany(e => e.Users)
-               .WithRequired(e => e.Language)
-               .HasForeignKey(e => e.LanguageId)
-               .WillCascadeOnDelete(false);
+                .HasMany(e => e.Users)
+                .WithRequired(e => e.Language)
+                .HasForeignKey(e => e.LanguageId)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Language>()
-               .HasMany(e => e.EmailTemplates)
-               .WithRequired(e => e.Language)
-               .HasForeignKey(e => e.LanguageId)
-               .WillCascadeOnDelete(false);
+                .HasMany(e => e.EmailTemplates)
+                .WithRequired(e => e.Language)
+                .HasForeignKey(e => e.LanguageId)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<LengthUnitType>()
                 .HasMany(e => e.Locations)
                 .WithOptional(e => e.LengthUnitType)
                 .HasForeignKey(e => e.RunwayLengthUnitType);
-            
+
             modelBuilder.Entity<Location>()
                 .HasMany(e => e.Clubs)
                 .WithOptional(e => e.Homebase)
@@ -547,7 +551,7 @@ namespace FLS.Server.Data
                 .HasMany(e => e.SecondCrewAssignedAircraftReservations)
                 .WithOptional(e => e.SecondCrewPerson)
                 .HasForeignKey(e => e.SecondCrewPersonId);
-            
+
             modelBuilder.Entity<Person>()
                 .HasMany(e => e.PlanningDayAssignments)
                 .WithRequired(e => e.AssignedPerson)
@@ -596,6 +600,7 @@ namespace FLS.Server.Data
             SetIsDeletedMapping(modelBuilder, false);
 
             #region Audit Tracking Settings
+
             //For more details, see: https://github.com/bilal-fazlani/tracker-enabled-dbcontext/wiki
 
             EntityTracker.TrackAllProperties<AircraftAircraftState>().Except(x => x.Id)
@@ -892,100 +897,101 @@ namespace FLS.Server.Data
         protected virtual void SetIsDeletedMapping(DbModelBuilder modelBuilder, bool isDeleted)
         {
             #region Soft-Delete settings
+
             //Soft-Delete
             modelBuilder.Entity<AccountingRuleFilter>()
-                       .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                       .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Aircraft>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<AircraftOperatingCounter>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<AircraftReservation>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<AircraftReservationType>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Article>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Club>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<ClubExtension>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Country>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Delivery>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<DeliveryItem>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<DeliveryCreationTest>()
-                       .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                       .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<EmailTemplate>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Extension>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<ExtensionValue>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Flight>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<FlightCrew>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<FlightType>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<InOutboundPoint>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Location>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<LocationType>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<MemberState>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<PlanningDay>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<PlanningDayAssignment>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<PlanningDayAssignmentType>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Person>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<PersonCategory>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<PersonClub>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Role>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<User>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
             modelBuilder.Entity<Setting>()
-                        .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
-                        .Ignore(m => m.IsDeleted);
+                .Map(m => m.Requires("IsDeleted").HasValue(isDeleted))
+                .Ignore(m => m.IsDeleted);
 
             #endregion Soft-Delete settings
         }
@@ -1013,7 +1019,8 @@ namespace FLS.Server.Data
                 }
 
                 Logger.Error(ex, $"DbEntityValidationException: {sb}");
-                throw new DbEntityValidationException($"Entity Validation Failed - errors follow:\n{sb}", ex); // Add the original exception as the innerException
+                throw new DatabaseException(ErrorMessage.DbEntityValidationException, ex);
+                    // Add the original exception as the innerException
             }
             catch (Exception ex)
             {
@@ -1030,11 +1037,11 @@ namespace FLS.Server.Data
                 }
 
                 Logger.Error(ex, $"Error while trying to save entity changes: {message}");
-
-                throw;
+                throw new DatabaseException(ErrorMessage.GeneralDatabaseException, ex);
+                    // Add the original exception as the innerException
             }
         }
-        
+
         public override int SaveChanges()
         {
             int changes = 0;
@@ -1060,7 +1067,8 @@ namespace FLS.Server.Data
                 }
 
                 Logger.Error(ex, $"DbEntityValidationException: {sb}");
-                throw new DbEntityValidationException($"Entity Validation Failed - errors follow:\n{sb}", ex); // Add the original exception as the innerException
+                throw new DatabaseException(ErrorMessage.DbEntityValidationException, ex);
+                    // Add the original exception as the innerException
             }
             catch (Exception ex)
             {
@@ -1074,8 +1082,8 @@ namespace FLS.Server.Data
                 }
 
                 Logger.Error(ex, $"Error while trying to save entity changes: {message}");
-
-                throw;
+                throw new DatabaseException(ErrorMessage.GeneralDatabaseException, ex);
+                    // Add the original exception as the innerException
             }
 
             return changes;
@@ -1088,9 +1096,9 @@ namespace FLS.Server.Data
                 p.State == EntityState.Deleted))
             {
                 if ((entry.Entity.GetType() == typeof(Flight)
-                     && ((Flight)entry.Entity).DoNotUpdateMetaData)
+                     && ((Flight) entry.Entity).DoNotUpdateMetaData)
                     || (entry.Entity.GetType() == typeof(User)
-                        && ((User)entry.Entity).DoNotUpdateMetaData))
+                        && ((User) entry.Entity).DoNotUpdateMetaData))
                 {
                     //check next entry
                 }
@@ -1099,7 +1107,8 @@ namespace FLS.Server.Data
                     //we found an entry which requires the UserId, so we check the authentication values
                     if (_identityService.CurrentAuthenticatedFLSUser == null)
                     {
-                        throw new AuthenticationException("Current authenticated FLS user is null");
+                        Logger.Error("Could not save entities as no user is authenticated.");
+                        throw new AuthenticationException(ErrorMessage.UserNotAuthenticated);
                     }
 
                     break;
@@ -1123,6 +1132,7 @@ namespace FLS.Server.Data
             }
 
             #region Added Entities
+
             foreach (var entry in ChangeTracker.Entries().Where(p => p.State == EntityState.Added))
             {
                 try
@@ -1137,9 +1147,9 @@ namespace FLS.Server.Data
                         }
 
                         if ((entry.Entity.GetType() == typeof(Person)
-                            && ((Person)entry.Entity).DoNotUpdateTimeStampsInMetaData)
+                             && ((Person) entry.Entity).DoNotUpdateTimeStampsInMetaData)
                             || (entry.Entity.GetType() == typeof(PersonClub)
-                            && ((PersonClub)entry.Entity).DoNotUpdateTimeStampsInMetaData))
+                                && ((PersonClub) entry.Entity).DoNotUpdateTimeStampsInMetaData))
                         {
                             //don't update created on metadata
                         }
@@ -1148,10 +1158,11 @@ namespace FLS.Server.Data
                             flsEntity.SetPropertyValue("CreatedOn", DateTime.UtcNow);
                         }
 
-                        flsEntity.SetPropertyValue("CreatedByUserId", _identityService.CurrentAuthenticatedFLSUser.UserId);
+                        flsEntity.SetPropertyValue("CreatedByUserId",
+                            _identityService.CurrentAuthenticatedFLSUser.UserId);
                         flsEntity.SetPropertyValue("OwnerId", _identityService.CurrentAuthenticatedFLSUser.ClubId);
-                        flsEntity.SetPropertyValue("OwnershipType", (int)OwnershipType.Club);
-                        flsEntity.SetPropertyValue("RecordState", (int)EntityRecordState.Active);
+                        flsEntity.SetPropertyValue("OwnershipType", (int) OwnershipType.Club);
+                        flsEntity.SetPropertyValue("RecordState", (int) EntityRecordState.Active);
 
                         Logger.Debug($"Insert {entry.Entity.GetType().Name} with data: {entry.Entity}");
                     }
@@ -1166,9 +1177,11 @@ namespace FLS.Server.Data
                     throw;
                 }
             }
+
             #endregion Added Entities
 
             #region Modified Entities
+
             foreach (var entry in ChangeTracker.Entries().Where(p => p.State == EntityState.Modified))
             {
                 try
@@ -1178,15 +1191,15 @@ namespace FLS.Server.Data
                     if (flsEntity != null)
                     {
                         if ((entry.Entity.GetType() == typeof(Flight)
-                             && ((Flight)entry.Entity).DoNotUpdateMetaData)
+                             && ((Flight) entry.Entity).DoNotUpdateMetaData)
                             || (entry.Entity.GetType() == typeof(User)
-                            && ((User)entry.Entity).DoNotUpdateMetaData)
+                                && ((User) entry.Entity).DoNotUpdateMetaData)
                             || (entry.Entity.GetType() == typeof(Club)
-                            && ((Club)entry.Entity).DoNotUpdateMetaData))
+                                && ((Club) entry.Entity).DoNotUpdateMetaData))
                         {
                             //don't update metadata when workflow process set flag "DoNotUpdateMetaData" on flight
                             //or when user resets passwords
-                            flsEntity.SetPropertyValue("RecordState", (int)EntityRecordState.Active);
+                            flsEntity.SetPropertyValue("RecordState", (int) EntityRecordState.Active);
 
                             Logger.Debug($"Update {entry.Entity.GetType().Name} with data: {entry.Entity}");
 
@@ -1196,9 +1209,9 @@ namespace FLS.Server.Data
                         var userId = _identityService.CurrentAuthenticatedFLSUser.UserId;
 
                         if ((entry.Entity.GetType() == typeof(Person)
-                             && ((Person)entry.Entity).DoNotUpdateTimeStampsInMetaData)
+                             && ((Person) entry.Entity).DoNotUpdateTimeStampsInMetaData)
                             || (entry.Entity.GetType() == typeof(PersonClub)
-                                && ((PersonClub)entry.Entity).DoNotUpdateTimeStampsInMetaData))
+                                && ((PersonClub) entry.Entity).DoNotUpdateTimeStampsInMetaData))
                         {
                             //don't update modified on metadata
                         }
@@ -1208,7 +1221,7 @@ namespace FLS.Server.Data
                         }
 
                         flsEntity.SetPropertyValue("ModifiedByUserId", userId);
-                        flsEntity.SetPropertyValue("RecordState", (int)EntityRecordState.Active);
+                        flsEntity.SetPropertyValue("RecordState", (int) EntityRecordState.Active);
 
                         Logger.Debug($"Update {entry.Entity.GetType().Name} with data: {entry.Entity}");
                     }
@@ -1219,9 +1232,11 @@ namespace FLS.Server.Data
                     throw;
                 }
             }
+
             #endregion Modified Entities
 
             #region Deleted Entities
+
             foreach (var entry in ChangeTracker.Entries().Where(p => p.State == EntityState.Deleted))
             {
                 try
@@ -1232,9 +1247,9 @@ namespace FLS.Server.Data
                         var userId = _identityService.CurrentAuthenticatedFLSUser.UserId;
 
                         if ((entry.Entity.GetType() == typeof(Person)
-                             && ((Person)entry.Entity).DoNotUpdateTimeStampsInMetaData)
+                             && ((Person) entry.Entity).DoNotUpdateTimeStampsInMetaData)
                             || (entry.Entity.GetType() == typeof(PersonClub)
-                                && ((PersonClub)entry.Entity).DoNotUpdateTimeStampsInMetaData))
+                                && ((PersonClub) entry.Entity).DoNotUpdateTimeStampsInMetaData))
                         {
                             //don't update deleted on metadata
                         }
@@ -1244,7 +1259,7 @@ namespace FLS.Server.Data
                         }
 
                         flsEntity.SetPropertyValue("DeletedByUserId", userId);
-                        flsEntity.SetPropertyValue("RecordState", (int)EntityRecordState.Deleted);
+                        flsEntity.SetPropertyValue("RecordState", (int) EntityRecordState.Deleted);
                         Logger.Debug($"Delete {entry.Entity.GetType().Name} with Data: {entry.Entity}");
                     }
                     else if (entry.Entity is UserRole)
@@ -1260,11 +1275,13 @@ namespace FLS.Server.Data
                     throw;
                 }
             }
+
             #endregion Deleted Entities
 
         }
 
         #region SoftDelete
+
         private void SoftDelete(DbEntityEntry entry)
         {
             Type entryEntityType = entry.Entity.GetType();
@@ -1275,34 +1292,42 @@ namespace FLS.Server.Data
                 return;
             }
 
-            if (entry.Entity.HasProperty("IsDeleted"))
+            try
             {
-                string tableName = GetTableName(entryEntityType);
-                string primaryKeyName = GetPrimaryKeyName(entryEntityType);
-                DateTime? deletedOn = null;
-                Guid? deletedByUserId = null;
-
-                string sql =
-                    string.Format(
-                        "UPDATE {0} SET DeletedOn = @deletedOn, DeletedByUserId = @deletedByUserId, RecordState = @recordState, IsDeleted = 1 WHERE {1} = @id",
-                        tableName, primaryKeyName);
-
-                var flsEntity = entry.Entity as IFLSMetaData;
-                if (flsEntity != null)
+                if (entry.Entity.HasProperty("IsDeleted"))
                 {
-                    deletedOn = flsEntity.DeletedOn;
-                    deletedByUserId = flsEntity.DeletedByUserId;
+                    string tableName = GetTableName(entryEntityType);
+                    string primaryKeyName = GetPrimaryKeyName(entryEntityType);
+                    DateTime? deletedOn = null;
+                    Guid? deletedByUserId = null;
+
+                    string sql =
+                        string.Format(
+                            "UPDATE {0} SET DeletedOn = @deletedOn, DeletedByUserId = @deletedByUserId, RecordState = @recordState, IsDeleted = 1 WHERE {1} = @id",
+                            tableName, primaryKeyName);
+
+                    var flsEntity = entry.Entity as IFLSMetaData;
+                    if (flsEntity != null)
+                    {
+                        deletedOn = flsEntity.DeletedOn;
+                        deletedByUserId = flsEntity.DeletedByUserId;
+                    }
+
+                    Database.ExecuteSqlCommand(
+                        sql,
+                        new SqlParameter("@id", entry.OriginalValues[primaryKeyName]),
+                        new SqlParameter("@deletedOn", deletedOn),
+                        new SqlParameter("@deletedByUserId", deletedByUserId),
+                        new SqlParameter("@recordState", (int) EntityRecordState.Deleted));
+
+                    // prevent hard delete and change state to Detached (not modified as modified will reattach it back to the client
+                    entry.State = EntityState.Detached;
                 }
-
-                Database.ExecuteSqlCommand(
-                    sql,
-                    new SqlParameter("@id", entry.OriginalValues[primaryKeyName]),
-                    new SqlParameter("@deletedOn", deletedOn),
-                    new SqlParameter("@deletedByUserId", deletedByUserId),
-                    new SqlParameter("@recordState", (int) EntityRecordState.Deleted));
-
-                // prevent hard delete and change state to Detached (not modified as modified will reattach it back to the client
-                entry.State = EntityState.Detached;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                throw new DatabaseException(ErrorMessage.SoftDeleteDatabaseException);
             }
         }
 

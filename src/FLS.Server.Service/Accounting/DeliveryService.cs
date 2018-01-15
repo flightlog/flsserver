@@ -12,6 +12,7 @@ using FLS.Data.WebApi.Accounting.RuleFilters;
 using FLS.Data.WebApi.Accounting.Testing;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
+using FLS.Server.Data.Exceptions;
 using FLS.Server.Data.Mapping;
 using FLS.Server.Data.Resources;
 using FLS.Server.Interfaces;
@@ -51,7 +52,7 @@ namespace FLS.Server.Service.Accounting
             if (clubId.IsValid() == false)
             {
                 Logger.Error("No valid ClubId for getting the accountings!");
-                throw new InvalidDataException("No valid ClubId to fetch accounting data!");
+                throw new ArgumentException("clubId");
             }
 
             try
@@ -182,7 +183,7 @@ namespace FLS.Server.Service.Accounting
             catch (Exception ex)
             {
                 Logger.Error(ex, $"Error while trying to create accounting for flights. Message: {ex.Message}");
-                throw;
+                throw new InternalServerException($"Error while trying to create accounting for flights. Message: {ex.Message}");
             }
         }
 
@@ -826,7 +827,7 @@ namespace FLS.Server.Service.Accounting
 
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to insert a new DeliveryCreationTest!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -861,7 +862,7 @@ namespace FLS.Server.Service.Accounting
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to delete a DeliveryCreationTest!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -951,7 +952,7 @@ namespace FLS.Server.Service.Accounting
 
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to insert a new delivery!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -987,7 +988,7 @@ namespace FLS.Server.Service.Accounting
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to delete a delivery!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -1015,7 +1016,7 @@ namespace FLS.Server.Service.Accounting
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to set the last delivery synchronisation datetime value!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())

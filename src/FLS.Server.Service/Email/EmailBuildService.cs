@@ -8,6 +8,7 @@ using Alpinely.TownCrier;
 using FLS.Common.Extensions;
 using FLS.Common.Validators;
 using FLS.Server.Data.DbEntities;
+using FLS.Server.Data.Exceptions;
 using NLog;
 
 namespace FLS.Server.Service.Email
@@ -71,7 +72,7 @@ namespace FLS.Server.Service.Email
                 if (template == null)
                 {
                     Logger.Error($"Email-template with name: {templateName} not found!");
-                    throw new ApplicationException($"Email-template with name: { templateName } not found!");
+                    throw new InternalServerException($"Email-template with name: { templateName } not found!");
                 }
                 
                 MailMessage message = factory

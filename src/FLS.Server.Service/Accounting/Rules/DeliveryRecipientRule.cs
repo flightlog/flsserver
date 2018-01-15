@@ -24,7 +24,7 @@ namespace FLS.Server.Service.Accounting.Rules
             }
             else
             {
-                throw new Exception($"Recipient target is null. Can not create delivery for flight with Id: {ruleBasedDelivery.FlightInformation.FlightId}");
+                throw new ArgumentException($"Recipient target is null. Can not create delivery for flight with Id: {ruleBasedDelivery.FlightInformation.FlightId}");
             }
 
             AccountingRuleFilter.HasMatched = true;

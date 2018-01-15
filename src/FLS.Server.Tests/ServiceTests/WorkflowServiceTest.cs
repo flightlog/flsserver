@@ -39,7 +39,9 @@ namespace FLS.Server.Tests.ServiceTests
         [TestCategory("Service")]
         public void ExecuteAircraftStatisticReportJobTest()
         {
-            WorkflowService.ExecuteAircraftStatisticReportJob();
+            var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month -1, 1);
+            var endDate = startDate.AddMonths(1).AddTicks(-1);
+            //WorkflowService.ExecuteAircraftStatisticReportJob();
         }
 
         [TestMethod]

@@ -6,6 +6,8 @@ using System.Web.Http.Filters;
 using FLS.Data.WebApi.Exceptions;
 using FLS.Server.Data.Exceptions;
 using NLog;
+using System.Collections.Generic;
+using FLS.Server.Data.Resources;
 
 namespace FLS.Server.WebApi.ActionFilters
 {
@@ -18,39 +20,46 @@ namespace FLS.Server.WebApi.ActionFilters
     {
         public override void OnException(HttpActionExecutedContext context)
         {
-            var logger = LogManager.GetCurrentClassLogger();
-
-            var status = HttpStatusCode.InternalServerError;
+            var statusCode = HttpStatusCode.InternalServerError;
 
             var exType = context.Exception.GetType();
+            var returningException = new FLSServerException(context.Exception.Message, context.Exception);
 
             if (exType == typeof(UnauthorizedAccessException))
-                status = HttpStatusCode.Unauthorized;
-            else if (exType == typeof(AuthenticationException))
-                status = HttpStatusCode.Unauthorized;
-            else if (exType == typeof(BadRequestException) || exType.BaseType == typeof(BadRequestException))
-                status = HttpStatusCode.BadRequest;
-            else if (exType == typeof(InternalServerException))
-                status = HttpStatusCode.InternalServerError;
-            else if (exType == typeof(ArgumentException))
-                status = HttpStatusCode.NotFound;
-
-            var exception = context.Exception;
-
-            if (context.Exception.InnerException != null)
             {
-                exception = context.Exception.InnerException;
+                statusCode = HttpStatusCode.Unauthorized;
             }
-
-            var apiError = new FLSServerException(context.Exception.Message, exception);
+            else if (exType == typeof(AuthenticationException))
+                statusCode = HttpStatusCode.Unauthorized;
+            else if (exType == typeof(BadRequestException) || exType.BaseType == typeof(BadRequestException))
+                statusCode = HttpStatusCode.BadRequest;
+            else if (exType == typeof(InvalidCastException))
+            {
+                returningException = new FLSServerException(ErrorMessage.InvalidCastException);
+                statusCode = HttpStatusCode.BadRequest;
+            }
+            else if (exType == typeof(ArgumentException))
+                statusCode = HttpStatusCode.BadRequest;
+            else if (exType == typeof(ArgumentOutOfRangeException))
+            {
+                var ex = context.Exception as ArgumentOutOfRangeException;
+                var parameters = new Dictionary<string, string>();
+                parameters.Add("ArgumentName", ex.ParamName);
+                returningException = new FLSServerException(ErrorMessage.ArgumentOutOfRangeException, parameters, ex);
+                statusCode = HttpStatusCode.BadRequest;
+            }
+            else if (exType == typeof(InternalServerException))
+            {
+                returningException = new FLSServerException(ErrorMessage.InternalServerException);
+            }
 
             // create a new response and attach our ApiError object
             // which now gets returned on ANY exception result
-            var errorResponse = context.Request.CreateResponse<FLSServerException>(status, apiError);
-            context.Response = errorResponse;
+            context.Response = context.Request.CreateResponse(statusCode, returningException);
 
-            logger.Error(string.Format("HttpStatusCode: {0} with error message: {1}, Exception: {2}, InnerException: {3}", status, apiError.Message, context.Exception, context.Exception.InnerException), apiError);
-
+            var logger = LogManager.GetCurrentClassLogger();
+            logger.Error($"HttpStatusCode: {statusCode} with error message: {returningException.Message}, Exception: {context.Exception}, InnerException: {context.Exception.InnerException}", returningException);
+            
             base.OnException(context);
         }
     }

@@ -104,7 +104,6 @@ namespace FLS.Server.Data.Mapping
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("AccountingRuleFilterTypeId");
                     break;
             }
 
@@ -185,7 +184,6 @@ namespace FLS.Server.Data.Mapping
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("AccountingRuleFilterTypeId");
                     break;
             }
 
@@ -277,7 +275,6 @@ namespace FLS.Server.Data.Mapping
                     details.NoLandingTaxForAircraft = entity.NoLandingTaxForAircraft;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("AccountingRuleFilterTypeId");
                     break;
             }
             
@@ -366,7 +363,6 @@ namespace FLS.Server.Data.Mapping
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("AccountingRuleFilterTypeId");
-                    break;
             }
 
             return entity;

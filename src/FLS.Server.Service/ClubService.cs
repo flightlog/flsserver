@@ -179,6 +179,8 @@ namespace FLS.Server.Service
 
         public void InsertClubDetails(ClubDetails clubDetails)
         {
+            throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
+
             var club = clubDetails.ToClub();
             club.EntityNotNull("Club", Guid.Empty);
 
@@ -194,7 +196,7 @@ namespace FLS.Server.Service
 
             if (IsCurrentUserInRoleSystemAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a system administrator to insert a new club!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleSystemAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -252,7 +254,7 @@ namespace FLS.Server.Service
         {
             if (IsCurrentUserInRoleSystemAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a system administrator to delete a club!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleSystemAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -263,7 +265,7 @@ namespace FLS.Server.Service
 
                 if (context.Users.Any(u => u.AccountState == (int)UserAccountState.Active && u.ClubId == clubId))
                 {
-                    throw new DeleteEntityException("Club has still active users, which must be deleted or set to inactive first!");
+                    throw new DeleteEntityException(ErrorMessage.CantDeleteClubDuoToActiveUsers);
                 }
 
                 context.Clubs.Remove(original);
@@ -426,7 +428,7 @@ namespace FLS.Server.Service
                 {
                     Logger.Warn("User is not in club and is not allowed to call this webservice method!");
 
-                    throw new UnauthorizedAccessException("User is not in club and is not allowed to call this method!");
+                    throw new UnauthorizedAccessException(ErrorMessage.NotInSameClub);
                 }
                 else
                 {
@@ -450,7 +452,7 @@ namespace FLS.Server.Service
                 }
                 else
                 {
-                    throw new UnauthorizedAccessException();
+                    throw new UnauthorizedAccessException(ErrorMessage.NotInSameClub);
                 }
 
                 return flightTypes;
@@ -613,7 +615,7 @@ namespace FLS.Server.Service
 
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to insert a new memberState!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -646,7 +648,7 @@ namespace FLS.Server.Service
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to delete a memberState!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -755,7 +757,7 @@ namespace FLS.Server.Service
 
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to insert a new personCategory!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -788,7 +790,7 @@ namespace FLS.Server.Service
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to delete a personCategory!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())

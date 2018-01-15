@@ -14,6 +14,7 @@ using FLS.Server.Data.Mapping;
 using FLS.Server.Interfaces;
 using Newtonsoft.Json;
 using FLS.Data.WebApi.Accounting;
+using FLS.Server.Data.Resources;
 
 namespace FLS.Server.Service.Accounting
 {
@@ -326,7 +327,7 @@ namespace FLS.Server.Service.Accounting
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to insert a new accounting rule filter!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             var aicrafts = _aircraftService.GetAircraftListItems();
@@ -370,7 +371,7 @@ namespace FLS.Server.Service.Accounting
         {
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
-                throw new UnauthorizedAccessException("You must be a club administrator to delete an accounting rule filter!");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())

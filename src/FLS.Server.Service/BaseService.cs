@@ -7,6 +7,7 @@ using FLS.Server.Data;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
 using NLog;
+using FLS.Server.Data.Resources;
 
 namespace FLS.Server.Service
 {
@@ -44,7 +45,7 @@ namespace FLS.Server.Service
             {
                 if (CurrentAuthenticatedFLSUser == null)
                 {
-                    throw new AuthenticationException("Current authenticated FLS user is null");
+                    throw new AuthenticationException(ErrorMessage.UserNotAuthenticated);
                 }
 
                 return CurrentAuthenticatedFLSUser.ClubId;

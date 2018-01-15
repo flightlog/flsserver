@@ -23,8 +23,8 @@
             TestEmailAddress = "test@glider-fls.ch";
             TestSystemAdminUsername = "s";
             TestSystemAdminPassword = "s";
-            TestClubAdminUsername = "testclubadmin";
-            TestClubAdminPassword = "s";
+            TestClubAdminUsername = "fgzo";
+            TestClubAdminPassword = "5orion5";
             TestClubUserUsername = "testclubuser";
             TestClubUserPassword = "f";
             TestWorkflowUsername = "workflow";

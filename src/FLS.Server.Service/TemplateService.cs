@@ -11,6 +11,7 @@ using FLS.Data.WebApi.Emails;
 using FLS.Data.WebApi.Exceptions;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
+using FLS.Server.Data.Resources;
 using NLog;
 
 namespace FLS.Server.Service
@@ -182,7 +183,7 @@ namespace FLS.Server.Service
 
             if (IsCurrentUserInRoleSystemAdministrator == false)
             {
-                throw new UnauthorizedAccessException("User must be in role system-administrator");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleSystemAdmin);
             }
 
             emailTemplate.IsSystemTemplate = true;
@@ -220,7 +221,7 @@ namespace FLS.Server.Service
             if (IsCurrentUserInRoleClubAdministrator == false
                 && IsCurrentUserInRoleSystemAdministrator == false)
             {
-                throw new UnauthorizedAccessException("User must be in role club- or system-administrator");
+                throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -271,7 +272,7 @@ namespace FLS.Server.Service
                 {
                     if (IsCurrentUserInRoleSystemAdministrator == false)
                     {
-                        throw new UnauthorizedAccessException("User must be in role system-administrator");
+                        throw new UnauthorizedAccessException(ErrorMessage.NotInRoleSystemAdmin);
                     }
                 }
                 else
@@ -279,7 +280,7 @@ namespace FLS.Server.Service
                     if (IsCurrentUserInRoleSystemAdministrator == false
                         && IsCurrentUserInRoleClubAdministrator == false)
                     {
-                        throw new UnauthorizedAccessException("User must be in role club- or system-administrator");
+                        throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
                     }
                 }
 

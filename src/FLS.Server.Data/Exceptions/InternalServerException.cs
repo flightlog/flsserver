@@ -1,4 +1,5 @@
 ﻿using FLS.Data.WebApi.Exceptions;
+using System;
 
 namespace FLS.Server.Data.Exceptions
 {
@@ -6,6 +7,11 @@ namespace FLS.Server.Data.Exceptions
     {
         public InternalServerException(string message)
             : base(message)
+        {
+        }
+
+        public InternalServerException(string message, Exception exception)
+            : base(message, exception)
         {
         }
     }

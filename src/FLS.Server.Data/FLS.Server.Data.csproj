@@ -120,7 +120,9 @@
     <Compile Include="DbEntities\FlightType.cs" />
     <Compile Include="DbEntities\PlanningDay.cs" />
     <Compile Include="DeletedFLSDataEntities.cs" />
+    <Compile Include="Exceptions\DataRecordNotFoundException.cs" />
     <Compile Include="Exceptions\DeleteEntityException.cs" />
+    <Compile Include="Exceptions\DatabaseException.cs" />
     <Compile Include="Extensions\FlightProcessStateExtensions.cs" />
     <Compile Include="Extensions\FlightAirStateExtensions.cs" />
     <Compile Include="Extensions\EntityTrackerExtensions.cs" />
@@ -167,6 +169,7 @@
     <Compile Include="DbEntities\UserAccountState.cs" />
     <Compile Include="DbEntities\UserRole.cs" />
     <Compile Include="Resources\Constants.Designer.cs" />
+    <Compile Include="Resources\ErrorMessage.cs" />
     <Compile Include="Resources\SettingKey.cs" />
   </ItemGroup>
   <ItemGroup>

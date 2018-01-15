@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -32,7 +33,9 @@ using TrackerEnabledDbContext.Common.Models;
 using FLS.Data.WebApi.Settings;
 using AutoMapper.Configuration;
 using AutoMapper;
+using FLS.Common.Exceptions;
 using FLS.Server.Data.Exceptions;
+using FLS.Server.Data.Resources;
 
 namespace FLS.Server.Data.Mapping
 {
@@ -447,7 +450,7 @@ namespace FLS.Server.Data.Mapping
                 }
                 else
                 {
-                    throw new BadRequestException("Reservation type is not set correctly!");
+                    throw new InvalidConstraintException(ErrorMessage.ReservationTypeNotFound);
                 }
             }
 
@@ -621,8 +624,6 @@ namespace FLS.Server.Data.Mapping
                 case EventType.UnDeleted:
                     name = "UnDeleted";
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(eventType), eventType, null);
             }
 
             return name;
@@ -1440,8 +1441,7 @@ namespace FLS.Server.Data.Mapping
                     }
                     else if (details.GliderFlightDetailsData.StartLocationId != details.TowFlightDetailsData.StartLocationId)
                     {
-                        throw new InvalidDataException(
-                            "Start location is not equal between glider flight and towing flight!");
+                        throw new ValidationException(ErrorMessage.StartLocationsOfGliderAndTowFlightsNotEqual);
                     }
 
                     //set start time to the same time as the glider flight (if required)
@@ -1466,8 +1466,7 @@ namespace FLS.Server.Data.Mapping
                     }
                     else if (details.GliderFlightDetailsData.StartDateTime != details.TowFlightDetailsData.StartDateTime)
                     {
-                        throw new InvalidDataException(
-                            "Start time is not equal between glider flight and towing flight!");
+                        throw new ValidationException(ErrorMessage.StartTimeOfGliderAndTowFlightsNotEqual);
                     }
 
                     details.TowFlightDetailsData.ToFlight(entity.TowFlight, relatedAircraft, relatedFlightType);
@@ -1510,7 +1509,7 @@ namespace FLS.Server.Data.Mapping
             else if (details.TowFlightDetailsData != null)
             {
                 //towing flight which should be catched by the glider flight data
-                throw new InvalidDataException("Towflight without glider flight is not valid and will not be saved.");
+                throw new ValidationException(ErrorMessage.TowFlightWithoutGliderFlightIsNotValid);
             }
 
             return entity;
@@ -1525,13 +1524,13 @@ namespace FLS.Server.Data.Mapping
 
             if (detailsRelatedAircraft.AircraftId != details.AircraftId)
             {
-                throw new InvalidConstraintException(
+                throw new InternalServerException(
                     "FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
             }
 
             if (detailsRelatedFlightType != null && detailsRelatedFlightType.FlightTypeId != details.FlightTypeId)
             {
-                throw new InvalidConstraintException(
+                throw new InternalServerException(
                     "FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
             }
 
@@ -1951,13 +1950,13 @@ namespace FLS.Server.Data.Mapping
 
             if (detailsRelatedAircraft != null && detailsRelatedAircraft.AircraftId != details.AircraftId)
             {
-                throw new InvalidConstraintException(
+                throw new InternalServerException(
                     "FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
             }
 
             if (detailsRelatedFlightType != null && detailsRelatedFlightType.FlightTypeId != details.FlightTypeId)
             {
-                throw new InvalidConstraintException(
+                throw new InternalServerException(
                     "FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
             }
 
@@ -2143,13 +2142,13 @@ namespace FLS.Server.Data.Mapping
 
             if (detailsRelatedAircraft != null && detailsRelatedAircraft.AircraftId != details.AircraftId)
             {
-                throw new InvalidConstraintException(
+                throw new InternalServerException(
                     "FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
             }
 
             if (detailsRelatedFlightType != null && detailsRelatedFlightType.FlightTypeId != details.FlightTypeId)
             {
-                throw new InvalidConstraintException(
+                throw new InternalServerException(
                     "FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
             }
 
@@ -2265,13 +2264,13 @@ namespace FLS.Server.Data.Mapping
 
             if (detailsRelatedAircraft != null && detailsRelatedAircraft.AircraftId != details.AircraftId)
             {
-                throw new InvalidConstraintException(
+                throw new InternalServerException(
                     "FlightDetailsData.AircraftId is not equals to detailsRelatedAircraft.AircraftId");
             }
 
             if (detailsRelatedFlightType != null && detailsRelatedFlightType.FlightTypeId != details.FlightTypeId)
             {
-                throw new InvalidConstraintException(
+                throw new InternalServerException(
                     "FlightDetailsData.FlightTypeId is not equals to detailsRelatedFlightType.FlightTypeId");
             }
 
@@ -3159,7 +3158,8 @@ namespace FLS.Server.Data.Mapping
 
             if (personClub == null)
             {
-                throw new NullReferenceException("No PersonClub in Person found!");
+                personClub = new PersonClub { ClubId = clubId };
+                entity.PersonClubs.Add(personClub);
             }
 
             //map person details time stamps back to person club entity
