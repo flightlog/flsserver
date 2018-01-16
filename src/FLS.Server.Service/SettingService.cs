@@ -12,6 +12,7 @@ using FLS.Common.Exceptions;
 using FLS.Common.Extensions;
 using FLS.Common.Paging;
 using FLS.Common.Validators;
+using FLS.Server.Data.Exceptions;
 using Newtonsoft.Json;
 
 namespace FLS.Server.Service
@@ -48,25 +49,14 @@ namespace FLS.Server.Service
                 return (T) Convert.ChangeType(record.SettingValue, typeof(T));
             }
         }
-
-        public string GetSettingValue(string key, string clubKey)
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var record = context.Settings.FirstOrDefault(x => x.SettingKey.ToLower() == key.ToLower()
-                    && x.Club.ClubKey.ToUpper() == clubKey.ToUpper());
-
-                if (record == null)
-                {
-                    throw new EntityNotFoundException("Setting", key);
-                }
-
-                return record.SettingValue;
-            }
-        }
-
+        
         public string GetSettingValue(string key, Guid? clubId, Guid? userId)
         {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new BadRequestException("Key is required!");    
+            }
+
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var record = context.Settings
@@ -98,24 +88,21 @@ namespace FLS.Server.Service
                 var settings = context.Settings.OrderByPropertyNames(pageableSearchFilter.Sorting);
 
                 var filter = pageableSearchFilter.SearchFilter;
-                settings = settings.Where(setting => setting.ClubId == filter.ClubId);
-                settings = settings.Where(setting => setting.UserId == filter.UserId);
+                settings = settings.WhereIf(filter.ClubId.HasValue, setting => setting.ClubId == filter.ClubId);
+                settings = settings.WhereIf(filter.UserId.HasValue, setting => setting.UserId == filter.UserId);
                 settings = settings.WhereIf(filter.SettingKey,
-                    setting => setting.SettingKey.ToLower() == filter.SettingKey.ToLower());
+                    setting => setting.SettingKey.ToLower().Contains(filter.SettingKey.ToLower()));
                 
                 var pagedQuery = new PagedQuery<Setting>(settings, pageStart, pageSize);
 
                 var result = pagedQuery.Items.ToList().Select(x => new SettingDetails()
                 {
-                    SettingId = x.SettingId,
                     SettingKey = x.SettingKey,
                     SettingValue = x.SettingValue,
                     ClubId = x.ClubId,
                     UserId = x.UserId
                 })
                 .ToList();
-
-                SetSettingSecurity(result);
 
                 var pagedList = new PagedList<SettingDetails>(result, pagedQuery.PageStart,
                     pagedQuery.PageSize, pagedQuery.TotalRows);
@@ -124,42 +111,21 @@ namespace FLS.Server.Service
             }
         }
         
-        public SettingDetails GetSettingDetails(Guid settingId)
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                var setting = context.Settings.FirstOrDefault(c => c.SettingId == settingId);
-
-                var settingDetails = setting.ToSettingDetails();
-                SetSettingDetailsSecurity(settingDetails);
-                return settingDetails;
-            }
-        }
-
-        public void InsertSettingDetails(SettingDetails settingDetails)
-        {
-            var setting = settingDetails.ToSetting();
-            setting.EntityNotNull("Setting", Guid.Empty);
-
-            CheckSecurity(setting);
-
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                context.Settings.Add(setting);
-                context.SaveChanges();
-            }
-
-            //Map it back to details
-            setting.ToSettingDetails(settingDetails);
-        }
-
         public void InsertOrUpdateSettingDetails(SettingDetails settingDetails)
         {
             settingDetails.ArgumentNotNull("settingDetails");
 
+            if (string.IsNullOrWhiteSpace(settingDetails.SettingKey))
+            {
+                throw new BadRequestException("Key is required!");
+            }
+
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var original = context.Settings.FirstOrDefault(x => x.SettingId == settingDetails.SettingId);
+                var original = context.Settings
+                    .WhereIf(settingDetails.ClubId.HasValue, x => x.ClubId == settingDetails.ClubId)
+                    .WhereIf(settingDetails.UserId.HasValue, x => x.UserId == settingDetails.UserId)
+                    .FirstOrDefault(x => x.SettingKey.ToLower() == settingDetails.SettingKey.ToLower());
 
                 if (original == null)
                 {
@@ -183,12 +149,20 @@ namespace FLS.Server.Service
             }
         }
 
-        public void DeleteSetting(Guid settingId)
+        public void DeleteSetting(string key, Guid? clubId, Guid? userId)
         {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new BadRequestException("Key is required!");
+            }
+
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var original = context.Settings.FirstOrDefault(x => x.SettingId == settingId);
-                original.EntityNotNull("Setting", settingId);
+                var original = context.Settings
+                    .WhereIf(clubId.HasValue, x => x.ClubId == clubId)
+                    .WhereIf(userId.HasValue, x => x.UserId == userId)
+                    .FirstOrDefault(x => x.SettingKey.ToLower() == key.ToLower());
+                original.EntityNotNull("Setting");
 
                 CheckSecurity(original);
 
@@ -196,78 +170,7 @@ namespace FLS.Server.Service
                 context.SaveChanges();
             }
         }
-
-        private void SetSettingSecurity(List<SettingDetails> result)
-        {
-
-            if (CurrentAuthenticatedFLSUser == null)
-            {
-                Logger.Warn(string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
-                result.Clear();
-                return;
-            }
-
-            foreach (var record in result.Where(x => x.ClubId.HasValue))
-            {
-                if (IsCurrentUserInRoleClubAdministrator)
-                {
-                    record.CanUpdateRecord = true;
-                    record.CanDeleteRecord = true;
-                }
-            }
-
-            foreach (var record in result.Where(x => x.UserId.HasValue))
-            {
-                record.CanUpdateRecord = true;
-                record.CanDeleteRecord = true;
-            }
-
-            if (IsCurrentUserInRoleSystemAdministrator == false)
-            {
-                //remove all system settings from the list if the user is not an system admin
-                result.RemoveAll(x => x.ClubId.HasValue == false && x.UserId.HasValue == false);
-            }
-            else
-            {
-                foreach (var record in result.Where(x => x.ClubId.HasValue && x.UserId.HasValue))
-                {
-                    record.CanUpdateRecord = true;
-                    record.CanDeleteRecord = true;
-                }
-            }
-        }
-
-        private void SetSettingDetailsSecurity(SettingDetails record)
-        {
-
-            if (CurrentAuthenticatedFLSUser == null)
-            {
-                Logger.Warn(string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
-                return;
-            }
-
-            if (record.ClubId.HasValue && IsCurrentUserInRoleClubAdministrator 
-                && CurrentAuthenticatedFLSUserClubId == record.ClubId.Value)
-            {
-                record.CanUpdateRecord = true;
-                record.CanDeleteRecord = true;
-            }
-
-            if (record.UserId.HasValue && CurrentAuthenticatedFLSUser.UserId == record.UserId.Value)
-            {
-                record.CanUpdateRecord = true;
-                record.CanDeleteRecord = true;
-            }
-
-            if (IsCurrentUserInRoleSystemAdministrator
-                && record.ClubId.HasValue == false
-                && record.UserId.HasValue == false)
-            {
-                record.CanUpdateRecord = true;
-                record.CanDeleteRecord = true;
-            }
-        }
-
+        
         private void CheckSecurity(Setting setting)
         {
             if (setting.ClubId.HasValue == false && setting.UserId.HasValue == false

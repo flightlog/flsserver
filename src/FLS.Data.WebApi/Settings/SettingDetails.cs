@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FLS.Data.WebApi.Settings
 {
-    public class SettingDetails : FLSBaseData
+    public class SettingDetails
     {
-        public Guid SettingId { get; set; }
-
         public Guid? ClubId { get; set; }
 
         public Guid? UserId { get; set; }
@@ -16,11 +14,5 @@ namespace FLS.Data.WebApi.Settings
         public string SettingKey { get; set; }
 
         public string SettingValue { get; set; }
-
-        public override Guid Id
-        {
-            get { return SettingId; }
-            set { SettingId = value; }
-        }
     }
 }
