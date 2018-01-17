@@ -50,5 +50,28 @@ namespace FLS.Server.Tests.ServiceTests
 
             Assert.AreEqual(newValue, settingValue2);
         }
+
+        [TestMethod]
+        [TestCategory("Service")]
+        public void TryGetSettingsValueTest()
+        {
+            bool useClubPlanningDayWithoutReservations;
+            SettingService.TryGetSettingValue(SettingKey.ClubUsePlanningDayWithoutReservations, CurrentIdentityUser.ClubId, null, out useClubPlanningDayWithoutReservations);
+
+            Assert.IsFalse(useClubPlanningDayWithoutReservations);
+
+            var settingDetails = new SettingDetails()
+            {
+                ClubId = CurrentIdentityUser.ClubId,
+                SettingKey = SettingKey.ClubUsePlanningDayWithoutReservations,
+                SettingValue = JsonConvert.SerializeObject(true)
+            };
+
+            SettingService.InsertOrUpdateSettingDetails(settingDetails);
+
+            SettingService.TryGetSettingValue(SettingKey.ClubUsePlanningDayWithoutReservations, CurrentIdentityUser.ClubId, null, out useClubPlanningDayWithoutReservations);
+
+            Assert.IsTrue(useClubPlanningDayWithoutReservations);
+        }
     }
 }

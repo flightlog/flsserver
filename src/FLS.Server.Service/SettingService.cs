@@ -31,6 +31,11 @@ namespace FLS.Server.Service
 
         public T GetSettingValue<T>(string key, string clubKey)
         {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new BadRequestException("Key is required!");
+            }
+
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var record = context.Settings.FirstOrDefault(x => x.SettingKey.ToLower() == key.ToLower()
@@ -50,7 +55,38 @@ namespace FLS.Server.Service
                 return (T) Convert.ChangeType(record.SettingValue, typeof(T));
             }
         }
-        
+
+        public bool TryGetSettingValue<T>(string key, Guid? clubId, Guid? userId, out T settingValue)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new BadRequestException("Key is required!");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var record = context.Settings
+                    .WhereIf(clubId.HasValue, x => x.ClubId == clubId)
+                    .WhereIf(userId.HasValue, x => x.UserId == userId)
+                    .FirstOrDefault(x => x.SettingKey.ToLower() == key.ToLower());
+
+                if (record == null)
+                {
+                    settingValue = default(T);
+                    return false;
+                }
+
+                if (typeof(T) != typeof(string))
+                {
+                    settingValue = JsonConvert.DeserializeObject<T>(record.SettingValue);
+                    return true;
+                }
+
+                settingValue = (T)Convert.ChangeType(record.SettingValue, typeof(T));
+                return true;
+            }
+        }
+
         public string GetSettingValue(string key, Guid? clubId, Guid? userId)
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -71,6 +107,31 @@ namespace FLS.Server.Service
                 }
 
                 return record.SettingValue;
+            }
+        }
+
+        public bool TryGetSettingValue(string key, Guid? clubId, Guid? userId, out string settingValue)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new BadRequestException("Key is required!");
+            }
+
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var record = context.Settings
+                    .WhereIf(clubId.HasValue, x => x.ClubId == clubId)
+                    .WhereIf(userId.HasValue, x => x.UserId == userId)
+                    .FirstOrDefault(x => x.SettingKey.ToLower() == key.ToLower());
+
+                if (record == null)
+                {
+                    settingValue = null;
+                    return false;
+                }
+
+                settingValue = record.SettingValue;
+                return true;
             }
         }
 
