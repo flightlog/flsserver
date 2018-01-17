@@ -377,8 +377,10 @@ namespace FLS.Server.WebApi.Controllers
             if (pwdChange.Succeeded) return Ok();
 
             var errors = string.Join(Environment.NewLine, pwdChange.Errors);
-            
-            throw new ApplicationException(errors);
+
+            _logger.Info($"Password could not be changed due to following errors: {errors}");
+
+            throw new BadRequestException(errors);
         }
 
         /// <summary>

@@ -1169,8 +1169,8 @@ namespace FLS.Server.Service
 
                 var flights =
                     GetFlights(
-                        flight => flight.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid
-                                    && flight.ProcessStateId < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
+                        flight => flight.ProcessStateId == (int)FlightProcessState.Valid
+                                    && flight.ProcessStateId < (int)FlightProcessState.Locked
                                     && flight.OwnerId == clubId
                                    && (forceLockNow || DbFunctions.TruncateTime(flight.CreatedOn) <= lockingDate.Date));
 
@@ -1180,7 +1180,7 @@ namespace FLS.Server.Service
                     {
                         context.Flights.Attach(flight);
 
-                        flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked;
+                        flight.ProcessStateId = (int)FlightProcessState.Locked;
                         flight.DoNotUpdateMetaData = true;
                         Logger.Info($"The valid flight {flight} has now been locked.");
                     }
@@ -1284,9 +1284,9 @@ namespace FLS.Server.Service
             var originalFlight = GetFlight(currentFlightDetails.FlightId);
             originalFlight.EntityNotNull("Flight", currentFlightDetails.FlightId);
 
-            if (originalFlight.ProcessStateId > (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked)
+            if (originalFlight.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryBooked)
             {
-                Logger.Warn($"Flight with Id: {originalFlight.Id} has already been invoiced and can not be updated!");
+                Logger.Warn($"Flight with Id: {originalFlight.Id} has already been transfered to invoice system and can not be updated!");
                 throw new LockedFlightException($"Flight has already been invoiced and can not be updated!");
             }
             
@@ -1316,7 +1316,7 @@ namespace FLS.Server.Service
                 var original = context.Flights.Include(Constants.TowFlight).FirstOrDefault(l => l.FlightId == flightId);
                 original.EntityNotNull("Flight", flightId);
 
-                if (original.ProcessStateId > (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked)
+                if (original.ProcessStateId == (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryBooked)
                 {
                     Logger.Warn($"Flight with Id: {original.Id} has already been invoiced and can not be deleted!");
                     throw new LockedFlightException($"Flight has already been invoiced and can not be deleted!");
@@ -1679,7 +1679,7 @@ namespace FLS.Server.Service
                 {
                     if (flightOverview.ProcessState < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
                         || (IsCurrentUserInRoleClubAdministrator 
-                            && flightOverview.ProcessState < (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryPrepared))
+                            && flightOverview.ProcessState != (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryBooked))
                     {
                         flightOverview.CanUpdateRecord = true;
                         flightOverview.CanDeleteRecord = true;
@@ -1711,8 +1711,9 @@ namespace FLS.Server.Service
             {
                 foreach (var flightOverview in list)
                 {
-                    if (flightOverview.ProcessState < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked 
-                        || IsCurrentUserInRoleClubAdministrator)
+                    if (flightOverview.ProcessState < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
+                        || (IsCurrentUserInRoleClubAdministrator
+                            && flightOverview.ProcessState != (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryBooked))
                     {
                         flightOverview.CanUpdateRecord = true;
                         flightOverview.CanDeleteRecord = true;
@@ -1743,7 +1744,8 @@ namespace FLS.Server.Service
             }
 
             if (flight.ProcessStateId < (int)FLS.Data.WebApi.Flight.FlightProcessState.Locked
-                || IsCurrentUserInRoleClubAdministrator)
+                || (IsCurrentUserInRoleClubAdministrator
+                          && flight.ProcessStateId != (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryBooked))
             {
                 details.CanUpdateRecord = true;
                 details.CanDeleteRecord = true;

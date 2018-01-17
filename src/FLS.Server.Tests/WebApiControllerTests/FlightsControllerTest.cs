@@ -623,9 +623,9 @@ namespace FLS.Server.Tests.WebApiControllerTests
                 Assert.IsNotNull(flightDetails, string.Format("FlightDetails is null with FlightId: {0}", id));
                 Assert.AreEqual(id, flightDetails.Id, string.Format("Overview.FlightId: {0} not equal with FlightDetails.FlightId: {1}", id, flightDetails.Id));
 
-                if ((flightDetails.GliderFlightDetailsData != null && flightDetails.GliderFlightDetailsData.ProcessStateId >= (int)FlightProcessState.Locked)
-                    || (flightDetails.TowFlightDetailsData != null && flightDetails.TowFlightDetailsData.ProcessStateId >= (int)FlightProcessState.Locked)
-                    || (flightDetails.MotorFlightDetailsData != null && flightDetails.MotorFlightDetailsData.ProcessStateId >= (int)FlightProcessState.Locked))
+                if ((flightDetails.GliderFlightDetailsData != null && flightDetails.GliderFlightDetailsData.ProcessStateId != (int)FlightProcessState.DeliveryBooked)
+                    || (flightDetails.TowFlightDetailsData != null && flightDetails.TowFlightDetailsData.ProcessStateId != (int)FlightProcessState.DeliveryBooked)
+                    || (flightDetails.MotorFlightDetailsData != null && flightDetails.MotorFlightDetailsData.ProcessStateId != (int)FlightProcessState.DeliveryBooked))
                 {
                     //can't update record which is locked
                     continue;

@@ -123,7 +123,6 @@
     <Compile Include="Exceptions\DataRecordNotFoundException.cs" />
     <Compile Include="Exceptions\DeleteEntityException.cs" />
     <Compile Include="Exceptions\DatabaseException.cs" />
-    <Compile Include="Extensions\FlightProcessStateExtensions.cs" />
     <Compile Include="Extensions\FlightAirStateExtensions.cs" />
     <Compile Include="Extensions\EntityTrackerExtensions.cs" />
     <Compile Include="Extensions\LinqExtensions.cs" />

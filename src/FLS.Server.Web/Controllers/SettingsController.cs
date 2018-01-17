@@ -39,21 +39,7 @@ namespace FLS.Server.WebApi.Controllers
             var settings = _settingService.GetPagedSettingDetails(pageStart, pageSize, pageableSearchFilter);
             return Ok(settings);
         }
-
-        /// <summary>
-        /// Gets the setting details.
-        /// </summary>
-        /// <param name="settingId">The setting identifier.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{settingId}")]
-        [ResponseType(typeof(SettingDetails))]
-        public IHttpActionResult GetSettingDetails(Guid settingId)
-        {
-            var settingDetails = _settingService.GetSettingDetails(settingId);
-            return Ok(settingDetails);
-        }
-
+        
         /// <summary>
         /// Inserts the specified setting details.
         /// </summary>
@@ -62,38 +48,22 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("")]
         [ResponseType(typeof(SettingDetails))]
-        public IHttpActionResult Insert([FromBody] SettingDetails settingDetails)
+        public IHttpActionResult InsertOrUpdate([FromBody] SettingDetails settingDetails)
         {
             _settingService.InsertOrUpdateSettingDetails(settingDetails);
             return Ok(settingDetails);
         }
-
-        /// <summary>
-        /// Updates the specified setting identifier.
-        /// </summary>
-        /// <param name="settingId">The setting identifier.</param>
-        /// <param name="settingDetails">The setting details.</param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("{settingId}")]
-        [ResponseType(typeof(SettingDetails))]
-        public IHttpActionResult Update(Guid settingId, [FromBody]SettingDetails settingDetails)
-        {
-            _settingService.InsertOrUpdateSettingDetails(settingDetails);
-            return Ok(settingDetails);
-        }
-
+        
         /// <summary>
         /// Deletes the specified setting identifier.
         /// </summary>
-        /// <param name="settingId">The setting identifier.</param>
+        /// <param name="searchFilter">The settings unique user/club key.</param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("{settingId}")]
         [ResponseType(typeof(void))]
-        public IHttpActionResult Delete(Guid settingId)
+        public IHttpActionResult Delete([FromBody] SettingDetailsSearchFilter searchFilter)
         {
-            _settingService.DeleteSetting(settingId);
+            _settingService.DeleteSetting(searchFilter.SettingKey, searchFilter.ClubId, searchFilter.UserId);
             return Ok();
         }
 
@@ -102,7 +72,7 @@ namespace FLS.Server.WebApi.Controllers
         /// </summary>
         /// <param name="searchFilter">The settings unique user/club key.</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Route("key")]
         [ResponseType(typeof(string))]
         public IHttpActionResult GetValue([FromBody] SettingDetailsSearchFilter searchFilter)

@@ -1125,9 +1125,9 @@ INSERT INTO [dbo].[PlanningDayAssignments]
 PRINT 'INSERT AircraftReservation'
 SET @locationId = (SELECT TOP 1 LocationId FROM Locations WHERE IcaoCode = 'LSZK')
 INSERT INTO [dbo].[AircraftReservations]
-           ([AircraftReservationId],[Start],[End],[IsAllDayReservation],[AircraftId],[LocationId],[PilotPersonId],[InstructorPersonId],[ReservationTypeId],[Remarks],[ClubId],[CreatedOn],[CreatedByUserId],[RecordState],[OwnerId],[OwnershipType],[IsDeleted])
+           ([AircraftReservationId],[Start],[End],[IsAllDayReservation],[AircraftId],[LocationId],[PilotPersonId],[FlightTypeId],[Remarks],[ClubId],[CreatedOn],[CreatedByUserId],[RecordState],[OwnerId],[OwnershipType],[IsDeleted])
 VALUES	(NEWID(), (GETDATE()+1), (GETDATE()+1), 1, (SELECT TOP 1 AircraftId FROM [dbo].[Aircrafts]), @locationId, (SELECT TOP 1 Persons.PersonId FROM Persons LEFT OUTER JOIN
                       PersonClub ON Persons.PersonId = PersonClub.PersonId 
-					  where HasGliderPilotLicence = 1 and PersonClub.ClubId = @insertClubId), null, 1, 'Test',@insertClubId, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
+					  where HasGliderPilotLicence = 1 and PersonClub.ClubId = @insertClubId), (SELECT TOP 1 FlightTypeId FROM FlightTypes WHERE ClubId = @insertClubId), 'Test',@insertClubId, SYSDATETIME(), @insertUserId, @recordState, @ownerId, @OwnershipType, 0)
 
 PRINT 'INSERT Test Datas Finished'

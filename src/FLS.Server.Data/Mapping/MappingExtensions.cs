@@ -1763,7 +1763,7 @@ namespace FLS.Server.Data.Mapping
 
             exchangeData.AirState = ((FLS.Data.WebApi.Flight.FlightAirState) entity.AirStateId).ToFlightAirState();
             exchangeData.ProcessState =
-                ((FLS.Data.WebApi.Flight.FlightProcessState) entity.ProcessStateId).ToFlightProcessState();
+                ((FLS.Data.WebApi.Flight.FlightProcessState) entity.ProcessStateId).ToString();
 
             if (entity.FlightType != null)
             {
@@ -1839,7 +1839,7 @@ namespace FLS.Server.Data.Mapping
                 exchangeData.TowFlightAirState =
                     ((FLS.Data.WebApi.Flight.FlightAirState) towFlight.AirStateId).ToFlightAirState();
                 exchangeData.TowFlightProcessState =
-                    ((FLS.Data.WebApi.Flight.FlightProcessState) towFlight.ProcessStateId).ToFlightProcessState();
+                    ((FLS.Data.WebApi.Flight.FlightProcessState) towFlight.ProcessStateId).ToString();
 
                 if (towFlight.FlightType != null)
                 {
@@ -3542,7 +3542,6 @@ namespace FLS.Server.Data.Mapping
                 details = new SettingDetails();
             }
 
-            details.SettingId = entity.SettingId;
             details.SettingKey = entity.SettingKey;
             details.SettingValue = entity.SettingValue;
             details.ClubId = entity.ClubId;
@@ -3551,7 +3550,7 @@ namespace FLS.Server.Data.Mapping
             return details;
         }
 
-        public static Setting ToSetting(this SettingDetails details, Setting entity = null, bool overwriteSettingId = false)
+        public static Setting ToSetting(this SettingDetails details, Setting entity = null)
         {
             details.ArgumentNotNull("details");
 
@@ -3560,7 +3559,6 @@ namespace FLS.Server.Data.Mapping
                 entity = new Setting();
             }
 
-            if (overwriteSettingId) entity.SettingId = details.SettingId;
             entity.SettingKey = details.SettingKey;
             entity.SettingValue = details.SettingValue;
             entity.ClubId = details.ClubId;

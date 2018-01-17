@@ -44,6 +44,8 @@ DefaultStartType = null,
 DefaultTowFlightTypeId = null,
 HomebaseId = null
 
+DELETE FROM Settings
+
 DELETE FROM DeliveryCreationTests
 DELETE FROM DeliveryItems
 DELETE FROM Deliveries
@@ -845,21 +847,6 @@ VALUES (6 ,'Nicht eingelöst' , 0, SYSDATETIME())
 INSERT INTO [AircraftStates] ([AircraftStateId],[AircraftStateName],[IsAircraftFlyable],[CreatedOn])
 VALUES (99 ,'Ausrangiert' ,0 ,SYSDATETIME())
 SET IDENTITY_INSERT [AircraftStates] OFF
-
-SET IDENTITY_INSERT [AircraftReservationTypes] ON
-INSERT INTO [dbo].[AircraftReservationTypes]
-           ([AircraftReservationTypeId],[AircraftReservationTypeName],[Remarks]
-           ,[CreatedOn],[ModifiedOn])
-     VALUES
-           (1,'Charter-Flug',null, SYSDATETIME(), null)
-
-INSERT INTO [dbo].[AircraftReservationTypes]
-           ([AircraftReservationTypeId],[AircraftReservationTypeName],[Remarks]
-           ,[CreatedOn],[ModifiedOn], [IsInstructorRequired])
-     VALUES
-           (2,'Check-Flug',null, SYSDATETIME(), null, 1)
-SET IDENTITY_INSERT [AircraftReservationTypes] OFF
-
 
 PRINT 'Insert AuditLogEventTypes'
 INSERT INTO [dbo].[AuditLogEventTypes]
