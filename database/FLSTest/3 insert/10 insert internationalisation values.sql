@@ -1140,4 +1140,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'ACCOUNTING_UNIT_TYPE', 'Accounting Einheit', 1, SYSDATETIME())
 
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'ADD_AIRCRAFT', 'Flugzeug hinzufügen', 1, SYSDATETIME())
+
 GO
