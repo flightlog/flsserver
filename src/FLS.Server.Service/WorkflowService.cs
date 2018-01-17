@@ -28,6 +28,7 @@ namespace FLS.Server.Service
         private readonly IdentityService _identityService;
         private readonly AccountingEmailBuildService _accountingEmailBuildService;
         private readonly ExcelExporter _deliveryExcelExporter;
+        private readonly SettingService _settingService;
 
         public WorkflowService(FlightService flightService, 
             ClubService clubService, 
@@ -45,7 +46,8 @@ namespace FLS.Server.Service
             DataAccessService dataAccessService, 
             IdentityService identityService,
             AccountingEmailBuildService accountingEmailBuildService,
-            ExcelExporter deliveryExcelExporter)
+            ExcelExporter deliveryExcelExporter,
+            SettingService settingService)
             : base(dataAccessService, identityService)
         {
             _flightService = flightService;
@@ -65,6 +67,7 @@ namespace FLS.Server.Service
             _identityService = identityService;
             _accountingEmailBuildService = accountingEmailBuildService;
             _deliveryExcelExporter = deliveryExcelExporter;
+            _settingService = settingService;
             Logger = LogManager.GetCurrentClassLogger();
         }
 
@@ -93,7 +96,7 @@ namespace FLS.Server.Service
         {
             Logger.Info("Execute planning day mail job.");
             var job = new PlanningDayNotificationJob(_clubService, _planningDayService,
-                _aircraftReservationService, _planningDayEmailService);
+                _aircraftReservationService, _planningDayEmailService, _settingService);
             job.Execute(null);
         }
 

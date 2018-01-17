@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FLS.Common.Validators;
 using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.PlanningDay;
@@ -32,7 +33,7 @@ namespace FLS.Server.Service.Email.Model
 
             var reservationInfoRows = new List<ReservationInfoRow>();
 
-            if (aircraftReservationOverview != null && aircraftReservationOverview.Count > 0)
+            if (aircraftReservationOverview != null && aircraftReservationOverview.Any())
             {
                 foreach (var reservation in aircraftReservationOverview)
                 {

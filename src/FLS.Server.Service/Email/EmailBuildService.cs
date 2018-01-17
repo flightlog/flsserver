@@ -65,6 +65,7 @@ namespace FLS.Server.Service.Email
             try
             {
                 templateName.NotNullOrEmpty("templateName");
+                recipientEmailAddress.NotNullOrEmpty("recipientEmailAddress");
 
                 var template = _templateService.GetEmailTemplate(templateName, clubId);
 

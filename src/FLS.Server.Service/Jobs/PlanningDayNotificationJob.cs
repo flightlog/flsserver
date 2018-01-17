@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using FLS.Data.WebApi.AircraftReservation;
+using FLS.Server.Data.Resources;
 using FLS.Server.Service.Email;
 using NLog;
 using Quartz;
@@ -17,6 +20,7 @@ namespace FLS.Server.Service.Jobs
         private readonly PlanningDayService _planningDayService;
         private readonly AircraftReservationService _aircraftReservationService;
         private readonly PlanningDayEmailBuildService _planningDayEmailService;
+        private readonly SettingService _settingService;
         private Logger _logger = LogManager.GetCurrentClassLogger();
 
         protected Logger Logger
@@ -26,12 +30,14 @@ namespace FLS.Server.Service.Jobs
         }
 
         public PlanningDayNotificationJob(ClubService clubService, PlanningDayService planningDayService,
-            AircraftReservationService aircraftReservationService, PlanningDayEmailBuildService planningDayEmailService)
+            AircraftReservationService aircraftReservationService, PlanningDayEmailBuildService planningDayEmailService,
+            SettingService settingService)
         {
             _clubService = clubService;
             _planningDayService = planningDayService;
             _aircraftReservationService = aircraftReservationService;
             _planningDayEmailService = planningDayEmailService;
+            _settingService = settingService;
         }
 
         /// <summary>
@@ -50,6 +56,9 @@ namespace FLS.Server.Service.Jobs
                 {
                     try
                     {
+                        bool useClubPlanningDayWithoutReservations = false;
+                        _settingService.TryGetSettingValue(SettingKey.ClubUsePlanningDayWithoutReservations, club.ClubId, null, out useClubPlanningDayWithoutReservations);
+
                         var planningDays = _planningDayService.GetPlanningDayOverview(DateTime.Now.Date.AddDays(1), club.ClubId);
 
                         bool foundPlanningDays = false;
@@ -59,19 +68,31 @@ namespace FLS.Server.Service.Jobs
                             try
                             {
                                 foundPlanningDays = true;
-                                var reservations = _aircraftReservationService.GetAircraftReservationsByPlanningDayId(planningDay.PlanningDayId);
-
-
                                 MailMessage message = null;
+
+                                var reservations =
+                                        _aircraftReservationService.GetAircraftReservationsByPlanningDayId(
+                                            planningDay.PlanningDayId);
+
                                 if (reservations.Any())
                                 {
                                     //create mail with reservations
-                                    message = _planningDayEmailService.CreatePlanningDayTakesPlaceEmail(planningDay, reservations, club.SendPlanningDayInfoMailTo, club.ClubId);
+                                    message = _planningDayEmailService.CreatePlanningDayTakesPlaceEmail(
+                                        planningDay, reservations, club.SendPlanningDayInfoMailTo, club.ClubId);
+                                }
+                                else if (useClubPlanningDayWithoutReservations)
+                                {
+                                    //create OK mail even without reservations
+                                    message = _planningDayEmailService.CreatePlanningDayTakesPlaceEmail(
+                                        planningDay, new List<AircraftReservationOverview>(), club.SendPlanningDayInfoMailTo, club.ClubId);
+
                                 }
                                 else
                                 {
                                     //create cancel planning day email as no reservations have been done
-                                    message = _planningDayEmailService.CreatePlanningDayNoReservationsEmail(planningDay, club.SendPlanningDayInfoMailTo, club.ClubId);
+                                    message =
+                                        _planningDayEmailService.CreatePlanningDayNoReservationsEmail(planningDay,
+                                            club.SendPlanningDayInfoMailTo, club.ClubId);
                                 }
 
                                 if (message != null)
@@ -114,6 +135,12 @@ namespace FLS.Server.Service.Jobs
                             {
                                 try
                                 {
+                                    if (string.IsNullOrWhiteSpace(planningDayPlanningDayAssignment.AssignedPerson.EmailAddressForCommunication))
+                                    {
+                                        Logger.Info($"No email address for sending an email to person {planningDayPlanningDayAssignment.AssignedPerson.DisplayName} for planning day: {planningDay.Day} in PlanningDayNotificationJob");
+                                        continue;
+                                    }
+
                                     MailMessage message =
                                         _planningDayEmailService.CreatePlanningDayAssignmentNotificationEmail(
                                             planningDayPlanningDayAssignment, club.ClubId);
@@ -126,13 +153,13 @@ namespace FLS.Server.Service.Jobs
                                     else
                                     {
                                         Logger.Error(
-                                            "Error while creating email message in planningDayEmailService. Email message is null");
+                                            $"Error while creating email message in planningDayEmailService for assigned person: {planningDayPlanningDayAssignment.AssignedPerson.DisplayName} in planning day: {planningDay.Day}");
                                     }
                                 }
                                 catch (Exception e)
                                 {
                                     Logger.Error(e,
-                                        $"Error while trying to create a planningday assignment notification email for day: {planningDay}. Error: {e.Message}");
+                                        $"Error while trying to create a planningday assignment notification email for: {planningDayPlanningDayAssignment.AssignedPerson.DisplayName} in planning day: {planningDay.Day}. Error: {e.Message}");
                                 }
                             }
                         }
