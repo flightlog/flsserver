@@ -1764,7 +1764,7 @@ namespace FLS.Server.Data.Mapping
 
             exchangeData.AirState = ((FLS.Data.WebApi.Flight.FlightAirState) entity.AirStateId).ToFlightAirState();
             exchangeData.ProcessState =
-                ((FLS.Data.WebApi.Flight.FlightProcessState) entity.ProcessStateId).ToFlightProcessState();
+                ((FLS.Data.WebApi.Flight.FlightProcessState) entity.ProcessStateId).ToString();
 
             if (entity.FlightType != null)
             {
@@ -1840,7 +1840,7 @@ namespace FLS.Server.Data.Mapping
                 exchangeData.TowFlightAirState =
                     ((FLS.Data.WebApi.Flight.FlightAirState) towFlight.AirStateId).ToFlightAirState();
                 exchangeData.TowFlightProcessState =
-                    ((FLS.Data.WebApi.Flight.FlightProcessState) towFlight.ProcessStateId).ToFlightProcessState();
+                    ((FLS.Data.WebApi.Flight.FlightProcessState) towFlight.ProcessStateId).ToString();
 
                 if (towFlight.FlightType != null)
                 {

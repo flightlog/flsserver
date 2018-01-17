@@ -121,7 +121,6 @@
     <Compile Include="DbEntities\PlanningDay.cs" />
     <Compile Include="DeletedFLSDataEntities.cs" />
     <Compile Include="Exceptions\DeleteEntityException.cs" />
-    <Compile Include="Extensions\FlightProcessStateExtensions.cs" />
     <Compile Include="Extensions\FlightAirStateExtensions.cs" />
     <Compile Include="Extensions\EntityTrackerExtensions.cs" />
     <Compile Include="Extensions\LinqExtensions.cs" />
