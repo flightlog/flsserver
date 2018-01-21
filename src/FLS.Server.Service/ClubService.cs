@@ -476,23 +476,16 @@ namespace FLS.Server.Service
             var flightType = flightTypeDetails.ToFlightType(CurrentAuthenticatedFLSUserClubId);
             flightType.EntityNotNull("FlightType", Guid.Empty);
 
-            InsertFlightType(flightType);
-
-            //Map it back to details
-            flightType.ToFlightTypeDetails(flightTypeDetails);
-        }
-
-        internal void InsertFlightType(FlightType flightType)
-        {
-            flightType.ArgumentNotNull("flightType");
-
             using (var context = _dataAccessService.CreateDbContext())
             {
                 context.FlightTypes.Add(flightType);
                 context.SaveChanges();
             }
-        }
 
+            //Map it back to details
+            flightType.ToFlightTypeDetails(flightTypeDetails);
+        }
+        
         public void UpdateFlightTypeDetails(FlightTypeDetails currentFlightTypeDetails)
         {
             currentFlightTypeDetails.ArgumentNotNull("currentFlightTypeDetails");

@@ -2438,13 +2438,23 @@ namespace FLS.Server.Data.Mapping
             entity.ClubId = clubId;
             entity.FlightCode = details.FlightCode;
             entity.FlightTypeName = details.FlightTypeName;
-            entity.InstructorRequired = details.InstructorRequired;
             entity.IsCheckFlight = details.IsCheckFlight;
             entity.IsForGliderFlights = details.IsForGliderFlights;
             entity.IsForTowFlights = details.IsForTowFlights;
             entity.IsForMotorFlights = details.IsForMotorFlights;
             entity.IsPassengerFlight = details.IsPassengerFlight;
-            entity.ObserverPilotOrInstructorRequired = details.ObserverPilotOrInstructorRequired;
+
+            entity.InstructorRequired = details.InstructorRequired;
+
+            if (entity.InstructorRequired)
+            {
+                entity.ObserverPilotOrInstructorRequired = false;
+            }
+            else
+            {
+                entity.ObserverPilotOrInstructorRequired = details.ObserverPilotOrInstructorRequired;
+            }
+
             entity.IsFlightCostBalanceSelectable = details.IsFlightCostBalanceSelectable;
             entity.IsSoloFlight = details.IsSoloFlight;
             entity.IsCouponNumberRequired = details.IsCouponNumberRequired;
@@ -2839,6 +2849,8 @@ namespace FLS.Server.Data.Mapping
             details.HasMotorInstructorLicence = entity.HasMotorInstructorLicence;
             details.LicenceNumber = entity.LicenceNumber;
             details.GliderInstructorLicenceExpireDate = entity.GliderInstructorLicenceExpireDate.SetAsUtc();
+            details.MotorInstructorLicenceExpireDate = entity.MotorInstructorLicenceExpireDate.SetAsUtc();
+            details.PartMLicenceExpireDate = entity.PartMLicenceExpireDate.SetAsUtc();
             details.MedicalClass1ExpireDate = entity.MedicalClass1ExpireDate.SetAsUtc();
             details.MedicalClass2ExpireDate = entity.MedicalClass2ExpireDate.SetAsUtc();
             details.MedicalLaplExpireDate = entity.MedicalLaplExpireDate.SetAsUtc();
@@ -2940,6 +2952,8 @@ namespace FLS.Server.Data.Mapping
             entity.HasWinchOperatorLicence = details.HasWinchOperatorLicence;
             entity.LicenceNumber = details.LicenceNumber;
             entity.GliderInstructorLicenceExpireDate = details.GliderInstructorLicenceExpireDate;
+            entity.MotorInstructorLicenceExpireDate = details.MotorInstructorLicenceExpireDate;
+            entity.PartMLicenceExpireDate = details.PartMLicenceExpireDate;
             entity.MedicalClass1ExpireDate = details.MedicalClass1ExpireDate;
             entity.MedicalClass2ExpireDate = details.MedicalClass2ExpireDate;
             entity.MedicalLaplExpireDate = details.MedicalLaplExpireDate;
@@ -3223,6 +3237,8 @@ namespace FLS.Server.Data.Mapping
             details.MedicalClass2ExpireDate = entity.MedicalClass2ExpireDate.SetAsUtc();
             details.MedicalLaplExpireDate = entity.MedicalLaplExpireDate.SetAsUtc();
             details.GliderInstructorLicenceExpireDate = entity.GliderInstructorLicenceExpireDate.SetAsUtc();
+            details.MotorInstructorLicenceExpireDate = entity.MotorInstructorLicenceExpireDate.SetAsUtc();
+            details.PartMLicenceExpireDate = entity.PartMLicenceExpireDate.SetAsUtc();
             details.HasGliderTowingStartPermission = entity.HasGliderTowingStartPermission;
             details.HasGliderSelfStartPermission = entity.HasGliderSelfStartPermission;
             details.HasGliderWinchStartPermission = entity.HasGliderWinchStartPermission;

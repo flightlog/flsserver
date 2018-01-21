@@ -110,6 +110,10 @@ namespace FLS.Server.Data.DbEntities
 
         public DateTime? GliderInstructorLicenceExpireDate { get; set; }
 
+        public DateTime? MotorInstructorLicenceExpireDate { get; set; }
+
+        public DateTime? PartMLicenceExpireDate { get; set; }
+
         public bool HasGliderTowingStartPermission { get; set; }
 
         public bool HasGliderSelfStartPermission { get; set; }

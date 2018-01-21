@@ -66,6 +66,16 @@ namespace FLS.Server.Service.Jobs
                     {
                         ProcessLicenceExpireEmail(person, "Segelfluglehrer-Lizenz", person.GliderInstructorLicenceExpireDate.Value);
                     }
+
+                    if (person.MotorInstructorLicenceExpireDate.HasValue && person.MotorInstructorLicenceExpireDate.Value <= expireDate)
+                    {
+                        ProcessLicenceExpireEmail(person, "Motorfluglehrer-Lizenz", person.MotorInstructorLicenceExpireDate.Value);
+                    }
+
+                    if (person.PartMLicenceExpireDate.HasValue && person.PartMLicenceExpireDate.Value <= expireDate)
+                    {
+                        ProcessLicenceExpireEmail(person, "Part-M Lizenz", person.PartMLicenceExpireDate.Value);
+                    }
                 }
 
             }

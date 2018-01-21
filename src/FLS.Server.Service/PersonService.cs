@@ -587,6 +587,12 @@ namespace FLS.Server.Service
                                     DbFunctions.TruncateTime(p.MedicalLaplExpireDate.Value) == expireDate.Date)
                                 || (p.GliderInstructorLicenceExpireDate.HasValue &&
                                     DbFunctions.TruncateTime(p.GliderInstructorLicenceExpireDate.Value) ==
+                                    expireDate.Date)
+                                || (p.MotorInstructorLicenceExpireDate.HasValue &&
+                                    DbFunctions.TruncateTime(p.MotorInstructorLicenceExpireDate.Value) ==
+                                    expireDate.Date)
+                                || (p.PartMLicenceExpireDate.HasValue &&
+                                    DbFunctions.TruncateTime(p.PartMLicenceExpireDate.Value) ==
                                     expireDate.Date))
                     .OrderBy(pe => pe.Lastname)
                     .ToList();

@@ -87,6 +87,8 @@ namespace FLS.Server.Tests.ServiceTests
             person.MedicalClass1ExpireDate = null;
             person.MedicalClass2ExpireDate = null;
             person.GliderInstructorLicenceExpireDate = null;
+            person.MotorInstructorLicenceExpireDate = null;
+            person.PartMLicenceExpireDate = null;
             InsertPerson(person);
 
             //insert glider pilot with medical data expiring next 60 days
@@ -96,6 +98,8 @@ namespace FLS.Server.Tests.ServiceTests
             person.MedicalClass1ExpireDate = null;
             person.MedicalClass2ExpireDate = DateTime.Today.AddDays(60); 
             person.GliderInstructorLicenceExpireDate = null;
+            person.MotorInstructorLicenceExpireDate = null;
+            person.PartMLicenceExpireDate = null;
             InsertPerson(person);
 
             //insert glider pilot with medical data expiring next 30 days
@@ -105,6 +109,8 @@ namespace FLS.Server.Tests.ServiceTests
             person.MedicalClass1ExpireDate = null;
             person.MedicalClass2ExpireDate = DateTime.Today.AddDays(30);
             person.GliderInstructorLicenceExpireDate = null;
+            person.MotorInstructorLicenceExpireDate = null;
+            person.PartMLicenceExpireDate = null;
             InsertPerson(person);
 
             //insert glider instructor with medical data expiring next 60 days
@@ -114,6 +120,30 @@ namespace FLS.Server.Tests.ServiceTests
             person.MedicalClass1ExpireDate = null;
             person.MedicalClass2ExpireDate = DateTime.Today.AddDays(60);
             person.GliderInstructorLicenceExpireDate = DateTime.Today.AddDays(60);
+            person.MotorInstructorLicenceExpireDate = null;
+            person.PartMLicenceExpireDate = null;
+            InsertPerson(person);
+
+            //insert motor instructor with expiring next 60 days
+            personDetails = CreateGliderInstructorPersonDetails(countryId);
+            person = personDetails.ToPerson(CurrentIdentityUser.ClubId);
+            person.MedicalLaplExpireDate = null;
+            person.MedicalClass1ExpireDate = null;
+            person.MedicalClass2ExpireDate = null;
+            person.GliderInstructorLicenceExpireDate = null;
+            person.MotorInstructorLicenceExpireDate = DateTime.Today.AddDays(60);
+            person.PartMLicenceExpireDate = null;
+            InsertPerson(person);
+
+            //insert part M with expiring next 60 days
+            personDetails = CreateGliderInstructorPersonDetails(countryId);
+            person = personDetails.ToPerson(CurrentIdentityUser.ClubId);
+            person.MedicalLaplExpireDate = null;
+            person.MedicalClass1ExpireDate = null;
+            person.MedicalClass2ExpireDate = null;
+            person.GliderInstructorLicenceExpireDate = null;
+            person.MotorInstructorLicenceExpireDate = null;
+            person.PartMLicenceExpireDate = DateTime.Today.AddDays(60);
             InsertPerson(person);
 
             WorkflowService.ExecuteLicenceNotificationJob();
