@@ -70,6 +70,7 @@
     <Compile Include="Resolvers\DynamicContractResolver.cs" />
     <Compile Include="Utils\AssemblyBuildInfo.cs" />
     <Compile Include="Utils\AssemblyUtil.cs" />
+    <Compile Include="Utils\PredicateBuilder.cs" />
     <Compile Include="Validators\Guard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validators\GuidNotEmptyValidator.cs" />

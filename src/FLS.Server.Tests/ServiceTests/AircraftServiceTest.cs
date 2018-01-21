@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FLS.Common.Extensions;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Aircraft;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -187,6 +188,64 @@ namespace FLS.Server.Tests.ServiceTests
 
             Assert.IsTrue(aircraftDetails.AircraftStateData.ValidTo.HasValue == false);
             Assert.IsTrue(aircraftDetails.AircraftStateData.AircraftState == aircraftState.AircraftStateId);
+        }
+
+        [TestMethod]
+        [TestCategory("Service")]
+        public void MultipleAircraftPagedQueryTest()
+        {
+            var aircraft1 = CreateGliderAircraftDetails(1, AircraftType.Glider);
+            var aircraft2 = CreateGliderAircraftDetails(2, AircraftType.Glider);
+
+            AircraftService.InsertAircraftDetails(aircraft1);
+            AircraftService.InsertAircraftDetails(aircraft2);
+
+            var filter = new PageableSearchFilter<AircraftOverviewSearchFilter>()
+            {
+                SearchFilter = new AircraftOverviewSearchFilter()
+                {
+                    Immatriculation = aircraft1.Immatriculation
+                }
+            };
+
+            var result = AircraftService.GetPagedAircraftOverviews(0, 10, filter);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Items.Count == 1);
+            Assert.AreEqual(result.Items[0].Immatriculation, aircraft1.Immatriculation);
+            Assert.AreEqual(result.Items[0].AircraftId, aircraft1.AircraftId);
+
+            filter.SearchFilter.Immatriculation = $"{aircraft1.Immatriculation},{aircraft2.Immatriculation}";
+
+            result = AircraftService.GetPagedAircraftOverviews(0, 10, filter);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Items.Count == 2);
+            Assert.IsTrue(result.Items[0].Immatriculation == aircraft1.Immatriculation 
+                || result.Items[1].Immatriculation == aircraft1.Immatriculation);
+            Assert.IsTrue(result.Items[0].Immatriculation == aircraft2.Immatriculation
+                || result.Items[1].Immatriculation == aircraft2.Immatriculation);
+            Assert.IsTrue(result.Items[0].AircraftId == aircraft1.AircraftId
+                || result.Items[1].AircraftId == aircraft1.AircraftId);
+            Assert.IsTrue(result.Items[0].AircraftId == aircraft2.AircraftId
+                || result.Items[1].AircraftId == aircraft2.AircraftId);
+
+
+            var searchTerm = $"{aircraft1.Immatriculation},{aircraft2.Immatriculation}";
+            filter.SearchFilter.Immatriculation = searchTerm.Substring(0, searchTerm.Length - 1);
+
+            result = AircraftService.GetPagedAircraftOverviews(0, 10, filter);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Items.Count == 2);
+            Assert.IsTrue(result.Items[0].Immatriculation == aircraft1.Immatriculation
+                || result.Items[1].Immatriculation == aircraft1.Immatriculation);
+            Assert.IsTrue(result.Items[0].Immatriculation == aircraft2.Immatriculation
+                || result.Items[1].Immatriculation == aircraft2.Immatriculation);
+            Assert.IsTrue(result.Items[0].AircraftId == aircraft1.AircraftId
+                || result.Items[1].AircraftId == aircraft1.AircraftId);
+            Assert.IsTrue(result.Items[0].AircraftId == aircraft2.AircraftId
+                || result.Items[1].AircraftId == aircraft2.AircraftId);
         }
 
         [TestMethod]

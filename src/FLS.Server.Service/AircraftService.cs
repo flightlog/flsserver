@@ -12,6 +12,7 @@ using FLS.Server.Data.Mapping;
 using FLS.Server.Data.Resources;
 using FLS.Server.Interfaces;
 using NLog;
+using FLS.Common.Utils;
 
 namespace FLS.Server.Service
 {
@@ -173,8 +174,28 @@ namespace FLS.Server.Service
                     .OrderByPropertyNames(pageableSearchFilter.Sorting);
 
                 var filter = pageableSearchFilter.SearchFilter;
-                aircrafts = aircrafts.WhereIf(filter.Immatriculation,
-                        aircraft => aircraft.Immatriculation.Contains(filter.Immatriculation));
+
+                if (string.IsNullOrWhiteSpace(filter.Immatriculation) == false)
+                {
+                    var immatriculationFilter = filter.Immatriculation.Split(',');
+
+                    var predicate = PredicateBuilder.False<Aircraft>();
+
+                    foreach (var searchFilter in immatriculationFilter)
+                    {
+                        predicate = predicate.Or(x => x.Immatriculation.Contains(searchFilter));
+                    }
+
+                    aircrafts = aircrafts.Where(predicate);
+
+                    //Exact OR implementation from: https://social.msdn.microsoft.com/Forums/en-US/cc837da8-839b-4e23-a2be-e5615edd6a8c/using-linq-with-dynamic-or-where-clause?forum=adodotnetentityframework
+                    //will result in SQL: WHERE Immatriculation IN (x,y,z)
+                    //var immatriculationFilterSet = filter.Immatriculation.Split(',');
+
+                    //aircrafts = aircrafts.WhereIf(filter.Immatriculation,
+                    //aircraft => immatriculationFilterSet.Contains(aircraft.Immatriculation));
+                }
+
                 aircrafts = aircrafts.WhereIf(filter.AircraftModel,
                     aircraft => aircraft.AircraftModel.Contains(filter.AircraftModel));
                 aircrafts = aircrafts.WhereIf(filter.CompetitionSign,
