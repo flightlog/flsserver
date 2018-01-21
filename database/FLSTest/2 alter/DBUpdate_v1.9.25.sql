@@ -26,6 +26,7 @@ GO
 PRINT 'Modify Persons table'
 ALTER TABLE [dbo].[Persons] 
 	ADD [MotorInstructorLicenceExpireDate] [datetime2](7) NULL,
+	[HasPartMLicence] [bit] NOT NULL CONSTRAINT [DF__Persons__HasPartMLicence]  DEFAULT ((0)),
 	[PartMLicenceExpireDate] [datetime2](7) NULL
 GO
 

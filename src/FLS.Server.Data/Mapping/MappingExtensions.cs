@@ -2847,6 +2847,7 @@ namespace FLS.Server.Data.Mapping
             details.HasTMGLicence = entity.HasTMGLicence;
             details.HasWinchOperatorLicence = entity.HasWinchOperatorLicence;
             details.HasMotorInstructorLicence = entity.HasMotorInstructorLicence;
+            details.HasPartMLicence = entity.HasPartMLicence;
             details.LicenceNumber = entity.LicenceNumber;
             details.GliderInstructorLicenceExpireDate = entity.GliderInstructorLicenceExpireDate.SetAsUtc();
             details.MotorInstructorLicenceExpireDate = entity.MotorInstructorLicenceExpireDate.SetAsUtc();
@@ -2961,6 +2962,7 @@ namespace FLS.Server.Data.Mapping
             entity.HasGliderSelfStartPermission = details.HasGliderSelfStartPermission;
             entity.HasGliderWinchStartPermission = details.HasGliderWinchStartPermission;
             entity.HasMotorInstructorLicence = details.HasMotorInstructorLicence;
+            entity.HasPartMLicence = details.HasPartMLicence;
 
             entity.SpotLink = details.SpotLink;
             entity.ReceiveOwnedAircraftStatisticReports = details.ReceiveOwnedAircraftStatisticReports;
@@ -3249,6 +3251,7 @@ namespace FLS.Server.Data.Mapping
             details.HasTowPilotLicence = entity.HasTowPilotLicence;
             details.HasGliderPassengerLicence = entity.HasGliderPAXLicence;
             details.HasTMGLicence = entity.HasTMGLicence;
+            details.HasPartMLicence = entity.HasPartMLicence;
 
             return details;
         }

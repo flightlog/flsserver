@@ -38,5 +38,7 @@ namespace FLS.Data.WebApi.Dashboard
 
         public bool HasTMGLicence { get; set; }
 
+        public bool HasPartMLicence { get; set; }
+
     }
 }

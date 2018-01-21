@@ -1185,4 +1185,16 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'Error_NotInSameClub', 'Keine Berechtigung zum Ausführen dieser Aktion.', 1, SYSDATETIME())
 
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'MOTOR_INSTRUCTOR_LICENCE_EXPIRE_DATE', 'Motorfluglehrer Lizenz Gültigkeit bis', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'PART_M_LICENCE_EXPIRE_DATE', 'Part-M Lizenz Gültigkeit bis', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'HAS_PART_M_LICENCE', 'Part-M Lizenz', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'SAVE_USER_SETTINGS', 'Benutzerdaten speichern', 1, SYSDATETIME())
+
 GO

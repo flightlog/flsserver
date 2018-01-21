@@ -99,6 +99,8 @@ namespace FLS.Server.Data.DbEntities
 
         public bool HasMotorInstructorLicence { get; set; }
 
+        public bool HasPartMLicence { get; set; }
+
         [StringLength(20)]
         public string LicenceNumber { get; set; }
         
