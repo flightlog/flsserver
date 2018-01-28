@@ -13,6 +13,8 @@ namespace FLS.Data.WebApi.Flight
 
         public string SecondCrewName { get; set; }
 
+        public string PilotNameOrSecondCrewName { get; set; }
+
         public string FlightComment { get; set; }
 
         public List<int> AirStates { get; set; }
