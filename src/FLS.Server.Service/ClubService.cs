@@ -179,8 +179,6 @@ namespace FLS.Server.Service
 
         public void InsertClubDetails(ClubDetails clubDetails)
         {
-            throw new UnauthorizedAccessException(ErrorMessage.NotInRoleClubAdmin);
-
             var club = clubDetails.ToClub();
             club.EntityNotNull("Club", Guid.Empty);
 
