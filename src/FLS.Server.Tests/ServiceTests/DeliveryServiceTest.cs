@@ -191,5 +191,12 @@ namespace FLS.Server.Tests.ServiceTests
                 var filteredFlights2 = flights2.ToList();
             }
         }
+
+        [TestMethod]
+        public void GetDeliveryNotProcessedTest()
+        {
+            var deliveries = DeliveryService.GetDeliveryDetailsList(false);
+
+        }
     }
 }

@@ -400,7 +400,7 @@ namespace FLS.Server.Data
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Flight>()
-                .HasMany(e => e.Deliveries)
+                .HasMany(e => e.IncludedTowFlightDeliveries)
                 .WithOptional(e => e.IncludesTowFlight)
                 .HasForeignKey(e => e.IncludesTowFlightId)
                 .WillCascadeOnDelete(false);

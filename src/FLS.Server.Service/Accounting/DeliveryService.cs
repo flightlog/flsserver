@@ -923,13 +923,14 @@ namespace FLS.Server.Service.Accounting
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var query = context.Deliveries.Include("DeliveryItems")
+                var query = context.Deliveries
                             .Include("Flight")
                             .Include("Flight." + Constants.Aircraft)
                             .Include("Flight." + Constants.FlightType)
                             .Include("Flight.FlightCrews")
                             .Include("Flight.FlightCrews.Person")
                             .Include("Flight.FlightCrews.Person.PersonClubs")
+                            .Include("DeliveryItems")
                             .Where(c => c.ClubId == clubId);
 
                 if (furtherProcessed.HasValue)
