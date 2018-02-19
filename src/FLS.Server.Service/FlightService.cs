@@ -1489,17 +1489,16 @@ namespace FLS.Server.Service
                             if (flight != null)
                             {
                                 flight.ProcessStateId = newProcessState;
-                            }
-                        }
 
-                        if (delivery.IncludesTowFlightId.HasValue)
-                        {
-                            var flight =
-                            context.Flights.FirstOrDefault(x => x.FlightId == delivery.IncludesTowFlightId);
+                                if (flight.TowFlightId.HasValue)
+                                {
+                                    var towFlight = context.Flights.FirstOrDefault(x => x.FlightId == flight.TowFlightId.Value);
 
-                            if (flight != null)
-                            {
-                                flight.ProcessStateId = newProcessState;
+                                    if (towFlight != null)
+                                    {
+                                        flight.ProcessStateId = newProcessState;
+                                    }
+                                }
                             }
                         }
                     }

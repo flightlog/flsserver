@@ -398,13 +398,7 @@ namespace FLS.Server.Data
                 .WithOptional(e => e.Flight)
                 .HasForeignKey(e => e.FlightId)
                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Flight>()
-                .HasMany(e => e.IncludedTowFlightDeliveries)
-                .WithOptional(e => e.IncludesTowFlight)
-                .HasForeignKey(e => e.IncludesTowFlightId)
-                .WillCascadeOnDelete(false);
-
+            
             modelBuilder.Entity<Flight>()
                 .HasMany(e => e.DeliveryCreationTests)
                 .WithRequired(e => e.Flight)

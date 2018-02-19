@@ -18,7 +18,7 @@ using FLS.Server.Data.Resources;
 using FLS.Server.Interfaces;
 using FLS.Server.Service.Accounting.RuleEngines;
 using Newtonsoft.Json;
-using AccountingRuleFilterType = FLS.Data.WebApi.Accounting.RuleFilters.AccountingRuleFilterType;
+
 
 namespace FLS.Server.Service.Accounting
 {
@@ -222,7 +222,7 @@ namespace FLS.Server.Service.Accounting
                 accountingRuleFilters.Where(
                     x =>
                         x.AccountingRuleFilterTypeId ==
-                        (int) AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
+                        (int)FLS.Data.WebApi.Accounting.RuleFilters.AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
             recipientRulesEngine.Run();
 
             var accountingDetailsRuleEngine = new DeliveryDetailsRulesEngine(ruleBasedDelivery, flight);
@@ -233,7 +233,7 @@ namespace FLS.Server.Service.Accounting
                 accountingRuleFilters.Where(
                     x =>
                         x.AccountingRuleFilterTypeId !=
-                        (int) AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
+                        (int)FLS.Data.WebApi.Accounting.RuleFilters.AccountingRuleFilterType.RecipientAccountingRuleFilter).ToList());
             accountingLineRulesEngine.Run();
 
             Logger.Info(
@@ -257,11 +257,31 @@ namespace FLS.Server.Service.Accounting
 
                 delivery.DeliveryNumber = flightDeliveryBooking.DeliveryNumber;
                 delivery.DeliveredOn = flightDeliveryBooking.DeliveryDateTime;
-
+                
                 delivery.IsFurtherProcessed = true;
-                
-                
 
+                if (delivery.FlightId.HasValue)
+                {
+                    var flight = context.Flights.FirstOrDefault(x => x.FlightId == delivery.FlightId.Value);
+
+                    if (flight != null)
+                    {
+                        flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryBooked;
+                        flight.DoNotUpdateMetaData = true;
+
+                        if (flight.TowFlightId.HasValue)
+                        {
+                            var towFlight = context.Flights.FirstOrDefault(x => x.FlightId == flight.TowFlightId.Value);
+
+                            if (towFlight != null)
+                            {
+                                towFlight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryBooked;
+                                towFlight.DoNotUpdateMetaData = true;
+                            }
+                        }
+                    }
+                }
+                
                 context.SaveChanges();
 
                 return true;
