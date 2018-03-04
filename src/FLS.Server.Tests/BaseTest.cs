@@ -44,6 +44,7 @@ using FLS.Common.Exceptions;
 using FLS.Common.Validators;
 using FLS.Server.Service.Accounting;
 using FLS.Server.Service.Exporting;
+using FLS.Server.Service.Reporting;
 
 namespace FLS.Server.Tests
 {
@@ -73,6 +74,7 @@ namespace FLS.Server.Tests
         protected DataAccessService DataAccessService { get; set; }
         protected AircraftService AircraftService { get; set; }
         protected FlightService FlightService { get; set; }
+        protected FlightReportService FlightReportService { get; set; }
         protected DeliveryService DeliveryService { get; set; }
         protected AccountingRuleService AccountingRuleService { get; set; }
         protected AccountingRuleFilterFactory AccountingRuleFilterFactory { get; set; }
@@ -174,6 +176,7 @@ namespace FLS.Server.Tests
             ClubService = UnityContainer.Resolve<ClubService>();
             PersonService = UnityContainer.Resolve<PersonService>();
             SettingService = UnityContainer.Resolve<SettingService>();
+            FlightReportService = UnityContainer.Resolve<FlightReportService>();
         }
 
         [TestCleanup]

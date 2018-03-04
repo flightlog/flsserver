@@ -190,6 +190,7 @@
     <Compile Include="Infrastructure\MasterDataSeeder.cs" />
     <Compile Include="Infrastructure\ResourceExtractor.cs" />
     <Compile Include="Mocks\Services\MockEmailSendService.cs" />
+    <Compile Include="ServiceTests\FlightReportServiceTest.cs" />
     <Compile Include="ServiceTests\PersonServiceTest.cs" />
     <Compile Include="ServiceTests\ClubServiceTest.cs" />
     <Compile Include="ServiceTests\PlanningDayServiceTest.cs" />
