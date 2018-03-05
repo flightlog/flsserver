@@ -103,17 +103,23 @@ namespace FLS.Server.Data.DbEntities
 
         [StringLength(20)]
         public string LicenceNumber { get; set; }
-        
+
+        [Column(TypeName = "date")]
         public DateTime? MedicalClass1ExpireDate { get; set; }
 
+        [Column(TypeName = "date")]
         public DateTime? MedicalClass2ExpireDate { get; set; }
 
+        [Column(TypeName = "date")]
         public DateTime? MedicalLaplExpireDate { get; set; }
 
+        [Column(TypeName = "date")]
         public DateTime? GliderInstructorLicenceExpireDate { get; set; }
 
+        [Column(TypeName = "date")]
         public DateTime? MotorInstructorLicenceExpireDate { get; set; }
 
+        [Column(TypeName = "date")]
         public DateTime? PartMLicenceExpireDate { get; set; }
 
         public bool HasGliderTowingStartPermission { get; set; }

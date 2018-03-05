@@ -2936,9 +2936,6 @@ namespace FLS.Server.Data.Mapping
 
             entity.Birthday = details.Birthday;
 
-            if (entity.Birthday.HasValue)
-                entity.Birthday = entity.Birthday.Value.Date.AddHours(12);  //set birthday to mid day for time zone handling
-
             entity.FaxNumber = details.FaxNumber;
             entity.ReceiveOwnedAircraftStatisticReports = details.ReceiveOwnedAircraftStatisticReports;
             entity.EnableAddress = details.EnableAddress;
@@ -3089,9 +3086,6 @@ namespace FLS.Server.Data.Mapping
             var mapper = mapperConfig.CreateMapper();
 
             mapper.Map<PersonDetails, Person>(details, entity);
-            
-            if (entity.Birthday.HasValue)
-                entity.Birthday = entity.Birthday.Value.Date.AddHours(12);  //set birthday to mid day for time zone handling
             
             if (details.ClubRelatedPersonDetails != null)
             {
