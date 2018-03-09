@@ -788,7 +788,7 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.TowAircraftImmatriculation,
                         flight => flight.TowFlight.Aircraft.Immatriculation.Contains(filter.TowAircraftImmatriculation));
                 flights = flights.WhereIf(filter.TowPilotName,
-                    flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname).Contains(filter.TowPilotName));
+                    flight => (flight.TowFlight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname).Contains(filter.TowPilotName));
               
                 //if (filter.TowFlightStartDateTime != null)
                 //{
