@@ -28,6 +28,8 @@ namespace FLS.Data.WebApi.Reporting.Flights
 
         public string FlightCode { get; set; }
 
+        public string FlightTypeName { get; set; }
+
         public Nullable<DateTime> LdgDateTime
         {
             get { return _ldgDateTime; }

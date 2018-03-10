@@ -22,7 +22,7 @@ namespace FLS.Data.WebApi.Reporting.Flights
 
         public string FlightCode { get; set; }
 
-        public string ValidationErrors { get; set; }
+        public string FlightTypeName { get; set; }
 
         public DateTime? LdgDateTime
         {

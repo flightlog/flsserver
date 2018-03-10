@@ -108,6 +108,7 @@ namespace FLS.Server.Service.Reporting
                                 ? fcp.SecondCrew.Person.Lastname + " " + fcp.SecondCrew.Person.Firstname
                                 : null,
                         FlightCode = f.f.FlightType.FlightCode,
+                        FlightTypeName = f.f.FlightType.FlightTypeName,
                         AirState = f.f.AirStateId,
                         ProcessState = f.f.ProcessStateId,
                         Immatriculation = f.f.Aircraft.Immatriculation,
@@ -119,15 +120,21 @@ namespace FLS.Server.Service.Reporting
                         LdgLocation = f.f.LdgLocation.LocationName,
                         FlightDurationInSeconds = DbFunctions.DiffSeconds(f.f.StartDateTime, f.f.LdgDateTime),
                         TowFlight = f.f.TowFlightId.HasValue ? new TowFlightReportDataRecord() {  
-                        TowFlightId = f.f.TowFlightId.Value,
-                        Immatriculation = f.f.TowFlight.Aircraft.Immatriculation,
-                        FlightDurationInSeconds = DbFunctions.DiffSeconds(f.f.TowFlight.StartDateTime, f.f.TowFlight.LdgDateTime),
-                        AirState = f.f.TowFlight.AirStateId,
-                        ProcessState = f.f.TowFlight.ProcessStateId,
-                        PilotName = f.f.TowFlight.FlightCrews.Any(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent) ?
-                                f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname
-                                + " " + f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname : null,
-                            } : null
+                            TowFlightId = f.f.TowFlightId.Value,
+                            Immatriculation = f.f.TowFlight.Aircraft.Immatriculation,
+                            FlightCode = f.f.TowFlight.FlightType.FlightCode,
+                            FlightTypeName = f.f.TowFlight.FlightType.FlightTypeName,
+                            StartDateTime = f.f.TowFlight.StartDateTime,
+                            LdgDateTime = f.f.TowFlight.LdgDateTime,
+                            StartLocation = f.f.TowFlight.StartLocation.LocationName,
+                            LdgLocation = f.f.TowFlight.LdgLocation.LocationName,
+                            FlightDurationInSeconds = DbFunctions.DiffSeconds(f.f.TowFlight.StartDateTime, f.f.TowFlight.LdgDateTime),
+                            AirState = f.f.TowFlight.AirStateId,
+                            ProcessState = f.f.TowFlight.ProcessStateId,
+                            PilotName = f.f.TowFlight.FlightCrews.Any(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent) ?
+                                    f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname
+                                    + " " + f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname : null,
+                                } : null
                     }).OrderByPropertyNames(pageableSearchFilter.Sorting);
 
                 var pagedQuery = new PagedQuery<FlightReportDataRecord>(flightsAndFlightCrews, pageStart, pageSize);
