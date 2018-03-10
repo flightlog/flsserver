@@ -17,6 +17,13 @@ The FLS manages glider and motor flights of clubs from the reservation until exp
 * System- and club-related email template handling
 * Workflow engine for several automated processes like email notification, invoice exports, etc.
 
+## Additional extensions to the FLS
+### Proffix Sync Interface
+The Proffix Sync Interface synchronizes addresses, flights, deliveries and articles between Proffix and FLS Server. It automates the invoicing process of flights in Proffix. For more information see also: https://github.com/arminstutz/PROFFIX-FLS-Sync
+
+### OGN Analyser
+The OGN Analyser analyses flight GPS data from Open Glider Net and creates starts and landing events for FLS. See also: https://github.com/sgacond/OGNAnalyser
+
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning.
