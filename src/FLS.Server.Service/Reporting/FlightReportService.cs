@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using FLS.Common.Extensions;
 using FLS.Common.Paging;
@@ -146,131 +147,226 @@ namespace FLS.Server.Service.Reporting
 
                 var flightReportSummaries = new List<FlightReportSummary>();
 
-                #region Flight summary for Pilot function
-                var flightSummary = context.Flights
-                    .Include(x => x.FlightType)
-                    .Where(f => (filter.GliderFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight)
-                                || (filter.MotorFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight));
-
-                if (filter.FlightDate != null)
+                if (filter.FlightCrewPersonId.HasValue)
                 {
-                    var dateTimeFilter = filter.FlightDate;
+                    #region Flight summary for Pilot function
 
-                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    var flightSummary = context.Flights
+                        .Include(x => x.FlightType)
+                        .Where(f => (filter.GliderFlights &&
+                                     f.FlightAircraftType == (int) FlightAircraftTypeValue.GliderFlight)
+                                    || (filter.MotorFlights &&
+                                        f.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight));
+
+                    if (filter.FlightDate != null)
                     {
-                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
-                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+                        var dateTimeFilter = filter.FlightDate;
 
-                        flightSummary = flightSummary.Where(flight => flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) >= DbFunctions.TruncateTime(from)
-                                                                                     && DbFunctions.TruncateTime(flight.FlightDate) <= DbFunctions.TruncateTime(to));
+                        if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                        {
+                            var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                            var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                            flightSummary = flightSummary.Where(flight =>
+                                flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) >=
+                                                           DbFunctions.TruncateTime(from)
+                                                           && DbFunctions.TruncateTime(flight.FlightDate) <=
+                                                           DbFunctions.TruncateTime(to));
+                        }
                     }
-                }
 
-                flightSummary = flightSummary.WhereIf(filter.LocationId.HasValue,
-                    flight => flight.StartLocationId == filter.LocationId.Value || flight.LdgLocationId == filter.LocationId.Value);
+                    flightSummary = flightSummary.WhereIf(filter.LocationId.HasValue,
+                        flight => flight.StartLocationId == filter.LocationId.Value ||
+                                  flight.LdgLocationId == filter.LocationId.Value);
 
-                //filter only flights where person is Pilot, Copilot or instructor
-                flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
-                    flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
-                                                          && x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent));
+                    //filter only flights where person is Pilot, Copilot or instructor
+                    flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
+                        flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
+                                                              && x.FlightCrewTypeId == (int) FLS.Data.WebApi.Flight
+                                                                  .FlightCrewType.PilotOrStudent));
 
-                var summary = flightSummary.GroupBy(f => new {f.RecordState})
-                    .Select(x => new FlightReportSummary()
+                    var summary = flightSummary.GroupBy(f => new {f.RecordState})
+                        .Select(x => new FlightReportSummary()
+                        {
+                            GroupBy = "Pilot",
+                            TotalStarts = x.Sum(f =>
+                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
+                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalFlightDurationInSeconds =
+                                x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
+                        }).ToList();
+
+                    if (summary.Any())
                     {
-                        FlightCrewFunction = "Pilot",
-                        TotalStarts = x.Sum(f => f.NrOfLdgs != null ? f.NrOfLdgs.Value : 0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
-                        TotalFlightDurationInSeconds = x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
-                    }).ToList();
-
-                if (summary.Any())
-                {
-                    flightReportSummaries.Add(summary.First());
-                }
-                #endregion Flight summary for Pilot function
-
-                #region Flight summary for CoPilot function
-                flightSummary = context.Flights
-                    .Include(x => x.FlightType)
-                    .Where(f => (filter.GliderFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight)
-                                || (filter.MotorFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight));
-
-                if (filter.FlightDate != null)
-                {
-                    var dateTimeFilter = filter.FlightDate;
-
-                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
-                    {
-                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
-                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
-
-                        flightSummary = flightSummary.Where(flight => flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) >= DbFunctions.TruncateTime(from)
-                                                                                     && DbFunctions.TruncateTime(flight.FlightDate) <= DbFunctions.TruncateTime(to));
+                        flightReportSummaries.Add(summary.First());
                     }
-                }
 
-                flightSummary = flightSummary.WhereIf(filter.LocationId.HasValue,
-                    flight => flight.StartLocationId == filter.LocationId.Value || flight.LdgLocationId == filter.LocationId.Value);
+                    #endregion Flight summary for Pilot function
 
-                //filter only flights where person is Pilot, Copilot or instructor
-                flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
-                    flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
-                                                          && x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot));
+                    #region Flight summary for CoPilot function
 
-                summary = flightSummary.GroupBy(f => new { f.RecordState })
-                    .Select(x => new FlightReportSummary()
+                    flightSummary = context.Flights
+                        .Include(x => x.FlightType)
+                        .Where(f => (filter.GliderFlights &&
+                                     f.FlightAircraftType == (int) FlightAircraftTypeValue.GliderFlight)
+                                    || (filter.MotorFlights &&
+                                        f.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight));
+
+                    if (filter.FlightDate != null)
                     {
-                        FlightCrewFunction = "Copilot",
-                        TotalStarts = x.Sum(f => f.NrOfLdgs != null ? f.NrOfLdgs.Value : 0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
-                        TotalFlightDurationInSeconds = x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
-                    }).ToList();
+                        var dateTimeFilter = filter.FlightDate;
 
-                if (summary.Any())
-                {
-                    flightReportSummaries.Add(summary.First());
-                }
-                #endregion Flight summary for CoPilot function
+                        if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                        {
+                            var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                            var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
 
-                #region Flight summary for Instructor function
-                flightSummary = context.Flights
-                    .Include(x => x.FlightType)
-                    .Where(f => (filter.GliderFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight)
-                                || (filter.MotorFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight));
-
-                if (filter.FlightDate != null)
-                {
-                    var dateTimeFilter = filter.FlightDate;
-
-                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
-                    {
-                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
-                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
-
-                        flightSummary = flightSummary.Where(flight => flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) >= DbFunctions.TruncateTime(from)
-                                                                                     && DbFunctions.TruncateTime(flight.FlightDate) <= DbFunctions.TruncateTime(to));
+                            flightSummary = flightSummary.Where(flight =>
+                                flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) >=
+                                                           DbFunctions.TruncateTime(from)
+                                                           && DbFunctions.TruncateTime(flight.FlightDate) <=
+                                                           DbFunctions.TruncateTime(to));
+                        }
                     }
-                }
 
-                flightSummary = flightSummary.WhereIf(filter.LocationId.HasValue,
-                    flight => flight.StartLocationId == filter.LocationId.Value || flight.LdgLocationId == filter.LocationId.Value);
+                    flightSummary = flightSummary.WhereIf(filter.LocationId.HasValue,
+                        flight => flight.StartLocationId == filter.LocationId.Value ||
+                                  flight.LdgLocationId == filter.LocationId.Value);
 
-                //filter only flights where person is Pilot, Copilot or instructor
-                flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
-                    flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
-                                                          && x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor));
+                    //filter only flights where person is Pilot, Copilot or instructor
+                    flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
+                        flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
+                                                              && x.FlightCrewTypeId == (int) FLS.Data.WebApi.Flight
+                                                                  .FlightCrewType.CoPilot));
 
-                summary = flightSummary.GroupBy(f => new { f.RecordState })
-                    .Select(x => new FlightReportSummary()
+                    summary = flightSummary.GroupBy(f => new {f.RecordState})
+                        .Select(x => new FlightReportSummary()
+                        {
+                            GroupBy = "Copilot",
+                            TotalStarts = x.Sum(f =>
+                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
+                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalFlightDurationInSeconds =
+                                x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
+                        }).ToList();
+
+                    if (summary.Any())
                     {
-                        FlightCrewFunction = "Instructor",
-                        TotalStarts = x.Sum(f => f.NrOfLdgs != null ? f.NrOfLdgs.Value : 0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
-                        TotalFlightDurationInSeconds = x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
-                    }).ToList();
+                        flightReportSummaries.Add(summary.First());
+                    }
 
-                if (summary.Any())
-                {
-                    flightReportSummaries.Add(summary.First());
+                    #endregion Flight summary for CoPilot function
+
+                    #region Flight summary for Instructor function
+
+                    flightSummary = context.Flights
+                        .Include(x => x.FlightType)
+                        .Where(f => (filter.GliderFlights &&
+                                     f.FlightAircraftType == (int) FlightAircraftTypeValue.GliderFlight)
+                                    || (filter.MotorFlights &&
+                                        f.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight));
+
+                    if (filter.FlightDate != null)
+                    {
+                        var dateTimeFilter = filter.FlightDate;
+
+                        if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                        {
+                            var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                            var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                            flightSummary = flightSummary.Where(flight =>
+                                flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) >=
+                                                           DbFunctions.TruncateTime(from)
+                                                           && DbFunctions.TruncateTime(flight.FlightDate) <=
+                                                           DbFunctions.TruncateTime(to));
+                        }
+                    }
+
+                    flightSummary = flightSummary.WhereIf(filter.LocationId.HasValue,
+                        flight => flight.StartLocationId == filter.LocationId.Value ||
+                                  flight.LdgLocationId == filter.LocationId.Value);
+
+                    //filter only flights where person is Pilot, Copilot or instructor
+                    flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
+                        flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
+                                                              && x.FlightCrewTypeId == (int) FLS.Data.WebApi.Flight
+                                                                  .FlightCrewType.FlightInstructor));
+
+                    summary = flightSummary.GroupBy(f => new {f.RecordState})
+                        .Select(x => new FlightReportSummary()
+                        {
+                            GroupBy = "Instructor",
+                            TotalStarts = x.Sum(f =>
+                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
+                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalFlightDurationInSeconds =
+                                x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
+                        }).ToList();
+
+                    if (summary.Any())
+                    {
+                        flightReportSummaries.Add(summary.First());
+                    }
+
+                    #endregion Flight summary for Instructor function
                 }
-                #endregion Flight summary for Instructor function
+                else if (filter.LocationId.HasValue)
+                {
+                    #region Flight summary for Location function
+
+                    var flightSummary = context.Flights
+                        .Include(x => x.FlightType)
+                        .Where(f => (filter.GliderFlights &&
+                                     f.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight)
+                                    || (filter.MotorFlights &&
+                                        f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight));
+
+                    if (filter.FlightDate != null)
+                    {
+                        var dateTimeFilter = filter.FlightDate;
+
+                        if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                        {
+                            var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                            var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                            flightSummary = flightSummary.Where(flight =>
+                                flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) >=
+                                                           DbFunctions.TruncateTime(from)
+                                                           && DbFunctions.TruncateTime(flight.FlightDate) <=
+                                                           DbFunctions.TruncateTime(to));
+                        }
+                    }
+
+                    flightSummary = flightSummary.WhereIf(filter.LocationId.HasValue,
+                        flight => flight.StartLocationId == filter.LocationId.Value ||
+                                  flight.LdgLocationId == filter.LocationId.Value);
+
+                    //filter only flights where person is Pilot, Copilot or instructor
+                    flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
+                        flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
+                                                              && x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight
+                                                                  .FlightCrewType.PilotOrStudent));
+
+                    var summary = flightSummary.GroupBy(f => new { f.RecordState })
+                        .Select(x => new FlightReportSummary()
+                        {
+                            GroupBy = x.FirstOrDefault(l => l.LdgLocationId.Value == filter.LocationId.Value).LdgLocation.LocationName,
+                            TotalStarts = x.Sum(f =>
+                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
+                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalFlightDurationInSeconds =
+                                x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
+                        }).ToList();
+
+                    if (summary.Any())
+                    {
+                        flightReportSummaries.Add(summary.First());
+                    }
+
+                    #endregion Flight summary for Location function
+                }
 
                 var flightReportResult = new FlightReportResult()
                 {

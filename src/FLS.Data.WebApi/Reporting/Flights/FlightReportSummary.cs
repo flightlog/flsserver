@@ -8,9 +8,10 @@ namespace FLS.Data.WebApi.Reporting.Flights
         private int? _flightDurationInSeconds;
 
         /// <summary>
-        /// The totals needs to be summarized by flight crew function, like PIC, Flight Instructor, total or something else.
+        /// The totals needs to be summarized (grouped) by flight crew function, like PIC, Flight Instructor,
+        /// or by Location.
         /// </summary>
-        public string FlightCrewFunction { get; set; }
+        public string GroupBy { get; set; }
 
         public int TotalStarts { get; set; }
 
