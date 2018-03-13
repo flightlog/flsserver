@@ -289,7 +289,7 @@ namespace FLS.Server.Service.Reporting
 
                     #endregion Flight summary for CoPilot function
 
-                    #region Flight summary for Instructor function
+                    #region Flight summary for Instructor double seat function
 
                     flightSummary = context.Flights
                         .Include(x => x.FlightType)
@@ -325,6 +325,10 @@ namespace FLS.Server.Service.Reporting
                                                               && x.FlightCrewTypeId == (int) FLS.Data.WebApi.Flight
                                                                   .FlightCrewType.FlightInstructor));
 
+                    //don't count teached solo flights of a trainee in summaries
+                    flightSummary = flightSummary.Where(f => f.IsSoloFlight == false);
+
+
                     summary = flightSummary.GroupBy(f => new {f.RecordState})
                         .Select(x => new FlightReportSummary()
                         {
@@ -341,7 +345,81 @@ namespace FLS.Server.Service.Reporting
                         flightReportSummaries.Add(summary.First());
                     }
 
-                    #endregion Flight summary for Instructor function
+                    #endregion Flight summary for Instructor double seat function
+
+                    #region Flight summary for Instructor function on solo flights
+
+                    flightSummary = context.Flights
+                        .Include(x => x.FlightType)
+                        .Where(f => (filter.GliderFlights &&
+                                     f.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight)
+                                    || (filter.MotorFlights &&
+                                        f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight));
+
+                    if (filter.FlightDate != null)
+                    {
+                        var dateTimeFilter = filter.FlightDate;
+
+                        if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                        {
+                            var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                            var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                            flightSummary = flightSummary.Where(flight =>
+                                flight.FlightDate.HasValue && DbFunctions.TruncateTime(flight.FlightDate) >=
+                                                           DbFunctions.TruncateTime(from)
+                                                           && DbFunctions.TruncateTime(flight.FlightDate) <=
+                                                           DbFunctions.TruncateTime(to));
+                        }
+                    }
+
+                    flightSummary = flightSummary.WhereIf(filter.LocationId.HasValue,
+                        flight => flight.StartLocationId == filter.LocationId.Value ||
+                                  flight.LdgLocationId == filter.LocationId.Value);
+
+                    //filter only flights where person is Pilot, Copilot or instructor
+                    flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
+                        flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
+                                                              && x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight
+                                                                  .FlightCrewType.FlightInstructor));
+
+                    //count only teached solo flights of a trainee
+                    flightSummary = flightSummary.Where(f => f.IsSoloFlight);
+
+
+                    summary = flightSummary.GroupBy(f => new { f.RecordState })
+                        .Select(x => new FlightReportSummary()
+                        {
+                            GroupBy = "Instructor (Soloflights)",
+                            TotalStarts = x.Sum(f =>
+                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
+                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalFlightDurationInSeconds =
+                                x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
+                        }).ToList();
+
+                    if (summary.Any())
+                    {
+                        flightReportSummaries.Add(summary.First());
+                    }
+
+                    #endregion Flight summary for Instructor function on solo flights
+
+                    var totalSummary = new FlightReportSummary()
+                    {
+                        GroupBy = "Total",
+                        TotalFlightDurationInSeconds = 0,
+                        TotalStarts = 0
+                    };
+
+                    foreach (var sum in flightReportSummaries)
+                    {
+                        totalSummary.TotalFlightDurationInSeconds +=
+                            sum.TotalFlightDurationInSeconds.GetValueOrDefault(0);
+                        totalSummary.TotalStarts += sum.TotalStarts;
+                    }
+
+                    flightReportSummaries.Add(totalSummary);
                 }
                 else if (filter.LocationId.HasValue)
                 {
@@ -381,10 +459,10 @@ namespace FLS.Server.Service.Reporting
                                                               && x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight
                                                                   .FlightCrewType.PilotOrStudent));
 
-                    var summary = flightSummary.GroupBy(f => new { f.RecordState })
+                    var summary = flightSummary.GroupBy(f => f.FlightType)
                         .Select(x => new FlightReportSummary()
                         {
-                            GroupBy = x.FirstOrDefault(l => l.LdgLocationId.Value == filter.LocationId.Value).LdgLocation.LocationName,
+                            GroupBy = x.Key.FlightTypeName,
                             TotalStarts = x.Sum(f =>
                                 f.NrOfLdgs != null ? f.NrOfLdgs.Value :
                                 0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
@@ -394,7 +472,33 @@ namespace FLS.Server.Service.Reporting
 
                     if (summary.Any())
                     {
-                        flightReportSummaries.Add(summary.First());
+                        var totalSummary = new FlightReportSummary()
+                        {
+                            GroupBy = "Total",
+                            TotalFlightDurationInSeconds = 0,
+                            TotalStarts = 0
+                        };
+
+                        foreach (var sum in summary)
+                        {
+                            totalSummary.TotalFlightDurationInSeconds +=
+                                sum.TotalFlightDurationInSeconds.GetValueOrDefault(0);
+                            totalSummary.TotalStarts += sum.TotalStarts;
+                        }
+
+                        flightReportSummaries.AddRange(summary);
+                        flightReportSummaries.Add(totalSummary);
+                    }
+                    else
+                    {
+                        var totalSummary = new FlightReportSummary()
+                        {
+                            GroupBy = "Total",
+                            TotalFlightDurationInSeconds = 0,
+                            TotalStarts = 0
+                        };
+
+                        flightReportSummaries.Add(totalSummary);
                     }
 
                     #endregion Flight summary for Location function
