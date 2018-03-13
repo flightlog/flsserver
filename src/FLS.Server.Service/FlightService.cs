@@ -424,6 +424,18 @@ namespace FLS.Server.Service
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<FlightOverviewSearchFilter>();
             if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new FlightOverviewSearchFilter();
+
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "FlightDuration")
+                {
+                    pageableSearchFilter.Sorting.Add("FlightDurationInSeconds", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
             if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
@@ -515,25 +527,7 @@ namespace FLS.Server.Service
                             && DbFunctions.TruncateTime(flight.FlightDate) <= DbFunctions.TruncateTime(to));
                     }
                 }
-
-                //if (filter.LdgDateTime != null)
-                //{
-                //    var dateTimeFilter = filter.LdgDateTime;
-
-                //    if (dateTimeFilter.Fixed.HasValue)
-                //    {
-                //        flights = flights.Where(flight => flight.LdgDateTime.HasValue && DbFunctions.TruncateTime(flight.LdgDateTime) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
-                //    }
-                //    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
-                //    {
-                //        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
-                //        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
-
-                //        flights = flights.Where(flight => flight.LdgDateTime.HasValue && DbFunctions.TruncateTime(flight.LdgDateTime) >= DbFunctions.TruncateTime(from)
-                //            && DbFunctions.TruncateTime(flight.LdgDateTime) <= DbFunctions.TruncateTime(to));
-                //    }
-                //}
-
+                
                 if (filter.IsSoloFlight.HasValue)
                     flights = flights.Where(flight => flight.IsSoloFlight == filter.IsSoloFlight.Value);
 
@@ -543,11 +537,7 @@ namespace FLS.Server.Service
                     flight => flight.StartLocation.LocationName.Contains(filter.StartLocation));
                 flights = flights.WhereIf(filter.LdgLocation,
                     flight => flight.LdgLocation.LocationName.Contains(filter.LdgLocation));
-
-                //TODO: Search for flight duration
-                //flights = flights.WhereIf(filter.GliderFlightDuration,
-                //    flight => flight.FlightDuration.LocationName.Contains(filter.GliderFlightDuration));
-
+                
                 var flightsAndFlightCrews = flights.GroupJoin(flightCrews, f => f.FlightId, fcp => fcp.FlightId,
                         (f, fcp) => new { f, fcp })
                     .SelectMany(x => x.fcp.DefaultIfEmpty(), (f, fcp) => new FlightOverview
@@ -654,6 +644,23 @@ namespace FLS.Server.Service
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<GliderFlightOverviewSearchFilter>();
             if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new GliderFlightOverviewSearchFilter();
+
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "GliderFlightDuration")
+                {
+                    pageableSearchFilter.Sorting.Add("GliderFlightDurationInSeconds", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowFlightDuration")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlightDurationInSeconds", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
             if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
@@ -747,25 +754,7 @@ namespace FLS.Server.Service
                             && DbFunctions.TruncateTime(flight.FlightDate) <= DbFunctions.TruncateTime(to));
                     }
                 }
-
-                //if (filter.LdgDateTime != null)
-                //{
-                //    var dateTimeFilter = filter.LdgDateTime;
-
-                //    if (dateTimeFilter.Fixed.HasValue)
-                //    {
-                //        flights = flights.Where(flight => flight.LdgDateTime.HasValue && DbFunctions.TruncateTime(flight.LdgDateTime) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
-                //    }
-                //    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
-                //    {
-                //        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
-                //        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
-
-                //        flights = flights.Where(flight => flight.LdgDateTime.HasValue && DbFunctions.TruncateTime(flight.LdgDateTime) >= DbFunctions.TruncateTime(from)
-                //            && DbFunctions.TruncateTime(flight.LdgDateTime) <= DbFunctions.TruncateTime(to));
-                //    }
-                //}
-
+                
                 if (filter.IsSoloFlight.HasValue)
                     flights = flights.Where(flight => flight.IsSoloFlight == filter.IsSoloFlight.Value);
 
@@ -775,10 +764,6 @@ namespace FLS.Server.Service
                     flight => flight.StartLocation.LocationName.Contains(filter.StartLocation));
                 flights = flights.WhereIf(filter.LdgLocation,
                     flight => flight.LdgLocation.LocationName.Contains(filter.LdgLocation));
-
-                //TODO: Search for flight duration
-                //flights = flights.WhereIf(filter.GliderFlightDuration,
-                //    flight => flight.FlightDuration.LocationName.Contains(filter.GliderFlightDuration));
 
                 flights = flights.WhereIf(filter.WinchOperatorName,
                     flight => (flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.WinchOperator).Person.Firstname).Contains(filter.WinchOperatorName));
@@ -790,52 +775,11 @@ namespace FLS.Server.Service
                 flights = flights.WhereIf(filter.TowPilotName,
                     flight => (flight.TowFlight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname + " " + flight.FlightCrews.FirstOrDefault(x => x.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname).Contains(filter.TowPilotName));
               
-                //if (filter.TowFlightStartDateTime != null)
-                //{
-                //    var dateTimeFilter = filter.TowFlightStartDateTime;
-
-                //    if (dateTimeFilter.Fixed.HasValue)
-                //    {
-                //        flights = flights.Where(flight => flight.TowFlight.StartDateTime.HasValue && DbFunctions.TruncateTime(flight.TowFlight.StartDateTime) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
-                //    }
-                //    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
-                //    {
-                //        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
-                //        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
-
-                //        flights = flights.Where(flight => flight.TowFlight.StartDateTime.HasValue && DbFunctions.TruncateTime(flight.TowFlight.StartDateTime) >= DbFunctions.TruncateTime(from)
-                //            && DbFunctions.TruncateTime(flight.TowFlight.StartDateTime) <= DbFunctions.TruncateTime(to));
-                //    }
-                //}
-
-                //if (filter.TowFlightLdgDateTime != null)
-                //{
-                //    var dateTimeFilter = filter.TowFlightLdgDateTime;
-
-                //    if (dateTimeFilter.Fixed.HasValue)
-                //    {
-                //        flights = flights.Where(flight => flight.TowFlight.LdgDateTime.HasValue && DbFunctions.TruncateTime(flight.TowFlight.LdgDateTime) == DbFunctions.TruncateTime(dateTimeFilter.Fixed.Value));
-                //    }
-                //    else if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
-                //    {
-                //        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
-                //        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
-
-                //        flights = flights.Where(flight => flight.TowFlight.LdgDateTime.HasValue && DbFunctions.TruncateTime(flight.TowFlight.LdgDateTime) >= DbFunctions.TruncateTime(from)
-                //            && DbFunctions.TruncateTime(flight.TowFlight.LdgDateTime) <= DbFunctions.TruncateTime(to));
-                //    }
-                //}
-
                 flights = flights.WhereIf(filter.TowFlightStartLocation,
                     flight => flight.TowFlight.StartLocation.LocationName.Contains(filter.TowFlightStartLocation));
                 flights = flights.WhereIf(filter.TowFlightLdgLocation,
                     flight => flight.TowFlight.LdgLocation.LocationName.Contains(filter.TowFlightLdgLocation));
-
-                //TODO: Search for flight duration
-                //flights = flights.WhereIf(filter.TowFlightDuration,
-                //    flight => flight.TowFlight.FlightDuration.LocationName.Contains(filter.TowFlightDuration));
-
-
+                
                 var flightsAndFlightCrews = flights.GroupJoin(flightCrews, f => f.FlightId, fcp => fcp.FlightId,
                         (f, fcp) => new {f, fcp})
                     .SelectMany(x => x.fcp.DefaultIfEmpty(), (f, fcp) => new GliderFlightOverview
