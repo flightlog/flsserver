@@ -27,6 +27,38 @@ namespace FLS.Server.Service.Reporting
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<FlightReportFilterCriteria>();
             if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new FlightReportFilterCriteria();
+
+            //needs to remap related table columns for correct sorting
+            //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "TowAircraftImmatriculation")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlight.Immatriculation", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowPilotName")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlight.PilotName", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowFlightLdgDateTime")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlight.LdgDateTime", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "FlightDuration")
+                {
+                    pageableSearchFilter.Sorting.Add("FlightDurationInSeconds", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+                else if (sort == "TowFlightDuration")
+                {
+                    pageableSearchFilter.Sorting.Add("TowFlight.FlightDurationInSeconds", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
+
             if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
