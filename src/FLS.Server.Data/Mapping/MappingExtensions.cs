@@ -3904,6 +3904,7 @@ namespace FLS.Server.Data.Mapping
             entity.NotificationEmail = details.NotificationEmail;
             entity.PersonId = details.PersonId;
             entity.Remarks = details.Remarks;
+            entity.LanguageId = 1;  //TODO: map it from details
 
             //set by server
             //entity.LastPasswordChangeOn = details.LastPasswordChangeOn;
@@ -3943,6 +3944,7 @@ namespace FLS.Server.Data.Mapping
             entity.LockoutEnabled = sourceEntity.LockoutEnabled;
             entity.LockoutEndDateUtc = sourceEntity.LockoutEndDateUtc;
             entity.DoNotUpdateMetaData = sourceEntity.DoNotUpdateMetaData;
+            entity.LanguageId = sourceEntity.LanguageId;
             
             return entity;
         }
