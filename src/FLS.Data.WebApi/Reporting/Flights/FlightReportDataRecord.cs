@@ -1,6 +1,8 @@
 ﻿using System;
 using FLS.Common.Extensions;
+using FLS.Data.WebApi.Flight;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace FLS.Data.WebApi.Reporting.Flights
 {
@@ -54,6 +56,9 @@ namespace FLS.Data.WebApi.Reporting.Flights
         public TimeSpan? FlightDuration { get; set; }
 
         public TowFlightReportDataRecord TowFlight { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public FlightCategory FlightCategory { get; set; }
 
         #region Helper Properties with JsonIgnore
         [JsonIgnore]

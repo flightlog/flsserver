@@ -6,6 +6,7 @@ using System.Linq;
 using FLS.Common.Extensions;
 using FLS.Common.Paging;
 using FLS.Data.WebApi;
+using FLS.Data.WebApi.Flight;
 using FLS.Data.WebApi.Reporting.Flights;
 using FLS.Server.Data.Enums;
 using NLog;
@@ -167,7 +168,8 @@ namespace FLS.Server.Service.Reporting
                             PilotName = f.f.TowFlight.FlightCrews.Any(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent) ?
                                     f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname
                                     + " " + f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname : null,
-                                } : null
+                                } : null,
+                        FlightCategory = f.f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight ? FlightCategory.MotorFlight : FlightCategory.GliderFlight
                     }).OrderByPropertyNames(pageableSearchFilter.Sorting);
 
                 var pagedQuery = new PagedQuery<FlightReportDataRecord>(flightsAndFlightCrews, pageStart, pageSize);
