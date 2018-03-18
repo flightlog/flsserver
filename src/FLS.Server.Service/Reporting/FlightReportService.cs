@@ -109,6 +109,20 @@ namespace FLS.Server.Service.Reporting
                 flights = flights.WhereIf(filter.LocationId.HasValue,
                     flight => flight.StartLocationId == filter.LocationId.Value || flight.LdgLocationId == filter.LocationId.Value);
 
+                //check also if we have to restrict to the club owned data when selecting a location
+                if (filter.LocationId.HasValue)
+                {
+                    var club = context.Clubs.FirstOrDefault(x => x.ClubId == CurrentAuthenticatedFLSUserClubId);
+
+                    if (club != null 
+                        && club.HomebaseId.HasValue
+                        && club.HomebaseId.Value != filter.LocationId.Value)
+                    {
+                        //we have to restrict the flights of other locations to our own club related flight data
+                        flights = flights.Where(flight => flight.OwnerId == club.ClubId);
+                    }
+                }
+
                 //filter only flights where person is Pilot, Copilot or instructor
                 flights = flights.WhereIf(filter.FlightCrewPersonId.HasValue,
                     flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
@@ -205,6 +219,20 @@ namespace FLS.Server.Service.Reporting
                         flight => flight.StartLocationId == filter.LocationId.Value ||
                                   flight.LdgLocationId == filter.LocationId.Value);
 
+                    //check also if we have to restrict to the club owned data when selecting a location
+                    if (filter.LocationId.HasValue)
+                    {
+                        var club = context.Clubs.FirstOrDefault(x => x.ClubId == CurrentAuthenticatedFLSUserClubId);
+
+                        if (club != null
+                            && club.HomebaseId.HasValue
+                            && club.HomebaseId.Value != filter.LocationId.Value)
+                        {
+                            //we have to restrict the flights of other locations to our own club related flight data
+                            flightSummary = flightSummary.Where(flight => flight.OwnerId == club.ClubId);
+                        }
+                    }
+
                     //filter only flights where person is Pilot, Copilot or instructor
                     flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
                         flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
@@ -260,6 +288,20 @@ namespace FLS.Server.Service.Reporting
                         flight => flight.StartLocationId == filter.LocationId.Value ||
                                   flight.LdgLocationId == filter.LocationId.Value);
 
+                    //check also if we have to restrict to the club owned data when selecting a location
+                    if (filter.LocationId.HasValue)
+                    {
+                        var club = context.Clubs.FirstOrDefault(x => x.ClubId == CurrentAuthenticatedFLSUserClubId);
+
+                        if (club != null
+                            && club.HomebaseId.HasValue
+                            && club.HomebaseId.Value != filter.LocationId.Value)
+                        {
+                            //we have to restrict the flights of other locations to our own club related flight data
+                            flightSummary = flightSummary.Where(flight => flight.OwnerId == club.ClubId);
+                        }
+                    }
+
                     //filter only flights where person is Pilot, Copilot or instructor
                     flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
                         flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
@@ -314,6 +356,20 @@ namespace FLS.Server.Service.Reporting
                     flightSummary = flightSummary.WhereIf(filter.LocationId.HasValue,
                         flight => flight.StartLocationId == filter.LocationId.Value ||
                                   flight.LdgLocationId == filter.LocationId.Value);
+
+                    //check also if we have to restrict to the club owned data when selecting a location
+                    if (filter.LocationId.HasValue)
+                    {
+                        var club = context.Clubs.FirstOrDefault(x => x.ClubId == CurrentAuthenticatedFLSUserClubId);
+
+                        if (club != null
+                            && club.HomebaseId.HasValue
+                            && club.HomebaseId.Value != filter.LocationId.Value)
+                        {
+                            //we have to restrict the flights of other locations to our own club related flight data
+                            flightSummary = flightSummary.Where(flight => flight.OwnerId == club.ClubId);
+                        }
+                    }
 
                     //filter only flights where person is Pilot, Copilot or instructor
                     flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
@@ -373,6 +429,20 @@ namespace FLS.Server.Service.Reporting
                     flightSummary = flightSummary.WhereIf(filter.LocationId.HasValue,
                         flight => flight.StartLocationId == filter.LocationId.Value ||
                                   flight.LdgLocationId == filter.LocationId.Value);
+
+                    //check also if we have to restrict to the club owned data when selecting a location
+                    if (filter.LocationId.HasValue)
+                    {
+                        var club = context.Clubs.FirstOrDefault(x => x.ClubId == CurrentAuthenticatedFLSUserClubId);
+
+                        if (club != null
+                            && club.HomebaseId.HasValue
+                            && club.HomebaseId.Value != filter.LocationId.Value)
+                        {
+                            //we have to restrict the flights of other locations to our own club related flight data
+                            flightSummary = flightSummary.Where(flight => flight.OwnerId == club.ClubId);
+                        }
+                    }
 
                     //filter only flights where person is Pilot, Copilot or instructor
                     flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
@@ -451,6 +521,20 @@ namespace FLS.Server.Service.Reporting
                         flight => flight.StartLocationId == filter.LocationId.Value ||
                                   flight.LdgLocationId == filter.LocationId.Value);
 
+                    //check also if we have to restrict to the club owned data when selecting a location
+                    if (filter.LocationId.HasValue)
+                    {
+                        var club = context.Clubs.FirstOrDefault(x => x.ClubId == CurrentAuthenticatedFLSUserClubId);
+
+                        if (club != null
+                            && club.HomebaseId.HasValue
+                            && club.HomebaseId.Value != filter.LocationId.Value)
+                        {
+                            //we have to restrict the flights of other locations to our own club related flight data
+                            flightSummary = flightSummary.Where(flight => flight.OwnerId == club.ClubId);
+                        }
+                    }
+
                     //filter only flights where person is Pilot, Copilot or instructor
                     flightSummary = flightSummary.WhereIf(filter.FlightCrewPersonId.HasValue,
                         flight => flight.FlightCrews.Any(x => x.PersonId == filter.FlightCrewPersonId.Value
@@ -484,7 +568,7 @@ namespace FLS.Server.Service.Reporting
                             totalSummary.TotalStarts += sum.TotalStarts;
                         }
 
-                        flightReportSummaries.AddRange(summary);
+                        flightReportSummaries.AddRange(summary.OrderBy(x => x.GroupBy));
                         flightReportSummaries.Add(totalSummary);
                     }
                     else
