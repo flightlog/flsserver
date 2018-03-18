@@ -60,6 +60,12 @@ namespace FLS.Data.WebApi.Reporting.Flights
         [JsonConverter(typeof(StringEnumConverter))]
         public FlightCategory FlightCategory { get; set; }
 
+        /// <summary>
+        /// When the flight record data are for a towing flight, the related (towed) glider flight Id is set.
+        /// So it is possible to edit the glider flight with the towing flight together.
+        /// </summary>
+        public Guid? TowedGliderFlightId { get; set; }
+
         #region Helper Properties with JsonIgnore
         [JsonIgnore]
         public int? FlightDurationInSeconds

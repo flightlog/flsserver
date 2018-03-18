@@ -33,27 +33,12 @@ namespace FLS.Server.Service.Reporting
             //http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
             foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
             {
-                if (sort == "TowAircraftImmatriculation")
-                {
-                    pageableSearchFilter.Sorting.Add("TowFlight.Immatriculation", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "TowPilotName")
-                {
-                    pageableSearchFilter.Sorting.Add("TowFlight.PilotName", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "TowFlightLdgDateTime")
-                {
-                    pageableSearchFilter.Sorting.Add("TowFlight.LdgDateTime", pageableSearchFilter.Sorting[sort]);
-                    pageableSearchFilter.Sorting.Remove(sort);
-                }
-                else if (sort == "FlightDuration")
+                if (sort == "FlightDuration")
                 {
                     pageableSearchFilter.Sorting.Add("FlightDurationInSeconds", pageableSearchFilter.Sorting[sort]);
                     pageableSearchFilter.Sorting.Remove(sort);
                 }
-                else if (sort == "TowFlightDuration")
+                else if (sort == "TowFlight.FlightDuration")
                 {
                     pageableSearchFilter.Sorting.Add("TowFlight.FlightDurationInSeconds", pageableSearchFilter.Sorting[sort]);
                     pageableSearchFilter.Sorting.Remove(sort);
@@ -64,11 +49,13 @@ namespace FLS.Server.Service.Reporting
             {
                 pageableSearchFilter.Sorting = new Dictionary<string, string>();
                 pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
+                pageableSearchFilter.Sorting.Add("Immatriculation", "asc");     //better sorting when combining TowFlights and GliderFlights
             }
             else if (pageableSearchFilter.Sorting.Count == 1 && pageableSearchFilter.Sorting.ContainsKey("FlightDate"))
             {
                 //when sorting for flight date only, we sort for StartDateTime as second to get more valuable result
                 pageableSearchFilter.Sorting.Add("StartDateTime", "asc");
+                pageableSearchFilter.Sorting.Add("Immatriculation", "asc");     //better sorting when combining TowFlights and GliderFlights
             }
 
             using (var context = _dataAccessService.CreateDbContext())
@@ -101,9 +88,9 @@ namespace FLS.Server.Service.Reporting
                     });
 
                 var flights = context.Flights
-                    .Include(x => x.FlightType)
                     .Where(f => (filter.GliderFlights && f.FlightAircraftType == (int) FlightAircraftTypeValue.GliderFlight)
-                                || (filter.MotorFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight));
+                                || (filter.MotorFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight)
+                                || (filter.TowFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.TowFlight));
 
                 if (filter.FlightDate != null)
                 {
@@ -154,7 +141,7 @@ namespace FLS.Server.Service.Reporting
                         LdgLocation = f.f.LdgLocation.LocationName,
                         FlightDurationInSeconds = DbFunctions.DiffSeconds(f.f.StartDateTime, f.f.LdgDateTime),
                         TowFlight = f.f.TowFlightId.HasValue ? new TowFlightReportDataRecord() {  
-                            TowFlightId = f.f.TowFlightId.Value,
+                            TowFlightId = f.f.TowFlight.FlightId,
                             Immatriculation = f.f.TowFlight.Aircraft.Immatriculation,
                             FlightCode = f.f.TowFlight.FlightType.FlightCode,
                             FlightTypeName = f.f.TowFlight.FlightType.FlightTypeName,
@@ -167,9 +154,13 @@ namespace FLS.Server.Service.Reporting
                             ProcessState = f.f.TowFlight.ProcessStateId,
                             PilotName = f.f.TowFlight.FlightCrews.Any(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent) ?
                                     f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Lastname
-                                    + " " + f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname : null,
-                                } : null,
-                        FlightCategory = f.f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight ? FlightCategory.MotorFlight : FlightCategory.GliderFlight
+                                    + " " + f.f.TowFlight.FlightCrews.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent).Person.Firstname : null
+                        } : null,
+                        FlightCategory = f.f.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight ? FlightCategory.GliderFlight :
+                            f.f.FlightAircraftType == (int)FlightCategory.TowFlight ? FlightCategory.TowFlight :
+                            f.f.FlightAircraftType == (int)FlightCategory.MotorFlight ? FlightCategory.MotorFlight :
+                            f.f.FlightAircraftType == (int)FlightCategory.Other ? FlightCategory.Other : FlightCategory.Unknown,
+                        TowedGliderFlightId = f.f.TowedFlights.Any() ? f.f.TowedFlights.FirstOrDefault().FlightId : Guid.Empty
                     }).OrderByPropertyNames(pageableSearchFilter.Sorting);
 
                 var pagedQuery = new PagedQuery<FlightReportDataRecord>(flightsAndFlightCrews, pageStart, pageSize);
@@ -190,7 +181,8 @@ namespace FLS.Server.Service.Reporting
                         .Where(f => (filter.GliderFlights &&
                                      f.FlightAircraftType == (int) FlightAircraftTypeValue.GliderFlight)
                                     || (filter.MotorFlights &&
-                                        f.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight));
+                                        f.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight)
+                                    || (filter.TowFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.TowFlight));
 
                     if (filter.FlightDate != null)
                     {
@@ -244,7 +236,8 @@ namespace FLS.Server.Service.Reporting
                         .Where(f => (filter.GliderFlights &&
                                      f.FlightAircraftType == (int) FlightAircraftTypeValue.GliderFlight)
                                     || (filter.MotorFlights &&
-                                        f.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight));
+                                        f.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight)
+                                    || (filter.TowFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.TowFlight));
 
                     if (filter.FlightDate != null)
                     {
@@ -298,7 +291,8 @@ namespace FLS.Server.Service.Reporting
                         .Where(f => (filter.GliderFlights &&
                                      f.FlightAircraftType == (int) FlightAircraftTypeValue.GliderFlight)
                                     || (filter.MotorFlights &&
-                                        f.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight));
+                                        f.FlightAircraftType == (int) FlightAircraftTypeValue.MotorFlight)
+                                    || (filter.TowFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.TowFlight));
 
                     if (filter.FlightDate != null)
                     {
@@ -356,7 +350,8 @@ namespace FLS.Server.Service.Reporting
                         .Where(f => (filter.GliderFlights &&
                                      f.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight)
                                     || (filter.MotorFlights &&
-                                        f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight));
+                                        f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight)
+                                    || (filter.TowFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.TowFlight));
 
                     if (filter.FlightDate != null)
                     {
@@ -432,7 +427,8 @@ namespace FLS.Server.Service.Reporting
                         .Where(f => (filter.GliderFlights &&
                                      f.FlightAircraftType == (int)FlightAircraftTypeValue.GliderFlight)
                                     || (filter.MotorFlights &&
-                                        f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight));
+                                        f.FlightAircraftType == (int)FlightAircraftTypeValue.MotorFlight)
+                                    || (filter.TowFlights && f.FlightAircraftType == (int)FlightAircraftTypeValue.TowFlight));
 
                     if (filter.FlightDate != null)
                     {

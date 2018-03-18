@@ -14,5 +14,7 @@ namespace FLS.Data.WebApi.Reporting.Flights
         public bool GliderFlights { get; set; } = true;
 
         public bool MotorFlights { get; set; } = true;
+
+        public bool TowFlights { get; set; } = false;
     }
 }
