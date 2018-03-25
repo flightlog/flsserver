@@ -324,7 +324,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<PersonOverview>))]
-        public IHttpActionResult GetPagedPersonOverview([FromBody]PageableSearchFilter<PersonOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedPersonOverview([FromBody]PageableSearchFilter<PersonOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var persons = _personService.GetPagedPersonOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(persons);

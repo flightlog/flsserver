@@ -34,7 +34,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<SettingDetails>))]
-        public IHttpActionResult GetPagedSettingDetails([FromBody]PageableSearchFilter<SettingDetailsSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedSettingDetails([FromBody]PageableSearchFilter<SettingDetailsSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var settings = _settingService.GetPagedSettingDetails(pageStart, pageSize, pageableSearchFilter);
             return Ok(settings);

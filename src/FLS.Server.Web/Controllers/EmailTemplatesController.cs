@@ -47,7 +47,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<EmailTemplateOverview>))]
-        public IHttpActionResult GetPagedEmailTemplateOverview([FromBody]PageableSearchFilter<EmailTemplateOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedEmailTemplateOverview([FromBody]PageableSearchFilter<EmailTemplateOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var emailTemplates = _templateService.GetPagedEmailTemplateOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(emailTemplates);

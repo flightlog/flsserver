@@ -103,7 +103,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<UserOverview>))]
-        public IHttpActionResult GetPagedUserOverview([FromBody]PageableSearchFilter<UserOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedUserOverview([FromBody]PageableSearchFilter<UserOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var users = _userService.GetPagedUserOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(users);

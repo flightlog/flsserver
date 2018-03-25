@@ -37,7 +37,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(FlightReportResult))]
-        public IHttpActionResult GetPagedFlightReport([FromBody]PageableSearchFilter<FlightReportFilterCriteria> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedFlightReport([FromBody]PageableSearchFilter<FlightReportFilterCriteria> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var result = _flightReportService.GetPagedFlightReport(pageStart, pageSize, pageableSearchFilter);
             return Ok(result);

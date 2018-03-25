@@ -47,7 +47,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<PersonCategoryOverview>))]
-        public IHttpActionResult GetPagedPersonCategoryOverview([FromBody]PageableSearchFilter<PersonCategoryOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedPersonCategoryOverview([FromBody]PageableSearchFilter<PersonCategoryOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var memberStates = _clubService.GetPagedPersonCategoryOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(memberStates);

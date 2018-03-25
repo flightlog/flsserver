@@ -28,7 +28,7 @@ namespace FLS.Server.Tests.WebApiControllerTests
             searchFilter.SearchFilter.Target = "1061";
             searchFilter.SearchFilter.RuleFilterName = "Schulung";
 
-            var response = PostAsync(searchFilter, $"/api/v1/accountingrulefilters/page/1/{pageSize}").Result;
+            var response = PostAsync(searchFilter, $"/api/v1/accountingrulefilters/page/0/{pageSize}").Result;
 
             var result = ConvertToModel<PagedList<AccountingRuleFilterOverview>>(response);
 

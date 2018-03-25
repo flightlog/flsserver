@@ -61,7 +61,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<PlanningDayOverview>))]
-        public IHttpActionResult GetPagedLocationOverviews([FromBody]PageableSearchFilter<PlanningDayOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedLocationOverviews([FromBody]PageableSearchFilter<PlanningDayOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var planningDays = _planningDayService.GetPagedPlanningDayOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(planningDays);

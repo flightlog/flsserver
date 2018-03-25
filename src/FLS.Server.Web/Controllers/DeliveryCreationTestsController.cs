@@ -37,7 +37,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<DeliveryCreationTestOverview>))]
-        public IHttpActionResult GetPagedDeliveryCreationTestOverview([FromBody]PageableSearchFilter<DeliveryCreationTestOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedDeliveryCreationTestOverview([FromBody]PageableSearchFilter<DeliveryCreationTestOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var records = DeliveryService.GetPagedDeliveryCreationTestOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(records);

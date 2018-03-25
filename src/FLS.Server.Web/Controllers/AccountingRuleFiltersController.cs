@@ -47,7 +47,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<AccountingRuleFilterOverview>))]
-        public IHttpActionResult GetPagedAccountingRuleFilterOverview([FromBody]PageableSearchFilter<AccountingRuleFilterOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedAccountingRuleFilterOverview([FromBody]PageableSearchFilter<AccountingRuleFilterOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var accountingRuleFilters = _accountingRuleService.GetPagedAccountingRuleFilterOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(accountingRuleFilters);

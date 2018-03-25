@@ -46,7 +46,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<SystemLogOverview>))]
-        public IHttpActionResult GetPagedSystemLogOverview([FromBody]PageableSearchFilter<SystemLogOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedSystemLogOverview([FromBody]PageableSearchFilter<SystemLogOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var systemLogs = _systemService.GetPagedSystemLogOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(systemLogs);

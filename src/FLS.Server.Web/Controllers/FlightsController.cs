@@ -80,7 +80,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<FlightOverview>))]
-        public IHttpActionResult GetPagedFlightOverview([FromBody]PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedFlightOverview([FromBody]PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var flights = _flightService.GetPagedFlightOverview(pageStart, pageSize, pageableSearchFilter, false);
             return Ok(flights);
@@ -138,7 +138,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("gliderflights/page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<GliderFlightOverview>))]
-        public IHttpActionResult GetPagedGliderFlightOverview([FromBody]PageableSearchFilter<GliderFlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedGliderFlightOverview([FromBody]PageableSearchFilter<GliderFlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var flights = _flightService.GetPagedGliderFlightOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(flights);
@@ -196,7 +196,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("motorflights/page/{pageStart:int?}/{pageSize:int?}")]
         [ResponseType(typeof(PagedList<FlightOverview>))]
-        public IHttpActionResult GetPagedMotorFlightOverview([FromBody]PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 1, int? pageSize = 100)
+        public IHttpActionResult GetPagedMotorFlightOverview([FromBody]PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
             var flights = _flightService.GetPagedFlightOverview(pageStart, pageSize, pageableSearchFilter, true);
             return Ok(flights);
