@@ -903,7 +903,7 @@ namespace FLS.Server.Data.Mapping
 
             details.DeliveryItems = new List<DeliveryItemDetails>();
 
-            foreach (var item in entity.DeliveryItems)
+            foreach (var item in entity.DeliveryItems.OrderBy(x => x.Position))
             {
                 var deliveryItem = new DeliveryItemDetails()
                 {
