@@ -372,6 +372,19 @@ namespace FLS.Server.Service
                         persons.Where(p => p.PersonClubs.Any(ppc => ppc.ClubId == CurrentAuthenticatedFLSUserClubId));
                 }
 
+                if (filter.SearchAllPersonsExceptInMatchedPersonCategories)
+                {
+                    //persons = persons.Where(x =>
+                    //    x.PersonPersonCategories.Except(ppc =>
+                    //        filter.MatchedPersonCategories.Contains(ppc.PersonCategoryId)));
+                }
+                else
+                {
+                    persons = persons.Where(x =>
+                        x.PersonPersonCategories.Any(ppc =>
+                            filter.MatchedPersonCategories.Contains(ppc.PersonCategoryId)));
+                }
+
                 var pagedQuery = new PagedQuery<Person>(persons, pageStart, pageSize);
 
                 var overviewList =
