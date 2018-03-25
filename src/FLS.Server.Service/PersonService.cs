@@ -374,9 +374,16 @@ namespace FLS.Server.Service
 
                 if (filter.SearchAllPersonsExceptInMatchedPersonCategories)
                 {
-                    //persons = persons.Where(x =>
-                    //    x.PersonPersonCategories.Except(ppc =>
-                    //        filter.MatchedPersonCategories.Contains(ppc.PersonCategoryId)));
+                    if (filter.MatchedPersonCategories != null && filter.MatchedPersonCategories.Any())
+                    {
+                        var personsInCategory = context.Persons.Where(x =>
+                                x.PersonPersonCategories.Any(ppc =>
+                                    filter.MatchedPersonCategories.Contains(ppc.PersonCategoryId)))
+                            .Select(x => x.PersonId)
+                            .ToList();
+
+                        persons = persons.Where(x => personsInCategory.Contains(x.PersonId) == false);
+                    }
                 }
                 else
                 {
