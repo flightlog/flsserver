@@ -28,6 +28,8 @@ namespace FLS.Server.Service.Accounting.Rules
 
             InitializeAircraftConditions(ruleBasedDelivery);
 
+            InitializeStartConditions(ruleBasedDelivery);
+
             //Conditions.Add(new Between<double>(ruleBasedDelivery.ActiveFlightTime, AccountingRuleFilter.MinFlightTimeMatchingValue, AccountingRuleFilter.MaxFlightTimeMatchingValue, includeMinValue:false, includeMaxValue:true));
 
             InitializeFlightTypeConditions(ruleBasedDelivery);
@@ -48,31 +50,47 @@ namespace FLS.Server.Service.Accounting.Rules
                 if (AccountingRuleFilter.MatchedAircraftHomebaseIds != null &&
                     AccountingRuleFilter.MatchedAircraftHomebaseIds.Any())
                 {
-                    if (Flight.Aircraft != null && Flight.Aircraft.HomebaseId.HasValue)
+                    if (Flight.Aircraft != null)
                     {
-                        Conditions.Add(
-                            new Inverter(new Contains<Guid>(AccountingRuleFilter.MatchedAircraftHomebaseIds,
-                                Flight.Aircraft.HomebaseId.Value)));
+                        if (Flight.Aircraft.HomebaseId.HasValue)
+                        {
+                            Conditions.Add(
+                                new Inverter(new Contains<Guid>(AccountingRuleFilter.MatchedAircraftHomebaseIds,
+                                    Flight.Aircraft.HomebaseId.Value)));
+                        }
+                        else
+                        {
+                            Logger.Debug($"Aircraft of flight has no homebase location set. Rule matches!");
+                            Conditions.Add(new Equals<bool>(Flight.Aircraft.HomebaseId.HasValue, false));
+                        }
                     }
                     else
                     {
-                        Logger.Warn($"Aircraft of flight has no homebase location set. May we account something wrong!");
+                        Logger.Warn($"Flight has no Aircraft set. May we account something wrong!");
                     }
                 }
             }
             else
             {
-                if (Flight.Aircraft != null && Flight.Aircraft.HomebaseId.HasValue)
+                if (Flight.Aircraft != null)
                 {
-                    Conditions.Add(new Contains<Guid>(AccountingRuleFilter.MatchedAircraftHomebaseIds,
-                        Flight.Aircraft.HomebaseId.Value));
+                    if (Flight.Aircraft.HomebaseId.HasValue)
+                    {
+                        Conditions.Add(new Contains<Guid>(AccountingRuleFilter.MatchedAircraftHomebaseIds,
+                            Flight.Aircraft.HomebaseId.Value));
+                    }
+                    else
+                    {
+                        Logger.Debug(
+                            $"Aircraft of flight has no homebase location set. Set condition to always FALSE! May we account something wrong!");
+
+                        //add condition which is always false
+                        Conditions.Add(new Equals<bool>(false, true));
+                    }
                 }
                 else
                 {
-                    Logger.Warn($"Aircraft of flight has no homebase location set. May we account something wrong!");
-
-                    //add condition which is always false
-                    Conditions.Add(new Equals<bool>(false, true));
+                    Logger.Warn($"Flight has no Aircraft set. May we account something wrong!");
                 }
             }
         }
@@ -162,13 +180,13 @@ namespace FLS.Server.Service.Accounting.Rules
                 //    if (AccountingRuleFilter.MatchedPersonCategories != null && AccountingRuleFilter.MatchedPersonCategories.Any())
                 //    {
                 //        //there are some excluded person category we have to filter for
-                //        var persons = _flight.FlightCrews
-                //                            .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
-                //                            .Select(x => x.Person);
-                //        var personClubs = persons.Select(p => p.PersonClubs.First(q => q.ClubId == ruleBasedDelivery.ClubId));
+                //        var persons = Flight.FlightCrews
+                //            .Where(x => flightCrewTypeSelection.Contains(x.FlightCrewTypeId))
+                //            .Select(x => x.Person);
+                //        var personPersonCategories = persons.Where(pers => pers.PersonPersonCategories.Any(q => AccountingRuleFilter.MatchedPersonCategories.Contains(q.PersonCategoryId))).Select(p => p.);
 
                 //        Conditions.Add(new Inverter(new IntersectAny<Guid>(AccountingRuleFilter.MatchedPersonCategories,
-                //            personClubs.Select(pc => pc.MemberStateId.GetValueOrDefault()))));
+                //            personPersonCategories.Select(pc => pc.))));
                 //    }
                 //}
                 //else
@@ -319,7 +337,10 @@ namespace FLS.Server.Service.Accounting.Rules
             {
                 Conditions.Add(new Contains<Guid>(AccountingRuleFilter.MatchedAircraftIds, Flight.AircraftId));
             }
+        }
 
+        protected virtual void InitializeStartConditions(RuleBasedDeliveryDetails ruleBasedDelivery)
+        {
             if (AccountingRuleFilter.UseRuleForAllStartTypesExceptListed)
             {
                 if (AccountingRuleFilter.MatchedStartTypes != null && AccountingRuleFilter.MatchedStartTypes.Any())
