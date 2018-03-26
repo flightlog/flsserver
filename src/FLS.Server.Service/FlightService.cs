@@ -960,14 +960,18 @@ namespace FLS.Server.Service
                         .Include(Constants.FlightCrews + "." + Constants.Person)
                         .Include(Constants.StartType)
                         .Include(Constants.StartLocation)
+                        .Include(Constants.StartLocation + "." + "InOutboundPoints")
                         .Include(Constants.LdgLocation)
+                        .Include(Constants.LdgLocation + "." + "InOutboundPoints")
                         .Include(Constants.TowFlight)
                         .Include(Constants.TowFlight + "." + Constants.Aircraft)
                         .Include(Constants.TowFlight + "." + Constants.FlightType)
                         .Include(Constants.TowFlight + "." + Constants.FlightCrews)
                         .Include(Constants.TowFlight + "." + Constants.FlightCrews + "." + Constants.Person)
                         .Include(Constants.TowFlight + "." + Constants.StartLocation)
+                        .Include(Constants.TowFlight + "." + Constants.StartLocation + "." + "InOutboundPoints")
                         .Include(Constants.TowFlight + "." + Constants.LdgLocation)
+                        .Include(Constants.TowFlight + "." + Constants.LdgLocation + "." + "InOutboundPoints")
                         .FirstOrDefault(a => a.FlightId == flightId);
 
                     flight.EntityNotNull("Flight", flightId);
@@ -1101,6 +1105,32 @@ namespace FLS.Server.Service
 
                 if (flight.NrOfLdgs.HasValue && flight.NrOfLdgs.Value < 1)
                     validationResults.Add(new ValidationResult("VALIDATION_ERROR_Number_of_landings_is_less_then_1"));
+            }
+
+            if (flight.StartLocation.IsOutboundRouteRequired)
+            {
+                if (string.IsNullOrWhiteSpace(flight.OutboundRoute))
+                {
+                    validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_outbound_route_set"));
+                }
+                else if (flight.StartLocation.InOutboundPoints.Where(x => x.IsOutboundPoint)
+                    .Select(x => x.InOutboundPointName.ToLower()).Contains(flight.OutboundRoute.ToLower()) == false)
+                {
+                    validationResults.Add(new ValidationResult("VALIDATION_ERROR_Invalid_outbound_route_set"));
+                }
+            }
+
+            if (flight.LdgLocation.IsOutboundRouteRequired)
+            {
+                if (string.IsNullOrWhiteSpace(flight.InboundRoute))
+                {
+                    validationResults.Add(new ValidationResult("VALIDATION_ERROR_No_inbound_route_set"));
+                }
+                else if (flight.LdgLocation.InOutboundPoints.Where(x => x.IsInboundPoint)
+                             .Select(x => x.InOutboundPointName.ToLower()).Contains(flight.InboundRoute.ToLower()) == false)
+                {
+                    validationResults.Add(new ValidationResult("VALIDATION_ERROR_Invalid_inbound_route_set"));
+                }
             }
         }
 
