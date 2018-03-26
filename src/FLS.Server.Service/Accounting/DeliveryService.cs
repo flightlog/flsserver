@@ -128,9 +128,9 @@ namespace FLS.Server.Service.Accounting
                     {
                         try
                         {
-                            var delivery = CreateDeliveryForFlight(flight, clubId, batchId, accountingRuleFilters);
+                            var deliveryDetails = CreateDeliveryDetailsForFlight(flight, clubId, accountingRuleFilters);
 
-                            if (delivery.DeliveryItems.Any() == false)
+                            if (deliveryDetails.DeliveryItems.Any() == false)
                             {
                                 Logger.Warn($"Delivery without items created for FlightId/Flight: {flight.FlightId} / {flight}! Delivery-Process stopped and flight process state is set to DeliveryPreparationError!");
 
@@ -139,6 +139,9 @@ namespace FLS.Server.Service.Accounting
                                 context.SaveChanges();
                                 continue;
                             }
+
+                            var delivery = deliveryDetails.ToDelivery(clubId);
+                            delivery.BatchId = batchId;
 
                             context.Deliveries.Add(delivery);
 
@@ -192,8 +195,7 @@ namespace FLS.Server.Service.Accounting
             }
         }
 
-        private Delivery CreateDeliveryForFlight(Flight flight, Guid clubId, long batchId,
-            List<RuleBasedAccountingRuleFilterDetails> accountingRuleFilters)
+        private DeliveryDetails CreateDeliveryDetailsForFlight(Flight flight, Guid clubId, List<RuleBasedAccountingRuleFilterDetails> accountingRuleFilters)
         {
             Logger.Debug(
                 $"Start creating accounting for flight: {flight} using {accountingRuleFilters.Count} recipient rule filters and {accountingRuleFilters.Count} accounting line rule filters.");
@@ -239,10 +241,7 @@ namespace FLS.Server.Service.Accounting
             Logger.Info(
                 $"Created accounting for {ruleBasedDelivery.RecipientDetails.RecipientName}: Flight-Date: {ruleBasedDelivery.FlightInformation.FlightDate.ToShortDateString()} Aircraft: {ruleBasedDelivery.FlightInformation.AircraftImmatriculation} Nr of Lines: {ruleBasedDelivery.DeliveryItems.Count}");
 
-            var delivery = ruleBasedDelivery.ToDelivery(clubId);
-            delivery.BatchId = batchId;
-
-            return delivery;
+            return ruleBasedDelivery;
         }
 
         public bool SetDeliveryAsDelivered(DeliveryBooking flightDeliveryBooking)
@@ -330,9 +329,9 @@ namespace FLS.Server.Service.Accounting
                     accountingRuleFilters.NotNull("accountingRuleFilters");
 
 
-                    var delivery = CreateDeliveryForFlight(flight, CurrentAuthenticatedFLSUserClubId, 1,
+                    var deliveryDetails = CreateDeliveryDetailsForFlight(flight, CurrentAuthenticatedFLSUserClubId,
                         accountingRuleFilters);
-                    var deliveryDetails = delivery.ToDeliveryDetails();
+
                     deliveryCreationResult.CreatedDeliveryDetails = deliveryDetails;
 
                     var matchedAccountingRuleFilters = accountingRuleFilters.Where(x => x.HasMatched).ToList();
@@ -437,19 +436,19 @@ namespace FLS.Server.Service.Accounting
                     accountingRuleFilters.NotNull("accountingRuleFilters");
 
 
-                    var createdDelivery = CreateDeliveryForFlight(flight, CurrentAuthenticatedFLSUserClubId, 1,
+                    var createdDeliveryDetails = CreateDeliveryDetailsForFlight(flight, CurrentAuthenticatedFLSUserClubId,
                         accountingRuleFilters);
-                    var accountingFilterTypes = context.AccountingRuleFilterTypes.ToList();
 
                     var matchedAccountingRuleFilters = accountingRuleFilters.Where(x => x.HasMatched).ToList();
 
                     // ReSharper disable once PossibleNullReferenceException
-                    deliveryCreationTest.LastTestCreatedDeliveryDetails = JsonConvert.SerializeObject(createdDelivery.ToDeliveryDetails());
+                    deliveryCreationTest.LastTestCreatedDeliveryDetails = JsonConvert.SerializeObject(createdDeliveryDetails);
                     deliveryCreationTest.LastTestMatchedAccountingRuleFilterIds =
                         JsonConvert.SerializeObject(
                             matchedAccountingRuleFilters.Select(x => x.AccountingRuleFilterId).ToList());
                     deliveryCreationTest.LastTestRunOn = DateTime.UtcNow;
                     deliveryCreationTest.LastTestSuccessful = true;
+                    deliveryCreationTest.LastTestResultMessage = string.Empty;
 
                     try
                     {
@@ -457,8 +456,8 @@ namespace FLS.Server.Service.Accounting
 
                         if (deliveryCreationTest.MustNotCreateDeliveryForFlight)
                         {
-                            if (createdDelivery == null || createdDelivery.DeliveryItems == null ||
-                                createdDelivery.DeliveryItems.Any() == false)
+                            if (createdDeliveryDetails == null || createdDeliveryDetails.DeliveryItems == null ||
+                                createdDeliveryDetails.DeliveryItems.Any() == false)
                             {
                                 deliveryCreationTest.LastTestSuccessful = true;
                             }
@@ -477,7 +476,7 @@ namespace FLS.Server.Service.Accounting
 
                             if (deliveryCreationTest.IgnoreDeliveryInformation == false)
                             {
-                                if (createdDelivery.DeliveryInformation != expectedDeliveryDetails.DeliveryInformation)
+                                if (createdDeliveryDetails.DeliveryInformation != expectedDeliveryDetails.DeliveryInformation)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
                                     deliveryCreationTest.LastTestResultMessage =
@@ -487,7 +486,7 @@ namespace FLS.Server.Service.Accounting
 
                             if (deliveryCreationTest.IgnoreAdditionalInformation == false)
                             {
-                                if (createdDelivery.AdditionalInformation !=
+                                if (createdDeliveryDetails.AdditionalInformation !=
                                     expectedDeliveryDetails.AdditionalInformation)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
@@ -496,12 +495,9 @@ namespace FLS.Server.Service.Accounting
                                 }
                             }
 
-                            var createdRecipientDetails =
-                                JsonConvert.DeserializeObject<RecipientDetails>(createdDelivery.RecipientDetails);
-
                             if (deliveryCreationTest.IgnoreRecipientPersonId == false)
                             {
-                                if (createdRecipientDetails.PersonId !=
+                                if (createdDeliveryDetails.RecipientDetails.PersonId !=
                                     expectedDeliveryDetails.RecipientDetails.PersonId)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
@@ -512,7 +508,7 @@ namespace FLS.Server.Service.Accounting
 
                             if (deliveryCreationTest.IgnoreRecipientClubMemberNumber == false)
                             {
-                                if (createdRecipientDetails.PersonClubMemberNumber !=
+                                if (createdDeliveryDetails.RecipientDetails.PersonClubMemberNumber !=
                                     expectedDeliveryDetails.RecipientDetails.PersonClubMemberNumber)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
@@ -523,7 +519,7 @@ namespace FLS.Server.Service.Accounting
 
                             if (deliveryCreationTest.IgnoreRecipientName == false)
                             {
-                                if (createdRecipientDetails.Lastname !=
+                                if (createdDeliveryDetails.RecipientDetails.Lastname !=
                                     expectedDeliveryDetails.RecipientDetails.Lastname)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
@@ -531,7 +527,7 @@ namespace FLS.Server.Service.Accounting
                                         $"{Environment.NewLine}Lastname doesn't match";
                                 }
 
-                                if (createdRecipientDetails.Firstname !=
+                                if (createdDeliveryDetails.RecipientDetails.Firstname !=
                                     expectedDeliveryDetails.RecipientDetails.Firstname)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
@@ -542,7 +538,7 @@ namespace FLS.Server.Service.Accounting
 
                             if (deliveryCreationTest.IgnoreRecipientAddress == false)
                             {
-                                if (createdRecipientDetails.AddressLine1 !=
+                                if (createdDeliveryDetails.RecipientDetails.AddressLine1 !=
                                     expectedDeliveryDetails.RecipientDetails.AddressLine1)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
@@ -550,7 +546,7 @@ namespace FLS.Server.Service.Accounting
                                         $"{Environment.NewLine}AddressLine1 doesn't match";
                                 }
 
-                                if (createdRecipientDetails.AddressLine2 !=
+                                if (createdDeliveryDetails.RecipientDetails.AddressLine2 !=
                                     expectedDeliveryDetails.RecipientDetails.AddressLine2)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
@@ -558,21 +554,21 @@ namespace FLS.Server.Service.Accounting
                                         $"{Environment.NewLine}AddressLine2 doesn't match";
                                 }
 
-                                if (createdRecipientDetails.ZipCode != expectedDeliveryDetails.RecipientDetails.ZipCode)
+                                if (createdDeliveryDetails.RecipientDetails.ZipCode != expectedDeliveryDetails.RecipientDetails.ZipCode)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
                                     deliveryCreationTest.LastTestResultMessage +=
                                         $"{Environment.NewLine}ZipCode doesn't match";
                                 }
 
-                                if (createdRecipientDetails.City != expectedDeliveryDetails.RecipientDetails.City)
+                                if (createdDeliveryDetails.RecipientDetails.City != expectedDeliveryDetails.RecipientDetails.City)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
                                     deliveryCreationTest.LastTestResultMessage +=
                                         $"{Environment.NewLine}City doesn't match";
                                 }
 
-                                if (createdRecipientDetails.CountryName !=
+                                if (createdDeliveryDetails.RecipientDetails.CountryName !=
                                     expectedDeliveryDetails.RecipientDetails.CountryName)
                                 {
                                     deliveryCreationTest.LastTestSuccessful = false;
@@ -581,7 +577,7 @@ namespace FLS.Server.Service.Accounting
                                 }
                             }
 
-                            if (createdDelivery.DeliveryItems.Count != expectedDeliveryDetails.DeliveryItems.Count)
+                            if (createdDeliveryDetails.DeliveryItems.Count != expectedDeliveryDetails.DeliveryItems.Count)
                             {
                                 deliveryCreationTest.LastTestSuccessful = false;
                                 deliveryCreationTest.LastTestResultMessage +=
@@ -590,18 +586,18 @@ namespace FLS.Server.Service.Accounting
 
                             foreach (var expectedDeliveryItem in expectedDeliveryDetails.DeliveryItems)
                             {
-                                DeliveryItem createdItem = null;
+                                DeliveryItemDetails createdItem = null;
 
                                 if (deliveryCreationTest.IgnoreItemPositioning == false)
                                 {
                                     createdItem =
-                                        createdDelivery.DeliveryItems.FirstOrDefault(
+                                        createdDeliveryDetails.DeliveryItems.FirstOrDefault(
                                             x => x.Position == expectedDeliveryItem.Position);
                                 }
                                 else
                                 {
                                     createdItem =
-                                        createdDelivery.DeliveryItems.FirstOrDefault(
+                                        createdDeliveryDetails.DeliveryItems.FirstOrDefault(
                                             x => x.ArticleNumber == expectedDeliveryItem.ArticleNumber);
                                 }
 
@@ -662,9 +658,9 @@ namespace FLS.Server.Service.Accounting
                                 }
                             }
 
-                            if (createdDelivery.DeliveryItems.Count > expectedDeliveryDetails.DeliveryItems.Count)
+                            if (createdDeliveryDetails.DeliveryItems.Count > expectedDeliveryDetails.DeliveryItems.Count)
                             {
-                                foreach (var createdItem in createdDelivery.DeliveryItems)
+                                foreach (var createdItem in createdDeliveryDetails.DeliveryItems)
                                 {
                                     if (expectedDeliveryDetails.DeliveryItems.Any(
                                             x => x.ArticleNumber == createdItem.ArticleNumber) == false)
