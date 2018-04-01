@@ -41,7 +41,16 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 Conditions.Add(new Equals<bool>(false, true));
             }
 
-            Conditions.Add(new Between<long>(Convert.ToInt64(Flight.FlightDurationZeroBased.TotalSeconds), _minFlightTimeInSecondsMatchingValue, _maxFlightTimeInSecondsMatchingValue, includeMinValue: false, includeMaxValue: true));
+            if (Flight.NoStartTimeInformation || Flight.NoLdgTimeInformation)
+            {
+                Logger.Debug($"Flight has no start or landing time information. Will not check condition for beeing in the air with minimum flight time. Assume the aircraft was in the air!");
+            }
+            else
+            {
+                Conditions.Add(new Between<long>(Convert.ToInt64(Flight.FlightDurationZeroBased.TotalSeconds),
+                    _minFlightTimeInSecondsMatchingValue, _maxFlightTimeInSecondsMatchingValue, includeMinValue: false,
+                    includeMaxValue: true));
+            }
         }
 
         public override RuleBasedDeliveryDetails Apply(RuleBasedDeliveryDetails ruleBasedDelivery)
