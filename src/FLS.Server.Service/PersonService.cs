@@ -372,20 +372,7 @@ namespace FLS.Server.Service
                         persons.Where(p => p.PersonClubs.Any(ppc => ppc.ClubId == CurrentAuthenticatedFLSUserClubId));
                 }
 
-                if (filter.SearchAllPersonsExceptInMatchedPersonCategories)
-                {
-                    if (filter.MatchedPersonCategories != null && filter.MatchedPersonCategories.Any())
-                    {
-                        var personsInCategory = context.Persons.Where(x =>
-                                x.PersonPersonCategories.Any(ppc =>
-                                    filter.MatchedPersonCategories.Contains(ppc.PersonCategoryId)))
-                            .Select(x => x.PersonId)
-                            .ToList();
-
-                        persons = persons.Where(x => personsInCategory.Contains(x.PersonId) == false);
-                    }
-                }
-                else
+                if (filter.MatchedPersonCategories != null && filter.MatchedPersonCategories.Any())
                 {
                     persons = persons.Where(x =>
                         x.PersonPersonCategories.Any(ppc =>

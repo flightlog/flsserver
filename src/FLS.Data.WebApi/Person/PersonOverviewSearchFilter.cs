@@ -8,8 +8,8 @@ namespace FLS.Data.WebApi.Person
         public PersonOverviewSearchFilter()
         {
             MatchedPersonCategories = new List<Guid>();
-            SearchAllPersonsExceptInMatchedPersonCategories = true;
         }
+
         public string Firstname { get; set; }
 
         public string Lastname { get; set; }
@@ -49,8 +49,6 @@ namespace FLS.Data.WebApi.Person
         public string LicenceNumber { get; set; }
 
         public bool? OnlyClubRelatedPersons { get; set; }
-
-        public bool SearchAllPersonsExceptInMatchedPersonCategories { get; set; }
 
         public List<Guid> MatchedPersonCategories { get; set; }
     }
