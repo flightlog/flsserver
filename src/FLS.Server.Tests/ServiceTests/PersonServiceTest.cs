@@ -227,5 +227,68 @@ namespace FLS.Server.Tests.ServiceTests
             Assert.AreEqual(person.Birthday.Value.Date, new DateTime(1978, 12, 25).Date);
         }
 
+        [TestMethod]
+        [TestCategory("Service")]
+        public void UpdatePersonPersonCategoryTest()
+        {
+            
+            SetCurrentUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
+
+            var personDetails = new PersonDetails()
+            {
+                Lastname = "Test",
+                Firstname = DateTime.Now.Ticks.ToString(),
+                ZipCode = "8000",
+                ClubRelatedPersonDetails = new ClubRelatedPersonDetails()
+                {
+                    IsActive = true,
+                    MemberNumber = "9999999"
+                }
+            };
+
+            PersonService.InsertPersonDetails(personDetails);
+
+            Assert.IsNotNull(personDetails);
+            Assert.AreNotEqual(Guid.Empty, personDetails.PersonId);
+
+            var personCategories = ClubService.GetPersonCategories();
+            var personCategoryId = personCategories.First().PersonCategoryId;
+            personDetails.ClubRelatedPersonDetails.PersonCategoryIds.Add(personCategoryId);
+
+            PersonService.UpdatePersonDetails(personDetails);
+
+            Assert.IsTrue(personDetails.ClubRelatedPersonDetails.PersonCategoryIds.Contains(personCategoryId));
+        }
+
+        [TestMethod]
+        [TestCategory("Service")]
+        public void InsertPersonPersonCategoryTest()
+        {
+
+            SetCurrentUser(TestConfigurationSettings.Instance.TestClubAdminUsername);
+
+            var personDetails = new PersonDetails()
+            {
+                Lastname = "Test",
+                Firstname = DateTime.Now.Ticks.ToString(),
+                ZipCode = "8000",
+                ClubRelatedPersonDetails = new ClubRelatedPersonDetails()
+                {
+                    IsActive = true,
+                    MemberNumber = "9999999",
+                    PersonCategoryIds = new List<Guid>()
+                }
+            };
+
+            var personCategories = ClubService.GetPersonCategories();
+            var personCategoryId = personCategories.First().PersonCategoryId;
+            personDetails.ClubRelatedPersonDetails.PersonCategoryIds.Add(personCategoryId);
+
+            PersonService.InsertPersonDetails(personDetails);
+
+            Assert.IsNotNull(personDetails);
+            Assert.AreNotEqual(Guid.Empty, personDetails.PersonId);
+            Assert.IsTrue(personDetails.ClubRelatedPersonDetails.PersonCategoryIds.Contains(personCategoryId));
+        }
     }
 }

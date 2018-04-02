@@ -772,7 +772,8 @@ namespace FLS.Server.Service
             InsertPerson(person);
 
             //Map it back to details
-            person.ToPersonDetails(CurrentAuthenticatedFLSUserClubId, personDetails);
+            var inserted = GetPerson(person.PersonId);
+            inserted.ToPersonDetails(CurrentAuthenticatedFLSUserClubId, personDetails);
         }
 
         public void InsertPersonFullDetails(PersonFullDetails personFullDetails)
@@ -786,7 +787,8 @@ namespace FLS.Server.Service
             InsertPerson(person);
 
             //Map it back to details
-            person.ToPersonFullDetails(CurrentAuthenticatedFLSUserClubId, personFullDetails);
+            var inserted = GetPerson(person.PersonId);
+            inserted.ToPersonFullDetails(CurrentAuthenticatedFLSUserClubId, personFullDetails);
         }
 
         public void InsertPassengerDetails(PersonDetails passengerDetails)
@@ -800,7 +802,8 @@ namespace FLS.Server.Service
             InsertPerson(person);
 
             //Map it back to details
-            person.ToPersonDetails(CurrentAuthenticatedFLSUserClubId, passengerDetails);
+            var inserted = GetPerson(person.PersonId);
+            inserted.ToPersonDetails(CurrentAuthenticatedFLSUserClubId, passengerDetails);
         }
 
         internal void InsertPerson(Person person)
@@ -830,7 +833,8 @@ namespace FLS.Server.Service
                     context.SaveChanges();
 
                     //Map it back to details
-                    original.ToPersonDetails(CurrentAuthenticatedFLSUserClubId, currentPersonDetails);
+                    var updated = GetPerson(currentPersonDetails.PersonId);
+                    updated.ToPersonDetails(CurrentAuthenticatedFLSUserClubId, currentPersonDetails);
                 }
             }
         }
