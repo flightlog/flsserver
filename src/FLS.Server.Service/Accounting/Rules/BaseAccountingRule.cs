@@ -238,7 +238,7 @@ namespace FLS.Server.Service.Accounting.Rules
         {
             if (AccountingRuleFilter.UseRuleForAllStartLocationsExceptListed)
             {
-                if (AccountingRuleFilter.MatchedLdgLocationIds != null && AccountingRuleFilter.MatchedLdgLocationIds.Any())
+                if (AccountingRuleFilter.MatchedStartLocationIds != null && AccountingRuleFilter.MatchedStartLocationIds.Any())
                 {
                     if (Flight.StartLocationId.HasValue == false)
                     {
