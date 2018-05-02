@@ -32,6 +32,8 @@ namespace FLS.Server.Data.DbEntities
 
         public bool IsForMotorFlights { get; set; }
 
+        public bool IsActive { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 

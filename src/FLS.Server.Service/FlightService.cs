@@ -381,7 +381,9 @@ namespace FLS.Server.Service
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var flightCostBalanceTypes = context.FlightCostBalanceTypes.OrderBy(x => x.FlightCostBalanceTypeId).ToList();
+                var flightCostBalanceTypes = context.FlightCostBalanceTypes
+                    .Where(x => x.IsActive)
+                    .OrderBy(x => x.FlightCostBalanceTypeId).ToList();
 
                 return flightCostBalanceTypes;
             }
