@@ -1317,4 +1317,27 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'INVERT', 'Invertieren', 1, SYSDATETIME())
 
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'DELIVERIES', 'Lieferscheine', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'DELIVERED_ON', 'LS erstellt am', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'DELIVERY_NUMBER', 'Lieferscheinnummer', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'BATCH_ID', 'Batch Id', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'DELIVERY_INFORMATION', 'LS Informationen', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'DELIVERY_RECIPIENTNAME', 'LS Empfänger', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'DELIVERY_FLIGHT_INFORMATION_IMMATRICULATION', 'Flugzeug', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'DELIVERY_FLIGHT_INFORMATION_START_DATETIME', 'Startzeit', 1, SYSDATETIME())
 GO

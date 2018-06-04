@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Accounting;
+using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Service;
 using FLS.Server.Service.Accounting;
@@ -28,16 +30,16 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
-        /// Gets all the deliveries for an overview.
+        /// Gets the delivery overviews.
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = RoleApplicationKeyStrings.ClubAdministrator)]
-        [HttpGet]
-        [Route("")]
-        [ResponseType(typeof(List<DeliveryOverview>))]
-        public IHttpActionResult GetDeliveryOverviews()
+        [HttpPost]
+        [Route("page/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(PagedList<DeliveryOverview>))]
+        public IHttpActionResult GetPagedDeliveryOverview([FromBody]PageableSearchFilter<DeliveryOverviewSearchFilter> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
         {
-            var deliveries = DeliveryService.GetDeliveryOverviews();
+            var deliveries = DeliveryService.GetPagedDeliveryOverview(pageStart, pageSize, pageableSearchFilter);
             return Ok(deliveries);
         }
 

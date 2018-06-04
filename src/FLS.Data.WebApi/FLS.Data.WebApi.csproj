@@ -56,6 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounting\AccountingUnitTypeListItem.cs" />
+    <Compile Include="Accounting\DeliveryOverviewSearchFilter.cs" />
+    <Compile Include="Accounting\DeliveryOverviewFlightInformation.cs" />
     <Compile Include="Accounting\RuleFilters\AccountingRuleFilterOverviewSearchFilter.cs" />
     <Compile Include="Accounting\DeliveryOverview.cs" />
     <Compile Include="Accounting\AccountingUnitType.cs" />

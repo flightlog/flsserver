@@ -22,8 +22,35 @@ namespace FLS.Server.Data.DbEntities
         public Guid ClubId { get; set; }
 
         public Guid? FlightId { get; set; }
+       
+        public Guid? RecipientPersonId { get; set; }
 
-        public string RecipientDetails { get; set; }
+        [StringLength(250)]
+        public string RecipientName { get; set; }
+
+        [StringLength(100)]
+        public string RecipientFirstname { get; set; }
+
+        [StringLength(100)]
+        public string RecipientLastname { get; set; }
+
+        [StringLength(200)]
+        public string RecipientAddressLine1 { get; set; }
+
+        [StringLength(200)]
+        public string RecipientAddressLine2 { get; set; }
+
+        [StringLength(10)]
+        public string RecipientZipCode { get; set; }
+
+        [StringLength(100)]
+        public string RecipientCity { get; set; }
+
+        [StringLength(100)]
+        public string RecipientCountryName { get; set; }
+
+        [StringLength(20)]
+        public string RecipientPersonClubMemberNumber { get; set; }
 
         [StringLength(250)]
         public string DeliveryInformation { get; set; }

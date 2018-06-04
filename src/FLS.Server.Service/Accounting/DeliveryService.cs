@@ -18,6 +18,7 @@ using FLS.Server.Data.Resources;
 using FLS.Server.Interfaces;
 using FLS.Server.Service.Accounting.RuleEngines;
 using Newtonsoft.Json;
+using FlightCrewType = FLS.Data.WebApi.Flight.FlightCrewType;
 
 
 namespace FLS.Server.Service.Accounting
@@ -899,23 +900,6 @@ namespace FLS.Server.Service.Accounting
 
         #region Delivery
 
-        public List<DeliveryOverview> GetDeliveryOverviews()
-        {
-            using (var context = _dataAccessService.CreateDbContext())
-            {
-                List<Delivery> deliveries =
-                    context.Deliveries.Include("DeliveryItems").Include("Flight").Include("Flight.FlightType")
-                        .Where(c => c.ClubId == CurrentAuthenticatedFLSUserClubId)
-                        .OrderBy(t => t.DeliveryNumber)
-                        .ToList();
-
-                var overviewList = deliveries.Select(x => x.ToDeliveryOverview()).ToList();
-
-                SetDeliveryOverviewSecurity(overviewList);
-                return overviewList;
-            }
-        }
-
         public DeliveryDetails GetDeliveryDetails(Guid deliveryId)
         {
             using (var context = _dataAccessService.CreateDbContext())
@@ -929,7 +913,116 @@ namespace FLS.Server.Service.Accounting
                 return deliveryDetails;
             }
         }
-        
+
+        public PagedList<DeliveryOverview> GetPagedDeliveryOverview(int? pageStart, int? pageSize, PageableSearchFilter<DeliveryOverviewSearchFilter> pageableSearchFilter)
+        {
+            if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<DeliveryOverviewSearchFilter>();
+            if (pageableSearchFilter.SearchFilter == null) pageableSearchFilter.SearchFilter = new DeliveryOverviewSearchFilter();
+
+            ////needs to remap related table columns for correct sorting
+            ////http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
+            //foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            //{
+            //    if (sort == "RecipientName")
+            //    {
+            //        pageableSearchFilter.Sorting.Add("RecipientDetails.RecipientName", pageableSearchFilter.Sorting[sort]);
+            //        pageableSearchFilter.Sorting.Remove(sort);
+            //    }
+            //}
+
+            if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
+            {
+                pageableSearchFilter.Sorting = new Dictionary<string, string>();
+                pageableSearchFilter.Sorting.Add("BatchId", "desc");
+            }
+            
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var includedFlightCrewTypes = new int[]
+                {
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent,
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot,
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor,
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer,
+                    (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger
+                };
+
+                var flightCrews = context
+                    .FlightCrews
+                    .Include("Person")
+                    .Where(fc => includedFlightCrewTypes.Contains(fc.FlightCrewTypeId))
+                    .GroupBy(fc => fc.FlightId)
+                    .Select(fc => new
+                    {
+                        FlightId = fc.Key,
+                        Pilot = fc.FirstOrDefault(ffc => ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent),
+                        SecondCrew = fc.OrderBy(ffc => ffc.FlightCrewTypeId).FirstOrDefault(ffc =>
+                            ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot
+                            || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor
+                            || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer
+                            || ffc.FlightCrewTypeId == (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger)
+                    });
+
+                var deliveries = context.Deliveries
+                    .Where(q => q.ClubId == CurrentAuthenticatedFLSUserClubId)
+                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var filter = pageableSearchFilter.SearchFilter;
+                deliveries = deliveries.WhereIf(filter.DeliveryInformation,
+                        delivery => delivery.DeliveryInformation.Contains(filter.DeliveryInformation));
+                deliveries = deliveries.WhereIf(filter.DeliveryNumber,
+                        delivery => delivery.DeliveryNumber.Contains(filter.DeliveryNumber));
+
+                if (filter.DeliveredOn != null)
+                {
+                    var dateTimeFilter = filter.DeliveredOn;
+
+                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        deliveries = deliveries.Where(delivery => DbFunctions.TruncateTime(delivery.DeliveredOn) >= DbFunctions.TruncateTime(from)
+                                                                         && DbFunctions.TruncateTime(delivery.DeliveredOn) <= DbFunctions.TruncateTime(to));
+                    }
+                }
+
+                deliveries = deliveries.WhereIf(filter.BatchId.HasValue,
+                        delivery => delivery.BatchId.ToString().Contains(filter.BatchId.ToString()));
+                deliveries = deliveries.WhereIf(filter.IsFurtherProcessed.HasValue,
+                        delivery => delivery.IsFurtherProcessed == filter.IsFurtherProcessed.Value);
+                
+                var deliveriesAndFlights = deliveries.GroupJoin(flightCrews, f => f.FlightId, fcp => fcp.FlightId,
+                        (f, fcp) => new {f, fcp})
+                    .SelectMany(x => x.fcp.DefaultIfEmpty(), (f, fcp) => new DeliveryOverview()
+                    {
+                        DeliveryId = f.f.DeliveryId,
+                        BatchId = f.f.BatchId,
+                        DeliveredOn = f.f.DeliveredOn,
+                        IsFurtherProcessed = f.f.IsFurtherProcessed,
+                        DeliveryNumber = f.f.DeliveryNumber,
+                        DeliveryInformation = f.f.DeliveryInformation,
+                        RecipientName = f.f.RecipientName,
+                        FlightInformation = new DeliveryOverviewFlightInformation()
+                        {
+                            AircraftImmatriculation = f.f.Flight.Aircraft.Immatriculation,
+                            StartDateTime = f.f.Flight.StartDateTime
+                        },
+                        CanUpdateRecord = true,
+                        CanDeleteRecord = true
+                    }).OrderByPropertyNames(pageableSearchFilter.Sorting);
+
+                var pagedQuery = new PagedQuery<DeliveryOverview>(deliveriesAndFlights, pageStart, pageSize);
+
+                var overviewList = pagedQuery.Items.ToList();
+                
+                var pagedList = new PagedList<DeliveryOverview>(overviewList, pagedQuery.PageStart,
+                    pagedQuery.PageSize, pagedQuery.TotalRows);
+                
+                return pagedList;
+            }
+        }
+
         public List<DeliveryDetails> GetDeliveryDetailsList(bool? furtherProcessed)
         {
             return GetDeliveryDetailsList(furtherProcessed, CurrentAuthenticatedFLSUserClubId);
@@ -1058,35 +1151,6 @@ namespace FLS.Server.Service.Accounting
         #endregion Delivery
 
         #region Security
-        private void SetDeliveryOverviewSecurity(List<DeliveryOverview> overviewList)
-        {
-            if (CurrentAuthenticatedFLSUser == null)
-            {
-                Logger.Warn(string.Format("CurrentAuthenticatedFLSUser is NULL. Can't set correct security flags to the object."));
-                foreach (var overview in overviewList)
-                {
-                    overview.CanUpdateRecord = false;
-                    overview.CanDeleteRecord = false;
-                }
-
-                return;
-            }
-
-            foreach (var overview in overviewList)
-            {
-                if (IsCurrentUserInRoleClubAdministrator)
-                {
-                    overview.CanUpdateRecord = true;
-                    overview.CanDeleteRecord = true;
-                }
-                else
-                {
-                    overview.CanUpdateRecord = false;
-                    overview.CanDeleteRecord = false;
-                }
-            }
-        }
-
         private void SetDeliveryDetailsSecurity(DeliveryDetails details)
         {
             if (details == null)

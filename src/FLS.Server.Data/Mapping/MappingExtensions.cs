@@ -789,55 +789,6 @@ namespace FLS.Server.Data.Mapping
         #endregion Country
 
         #region Delivery
-
-        public static DeliveryOverview ToDeliveryOverview(this Delivery entity, DeliveryOverview overview = null)
-        {
-            entity.ArgumentNotNull("entity");
-
-            if (overview == null)
-            {
-                overview = new DeliveryOverview();
-            }
-
-            overview.DeliveryId = entity.DeliveryId;
-
-            if (entity.Flight == null)
-            {
-                overview.FlightInformation = null;
-            }
-            else
-            {
-                overview.FlightInformation.AircraftImmatriculation = entity.Flight.AircraftImmatriculation;
-                overview.FlightInformation.FlightDate = entity.Flight.StartDateTime.Value;
-                overview.FlightInformation.FlightId = entity.Flight.FlightId;
-                overview.FlightInformation.PilotName = entity.Flight.PilotDisplayName;
-
-                if (entity.Flight.FlightType != null)
-                {
-                    overview.FlightInformation.FlightTypeName = entity.Flight.FlightType.FlightTypeName;
-                }
-
-                if (entity.Flight.Passenger != null)
-                    overview.FlightInformation.SecondCrewName = entity.Flight.PassengerDisplayName;
-                if (entity.Flight.CoPilot != null)
-                    overview.FlightInformation.SecondCrewName = entity.Flight.CoPilotDisplayName;
-                if (entity.Flight.Instructor != null)
-                    overview.FlightInformation.SecondCrewName = entity.Flight.InstructorDisplayName;
-            }
-
-            overview.DeliveryInformation = entity.DeliveryInformation;
-
-            if (entity.RecipientDetails != null)
-            {
-                var recipient = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientDetails);
-                overview.Recipient = recipient.ToString();
-            }
-
-            overview.NumberOfDeliveryItems = entity.DeliveryItems.Count;
-
-            return overview;
-        }
-
         public static DeliveryDetails ToDeliveryDetails(this Delivery entity, DeliveryDetails details = null)
         {
             entity.ArgumentNotNull("entity");
@@ -891,15 +842,17 @@ namespace FLS.Server.Data.Mapping
             details.DeliveryNumber = entity.DeliveryNumber;
             details.IsFurtherProcessed = entity.IsFurtherProcessed;
 
-            if (entity.RecipientDetails == null)
-            {
-                details.RecipientDetails = null;
-            }
-            else
-            {
-                var recipient = JsonConvert.DeserializeObject<RecipientDetails>(entity.RecipientDetails);
-                details.RecipientDetails = recipient;
-            }
+            if (details.RecipientDetails == null) details.RecipientDetails = new RecipientDetails();
+
+            details.RecipientDetails.PersonId = entity.RecipientPersonId;
+            details.RecipientDetails.Firstname = entity.RecipientFirstname;
+            details.RecipientDetails.Lastname = entity.RecipientLastname;
+            details.RecipientDetails.AddressLine1 = entity.RecipientAddressLine1;
+            details.RecipientDetails.AddressLine2 = entity.RecipientAddressLine2;
+            details.RecipientDetails.ZipCode = entity.RecipientZipCode;
+            details.RecipientDetails.City = entity.RecipientCity;
+            details.RecipientDetails.CountryName = entity.RecipientCountryName;
+            details.RecipientDetails.PersonClubMemberNumber = entity.RecipientPersonClubMemberNumber;
 
             details.DeliveryItems = new List<DeliveryItemDetails>();
 
@@ -950,12 +903,27 @@ namespace FLS.Server.Data.Mapping
 
             if (details.RecipientDetails == null)
             {
-                entity.RecipientDetails = null;
+                entity.RecipientPersonId = null;
+                entity.RecipientFirstname = null;
+                entity.RecipientLastname = null;
+                entity.RecipientAddressLine1 = null;
+                entity.RecipientAddressLine2 = null;
+                entity.RecipientZipCode = null;
+                entity.RecipientCity = null;
+                entity.RecipientCountryName = null;
+                entity.RecipientPersonClubMemberNumber = null;
             }
             else
             {
-                //Serialize property to JSON 
-                entity.RecipientDetails = JsonConvert.SerializeObject(details.RecipientDetails);
+                entity.RecipientPersonId = details.RecipientDetails.PersonId;
+                entity.RecipientFirstname = details.RecipientDetails.Firstname;
+                entity.RecipientLastname = details.RecipientDetails.Lastname;
+                entity.RecipientAddressLine1 = details.RecipientDetails.AddressLine1;
+                entity.RecipientAddressLine2 = details.RecipientDetails.AddressLine2;
+                entity.RecipientZipCode = details.RecipientDetails.ZipCode;
+                entity.RecipientCity = details.RecipientDetails.City;
+                entity.RecipientCountryName = details.RecipientDetails.CountryName;
+                entity.RecipientPersonClubMemberNumber = details.RecipientDetails.PersonClubMemberNumber;
             }
 
             //check for new delivery items
