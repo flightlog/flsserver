@@ -6,13 +6,13 @@ namespace FLS.Data.WebApi.Accounting
 {
     public class DeliveryOverviewSearchFilter
     {
-        public FlightInformation FlightInformation { get; set; }
+        public DateTimeFilter FlightStartDateTime { get; set; }
 
-        public string Recipient { get; set; }
+        public string FlightAircraftImmatriculation { get; set; }
+
+        public string RecipientName { get; set; }
 
         public string DeliveryInformation { get; set; }
-
-        public int? NumberOfDeliveryItems { get; set; }
 
         public string DeliveryNumber { get; set; }
 

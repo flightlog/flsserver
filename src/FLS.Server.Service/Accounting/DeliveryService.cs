@@ -905,7 +905,15 @@ namespace FLS.Server.Service.Accounting
             using (var context = _dataAccessService.CreateDbContext())
             {
                 var delivery =
-                    context.Deliveries.FirstOrDefault(
+                    context.Deliveries
+                        .Include("Flight")
+                        .Include("Flight." + Constants.Aircraft)
+                        .Include("Flight." + Constants.FlightType)
+                        .Include("Flight.FlightCrews")
+                        .Include("Flight.FlightCrews.Person")
+                        .Include("Flight.FlightCrews.Person.PersonClubs")
+                        .Include("DeliveryItems")
+                        .FirstOrDefault(
                         c => c.DeliveryId == deliveryId && c.ClubId == CurrentAuthenticatedFLSUserClubId);
 
                 var deliveryDetails = delivery.ToDeliveryDetails();
@@ -921,14 +929,20 @@ namespace FLS.Server.Service.Accounting
 
             ////needs to remap related table columns for correct sorting
             ////http://stackoverflow.com/questions/3515105/using-first-with-orderby-and-dynamicquery-in-one-to-many-related-tables
-            //foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
-            //{
-            //    if (sort == "RecipientName")
-            //    {
-            //        pageableSearchFilter.Sorting.Add("RecipientDetails.RecipientName", pageableSearchFilter.Sorting[sort]);
-            //        pageableSearchFilter.Sorting.Remove(sort);
-            //    }
-            //}
+            foreach (var sort in pageableSearchFilter.Sorting.Keys.ToList())
+            {
+                if (sort == "FlightAircraftImmatriculation")
+                {
+                    pageableSearchFilter.Sorting.Add("FlightInformation.AircraftImmatriculation", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+
+                if (sort == "FlightStartDateTime")
+                {
+                    pageableSearchFilter.Sorting.Add("FlightInformation.StartDateTime", pageableSearchFilter.Sorting[sort]);
+                    pageableSearchFilter.Sorting.Remove(sort);
+                }
+            }
 
             if (pageableSearchFilter.Sorting == null || pageableSearchFilter.Sorting.Any() == false)
             {
@@ -964,8 +978,7 @@ namespace FLS.Server.Service.Accounting
                     });
 
                 var deliveries = context.Deliveries
-                    .Where(q => q.ClubId == CurrentAuthenticatedFLSUserClubId)
-                    .OrderByPropertyNames(pageableSearchFilter.Sorting);
+                    .Where(q => q.ClubId == CurrentAuthenticatedFLSUserClubId);
 
                 var filter = pageableSearchFilter.SearchFilter;
                 deliveries = deliveries.WhereIf(filter.DeliveryInformation,
@@ -986,6 +999,26 @@ namespace FLS.Server.Service.Accounting
                                                                          && DbFunctions.TruncateTime(delivery.DeliveredOn) <= DbFunctions.TruncateTime(to));
                     }
                 }
+
+                if (filter.FlightStartDateTime != null)
+                {
+                    var dateTimeFilter = filter.FlightStartDateTime;
+
+                    if (dateTimeFilter.From.HasValue || dateTimeFilter.To.HasValue)
+                    {
+                        var from = dateTimeFilter.From.GetValueOrDefault(DateTime.MinValue);
+                        var to = dateTimeFilter.To.GetValueOrDefault(DateTime.MaxValue);
+
+                        deliveries = deliveries.Where(delivery => DbFunctions.TruncateTime(delivery.Flight.StartDateTime) >= DbFunctions.TruncateTime(from)
+                                                                  && DbFunctions.TruncateTime(delivery.Flight.StartDateTime) <= DbFunctions.TruncateTime(to));
+                    }
+                }
+
+                deliveries = deliveries.WhereIf(filter.RecipientName,
+                    delivery => delivery.RecipientName.Contains(filter.RecipientName));
+
+                deliveries = deliveries.WhereIf(filter.FlightAircraftImmatriculation,
+                    delivery => delivery.Flight.Aircraft.Immatriculation.Contains(filter.FlightAircraftImmatriculation));
 
                 deliveries = deliveries.WhereIf(filter.BatchId.HasValue,
                         delivery => delivery.BatchId.ToString().Contains(filter.BatchId.ToString()));
