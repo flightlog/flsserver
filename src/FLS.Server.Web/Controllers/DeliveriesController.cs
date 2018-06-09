@@ -30,6 +30,20 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
+        /// Gets the delivery details.
+        /// </summary>
+        /// <param name="deliveryId">The delivery identifier.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{deliveryId}")]
+        [ResponseType(typeof(DeliveryDetails))]
+        public IHttpActionResult GetDeliveryDetails(Guid deliveryId)
+        {
+            var details = DeliveryService.GetDeliveryDetails(deliveryId);
+            return Ok(details);
+        }
+
+        /// <summary>
         /// Gets the delivery overviews.
         /// </summary>
         /// <returns></returns>
