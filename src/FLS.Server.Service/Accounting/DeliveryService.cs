@@ -1157,16 +1157,12 @@ namespace FLS.Server.Service.Accounting
                             "Delivery can not be deleted with this method, as there are other deliveries assigned to the same flight!");
                     }
 
-                    using (var transaction = context.Database.BeginTransaction())
-                    {
-                        context.Deliveries.Remove(delivery);
-                        var flight = context.Flights.FirstOrDefault(x => x.FlightId == delivery.FlightId.Value);
-                        flight.EntityNotNull("Flight", delivery.FlightId.Value);
-                        flight.DeletedDeliveryForFlight(); //reset process state to locked
+                    context.Deliveries.Remove(delivery);
+                    var flight = context.Flights.FirstOrDefault(x => x.FlightId == delivery.FlightId.Value);
+                    flight.EntityNotNull("Flight", delivery.FlightId.Value);
+                    flight.DeletedDeliveryForFlight(); //reset process state to locked
 
-                        context.SaveChanges();
-                        transaction.Commit();
-                    }
+                    context.SaveChanges();
                 }
                 else
                 {
