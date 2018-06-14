@@ -1318,6 +1318,24 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'INVERT', 'Invertieren', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'PASSENGER_FLIGHT_APPLICATION', 'Passagierflug Anmeldung', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'PASSENGER_FLIGHT_FORM_EXPLANATION', 'Angaben zum Passagier:', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'SAME_ADDRESS_AS_PASSENGER', 'gleiche Adresse wie Passagier', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'APPLY_FOR_PASSENGER_FLIGHT', 'Registrierung abschicken', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'APPLICATION_FOR_PASSENGER_FLIGHT_WAS_SUCCESSFUL', 'Vielen Dank für Ihre Registrierung. Wir freuen uns auf einen unvergesslichen Passagierflug.', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'SEND_COUPON_TO_PASSENGER', 'Direkt an Passagier schicken', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'DELIVERIES', 'Lieferscheine', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])

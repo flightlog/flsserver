@@ -265,5 +265,149 @@ namespace FLS.Server.Service
                 }
             }
         }
+
+        public void RegisterForPassengerFlight(PassengerFlightRegistrationDetails passengerFlightRegistrationDetails)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                try
+                {
+                    Logger.Info(
+                        $"New passenger flight registration with following data (JSON): {JsonConvert.SerializeObject(passengerFlightRegistrationDetails)}");
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception);
+                }
+
+                try
+                {
+                    var club =
+                        context.Clubs.Include("Homebase").FirstOrDefault(
+                            x => x.ClubKey.ToUpper() == passengerFlightRegistrationDetails.ClubKey.ToUpper());
+
+                    if (club == null)
+                    {
+                        Logger.Error(
+                            $"Club with ClubKey: {passengerFlightRegistrationDetails.ClubKey} not found! Passenger flight registration could not be finished for person {passengerFlightRegistrationDetails.Lastname} {passengerFlightRegistrationDetails.Firstname}!");
+                        throw new ApplicationException(
+                            $"Club with ClubKey: {passengerFlightRegistrationDetails.ClubKey} not found! Passenger flight registration could not be finished for person {passengerFlightRegistrationDetails.Lastname} {passengerFlightRegistrationDetails.Firstname}!");
+                    }
+
+                    var user =
+                        context.Users.FirstOrDefault(
+                            x =>
+                                x.ClubId == club.ClubId &&
+                                x.UserRoles.Any(
+                                    role =>
+                                        role.Role.RoleApplicationKeyString ==
+                                        RoleApplicationKeyStrings.ClubAdministrator));
+
+                    if (user == null)
+                    {
+                        Logger.Error($"No club admin user found in club with ClubKey: {club.ClubKey}");
+
+                        user =
+                            context.Users.FirstOrDefault(
+                                x =>
+                                        x.ClubId == club.ClubId && x.AccountState == (int)UserAccountState.Active);
+
+                        if (user == null)
+                        {
+                            throw new ApplicationException(
+                                $"No active club user or admin user in club with ClubKey: {club.ClubKey} found.");
+                        }
+                    }
+
+                    _dataAccessService.IdentityService.SetUser(user);
+
+                    var person = new Person()
+                    {
+                        Lastname = passengerFlightRegistrationDetails.Lastname,
+                        Firstname = passengerFlightRegistrationDetails.Firstname,
+                        AddressLine1 = passengerFlightRegistrationDetails.AddressLine1,
+                        Zip = passengerFlightRegistrationDetails.ZipCode,
+                        City = passengerFlightRegistrationDetails.City,
+                        CountryId = passengerFlightRegistrationDetails.CountryId,
+                        PrivatePhone = passengerFlightRegistrationDetails.PrivatePhoneNumber,
+                        BusinessPhone = passengerFlightRegistrationDetails.BusinessPhoneNumber,
+                        MobilePhone = passengerFlightRegistrationDetails.MobilePhoneNumber,
+                        EmailPrivate = passengerFlightRegistrationDetails.PrivateEmail,
+                        HasGliderTraineeLicence = false
+                    };
+
+                    var personClub = new PersonClub
+                    {
+                        ClubId = club.ClubId,
+                        IsGliderTrainee = false
+                    };
+                    person.PersonClubs.Add(personClub);
+
+                    context.Persons.Add(person);
+
+                    if (passengerFlightRegistrationDetails.InvoiceAddressIsSame == false)
+                    {
+                        var invoicePerson = new Person()
+                        {
+                            Lastname = passengerFlightRegistrationDetails.InvoiceToLastname,
+                            Firstname = passengerFlightRegistrationDetails.InvoiceToFirstname,
+                            AddressLine1 = passengerFlightRegistrationDetails.InvoiceToAddressLine1,
+                            Zip = passengerFlightRegistrationDetails.InvoiceToZipCode,
+                            City = passengerFlightRegistrationDetails.InvoiceToCity,
+                            CountryId = passengerFlightRegistrationDetails.InvoiceToCountryId,
+                            EmailPrivate = passengerFlightRegistrationDetails.NotificationEmail
+                        };
+
+                        personClub = new PersonClub { ClubId = club.ClubId };
+                        invoicePerson.PersonClubs.Add(personClub);
+
+                        context.Persons.Add(invoicePerson);
+                    }
+                    
+                    context.SaveChanges();
+
+                    if (passengerFlightRegistrationDetails.InvoiceAddressIsSame &&
+                        string.IsNullOrWhiteSpace(passengerFlightRegistrationDetails.PrivateEmail) == false)
+                    {
+                        var email =
+                                _registrationEmailBuildService.CreatePassengerFlightRegistrationEmailForPassenger(passengerFlightRegistrationDetails, person.EmailPrivate, club.ClubId);
+                        _registrationEmailBuildService.SendEmail(email);
+                    }
+                    else if (passengerFlightRegistrationDetails.InvoiceAddressIsSame == false
+                        && string.IsNullOrWhiteSpace(passengerFlightRegistrationDetails.NotificationEmail) == false)
+                    {
+                        var email =
+                                _registrationEmailBuildService.CreatePassengerFlightRegistrationEmailForPassenger(passengerFlightRegistrationDetails, passengerFlightRegistrationDetails.NotificationEmail, club.ClubId);
+                        _registrationEmailBuildService.SendEmail(email);
+                    }
+                    else
+                    {
+                        Logger.Info($"No email entered for passenger {person.DisplayName}. Could not send email to passenger candidate.");
+                    }
+
+                    if (string.IsNullOrWhiteSpace(club.SendPassengerFlightRegistrationOperatorEmailTo) == false)
+                    {
+                        var organisationEmail =
+                            _registrationEmailBuildService.CreatePassengerFlightRegistrationEmailForOrganisator(
+                                passengerFlightRegistrationDetails,
+                                club.SendPassengerFlightRegistrationOperatorEmailTo, club.ClubId);
+                        _registrationEmailBuildService.SendEmail(organisationEmail);
+                    }
+                    else
+                    {
+                        Logger.Warn($"Club {club.Clubname} has no email recipient set for send trial flight registration operator email.");
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception,
+                        $"Error while trying to prepare and save passenger flight registration. Message: {exception.Message}.");
+
+                    _registrationEmailBuildService.SendSystemErrorEmail("Error in RegisterForPassengerFlight-Method", exception.Message, exception.StackTrace, JsonConvert.SerializeObject(passengerFlightRegistrationDetails));
+
+                    throw new ApplicationException("Es trat ein interner Fehler auf. Der System-Verantwortliche wurde informiert. Falls Sie in den nächsten 2 Tagen keine Rückmeldung erhalten, wenden Sie sich bitte an das Sekretariat. Für die Umstände bitten wir uns um Entschuldigung.");
+                }
+            }
+        }
     }
 }

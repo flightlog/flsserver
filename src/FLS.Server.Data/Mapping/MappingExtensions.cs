@@ -701,6 +701,10 @@ namespace FLS.Server.Data.Mapping
             details.SendPlanningDayInfoMailTo = entity.SendPlanningDayInfoMailTo;
             details.SendDeliveryMailExportTo = entity.SendDeliveryMailExportTo;
 
+            details.SendTrialFlightRegistrationOperatorEmailTo = entity.SendTrialFlightRegistrationOperatorEmailTo;
+            details.SendPassengerFlightRegistrationOperatorEmailTo =
+                entity.SendPassengerFlightRegistrationOperatorEmailTo;
+
             details.LastArticleSynchronisationOn = entity.LastArticleSynchronisationOn.SetAsUtc();
             details.LastDeliverySynchronisationOn = entity.LastDeliverySynchronisationOn.SetAsUtc();
             details.LastPersonSynchronisationOn = entity.LastPersonSynchronisationOn.SetAsUtc();
@@ -741,6 +745,9 @@ namespace FLS.Server.Data.Mapping
             entity.SendAircraftStatisticReportTo = details.SendAircraftStatisticReportTo;
             entity.SendPlanningDayInfoMailTo = details.SendPlanningDayInfoMailTo;
             entity.SendDeliveryMailExportTo = details.SendDeliveryMailExportTo;
+            entity.SendTrialFlightRegistrationOperatorEmailTo = details.SendTrialFlightRegistrationOperatorEmailTo;
+            entity.SendPassengerFlightRegistrationOperatorEmailTo =
+                details.SendPassengerFlightRegistrationOperatorEmailTo;
 
             entity.RunDeliveryMailExportJob = details.RunDeliveryMailExportJob;
             entity.RunDeliveryCreationJob = details.RunDeliveryCreationJob;

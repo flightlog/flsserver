@@ -30,4 +30,4 @@ We use [SemVer](http://semver.org/) for versioning.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](https://github.com/flightlog/flsserver/blob/master/LICENSE).

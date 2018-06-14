@@ -48,7 +48,7 @@ namespace FLS.Server.WebApi.Controllers
         [HttpPost]
         [Route("")]
         [ResponseType(typeof(void))]
-        public IHttpActionResult GetLengthUnitTypes(TrialFlightRegistrationDetails trialFlightRegistrationDetails)
+        public IHttpActionResult RegisterForTrialFlight(TrialFlightRegistrationDetails trialFlightRegistrationDetails)
         {
             _registrationService.RegisterForTrialFlight(trialFlightRegistrationDetails);
             return Ok();
