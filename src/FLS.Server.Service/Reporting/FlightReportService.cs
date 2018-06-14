@@ -240,9 +240,10 @@ namespace FLS.Server.Service.Reporting
                         .Select(x => new FlightReportSummary()
                         {
                             GroupBy = "Pilot (Glider)",
-                            TotalStarts = x.Sum(f =>
-                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
-                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalLdgs = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoLdgTimeInformation ? 1 : 0)
+                                          + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalStarts = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoStartTimeInformation ? 1 : 0)
+                                        + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
                             TotalFlightDurationInSeconds =
                                 x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
                         }).ToList();
@@ -302,9 +303,10 @@ namespace FLS.Server.Service.Reporting
                         .Select(x => new FlightReportSummary()
                         {
                             GroupBy = "Pilot (Motor)",
-                            TotalStarts = x.Sum(f =>
-                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
-                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalLdgs = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoLdgTimeInformation ? 1 : 0)
+                                        + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalStarts = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoStartTimeInformation ? 1 : 0)
+                                          + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
                             TotalFlightDurationInSeconds =
                                 x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
                         }).ToList();
@@ -363,9 +365,10 @@ namespace FLS.Server.Service.Reporting
                         .Select(x => new FlightReportSummary()
                         {
                             GroupBy = "Pilot (Towing)",
-                            TotalStarts = x.Sum(f =>
-                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
-                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalLdgs = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoLdgTimeInformation ? 1 : 0)
+                                        + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalStarts = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoStartTimeInformation ? 1 : 0)
+                                          + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
                             TotalFlightDurationInSeconds =
                                 x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
                         }).ToList();
@@ -432,9 +435,10 @@ namespace FLS.Server.Service.Reporting
                         .Select(x => new FlightReportSummary()
                         {
                             GroupBy = "Copilot",
-                            TotalStarts = x.Sum(f =>
-                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
-                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalLdgs = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoLdgTimeInformation ? 1 : 0)
+                                        + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalStarts = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoStartTimeInformation ? 1 : 0)
+                                          + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
                             TotalFlightDurationInSeconds =
                                 x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
                         }).ToList();
@@ -505,9 +509,10 @@ namespace FLS.Server.Service.Reporting
                         .Select(x => new FlightReportSummary()
                         {
                             GroupBy = "Instructor",
-                            TotalStarts = x.Sum(f =>
-                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
-                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalLdgs = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoLdgTimeInformation ? 1 : 0)
+                                        + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalStarts = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoStartTimeInformation ? 1 : 0)
+                                          + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
                             TotalFlightDurationInSeconds =
                                 x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
                         }).ToList();
@@ -578,9 +583,10 @@ namespace FLS.Server.Service.Reporting
                         .Select(x => new FlightReportSummary()
                         {
                             GroupBy = "Instructor (Soloflights)",
-                            TotalStarts = x.Sum(f =>
-                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
-                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalLdgs = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoLdgTimeInformation ? 1 : 0)
+                                        + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalStarts = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoStartTimeInformation ? 1 : 0)
+                                          + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
                             TotalFlightDurationInSeconds =
                                 x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
                         }).ToList();
@@ -596,14 +602,14 @@ namespace FLS.Server.Service.Reporting
                     {
                         GroupBy = "Total",
                         TotalFlightDurationInSeconds = 0,
-                        TotalStarts = 0
+                        TotalLdgs = 0
                     };
 
                     foreach (var sum in flightReportSummaries)
                     {
                         totalSummary.TotalFlightDurationInSeconds +=
                             sum.TotalFlightDurationInSeconds.GetValueOrDefault(0);
-                        totalSummary.TotalStarts += sum.TotalStarts;
+                        totalSummary.TotalLdgs += sum.TotalLdgs;
                     }
 
                     flightReportSummaries.Add(totalSummary);
@@ -665,9 +671,10 @@ namespace FLS.Server.Service.Reporting
                         .Select(x => new FlightReportSummary()
                         {
                             GroupBy = x.Key.FlightTypeName,
-                            TotalStarts = x.Sum(f =>
-                                f.NrOfLdgs != null ? f.NrOfLdgs.Value :
-                                0 + f.NrOfLdgsOnStartLocation != null ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalLdgs = x.Sum(f => f.StartLocationId == filter.LocationId.Value ? 0 : f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoLdgTimeInformation ? 1 : 0)
+                                        + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
+                            TotalStarts = x.Sum(f => f.NrOfLdgs.HasValue ? f.NrOfLdgs.Value : f.NoStartTimeInformation ? 1 : 0)
+                                          + x.Sum(f => f.NrOfLdgsOnStartLocation.HasValue ? f.NrOfLdgsOnStartLocation.Value : 0),
                             TotalFlightDurationInSeconds =
                                 x.Sum(f => DbFunctions.DiffSeconds(f.StartDateTime, f.LdgDateTime))
                         }).ToList();
@@ -678,13 +685,14 @@ namespace FLS.Server.Service.Reporting
                         {
                             GroupBy = "Total",
                             TotalFlightDurationInSeconds = 0,
-                            TotalStarts = 0
+                            TotalLdgs = 0
                         };
 
                         foreach (var sum in summary)
                         {
                             totalSummary.TotalFlightDurationInSeconds +=
                                 sum.TotalFlightDurationInSeconds.GetValueOrDefault(0);
+                            totalSummary.TotalLdgs += sum.TotalLdgs;
                             totalSummary.TotalStarts += sum.TotalStarts;
                         }
 
@@ -697,6 +705,7 @@ namespace FLS.Server.Service.Reporting
                         {
                             GroupBy = "Total",
                             TotalFlightDurationInSeconds = 0,
+                            TotalLdgs = 0,
                             TotalStarts = 0
                         };
 
