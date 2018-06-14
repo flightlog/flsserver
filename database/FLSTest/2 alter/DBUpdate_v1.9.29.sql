@@ -21,6 +21,9 @@ ALTER TABLE [dbo].[Clubs]
 	ADD [SendPassengerFlightRegistrationOperatorEmailTo] [nvarchar](250) NULL
 GO
 
+UPDATE [dbo].[Clubs]
+   SET [SendPassengerFlightRegistrationOperatorEmailTo] = [SendTrialFlightRegistrationOperatorEmailTo]
+GO
 
 PRINT 'Insert new email templates for passenger flight registration'
 
