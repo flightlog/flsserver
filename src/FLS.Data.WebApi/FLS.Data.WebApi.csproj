@@ -56,6 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounting\AccountingUnitTypeListItem.cs" />
+    <Compile Include="Accounting\DeliveryBatchDeleteRequestFeedback.cs" />
+    <Compile Include="Accounting\DeliveryDeleteConfirmation.cs" />
+    <Compile Include="Accounting\DeliveryBatchDeleteRequest.cs" />
     <Compile Include="Accounting\DeliveryOverviewSearchFilter.cs" />
     <Compile Include="Accounting\DeliveryOverviewFlightInformation.cs" />
     <Compile Include="Accounting\RuleFilters\AccountingRuleFilterOverviewSearchFilter.cs" />

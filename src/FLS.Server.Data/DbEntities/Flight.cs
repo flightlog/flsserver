@@ -633,6 +633,14 @@ namespace FLS.Server.Data.DbEntities
 
             ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.Valid;
         }
+
+        /// <summary>
+        /// This method sets the flight process state back to the locked state, to create a new delivery during next workflow process.
+        /// </summary>
+        public void DeletedDeliveryForFlight()
+        {
+            ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked;
+        }
         #endregion additional methods
     }
 }

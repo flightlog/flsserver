@@ -10,6 +10,7 @@ using FLS.Data.WebApi;
 using FLS.Data.WebApi.Accounting;
 using FLS.Data.WebApi.Accounting.RuleFilters;
 using FLS.Data.WebApi.Accounting.Testing;
+using FLS.Data.WebApi.Exceptions;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
 using FLS.Server.Data.Exceptions;
@@ -19,6 +20,7 @@ using FLS.Server.Interfaces;
 using FLS.Server.Service.Accounting.RuleEngines;
 using Newtonsoft.Json;
 using FlightCrewType = FLS.Data.WebApi.Flight.FlightCrewType;
+using FlightProcessState = FLS.Data.WebApi.Flight.FlightProcessState;
 
 
 namespace FLS.Server.Service.Accounting
@@ -1141,11 +1143,37 @@ namespace FLS.Server.Service.Accounting
 
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var original = context.Deliveries.FirstOrDefault(x => x.DeliveryId == deliveryId);
-                original.EntityNotNull("Delivery", deliveryId);
+                var delivery = context.Deliveries.FirstOrDefault(x => x.DeliveryId == deliveryId);
+                delivery.EntityNotNull("Delivery", deliveryId);
 
-                context.Deliveries.Remove(original);
-                context.SaveChanges();
+                if (delivery.FlightId.HasValue)
+                {
+                    if (context.Deliveries.Count(
+                            x => x.FlightId.HasValue && x.FlightId.Value == delivery.FlightId.Value) > 1)
+                    {
+                        Logger.Info(
+                            "Delivery can not be deleted with this method, as there are other deliveries assigned to the same flight!");
+                        throw new FLSServerException(
+                            "Delivery can not be deleted with this method, as there are other deliveries assigned to the same flight!");
+                    }
+
+                    using (var transaction = context.Database.BeginTransaction())
+                    {
+                        context.Deliveries.Remove(delivery);
+                        var flight = context.Flights.FirstOrDefault(x => x.FlightId == delivery.FlightId.Value);
+                        flight.EntityNotNull("Flight", delivery.FlightId.Value);
+                        flight.DeletedDeliveryForFlight(); //reset process state to locked
+
+                        context.SaveChanges();
+                        transaction.Commit();
+                    }
+                }
+                else
+                {
+                    //the delivery has no relation to a flight
+                    context.Deliveries.Remove(delivery);
+                    context.SaveChanges();
+                }
             }
         }
 

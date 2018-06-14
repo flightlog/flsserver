@@ -102,5 +102,19 @@ namespace FLS.Server.WebApi.Controllers
             DeliveryService.CreateDeliveriesFromFlights();
             return Ok();
         }
+
+        /// <summary>
+        /// Deletes the specified delivery.
+        /// </summary>
+        /// <param name="deliveryId">The delivery identifier.</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{deliveryId}")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult Delete(Guid deliveryId)
+        {
+            DeliveryService.DeleteDelivery(deliveryId);
+            return Ok();
+        }
     }
 }
