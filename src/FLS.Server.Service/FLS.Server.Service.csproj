@@ -124,6 +124,7 @@
     <Compile Include="Email\AddressListEmailBuildService.cs" />
     <Compile Include="Email\AccountingEmailBuildService.cs" />
     <Compile Include="Email\Model\PlanningDayAssignmentModel.cs" />
+    <Compile Include="Email\Model\PassengerFlightRegistrationModel.cs" />
     <Compile Include="Email\Model\TrialFlightRegistrationModel.cs" />
     <Compile Include="Email\Model\LostPasswordResetModel.cs" />
     <Compile Include="Email\Model\EmailConfirmationModel.cs" />

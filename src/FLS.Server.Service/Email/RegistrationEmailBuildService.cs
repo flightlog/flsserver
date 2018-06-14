@@ -151,5 +151,129 @@ namespace FLS.Server.Service.Email
 
             return base.BuildEmail("NewTrialFlightRegistrationEmail", factory, tokenValues, emailRecipientAddress.FormatMultipleEmailAddresses(), clubId);
         }
+
+        public MailMessage CreatePassengerFlightRegistrationEmailForPassenger(PassengerFlightRegistrationDetails passengerFlightRegistrationDetails,
+            string emailRecipientAddress, Guid clubId)
+        {
+            passengerFlightRegistrationDetails.ArgumentNotNull("passengerFlightRegistrationDetails");
+
+            var model = new PassengerFlightRegistrationModel()
+            {
+                RecipientName = $"{passengerFlightRegistrationDetails.Firstname} {passengerFlightRegistrationDetails.Lastname}",
+                Firstname = passengerFlightRegistrationDetails.Firstname,
+                Lastname = passengerFlightRegistrationDetails.Lastname,
+                AddressLine1 = passengerFlightRegistrationDetails.AddressLine1,
+                ZipCode = passengerFlightRegistrationDetails.ZipCode,
+                City = passengerFlightRegistrationDetails.City,
+                BusinessPhoneNumber = passengerFlightRegistrationDetails.BusinessPhoneNumber,
+                MobilePhoneNumber = passengerFlightRegistrationDetails.MobilePhoneNumber,
+                PrivatePhoneNumber = passengerFlightRegistrationDetails.PrivatePhoneNumber,
+                PrivateEmail = passengerFlightRegistrationDetails.PrivateEmail,
+                Remarks = passengerFlightRegistrationDetails.Remarks
+            };
+
+            if (string.IsNullOrWhiteSpace(passengerFlightRegistrationDetails.Remarks))
+            {
+                model.Remarks = "keine";
+            }
+
+            if (passengerFlightRegistrationDetails.InvoiceAddressIsSame)
+            {
+                model.InvoiceToFirstname = passengerFlightRegistrationDetails.Firstname;
+                model.InvoiceToLastname = passengerFlightRegistrationDetails.Lastname;
+                model.InvoiceToAddressLine1 = passengerFlightRegistrationDetails.AddressLine1;
+                model.InvoiceToZipCode = passengerFlightRegistrationDetails.ZipCode;
+                model.InvoiceToCity = passengerFlightRegistrationDetails.City;
+            }
+            else
+            {
+                model.RecipientName =
+                    $"{passengerFlightRegistrationDetails.InvoiceToFirstname} {passengerFlightRegistrationDetails.InvoiceToLastname}";
+                model.InvoiceToFirstname = passengerFlightRegistrationDetails.InvoiceToFirstname;
+                model.InvoiceToLastname = passengerFlightRegistrationDetails.InvoiceToLastname;
+                model.InvoiceToAddressLine1 = passengerFlightRegistrationDetails.InvoiceToAddressLine1;
+                model.InvoiceToZipCode = passengerFlightRegistrationDetails.InvoiceToZipCode;
+                model.InvoiceToCity = passengerFlightRegistrationDetails.InvoiceToCity;
+            }
+
+            if (passengerFlightRegistrationDetails.InvoiceAddressIsSame == false
+                && passengerFlightRegistrationDetails.SendCouponToInvoiceAddress)
+            {
+                model.SendCouponToInformation = "Rechnungs-Empfänger";
+            }
+            else
+            {
+                model.SendCouponToInformation = "Passagier";
+            }
+
+            var factory = new MergedEmailFactory(new VelocityTemplateParser("PassengerFlightRegistrationModel"));
+
+            var tokenValues = new Dictionary<string, object>
+                {
+                    {"PassengerFlightRegistrationModel", model}
+                };
+
+            return base.BuildEmail("PassengerFlightRegistrationEmailForPassenger", factory, tokenValues, emailRecipientAddress.SanitizeEmailAddress(), clubId);
+        }
+
+        public MailMessage CreatePassengerFlightRegistrationEmailForOrganisator(PassengerFlightRegistrationDetails passengerFlightRegistrationDetails, string emailRecipientAddress, Guid clubId)
+        {
+            passengerFlightRegistrationDetails.ArgumentNotNull("passengerFlightRegistrationDetails");
+
+            var model = new PassengerFlightRegistrationModel()
+            {
+                Firstname = passengerFlightRegistrationDetails.Firstname,
+                Lastname = passengerFlightRegistrationDetails.Lastname,
+                AddressLine1 = passengerFlightRegistrationDetails.AddressLine1,
+                ZipCode = passengerFlightRegistrationDetails.ZipCode,
+                City = passengerFlightRegistrationDetails.City,
+                BusinessPhoneNumber = passengerFlightRegistrationDetails.BusinessPhoneNumber,
+                MobilePhoneNumber = passengerFlightRegistrationDetails.MobilePhoneNumber,
+                PrivatePhoneNumber = passengerFlightRegistrationDetails.PrivatePhoneNumber,
+                PrivateEmail = passengerFlightRegistrationDetails.PrivateEmail,
+                Remarks = passengerFlightRegistrationDetails.Remarks
+            };
+
+            if (string.IsNullOrWhiteSpace(passengerFlightRegistrationDetails.Remarks))
+            {
+                model.Remarks = "keine";
+            }
+
+            if (passengerFlightRegistrationDetails.InvoiceAddressIsSame)
+            {
+                model.InvoiceToFirstname = passengerFlightRegistrationDetails.Firstname;
+                model.InvoiceToLastname = passengerFlightRegistrationDetails.Lastname;
+                model.InvoiceToAddressLine1 = passengerFlightRegistrationDetails.AddressLine1;
+                model.InvoiceToZipCode = passengerFlightRegistrationDetails.ZipCode;
+                model.InvoiceToCity = passengerFlightRegistrationDetails.City;
+            }
+            else
+            {
+                model.InvoiceToFirstname = passengerFlightRegistrationDetails.InvoiceToFirstname;
+                model.InvoiceToLastname = passengerFlightRegistrationDetails.InvoiceToLastname;
+                model.InvoiceToAddressLine1 = passengerFlightRegistrationDetails.InvoiceToAddressLine1;
+                model.InvoiceToZipCode = passengerFlightRegistrationDetails.InvoiceToZipCode;
+                model.InvoiceToCity = passengerFlightRegistrationDetails.InvoiceToCity;
+            }
+
+            if (passengerFlightRegistrationDetails.InvoiceAddressIsSame == false
+                && passengerFlightRegistrationDetails.SendCouponToInvoiceAddress)
+            {
+                model.SendCouponToInformation = "Rechnungs-Empfänger";
+            }
+            else
+            {
+                model.SendCouponToInformation = "Passagier";
+            }
+
+            var factory = new MergedEmailFactory(new VelocityTemplateParser("PassengerFlightRegistrationModel"));
+
+            var tokenValues = new Dictionary<string, object>
+                {
+                    {"PassengerFlightRegistrationModel", model}
+                };
+
+            return base.BuildEmail("NewPassengerFlightRegistrationEmail", factory, tokenValues, emailRecipientAddress.FormatMultipleEmailAddresses(), clubId);
+        }
     }
 }

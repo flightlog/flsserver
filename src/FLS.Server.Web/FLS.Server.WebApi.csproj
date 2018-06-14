@@ -285,6 +285,7 @@
     <Compile Include="Controllers\EmailTemplatesController.cs" />
     <Compile Include="Controllers\ArticlesController.cs" />
     <Compile Include="Controllers\InOutboundPointsController.cs" />
+    <Compile Include="Controllers\PassengerFlightsRegistrationsController.cs" />
     <Compile Include="Controllers\TrialFlightsRegistrationsController.cs" />
     <Compile Include="Controllers\PersonCategoriesController.cs" />
     <Compile Include="Controllers\MemberStatesController.cs" />
