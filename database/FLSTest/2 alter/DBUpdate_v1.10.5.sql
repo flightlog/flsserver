@@ -66,8 +66,8 @@ UPDATE [dbo].[Deliveries]
    WHERE [RecipientAddressLine2] = 'null'
 
 UPDATE [dbo].[Deliveries]
-   SET [RecipientZip] = NULL 
-   WHERE [RecipientZip] = 'null'
+   SET [RecipientZipCode] = NULL 
+   WHERE [RecipientZipCode] = 'null'
 
 UPDATE [dbo].[Deliveries]
    SET [RecipientCity] = NULL 
