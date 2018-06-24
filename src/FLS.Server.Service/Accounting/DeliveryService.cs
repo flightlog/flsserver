@@ -1148,8 +1148,10 @@ namespace FLS.Server.Service.Accounting
 
                 if (delivery.FlightId.HasValue)
                 {
+                    var flightId = delivery.FlightId.Value;
+
                     if (context.Deliveries.Count(
-                            x => x.FlightId.HasValue && x.FlightId.Value == delivery.FlightId.Value) > 1)
+                            x => x.FlightId.HasValue && x.FlightId.Value == flightId) > 1)
                     {
                         Logger.Info(
                             "Delivery can not be deleted with this method, as there are other deliveries assigned to the same flight!");
@@ -1158,8 +1160,8 @@ namespace FLS.Server.Service.Accounting
                     }
 
                     context.Deliveries.Remove(delivery);
-                    var flight = context.Flights.FirstOrDefault(x => x.FlightId == delivery.FlightId.Value);
-                    flight.EntityNotNull("Flight", delivery.FlightId.Value);
+                    var flight = context.Flights.FirstOrDefault(x => x.FlightId == flightId);
+                    flight.EntityNotNull("Flight", flightId);
                     flight.DeletedDeliveryForFlight(); //reset process state to locked
 
                     context.SaveChanges();
