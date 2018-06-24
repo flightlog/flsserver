@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Authentication;
 using FLS.Common.Validators;
+using FLS.Data.WebApi;
 using FLS.Data.WebApi.Resources;
 using FLS.Server.Data;
 using FLS.Server.Data.DbEntities;
@@ -77,6 +78,18 @@ namespace FLS.Server.Service
                 && ownershipMetaData.OwnerId == CurrentAuthenticatedFLSUserClubId)
                 || (ownershipMetaData.OwnershipType == (int)OwnershipType.User 
                 && ownershipMetaData.OwnerId == CurrentAuthenticatedFLSUser.UserId))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        protected bool IsCreator(IFLSMetaData metaData)
+        {
+            metaData.ArgumentNotNull("metaData");
+
+            if (metaData.CreatedByUserId == CurrentAuthenticatedFLSUser.UserId)
             {
                 return true;
             }

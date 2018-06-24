@@ -9,6 +9,7 @@ using FLS.Data.WebApi;
 using FLS.Data.WebApi.Location;
 using FLS.Data.WebApi.PlanningDay;
 using FLS.Server.Data.DbEntities;
+using FLS.Server.Data.Enums;
 using FLS.Server.Data.Mapping;
 using LinqKit;
 using NLog;
@@ -410,8 +411,16 @@ namespace FLS.Server.Service
                 var original = context.PlanningDays.FirstOrDefault(l => l.PlanningDayId == planningDayId);
                 original.EntityNotNull("PlanningDay", planningDayId);
 
-                context.PlanningDays.Remove(original);
-                context.SaveChanges();
+                if (IsCurrentUserInRoleClubAdministrator ||
+                    IsCreator(original))
+                {
+                    context.PlanningDays.Remove(original);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    throw new UnauthorizedAccessException("Current user is not club admin or owner of this record to delete the planning day.");
+                }
             }
         }
         #endregion PlanningDay
@@ -453,8 +462,8 @@ namespace FLS.Server.Service
             {
                 foreach (var overview in list)
                 {
-                    if (IsCurrentUserInRoleClubAdministrator ||
-                        IsOwner(context.PlanningDays.First(a => a.PlanningDayId == overview.PlanningDayId)))
+                    if (IsCurrentUserInRoleClubAdministrator 
+                        || IsCreator(context.PlanningDays.First(a => a.PlanningDayId == overview.PlanningDayId)))
                     {
                         overview.CanUpdateRecord = true;
                         overview.CanDeleteRecord = true;
@@ -463,6 +472,11 @@ namespace FLS.Server.Service
                     {
                         overview.CanUpdateRecord = false;
                         overview.CanDeleteRecord = false;
+                    }
+
+                    if (IsOwner(context.PlanningDays.First(a => a.PlanningDayId == overview.PlanningDayId)))
+                    {
+                        overview.CanUpdateRecord = true;
                     }
                 }
             }
@@ -484,7 +498,7 @@ namespace FLS.Server.Service
                 return;
             }
 
-            if (IsCurrentUserInRoleClubAdministrator || IsOwner(planningDay))
+            if (IsCurrentUserInRoleClubAdministrator || IsCreator(planningDay))
             {
                 details.CanUpdateRecord = true;
                 details.CanDeleteRecord = true;
@@ -493,6 +507,11 @@ namespace FLS.Server.Service
             {
                 details.CanUpdateRecord = false;
                 details.CanDeleteRecord = false;
+            }
+
+            if (IsOwner(planningDay))
+            {
+                details.CanUpdateRecord = true;
             }
         }
         
