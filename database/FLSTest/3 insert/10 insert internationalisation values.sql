@@ -1297,13 +1297,19 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
      VALUES (NEWID(), 'LANGUAGE', 'Sprache', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'GroupBy', 'Gruppiert nach', 1, SYSDATETIME())
+     VALUES (NEWID(), 'GROUP_BY', 'Gruppiert nach', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'TotalStarts', 'Total Starts', 1, SYSDATETIME())
+     VALUES (NEWID(), 'TOTAL_STARTS', 'Total Starts', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
-     VALUES (NEWID(), 'TotalFlightDuration', 'Total Flugzeit', 1, SYSDATETIME())
+     VALUES (NEWID(), 'TOTAL_FLIGHT_DURATION', 'Total Flugzeit', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'TOTAL_FLIGHTS', 'Total Flüge', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'TOTAL_LANDINGS', 'Total Landungen', 1, SYSDATETIME())
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'LAST_MATCHED_RULE_FILTERS', 'Übereinstimmende Verrechnungs-Regeln beim Test', 1, SYSDATETIME())
