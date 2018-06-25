@@ -1228,13 +1228,13 @@ namespace FLS.Server.Service.Accounting
 
             if (IsCurrentUserInRoleClubAdministrator)
             {
-                details.CanUpdateRecord = true;
+                details.CanUpdateRecord = false;
                 details.CanDeleteRecord = true;
 
                 foreach (var item in details.DeliveryItems)
                 {
+                    item.CanUpdateRecord = false;
                     item.CanDeleteRecord = true;
-                    item.CanUpdateRecord = true;
                 }
             }
             else
