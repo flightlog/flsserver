@@ -1389,4 +1389,16 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'FLIGHT_INFORMATION', 'Flug-Informationen', 1, SYSDATETIME())
 
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'SEND_TRIAL_FLIGHT_REGISTRATION_OPERATOR_EMAIL_TO', 'Schnupperflug-Info-Mail intern an:', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'SEND_PASSENGER_FLIGHT_REGISTRATION_OPERATOR_EMAIL_TO', 'Passagierflug-Info-Mail intern an:', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'RUN_DELIVERY_CREATION_JOB', 'Lieferschein-Erstellungs-Job aktivieren', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'RUN_DELIVERY_MAIL_EXPORT_JOB', 'Lieferschein-Mail-Export-Job aktivieren', 1, SYSDATETIME())
+
 GO
