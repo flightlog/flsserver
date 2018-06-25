@@ -17,6 +17,8 @@ namespace FLS.Data.WebApi.Reporting.Flights
 
         public int TotalLdgs { get; set; }
 
+        public int TotalFlights { get; set; }
+
         public TimeSpan TotalFlightDuration { get; set; }
 
         [JsonIgnore]
