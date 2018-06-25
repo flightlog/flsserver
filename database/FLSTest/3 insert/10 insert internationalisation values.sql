@@ -1358,4 +1358,29 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'DELIVERY_FLIGHT_INFORMATION_START_DATETIME', 'Startzeit', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'POSITION', 'Position', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'ARTICLE_NUMBER', 'Artikelnummer', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'ITEM_TEXT', 'Artikelbezeichnung', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'QUANTITY', 'Menge', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'UNIT_TYPE', 'Einheit', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'IS_FURTHER_PROCESSED', 'Weiter verarbeitet', 1, SYSDATETIME())
+
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'DELIVERY_ITEMS', 'Lieferpositionen', 1, SYSDATETIME())
+	 
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'FLIGHT_INFORMATION', 'Flug-Informationen', 1, SYSDATETIME())
+
 GO
