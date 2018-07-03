@@ -716,6 +716,7 @@ namespace FLS.Server.Data.Mapping
                 details.RunDeliveryCreationJob = entity.RunDeliveryCreationJob;
 
                 details.IsClubMemberNumberReadonly = entity.IsClubMemberNumberReadonly;
+                details.ReplyToEmailAddress = entity.ReplyToEmailAddress;
             }
 
             return details;
@@ -761,6 +762,7 @@ namespace FLS.Server.Data.Mapping
             entity.ClubStateId = (int) FLS.Data.WebApi.Club.ClubState.Active;
 
             entity.IsClubMemberNumberReadonly = details.IsClubMemberNumberReadonly;
+            entity.ReplyToEmailAddress = details.ReplyToEmailAddress;
 
             return entity;
         }

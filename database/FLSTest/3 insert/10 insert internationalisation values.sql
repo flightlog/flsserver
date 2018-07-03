@@ -1404,4 +1404,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'IS_CLUB_MEMBER_NUMBER_READONLY', 'Ist Mitgliedernummer nur lesbar', 1, SYSDATETIME())
 
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'REPLY_TO_EMAIL_ADDRESS', 'Email Antwort Adresse (Reply to)', 1, SYSDATETIME())
+
 GO

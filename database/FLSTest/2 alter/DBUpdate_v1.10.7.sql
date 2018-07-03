@@ -23,7 +23,11 @@ GO
 
 PRINT 'Modify club table'
 ALTER TABLE [dbo].[Clubs]
-	ADD [IsClubMemberNumberReadonly] [bit] NOT NULL CONSTRAINT [DF__Clubs__IsClubMemberNumberReadonly]  DEFAULT ((1))
+	ADD [IsClubMemberNumberReadonly] [bit] NOT NULL CONSTRAINT [DF__Clubs__IsClubMemberNumberReadonly]  DEFAULT ((1)),
+	[ReplyToEmailAddress] [nvarchar](250) NULL
 GO
 
+UPDATE [dbo].[Clubs] 
+	SET [ReplyToEmailAddress] = (SELECT TOP 1 [SystemSenderEmailAddress] FROM [dbo].[SystemData])
+GO
 PRINT 'Finished update to Version 1.10.7'

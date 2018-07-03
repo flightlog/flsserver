@@ -95,6 +95,9 @@ namespace FLS.Server.Data.DbEntities
         [StringLength(250)]
         public string SendPassengerFlightRegistrationOperatorEmailTo { get; set; }
 
+        [StringLength(250)]
+        public string ReplyToEmailAddress { get; set; }
+
         public bool RunDeliveryCreationJob { get; set; }
 
         public bool RunDeliveryMailExportJob { get; set; }
