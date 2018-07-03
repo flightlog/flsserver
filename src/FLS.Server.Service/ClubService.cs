@@ -119,7 +119,9 @@ namespace FLS.Server.Service
         {
             var club = GetClub(clubId, false);
 
-            var clubDetails = club.ToClubDetails();
+            bool fullAccess = IsCurrentUserInRoleClubAdministrator && IsCurrentUserInClub(club.ClubId) || IsCurrentUserInRoleSystemAdministrator;
+
+            var clubDetails = club.ToClubDetails(fullAccess);
             SetClubDetailsSecurity(clubDetails, club);
 
             return clubDetails;
@@ -185,7 +187,7 @@ namespace FLS.Server.Service
             InsertClub(club);
 
             //Map it back to details
-            club.ToClubDetails(clubDetails);
+            club.ToClubDetails(true, clubDetails);
         }
 
         internal void InsertClub(Club club)
@@ -243,7 +245,7 @@ namespace FLS.Server.Service
                 if (context.ChangeTracker.HasChanges())
                 {
                     context.SaveChanges();
-                    original.ToClubDetails(currentClubDetails);
+                    original.ToClubDetails(true, currentClubDetails);
                 }
             }
         }
@@ -825,11 +827,6 @@ namespace FLS.Server.Service
                         clubOverview.CanUpdateRecord = true;
                         clubOverview.CanDeleteRecord = false;
                     }
-                    else if (IsOwner(context.Clubs.First(a => a.ClubId == clubOverview.ClubId)))
-                    {
-                        clubOverview.CanUpdateRecord = true;
-                        clubOverview.CanDeleteRecord = false;
-                    }
                     else
                     {
                         clubOverview.CanUpdateRecord = false;
@@ -861,11 +858,6 @@ namespace FLS.Server.Service
                 details.CanDeleteRecord = true;
             }
             else if (IsCurrentUserInRoleClubAdministrator && IsCurrentUserInClub(club.ClubId))
-            {
-                details.CanUpdateRecord = true;
-                details.CanDeleteRecord = false;
-            }
-            else if (IsOwner(club))
             {
                 details.CanUpdateRecord = true;
                 details.CanDeleteRecord = false;

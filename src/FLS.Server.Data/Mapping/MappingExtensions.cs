@@ -670,7 +670,7 @@ namespace FLS.Server.Data.Mapping
             return overview;
         }
 
-        public static ClubDetails ToClubDetails(this Club entity, ClubDetails details = null)
+        public static ClubDetails ToClubDetails(this Club entity, bool fullAccess, ClubDetails details = null)
         {
             entity.ArgumentNotNull("entity");
 
@@ -684,33 +684,37 @@ namespace FLS.Server.Data.Mapping
             details.Address = entity.Address;
             details.City = entity.City;
             details.ClubName = entity.Clubname;
-            details.ClubKey = entity.ClubKey;
             details.ContactName = entity.Contact;
             details.CountryId = entity.CountryId;
-            details.DefaultGliderFlightTypeId = entity.DefaultGliderFlightTypeId;
-            details.DefaultStartType = entity.DefaultStartTypeId;
-            details.DefaultTowFlightTypeId = entity.DefaultTowFlightTypeId;
-            details.DefaultMotorFlightTypeId = entity.DefaultMotorFlightTypeId;
             details.EmailAddress = entity.Email;
             details.FaxNumber = entity.FaxNumber;
             details.HomebaseId = entity.HomebaseId;
             details.PhoneNumber = entity.Phone;
             details.WebPage = entity.WebPage;
             details.ZipCode = entity.Zip;
-            details.SendAircraftStatisticReportTo = entity.SendAircraftStatisticReportTo;
-            details.SendPlanningDayInfoMailTo = entity.SendPlanningDayInfoMailTo;
-            details.SendDeliveryMailExportTo = entity.SendDeliveryMailExportTo;
 
-            details.SendTrialFlightRegistrationOperatorEmailTo = entity.SendTrialFlightRegistrationOperatorEmailTo;
-            details.SendPassengerFlightRegistrationOperatorEmailTo =
-                entity.SendPassengerFlightRegistrationOperatorEmailTo;
+            if (fullAccess)
+            {
+                details.ClubKey = entity.ClubKey;
+                details.DefaultGliderFlightTypeId = entity.DefaultGliderFlightTypeId;
+                details.DefaultStartType = entity.DefaultStartTypeId;
+                details.DefaultTowFlightTypeId = entity.DefaultTowFlightTypeId;
+                details.DefaultMotorFlightTypeId = entity.DefaultMotorFlightTypeId;
+                details.SendAircraftStatisticReportTo = entity.SendAircraftStatisticReportTo;
+                details.SendPlanningDayInfoMailTo = entity.SendPlanningDayInfoMailTo;
+                details.SendDeliveryMailExportTo = entity.SendDeliveryMailExportTo;
 
-            details.LastArticleSynchronisationOn = entity.LastArticleSynchronisationOn.SetAsUtc();
-            details.LastDeliverySynchronisationOn = entity.LastDeliverySynchronisationOn.SetAsUtc();
-            details.LastPersonSynchronisationOn = entity.LastPersonSynchronisationOn.SetAsUtc();
+                details.SendTrialFlightRegistrationOperatorEmailTo = entity.SendTrialFlightRegistrationOperatorEmailTo;
+                details.SendPassengerFlightRegistrationOperatorEmailTo =
+                    entity.SendPassengerFlightRegistrationOperatorEmailTo;
 
-            details.RunDeliveryMailExportJob = entity.RunDeliveryMailExportJob;
-            details.RunDeliveryCreationJob = entity.RunDeliveryCreationJob;
+                details.LastArticleSynchronisationOn = entity.LastArticleSynchronisationOn.SetAsUtc();
+                details.LastDeliverySynchronisationOn = entity.LastDeliverySynchronisationOn.SetAsUtc();
+                details.LastPersonSynchronisationOn = entity.LastPersonSynchronisationOn.SetAsUtc();
+
+                details.RunDeliveryMailExportJob = entity.RunDeliveryMailExportJob;
+                details.RunDeliveryCreationJob = entity.RunDeliveryCreationJob;
+            }
 
             return details;
         }
