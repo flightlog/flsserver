@@ -79,6 +79,8 @@ namespace FLS.Data.WebApi.Club
 
         public bool RunDeliveryMailExportJob { get; set; }
 
+        public bool IsClubMemberNumberReadonly { get; set; }
+
         public override Guid Id
         {
             get { return ClubId; }

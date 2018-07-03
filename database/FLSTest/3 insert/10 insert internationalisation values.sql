@@ -1401,4 +1401,7 @@ INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationK
 INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
      VALUES (NEWID(), 'RUN_DELIVERY_MAIL_EXPORT_JOB', 'Lieferschein-Mail-Export-Job aktivieren', 1, SYSDATETIME())
 
+INSERT INTO [dbo].[LanguageTranslations] ([LanguageTranslationId], [TranslationKey], [TranslationValue], [LanguageId], [CreatedOn])
+     VALUES (NEWID(), 'IS_CLUB_MEMBER_NUMBER_READONLY', 'Ist Mitgliedernummer nur lesbar', 1, SYSDATETIME())
+
 GO

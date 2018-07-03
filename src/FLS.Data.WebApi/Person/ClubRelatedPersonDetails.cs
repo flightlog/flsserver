@@ -9,7 +9,8 @@ namespace FLS.Data.WebApi.Person
     {
         public ClubRelatedPersonDetails()
         {
-            PersonCategoryIds = new List<Guid>();    
+            PersonCategoryIds = new List<Guid>();
+            IsMemberNumberReadonly = false;
         }
 
         public ClubRelatedPersonDetails(ClubRelatedPersonDetails clubRelatedPersonDetails)
@@ -29,6 +30,7 @@ namespace FLS.Data.WebApi.Person
             ReceiveFlightReports = clubRelatedPersonDetails.ReceiveFlightReports;
             ReceivePlanningDayRoleReminder = clubRelatedPersonDetails.ReceivePlanningDayRoleReminder;
             IsActive = clubRelatedPersonDetails.IsActive;
+            IsMemberNumberReadonly = clubRelatedPersonDetails.IsMemberNumberReadonly;
         }
         
         public List<Guid> PersonCategoryIds { get; set; }
@@ -60,5 +62,7 @@ namespace FLS.Data.WebApi.Person
         public bool ReceivePlanningDayRoleReminder { get; set; }
 
         public bool IsActive { get; set; }
+
+        public bool IsMemberNumberReadonly { get; set; }
     }
 }

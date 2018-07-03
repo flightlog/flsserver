@@ -110,6 +110,8 @@ namespace FLS.Server.Data.DbEntities
 
         public int ClubStateId { get; set; }
 
+        public bool IsClubMemberNumberReadonly { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
 

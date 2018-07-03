@@ -1000,6 +1000,19 @@ namespace FLS.Server.Service
                 details.CanUpdateRecord = false;
                 details.CanDeleteRecord = false;
             }
+
+            if (details.ClubRelatedPersonDetails != null)
+            {
+                using (var context = _dataAccessService.CreateDbContext())
+                {
+                    var club = context.Clubs.FirstOrDefault(x => x.ClubId == CurrentAuthenticatedFLSUserClubId);
+
+                    if (club != null)
+                    {
+                        details.ClubRelatedPersonDetails.IsMemberNumberReadonly = club.IsClubMemberNumberReadonly;
+                    }
+                }
+            }
         }
 
         #endregion Security

@@ -714,6 +714,8 @@ namespace FLS.Server.Data.Mapping
 
                 details.RunDeliveryMailExportJob = entity.RunDeliveryMailExportJob;
                 details.RunDeliveryCreationJob = entity.RunDeliveryCreationJob;
+
+                details.IsClubMemberNumberReadonly = entity.IsClubMemberNumberReadonly;
             }
 
             return details;
@@ -757,6 +759,8 @@ namespace FLS.Server.Data.Mapping
             entity.RunDeliveryCreationJob = details.RunDeliveryCreationJob;
 
             entity.ClubStateId = (int) FLS.Data.WebApi.Club.ClubState.Active;
+
+            entity.IsClubMemberNumberReadonly = details.IsClubMemberNumberReadonly;
 
             return entity;
         }
