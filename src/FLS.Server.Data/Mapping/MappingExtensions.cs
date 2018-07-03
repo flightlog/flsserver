@@ -931,6 +931,7 @@ namespace FLS.Server.Data.Mapping
                 entity.RecipientCity = details.RecipientDetails.City;
                 entity.RecipientCountryName = details.RecipientDetails.CountryName;
                 entity.RecipientPersonClubMemberNumber = details.RecipientDetails.PersonClubMemberNumber;
+                entity.RecipientName = $"{entity.RecipientLastname} {entity.RecipientFirstname}";
             }
 
             //check for new delivery items

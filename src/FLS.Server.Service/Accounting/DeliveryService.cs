@@ -143,6 +143,16 @@ namespace FLS.Server.Service.Accounting
                                 continue;
                             }
 
+                            if (deliveryDetails.RecipientDetails == null)
+                            {
+                                Logger.Warn($"Delivery without recipient details created for FlightId/Flight: {flight.FlightId} / {flight}! Delivery-Process stopped and flight process state is set to DeliveryPreparationError!");
+
+                                flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.DeliveryPreparationError;
+                                flight.DoNotUpdateMetaData = true;
+                                context.SaveChanges();
+                                continue;
+                            }
+
                             var delivery = deliveryDetails.ToDelivery(clubId);
                             delivery.BatchId = batchId;
 
