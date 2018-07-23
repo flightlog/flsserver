@@ -1107,8 +1107,8 @@ namespace FLS.Server.Service.Accounting
 
         public void InsertDeliveryDetails(DeliveryDetails deliveryDetails)
         {
-            var article = deliveryDetails.ToDelivery(CurrentAuthenticatedFLSUserClubId);
-            article.EntityNotNull("Delivery", Guid.Empty);
+            var delivery = deliveryDetails.ToDelivery(CurrentAuthenticatedFLSUserClubId);
+            delivery.EntityNotNull("Delivery", Guid.Empty);
 
             if (IsCurrentUserInRoleClubAdministrator == false)
             {
@@ -1117,12 +1117,12 @@ namespace FLS.Server.Service.Accounting
 
             using (var context = _dataAccessService.CreateDbContext())
             {
-                context.Deliveries.Add(article);
+                context.Deliveries.Add(delivery);
                 context.SaveChanges();
             }
 
             //Map it back to details
-            article.ToDeliveryDetails(deliveryDetails);
+            delivery.ToDeliveryDetails(deliveryDetails);
         }
 
         public void UpdateDeliveryDetails(DeliveryDetails currentDeliveryDetails)
