@@ -1154,7 +1154,7 @@ namespace FLS.Server.Service
 
             try
             {
-                DateTime lockingDate = DateTime.Today.AddDays(-2).AddTicks(-1);
+                DateTime lockingDate = DateTime.Today.AddDays(-2);
 
                 var flights =
                     GetFlights(

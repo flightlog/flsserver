@@ -62,6 +62,8 @@ namespace FLS.Server.Service.Accounting
             {
                 using (var context = _dataAccessService.CreateDbContext())
                 {
+                    var lockingDate = DateTime.Today.AddDays(-3);
+
                     var flights =
                         context.Flights
                             .Include(Constants.Aircraft)
@@ -91,7 +93,8 @@ namespace FLS.Server.Service.Accounting
                                               (int) FlightAircraftTypeValue.MotorFlight)
                                              &&
                                              (flight.ProcessStateId ==
-                                              (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked))
+                                              (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked)
+                                             && DbFunctions.TruncateTime(flight.CreatedOn) <= lockingDate.Date)
                             .ToList();
 
                     Logger.Debug($"Queried Flights for accounting and got {flights.Count} flights back.");
