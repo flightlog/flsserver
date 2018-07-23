@@ -860,7 +860,7 @@ namespace FLS.Server.Data.Mapping
             details.IsFurtherProcessed = entity.IsFurtherProcessed;
 
             if (details.RecipientDetails == null) details.RecipientDetails = new RecipientDetails();
-
+            details.RecipientDetails.RecipientName = entity.RecipientName;
             details.RecipientDetails.PersonId = entity.RecipientPersonId;
             details.RecipientDetails.Firstname = entity.RecipientFirstname;
             details.RecipientDetails.Lastname = entity.RecipientLastname;
