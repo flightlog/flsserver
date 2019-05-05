@@ -757,6 +757,7 @@ namespace FLS.Server.Tests
             {
                 context.Flights.Attach(flight);
                 flight.ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.Locked;
+                flight.CreatedOn = flight.CreatedOn.AddDays(-3); //set created date back into past, because of locking mechanism
 
                 if (context.ChangeTracker.HasChanges())
                 {
