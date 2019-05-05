@@ -247,14 +247,5 @@ namespace FLS.Server.Tests.ServiceTests
             Assert.IsTrue(result.Items[0].AircraftId == aircraft2.AircraftId
                 || result.Items[1].AircraftId == aircraft2.AircraftId);
         }
-
-        [TestMethod]
-        [TestCategory("Service")]
-        public void DeleteAircraftTest()
-        {
-            var entities = AircraftService.GetAircrafts();
-            Assert.IsNotNull(entities);
-            Assert.IsTrue(entities.Any());
-        }
     }
 }
