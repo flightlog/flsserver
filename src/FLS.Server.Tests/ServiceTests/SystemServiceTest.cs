@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
-using FLS.Server.Service;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.Unity;
 
 namespace FLS.Server.Tests.ServiceTests
 {

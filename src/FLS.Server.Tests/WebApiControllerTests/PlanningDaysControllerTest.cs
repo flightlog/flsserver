@@ -4,11 +4,8 @@ using System.Linq;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Location;
 using FLS.Data.WebApi.PlanningDay;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.Unity;
 
 namespace FLS.Server.Tests.WebApiControllerTests
 {

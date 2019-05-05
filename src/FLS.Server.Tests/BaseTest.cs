@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FLS.Common.Exceptions;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Aircraft;
 using FLS.Data.WebApi.AircraftReservation;
@@ -13,19 +14,18 @@ using FLS.Data.WebApi.Resources;
 using FLS.Data.WebApi.User;
 using FLS.Server.Data;
 using FLS.Server.Data.DbEntities;
-using FLS.Server.Data.Enums;
 using FLS.Server.Data.Mapping;
 using FLS.Server.Interfaces;
 using FLS.Server.Service;
+using FLS.Server.Service.Accounting;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Identity;
+using FLS.Server.Service.Reporting;
 using FLS.Server.TestInfrastructure;
 using FLS.Server.Tests.Extensions;
 using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure;
 using FLS.Server.Tests.Mocks.Services;
-using FLS.Server.WebApi;
-using FLS.Server.WebApi.ActionFilters;
 using FLS.Server.WebApi.Identity;
 using Foundation.ObjectHydrator;
 using Microsoft.AspNet.Identity;
@@ -33,18 +33,11 @@ using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NLog;
-using NLog.Targets.Wrappers;
 using AircraftType = FLS.Data.WebApi.Aircraft.AircraftType;
 using Constants = FLS.Server.Data.Resources.Constants;
 using ElevationUnitType = FLS.Server.Data.DbEntities.ElevationUnitType;
 using LengthUnitType = FLS.Server.Data.DbEntities.LengthUnitType;
 using LocationType = FLS.Server.Data.DbEntities.LocationType;
-using System.Threading;
-using FLS.Common.Exceptions;
-using FLS.Common.Validators;
-using FLS.Server.Service.Accounting;
-using FLS.Server.Service.Exporting;
-using FLS.Server.Service.Reporting;
 
 namespace FLS.Server.Tests
 {

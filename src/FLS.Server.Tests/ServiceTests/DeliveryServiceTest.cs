@@ -1,22 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using FLS.Data.WebApi.Flight;
-using FLS.Server.Data.DbEntities;
-using FLS.Server.Data.Enums;
-using FLS.Server.Service;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.Unity;
 using FLS.Common.Extensions;
-using FLS.Common.Paging;
 using FLS.Data.WebApi;
-using FLS.Data.WebApi.Accounting;
 using FLS.Data.WebApi.Accounting.Testing;
+using FLS.Data.WebApi.Flight;
+using FLS.Server.Data.Enums;
 using FLS.Server.Data.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FLS.Server.Tests.ServiceTests
 {

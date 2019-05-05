@@ -1,20 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using FLS.Common.Extensions;
-using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.PlanningDay;
-using FLS.Data.WebApi.Reporting;
-using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Mapping;
-using FLS.Server.Service;
-using FLS.Server.Service.Email;
-using FLS.Server.Service.Identity;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.Unity;
 
 namespace FLS.Server.Tests.ServiceTests
 {

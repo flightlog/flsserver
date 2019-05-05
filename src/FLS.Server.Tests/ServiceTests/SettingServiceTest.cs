@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Linq;
 using FLS.Data.WebApi.Settings;
 using FLS.Server.Data.Resources;
-using FLS.Server.Service;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.Unity;
 using Newtonsoft.Json;
 
 namespace FLS.Server.Tests.ServiceTests

@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
-using System.Web.Http;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Person;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.Unity;
-using System.IO;
 
 namespace FLS.Server.Tests.WebApiControllerTests
 {

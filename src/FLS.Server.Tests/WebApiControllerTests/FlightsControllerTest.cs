@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Flight;
 using FLS.Server.Data.Enums;
-using FLS.Server.Service;
-using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
-using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FLS.Server.Tests.WebApiControllerTests

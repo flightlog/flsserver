@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Linq;
-using FLS.Server.Service;
-using FLS.Server.Service.Identity;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.Unity;
-using NLog;
 
 namespace FLS.Server.Tests.ServiceTests
 {

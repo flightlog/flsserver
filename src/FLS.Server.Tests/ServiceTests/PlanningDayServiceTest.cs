@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
-using FLS.Server.Service;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FLS.Common.Extensions;
 using FLS.Common.Paging;
 using FLS.Data.WebApi;
 using FLS.Data.WebApi.PlanningDay;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FLS.Server.Tests.ServiceTests
 {

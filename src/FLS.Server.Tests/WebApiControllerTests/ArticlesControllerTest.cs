@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Articles;
 using FLS.Server.Tests.Infrastructure.WebApi;

@@ -4,20 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading;
+using FLS.Common.Extensions;
+using FLS.Data.WebApi.Accounting;
 using FLS.Data.WebApi.Flight;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Enums;
-using FLS.Server.Service;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.Unity;
-using FLS.Common.Extensions;
-using FLS.Data.WebApi.Accounting;
-using FLS.Server.Data;
 using FLS.Server.Service.Extensions;
-using FLS.Server.Tests.Infrastructure;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 
 namespace FLS.Server.Tests.ServiceTests

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using FLS.Server.Tests.Infrastructure.WebApi;
-using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FLS.Server.Tests.WebApiControllerTests

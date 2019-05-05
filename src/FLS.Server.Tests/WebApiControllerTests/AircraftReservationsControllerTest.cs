@@ -2,9 +2,7 @@
 using System.Linq;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.AircraftReservation;
-using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
-using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FLS.Server.Tests.WebApiControllerTests

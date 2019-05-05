@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Resources;
 using FLS.Data.WebApi.User;
-using FLS.Server.Service.Email;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
-using FLS.Server.Tests.Mocks.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.Unity;
 
 namespace FLS.Server.Tests.WebApiControllerTests
 {

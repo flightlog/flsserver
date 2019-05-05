@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FLS.Data.WebApi.Person;
-using FLS.Server.Service;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 
 namespace FLS.Server.Tests.ServiceTests
 {

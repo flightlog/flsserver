@@ -2,15 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using FLS.Data.WebApi.Accounting;
-using FLS.Data.WebApi.Flight;
 using FLS.Server.Data.Mapping;
-using FLS.Server.Service;
-using FLS.Server.Service.Identity;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.Unity;
 
 namespace FLS.Server.Tests.WebApiControllerTests
 {

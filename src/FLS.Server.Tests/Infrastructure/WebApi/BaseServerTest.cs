@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
-using FLS.Server.WebApi;
 using Microsoft.Owin.Testing;
 using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

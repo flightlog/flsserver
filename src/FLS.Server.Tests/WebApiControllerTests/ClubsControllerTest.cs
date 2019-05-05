@@ -5,10 +5,7 @@ using System.Net;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi.Club;
 using FLS.Data.WebApi.User;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
 using FLS.Server.Tests.Infrastructure.WebApi;
-using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FLS.Server.Tests.WebApiControllerTests

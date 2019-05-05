@@ -5,12 +5,8 @@ using FLS.Common.Comparer;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi;
 using FLS.Data.WebApi.Flight;
-using FLS.Server.Service;
-using FLS.Server.Service.Identity;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NLog;
-using Microsoft.Practices.Unity;
 using FLS.Data.WebApi.Reporting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FLS.Server.Tests.ServiceTests
 {

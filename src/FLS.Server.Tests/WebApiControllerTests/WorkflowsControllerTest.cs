@@ -1,10 +1,5 @@
-﻿using System;
-using FLS.Server.Service;
-using FLS.Server.TestInfrastructure;
-using FLS.Server.Tests.Helpers;
-using FLS.Server.Tests.Infrastructure.WebApi;
+﻿using FLS.Server.Tests.Infrastructure.WebApi;
 using Microsoft.Owin.Testing;
-using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FLS.Server.Tests.WebApiControllerTests
