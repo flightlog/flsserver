@@ -455,6 +455,19 @@ namespace FLS.Server.Tests
         {
             using (var context = DataAccessService.CreateDbContext())
             {
+                if (context.AircraftReservationTypes.Any() == false)
+                {
+                    var aircraftReservationType = new AircraftReservationType()
+                    {
+                        AircraftReservationTypeName = "Charter",
+                        ClubId = CurrentIdentityUser.ClubId,
+                        IsActive = true
+                    };
+
+                    context.AircraftReservationTypes.Add(aircraftReservationType);
+                    context.SaveChanges();
+                }
+
                 return context.AircraftReservationTypes.FirstOrDefault();
             }
         }
