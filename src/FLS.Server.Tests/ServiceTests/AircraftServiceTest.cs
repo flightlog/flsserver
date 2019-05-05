@@ -195,9 +195,9 @@ namespace FLS.Server.Tests.ServiceTests
         public void MultipleAircraftPagedQueryTest()
         {
             var aircraft1 = CreateGliderAircraftDetails(1, AircraftType.Glider);
-            var aircraft2 = CreateGliderAircraftDetails(2, AircraftType.Glider);
-
             AircraftService.InsertAircraftDetails(aircraft1);
+
+            var aircraft2 = CreateGliderAircraftDetails(2, AircraftType.Glider);
             AircraftService.InsertAircraftDetails(aircraft2);
 
             var filter = new PageableSearchFilter<AircraftOverviewSearchFilter>()
