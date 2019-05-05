@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using AutoMapper;
 using FLS.Common.Extensions;
 using FLS.Common.Paging;
 using FLS.Common.Validators;
 using FLS.Data.WebApi;
-using FLS.Data.WebApi.DataExchange;
 using FLS.Data.WebApi.Person;
-using FLS.Data.WebApi.User;
 using FLS.Server.Data.DbEntities;
 using FLS.Server.Data.Exceptions;
 using FLS.Server.Data.Mapping;
@@ -22,10 +18,7 @@ using FLS.Server.Interfaces;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Exporting;
 using NLog;
-using OfficeOpenXml;
 using FLS.Server.Service.Extensions;
-using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
-using FLS.Server.Data.Objects.Person;
 
 namespace FLS.Server.Service
 {
@@ -1040,249 +1033,6 @@ namespace FLS.Server.Service
             var bytes = ExcelExporter.GetPersonExcelPackage(personList, $"Adressliste");
             var message = _addressListEmailBuildService.CreateAddressListEmail(CurrentAuthenticatedFLSUser, bytes);
             _addressListEmailBuildService.SendEmail(message);
-        }
-
-        public ImportJob<PersonDetails> ImportPersonExcelFile(byte[] fileContentBytes, bool realImport = false)
-        {
-            var importJob = new ImportJob<PersonDetails>()
-            {
-                ImportObjects = new List<ImportObject<PersonDetails>>(),
-                AdditionalEntitiesToCreate = new SortedDictionary<int, List<object>>()
-            };
-
-            using (var package = new ExcelPackage(fileContentBytes.ToMemoryStream()))
-            {
-                var workSheet = package.Workbook.Worksheets[1];
-                var ignoreColumns = new List<string>()
-                {
-                    "ErstelltAm"
-                };
-
-                var mapping = new Dictionary<string, string>()
-                {
-                    {"AdressNrADR", "ClubRelatedPersonDetails.MemberNumber"},
-                    {"Adresszeile1", "AddressLine2"},
-                    {"EMail", "PrivateEmail"},
-                    {"Fax", "FaxNumber"},
-                    {"GeburtsDatum", "Birthday"},
-                    {"LandPRO", "CountryCode"},
-                    {"Natel", "MobilePhoneNumber"},
-                    {"Name", "Lastname"},
-                    {"Ort", "City"},
-                    {"PLZ", "ZipCode"},
-                    {"KantonPRO", "Region"},
-                    {"Strasse", "AddressLine1"},
-                    {"TelDir", "BusinessPhoneNumber"},
-                    {"TelPrivat", "PrivatePhoneNumber"},
-                    {"TelZentrale", "BusinessPhoneNumber"},
-                    {"Vorname", "Firstname"},
-                    {"AdressGruppen", "AddressCategories" }
-                };
-
-                var entityList = workSheet.ToList<ImportPersonDetails>(ignoreColumns, mapping);
-
-                //re-map temporary mappings for country
-                mapping["LandPRO"] = "CountryId";
-                var mappedProperties = mapping.Values.ToList();
-
-                try
-                {
-                    var persons = new List<Person>();
-
-                    using (var context = _dataAccessService.CreateDbContext())
-                    {
-                        persons = context.Persons.Include(Constants.Country)
-                            .Include(Constants.PersonPersonCategories)
-                            .Include(Constants.PersonPersonCategories + ".PersonCategory")
-                            .Include(Constants.PersonClubs)
-                            .Include($"{Constants.PersonClubs}.MemberState")
-                            .OrderBy(pe => pe.Lastname).ToList();
-
-                        var countries = context.Countries.ToList();
-                        var personCategories = context.PersonCategories.ToList();
-                        var countryIdCh = countries.First(x => x.CountryCodeIso2 == "CH").CountryId;
-
-                        foreach (var personDetail in entityList)
-                        {
-                            var importObj = new ImportObject<PersonDetails>()
-                            {
-                                ImportDataRecord = personDetail
-                            };
-
-                            importJob.ImportObjects.Add(importObj);
-
-                            if (string.IsNullOrWhiteSpace(personDetail.CountryCode) == false)
-                            {
-                                var country =
-                                    countries.FirstOrDefault(
-                                        x => x.CountryCodeIso2.ToUpper() == personDetail.CountryCode.ToUpper());
-
-                                if (country != null)
-                                {
-                                    personDetail.CountryId = country.CountryId;
-                                }
-                            }
-                            else
-                            {
-                                personDetail.CountryId = countryIdCh;
-                            }
-
-                            if (string.IsNullOrWhiteSpace(personDetail.AddressCategories) == false)
-                            {
-                                string[] groups = personDetail.AddressCategories.Split(',');
-                                foreach (var group in groups)
-                                {
-                                    if (string.IsNullOrWhiteSpace(group)) continue;
-
-                                    var personCategory =
-                                        personCategories.FirstOrDefault(x => x.CategoryName.ToLower() == group.ToLower());
-
-                                    if (personCategory == null)
-                                    {
-                                        //create new category
-                                        personCategory = new PersonCategory()
-                                        {
-                                            CategoryName = group,
-                                            ClubId = CurrentAuthenticatedFLSUserClubId,
-                                            PersonCategoryId = Guid.NewGuid()
-                                        };
-
-                                        personCategories.Add(personCategory);
-                                        context.PersonCategories.Add(personCategory);
-
-                                        if (personDetail.ClubRelatedPersonDetails == null)
-                                            personDetail.ClubRelatedPersonDetails = new ClubRelatedPersonDetails();
-                                            
-                                        personDetail.ClubRelatedPersonDetails.PersonCategoryIds.Add(personCategory.PersonCategoryId);
-                                    }
-                                    else
-                                    {
-                                        if (personDetail.ClubRelatedPersonDetails == null)
-                                            personDetail.ClubRelatedPersonDetails = new ClubRelatedPersonDetails();
-
-                                        personDetail.ClubRelatedPersonDetails.PersonCategoryIds.Add(
-                                            personCategory.PersonCategoryId);
-                                    }
-                                }
-                            }
-
-                            var validationResult = new List<ValidationResult>();
-                            var validatorContext = new ValidationContext(personDetail);
-                            if (Validator.TryValidateObject(personDetail, validatorContext, validationResult, true) == false)
-                            {
-                                importObj.ImportState = ImportState.ValidationError;
-                                importObj.ErrorMessage = "";
-
-                                foreach (var result in validationResult)
-                                {
-                                    var props = string.Join(",", result.MemberNames);
-                                    importObj.ErrorMessage += $"Error: {result.ErrorMessage}, Properties: {props}";
-                                }
-
-                                importObj.HasError = true;
-                                continue;
-                            }
-                            
-                            if (string.IsNullOrWhiteSpace(personDetail.ZipCode))
-                            {
-                                importObj.ImportState = ImportState.ImportError;
-                                importObj.ErrorMessage = "ZipCode is empty";
-                                importObj.HasError = true;
-                                continue;
-                            }
-
-                            try
-                            {
-                                //entityList.FindDuplicates(x => x.Lastname.ToLower() && x.Firstname.ToLower());
-
-                                var matchedPersons =
-                                    persons.FindAll(x => x.Lastname.ToLower() == personDetail.Lastname.ToLower()
-                                                         && x.Firstname.ToLower() == personDetail.Firstname.ToLower());
-
-                                if (matchedPersons.Count == 0)
-                                {
-                                    importObj.ImportState = ImportState.ImportedSuccessfully;
-                                    var newRecord = importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties);
-                                    context.Persons.Add(newRecord);
-                                }
-                                else if (matchedPersons.Count == 1)
-                                {
-                                    if (string.IsNullOrWhiteSpace(matchedPersons[0].EmailPrivate) == false
-                                        && matchedPersons[0].EmailPrivate == personDetail.PrivateEmail)
-                                    {
-                                        //update record
-                                        importObj.ImportState = ImportState.UpdatedSuccessfully;
-                                        importObj.ServerDataRecord = matchedPersons[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
-                                        importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties, matchedPersons[0]);
-
-                                    }
-                                    else if (string.IsNullOrWhiteSpace(matchedPersons[0].Zip) == false
-                                        && matchedPersons[0].Zip != personDetail.ZipCode)
-                                    {
-                                        // datarecords does not match with ZipCode --> create new record
-                                        importObj.ImportState = ImportState.ImportedSuccessfully;
-                                        var newRecord =
-                                            importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId,
-                                                mappedProperties);
-                                        context.Persons.Add(newRecord);
-                                    }
-                                    else
-                                    {
-                                        importObj.ImportState = ImportState.UpdatedSuccessfully;
-                                        importObj.ServerDataRecord = matchedPersons[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
-                                        importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties, matchedPersons[0]);
-                                    }
-                                }
-                                else
-                                {
-                                    var matchedPersonsZip = matchedPersons.FindAll(x => x.Zip == personDetail.ZipCode);
-
-                                    if (matchedPersonsZip.Count == 0)
-                                    {
-                                        importObj.ImportState = ImportState.ImportedSuccessfully;
-                                        var newRecord = importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties);
-                                        context.Persons.Add(newRecord);
-                                    }
-                                    else if (matchedPersonsZip.Count == 1)
-                                    {
-                                        importObj.ImportState = ImportState.UpdatedSuccessfully;
-                                        importObj.ServerDataRecord = matchedPersonsZip[0].ToPersonDetails(CurrentAuthenticatedFLSUserClubId);
-                                        importObj.ImportDataRecord.ToPerson(CurrentAuthenticatedFLSUserClubId, mappedProperties, matchedPersonsZip[0]);
-                                    }
-                                    else
-                                    {
-                                        //TODO: Search also for MemberNumber
-                                        importObj.ImportState = ImportState.Duplicate;
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                if (importObj.ImportState == ImportState.UpdatedSuccessfully)
-                                    importObj.ImportState = ImportState.UpdateError;
-                                else
-                                    importObj.ImportState = ImportState.ImportError;
-
-                                importObj.ErrorMessage = ex.Message;
-                                importObj.HasError = true;
-                                Logger.Trace(ex, $"Error while trying to import PersonDetails: {importObj.ImportDataRecord}");
-                            }
-                        }
-
-                        if (context.ChangeTracker.HasChanges())
-                        {
-                            context.GetValidationErrors();
-                            context.SaveChanges();
-                        }
-                    }
-                }
-                catch (Exception exception)
-                {
-                    Logger.Error(exception, "Error while trying to import person excel list");
-                }
-            }
-
-            return importJob;
         }
     }
 }
