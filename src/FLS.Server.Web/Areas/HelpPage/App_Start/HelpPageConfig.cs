@@ -2,11 +2,16 @@
 // package to your project.
 ////#define Handle_PageResultOfT
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Web;
 using System.Web.Http;
-
 #if Handle_PageResultOfT
 using System.Web.Http.OData;
 #endif
@@ -29,8 +34,7 @@ namespace FLS.Server.WebApi.Areas.HelpPage
         public static void Register(HttpConfiguration config)
         {
             //// Uncomment the following to use the documentation from XML documentation file.
-            string currentAssemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-            config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath($"~/bin/{currentAssemblyName}.XML")));
+            //config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/XmlDocument.xml")));
 
             //// Uncomment the following to use "sample string" as the sample for all actions that have string as the body parameter or return type.
             //// Also, the string arrays will be used for IEnumerable<string>. The sample objects will be serialized into different media type 
