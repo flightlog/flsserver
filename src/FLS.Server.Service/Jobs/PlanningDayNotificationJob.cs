@@ -6,7 +6,6 @@ using FLS.Data.WebApi.AircraftReservation;
 using FLS.Server.Data.Resources;
 using FLS.Server.Service.Email;
 using NLog;
-using Quartz;
 
 namespace FLS.Server.Service.Jobs
 {
@@ -43,8 +42,7 @@ namespace FLS.Server.Service.Jobs
         /// <summary>
         /// Every time when the scheduler executes a job this method is called.
         /// </summary>
-        /// <param name="context">not used</param>
-        public void Execute(IJobExecutionContext context)
+        public void Execute()
         {
             try
             {

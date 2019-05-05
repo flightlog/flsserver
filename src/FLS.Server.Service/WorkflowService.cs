@@ -75,21 +75,21 @@ namespace FLS.Server.Service
         {
             Logger.Info("Execute daily flight validation job.");
             var job = new DailyFlightValidationJob(_flightService, _clubService, _dataAccessService);
-            job.Execute(null);
+            job.Execute();
         }
 
         public void ExecuteDailyReportJob()
         {
             Logger.Info("Execute daily report job.");
             var job = new DailyReportJob(_flightService, _clubService, _personService, _flightInformationEmailService);
-            job.Execute(null);
+            job.Execute();
         }
 
         public void ExecuteAircraftStatisticReportJob()
         {
             Logger.Info("Execute monthly report job.");
             var job = new AircraftStatisticReportJob(_aircraftReportEmailService, _flightService, _aircraftService);
-            job.Execute(null);
+            job.Execute();
         }
 
         public void ExecutePlanningDayMailJob()
@@ -97,14 +97,14 @@ namespace FLS.Server.Service
             Logger.Info("Execute planning day mail job.");
             var job = new PlanningDayNotificationJob(_clubService, _planningDayService,
                 _aircraftReservationService, _planningDayEmailService, _settingService);
-            job.Execute(null);
+            job.Execute();
         }
 
         public void ExecuteLicenceNotificationJob()
         {
             Logger.Info("Execute licence notification job.");
             var job = new LicenceNotificationJob(_licenceExpireEmailBuildService, _personService);
-            job.Execute(null);
+            job.Execute();
         }
 
         public void ExecuteWorkflows()
@@ -169,14 +169,14 @@ namespace FLS.Server.Service
         {
             Logger.Info("Execute delivery mail export job.");
             var job = new DeliveryMailExportJob(_deliveryService, _deliveryExcelExporter, _clubService, _accountingEmailBuildService);
-            job.Execute(null);
+            job.Execute();
         }
 
         public void ExecuteDeliveryCreationJob()
         {
             Logger.Info("Execute delivery creation job.");
             var job = new DeliveryCreationJob(_deliveryService, _clubService);
-            job.Execute(null);
+            job.Execute();
         }
     }
 }

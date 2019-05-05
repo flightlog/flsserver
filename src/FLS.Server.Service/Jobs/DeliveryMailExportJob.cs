@@ -6,7 +6,6 @@ using FLS.Server.Service.Accounting;
 using FLS.Server.Service.Email;
 using FLS.Server.Service.Exporting;
 using NLog;
-using Quartz;
 
 namespace FLS.Server.Service.Jobs
 {
@@ -40,8 +39,7 @@ namespace FLS.Server.Service.Jobs
         /// <summary>
         /// Every time when the scheduler executes a job this method is called.
         /// </summary>
-        /// <param name="context">not used</param>
-        public void Execute(IJobExecutionContext context)
+        public void Execute()
         {
             try
             {
