@@ -37,24 +37,27 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\NLog.4.6.3\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="NLog.Extended, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.Extended.4.0.0.1\lib\net45-full\NLog.Extended.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\NLog.Extended.4.6.3\lib\net45\NLog.Extended.dll</HintPath>
     </Reference>
-    <Reference Include="NLog.Web, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.Web.4.3.0\lib\net35\NLog.Web.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NLog.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.Web.4.8.2\lib\net35\NLog.Web.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Messaging" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -77,7 +80,7 @@
       <LastGenOutput>AppSettings.Designer.cs</LastGenOutput>
     </None>
     <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
