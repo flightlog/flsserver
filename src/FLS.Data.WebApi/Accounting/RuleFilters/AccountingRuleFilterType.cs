@@ -7,6 +7,7 @@
         FlightTimeAccountingRuleFilter = 30,
         InstructorFeeAccountingRuleFilter = 40,
         AdditionalFuelFeeAccountingRuleFilter = 50,
+        StartTaxAccountingRuleFilter = 55,
         LandingTaxAccountingRuleFilter = 60,
         VsfFeeAccountingRuleFilter = 70,
         EngineTimeAccountingRuleFilter = 80

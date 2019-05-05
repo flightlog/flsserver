@@ -133,6 +133,19 @@ namespace FLS.Server.Service.Accounting.RuleEngines
             _ruleBasedDelivery.ApplyRules(rules);
             #endregion Additional Fuel Fee
 
+            #region Start taxes
+            rules.Clear();
+
+            foreach (var filter in _accountingRuleFilters.Where(x => x.AccountingRuleFilterTypeId == (int)AccountingRuleFilterType.StartTaxAccountingRuleFilter))
+            {
+                var rule = new StartTaxRule(_flight, filter);
+                rules.Add(rule);
+            }
+
+            Logger.Trace($"Run {rules.Count} rules of StartTaxRuleFilter");
+            _ruleBasedDelivery.ApplyRules(rules);
+            #endregion Start taxes
+
             #region Landing taxes
             rules.Clear();
 

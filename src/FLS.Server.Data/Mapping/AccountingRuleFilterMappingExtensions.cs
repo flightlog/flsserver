@@ -65,6 +65,7 @@ namespace FLS.Server.Data.Mapping
                 case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.StartTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.EngineTimeAccountingRuleFilter:
@@ -160,6 +161,7 @@ namespace FLS.Server.Data.Mapping
                 case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.StartTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.EngineTimeAccountingRuleFilter:
@@ -256,6 +258,7 @@ namespace FLS.Server.Data.Mapping
                 case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.StartTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
@@ -344,6 +347,7 @@ namespace FLS.Server.Data.Mapping
                 case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
+                case (int)AccountingRuleFilterType.StartTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.LandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.NoLandingTaxAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.VsfFeeAccountingRuleFilter:
