@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace FLS.Data.WebApi.Accounting
 {
@@ -38,5 +39,15 @@ namespace FLS.Data.WebApi.Accounting
             get { return DeliveryId; }
             set { DeliveryId = value; }
         }
+
+
+
+        /// <summary>
+        /// Controls if a flight is not needed to invoice.
+        /// This flag is only internal for rule handling,
+        /// but can not be in derived class RuleBasedDeliveryDetails
+        /// </summary>
+        [JsonIgnore]
+        internal bool DoNotInvoiceFlight { get; set; }
     }
 }

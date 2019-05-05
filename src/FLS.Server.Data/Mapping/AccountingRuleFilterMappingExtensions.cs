@@ -62,6 +62,7 @@ namespace FLS.Server.Data.Mapping
                         overview.Target = string.Empty;
                     }
                     break;
+                case (int)AccountingRuleFilterType.DoNotInvoiceFlightRuleFilter:
                 case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
@@ -158,6 +159,7 @@ namespace FLS.Server.Data.Mapping
                         overview.Target = string.Empty;
                     }
                     break;
+                case (int)AccountingRuleFilterType.DoNotInvoiceFlightRuleFilter:
                 case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
@@ -255,6 +257,7 @@ namespace FLS.Server.Data.Mapping
                     details.ArticleTarget = null;
                     details.IsChargedToClubInternal = entity.IsChargedToClubInternal;
                     break;
+                case (int)AccountingRuleFilterType.DoNotInvoiceFlightRuleFilter:
                 case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:
@@ -344,6 +347,7 @@ namespace FLS.Server.Data.Mapping
                     entity.RecipientTarget = JsonConvert.SerializeObject(details.RecipientTarget);
                     entity.IsChargedToClubInternal = details.IsChargedToClubInternal;
                     break;
+                case (int)AccountingRuleFilterType.DoNotInvoiceFlightRuleFilter:
                 case (int)AccountingRuleFilterType.FlightTimeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.AdditionalFuelFeeAccountingRuleFilter:
                 case (int)AccountingRuleFilterType.InstructorFeeAccountingRuleFilter:

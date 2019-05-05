@@ -2,6 +2,7 @@
 {
     public enum AccountingRuleFilterType
     {
+        DoNotInvoiceFlightRuleFilter = 5,
         RecipientAccountingRuleFilter = 10,
         NoLandingTaxAccountingRuleFilter = 20,
         FlightTimeAccountingRuleFilter = 30,

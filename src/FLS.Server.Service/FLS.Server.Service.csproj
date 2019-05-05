@@ -100,6 +100,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounting\RuleBasedAccountingRuleFilterDetails.cs" />
+    <Compile Include="Accounting\RuleEngines\IgnoreFlightRulesEngine.cs" />
+    <Compile Include="Accounting\Rules\DoNotInvoiceFlightRule.cs" />
     <Compile Include="Accounting\Rules\ItemRules\AircraftEngineTimeRule.cs" />
     <Compile Include="Accounting\Rules\ItemRules\StartTaxRule.cs" />
     <Compile Include="Accounting\Rules\ItemRules\LandingTaxOnStartLocationRule.cs" />

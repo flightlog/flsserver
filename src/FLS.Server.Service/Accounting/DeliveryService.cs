@@ -136,6 +136,17 @@ namespace FLS.Server.Service.Accounting
                         {
                             var deliveryDetails = CreateDeliveryDetailsForFlight(flight, clubId, accountingRuleFilters);
 
+                            if (deliveryDetails.DoNotInvoiceFlight)
+                            {
+                                Logger.Info($"FlightId/Flight: {flight.FlightId} / {flight} is excluded by DoNotInvoiceFlightRule! Delivery-Process stopped and flight process state is set to ExcludedFromDeliveryProcess!");
+
+                                flight.ProcessStateId = (int)FLS.Data.WebApi.Flight.FlightProcessState.ExcludedFromDeliveryProcess;
+                                flight.DeliveryCreatedOn = DateTime.UtcNow;
+                                flight.DoNotUpdateMetaData = true;
+                                context.SaveChanges();
+                                continue;
+                            }
+
                             if (deliveryDetails.DeliveryItems.Any() == false)
                             {
                                 Logger.Warn($"Delivery without items created for FlightId/Flight: {flight.FlightId} / {flight}! Delivery-Process stopped and flight process state is set to DeliveryPreparationError!");
@@ -234,6 +245,21 @@ namespace FLS.Server.Service.Accounting
             if (flight.Passenger != null) ruleBasedDelivery.FlightInformation.SecondCrewName = flight.PassengerDisplayName;
             if (flight.CoPilot != null) ruleBasedDelivery.FlightInformation.SecondCrewName = flight.CoPilotDisplayName;
             if (flight.Instructor != null) ruleBasedDelivery.FlightInformation.SecondCrewName = flight.InstructorDisplayName;
+
+            var ignoreFlightRulesEngine = new IgnoreFlightRulesEngine(ruleBasedDelivery, flight,
+                accountingRuleFilters.Where(
+                    x =>
+                        x.AccountingRuleFilterTypeId ==
+                        (int)FLS.Data.WebApi.Accounting.RuleFilters.AccountingRuleFilterType.DoNotInvoiceFlightRuleFilter).ToList());
+            ignoreFlightRulesEngine.Run();
+
+            if (ruleBasedDelivery.DoNotInvoiceFlight)
+            {
+                Logger.Info(
+                    $"Flight must not be invoiced: Flight-Date: {ruleBasedDelivery.FlightInformation.FlightDate.ToShortDateString()} Aircraft: {ruleBasedDelivery.FlightInformation.AircraftImmatriculation}");
+
+                return ruleBasedDelivery;
+            }
 
             var recipientRulesEngine = new RecipientRulesEngine(ruleBasedDelivery, flight,
                 _personService,

@@ -17,8 +17,8 @@ INSERT INTO [dbo].[SystemVersion]
 GO
 
 PRINT 'Insert Accounting Rule Filter Types'
--- INSERT INTO [dbo].[AccountingRuleFilterTypes] ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName],[AccountingRuleFilterTypeKeyName],[CreatedOn],[ModifiedOn])
---      VALUES (5,'Ignore flight rule filter', 'IgnoreFlightRuleFilter', SYSDATETIME(), null)
+INSERT INTO [dbo].[AccountingRuleFilterTypes] ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName],[AccountingRuleFilterTypeKeyName],[CreatedOn],[ModifiedOn])
+     VALUES (5,'Do not invoice flight rule filter', 'DoNotInvoiceFlightRuleFilter', SYSDATETIME(), null)
 INSERT INTO [dbo].[AccountingRuleFilterTypes] ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName],[AccountingRuleFilterTypeKeyName],[CreatedOn],[ModifiedOn])
      VALUES (55,'Start tax invoice rule filter', 'StartTaxInvoiceRuleFilter', SYSDATETIME(), null)
 GO
