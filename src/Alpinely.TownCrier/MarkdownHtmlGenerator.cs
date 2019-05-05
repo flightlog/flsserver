@@ -13,7 +13,7 @@ namespace Alpinely.TownCrier
                     {
                         AutoHyperlink = false,
                         LinkEmails = false,
-                        AutoNewLines = true
+                        AutoNewlines = true
                     }
                 );
             var templateHtml = markdownSharp.Transform(template);
