@@ -49,14 +49,14 @@ namespace FLS.Server.Tests.ServiceTests
 
             var rootCategory = new PersonCategoryDetails()
             {
-                CategoryName = "Root"
+                CategoryName = $"Root{DateTime.Now.Ticks}"
             };
 
             ClubService.InsertPersonCategoryDetails(rootCategory);
 
             var gliderCategory = new PersonCategoryDetails()
             {
-                CategoryName = "GliderPilots",
+                CategoryName = $"GliderPilots{DateTime.Now.Ticks}",
                 ParentPersonCategoryId = rootCategory.PersonCategoryId
             };
 
@@ -64,7 +64,7 @@ namespace FLS.Server.Tests.ServiceTests
 
             var gliderTraineeCategory = new PersonCategoryDetails()
             {
-                CategoryName = "GliderTrainees",
+                CategoryName = $"GliderTrainees{DateTime.Now.Ticks}",
                 ParentPersonCategoryId = gliderCategory.PersonCategoryId
             };
 
@@ -72,7 +72,7 @@ namespace FLS.Server.Tests.ServiceTests
 
             var gliderInstructorsCategory = new PersonCategoryDetails()
             {
-                CategoryName = "GliderInstructors",
+                CategoryName = $"GliderInstructors{DateTime.Now.Ticks}",
                 ParentPersonCategoryId = gliderCategory.PersonCategoryId
             };
 
@@ -80,7 +80,7 @@ namespace FLS.Server.Tests.ServiceTests
 
             var motorCategory = new PersonCategoryDetails()
             {
-                CategoryName = "Motorpilots",
+                CategoryName = $"Motorpilots{DateTime.Now.Ticks}",
                 ParentPersonCategoryId = rootCategory.PersonCategoryId
             };
 
