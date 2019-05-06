@@ -1203,6 +1203,14 @@ namespace FLS.Server.Service.Accounting
                     flight.EntityNotNull("Flight", flightId);
                     flight.DeletedDeliveryForFlight(); //reset process state to locked
 
+                    if (flight.TowFlightId.HasValue)
+                    {
+                        flightId = flight.TowFlightId.Value;
+                        flight = context.Flights.FirstOrDefault(x => x.FlightId == flightId);
+                        flight.EntityNotNull("Flight", flightId);
+                        flight.DeletedDeliveryForFlight(); //reset process state to locked
+                    }
+
                     context.SaveChanges();
                 }
                 else
