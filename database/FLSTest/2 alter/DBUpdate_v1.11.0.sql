@@ -22,4 +22,4 @@ INSERT INTO [dbo].[AccountingRuleFilterTypes] ([AccountingRuleFilterTypeId],[Acc
 INSERT INTO [dbo].[AccountingRuleFilterTypes] ([AccountingRuleFilterTypeId],[AccountingRuleFilterTypeName],[AccountingRuleFilterTypeKeyName],[CreatedOn],[ModifiedOn])
      VALUES (55,'Start tax invoice rule filter', 'StartTaxInvoiceRuleFilter', SYSDATETIME(), null)
 GO
-PRINT 'Finished update to Version 1.10.7'
+PRINT 'Finished update to Version 1.11.0'
