@@ -34,10 +34,11 @@ namespace FLS.Server.Service.Email
                 {
                     eMailMessage.From = new MailAddress(SystemData.SystemSenderEmailAddress);
                 }
-                
+
                 try
                 {
-                    if (SystemData.SendToBccRecipients && string.IsNullOrWhiteSpace(SystemData.BccRecipientEmailAddresses) == false)
+                    if (SystemData.SendToBccRecipients &&
+                        string.IsNullOrWhiteSpace(SystemData.BccRecipientEmailAddresses) == false)
                     {
                         eMailMessage.Bcc.Add(SystemData.BccRecipientEmailAddresses.FormatMultipleEmailAddresses());
                     }
@@ -82,12 +83,25 @@ namespace FLS.Server.Service.Email
                 if (SystemData.DebugMode || SystemData.Testmode)
                 {
                     //log email body in debug mode
-                    Logger.Info($"Sent email to recipient: {eMailMessage.To} with subject: {eMailMessage.Subject}, and Body: {eMailMessage.Body}");
+                    Logger.Info(
+                        $"Sent email to recipient: {eMailMessage.To} with subject: {eMailMessage.Subject}, and Body: {eMailMessage.Body}");
                 }
                 else
                 {
                     Logger.Info($"Sent email to recipient: {eMailMessage.To} with subject: {eMailMessage.Subject}");
                 }
+            }
+            catch (SmtpFailedRecipientsException recipientsException)
+            {
+                Logger.Error(recipientsException,
+                    $"Failed recipients status code error {recipientsException.StatusCode} while trying to send email. Message: {recipientsException.Message}");
+                throw;
+            }
+            catch (SmtpException smtpException)
+            {
+                Logger.Error(smtpException,
+                    $"SMTP-Error {smtpException.StatusCode} while trying to send email. SMTP-Message: {smtpException.Message}");
+                throw;
             }
             catch (Exception e)
             {
