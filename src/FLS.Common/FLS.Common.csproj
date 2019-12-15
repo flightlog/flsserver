@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Comparer\ObjectComparer.cs" />
+    <Compile Include="Converters\JsonBooleanConverter.cs" />
     <Compile Include="Converters\EmptyStringToNullJsonConverter.cs" />
     <Compile Include="Exceptions\EntityNotFoundException.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />

@@ -149,6 +149,8 @@
       <DependentUpon>201501222055041_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Objects\Aircraft\OgnDevices.cs" />
+    <Compile Include="Objects\Aircraft\OgnDevice.cs" />
     <Compile Include="Objects\Person\ImportPersonDetails.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DbEntities\Role.cs" />

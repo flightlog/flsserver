@@ -142,6 +142,9 @@ namespace FLS.Server.Service
 
                 count++;
                 ExecuteDeliveryMailExportJob();
+
+                count++;
+                ExecuteAircraftDatabaseSyncJob();
             }
             
             Logger.Info(string.Format("Executed {0} workflows.", count));
@@ -176,6 +179,13 @@ namespace FLS.Server.Service
         {
             Logger.Info("Execute delivery creation job.");
             var job = new DeliveryCreationJob(_deliveryService, _clubService);
+            job.Execute();
+        }
+
+        public void ExecuteAircraftDatabaseSyncJob()
+        {
+            Logger.Info("Execute aircraft database sync job.");
+            var job = new AircraftDatabaseSyncJob(_aircraftService, _dataAccessService);
             job.Execute();
         }
     }

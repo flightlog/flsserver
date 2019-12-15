@@ -40,6 +40,13 @@ namespace FLS.Server.Tests.ServiceTests
 
         [TestMethod]
         [TestCategory("Service")]
+        public void ExecuteAircraftDatabaseSyncJobTest()
+        {
+            WorkflowService.ExecuteAircraftDatabaseSyncJob();
+        }
+
+        [TestMethod]
+        [TestCategory("Service")]
         public void ExecuteDeliveryMailExportJobTest()
         {
             WorkflowService.ExecuteDeliveryMailExportJob();
