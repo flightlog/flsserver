@@ -10,6 +10,8 @@ using FLS.Data.WebApi.Flight;
 using FLS.Data.WebApi.Reporting.Flights;
 using FLS.Server.Data.Enums;
 using NLog;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace FLS.Server.Service.Reporting
 {
@@ -736,6 +738,124 @@ namespace FLS.Server.Service.Reporting
                 };
 
                 return flightReportResult;
+            }
+        }
+
+        public byte[] ExportExcel(int? pageStart, int? pageSize, PageableSearchFilter<FlightReportFilterCriteria> pageableSearchFilter)
+        {
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                var flightReport = GetPagedFlightReport(pageStart, pageSize, pageableSearchFilter);
+
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Flights");
+
+                worksheet.Cells[1, 1].Value = "Flights";
+                worksheet.Cells[1, 1].Style.Font.Size = 20;
+
+                worksheet.Cells[3, 1].Value = "Excel Erstellt:";
+                worksheet.Cells[3, 3].Value = DateTime.Now;
+                worksheet.Cells[3, 3].Style.Numberformat.Format = "dd.mm.yyyy HH:MM:ss";
+                worksheet.Cells[3, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
+                //Headers
+                worksheet.Cells[5, 1].Value = "Flight ID";
+                worksheet.Cells[5, 2].Value = "FlightDate";
+                worksheet.Cells[5, 3].Value = "Immatriculation";
+                worksheet.Cells[5, 4].Value = "PilotName";
+                worksheet.Cells[5, 5].Value = "SecondCrewName";
+                worksheet.Cells[5, 6].Value = "AirState";
+                worksheet.Cells[5, 7].Value = "ProcessState";
+                worksheet.Cells[5, 8].Value = "FlightCode";
+                worksheet.Cells[5, 9].Value = "FlightTypeName";
+                worksheet.Cells[5, 10].Value = "StartTime UTC";
+                worksheet.Cells[5, 11].Value = "LdgTime UCT";
+                worksheet.Cells[5, 12].Value = "FlightDuration"; 
+                worksheet.Cells[5, 13].Value = "IsSoloFlight";
+                worksheet.Cells[5, 14].Value = "StartType";
+                worksheet.Cells[5, 15].Value = "StartLocation";
+                worksheet.Cells[5, 16].Value = "LdgLocation";
+                worksheet.Cells[5, 18].Value = "FlightComment";
+                worksheet.Cells[5, 19].Value = "TowFlight-FlightId";
+                worksheet.Cells[5, 20].Value = "TowFlight-Immatriculation";
+                worksheet.Cells[5, 21].Value = "TowFlight-PilotName";
+                worksheet.Cells[5, 22].Value = "TowFlight-StartTime UTC";
+                worksheet.Cells[5, 23].Value = "TowFlight-LdgTime UTC";
+                worksheet.Cells[5, 24].Value = "TowFlight-FlightDuration";
+                worksheet.Cells[5, 25].Value = "TowFlight-StartLocation";
+                worksheet.Cells[5, 26].Value = "TowFlight-LdgLocation";
+                worksheet.Cells[5, 27].Value = "TowFlight-FlightCode";
+                worksheet.Cells[5, 28].Value = "TowFlight-FlightTypeName";
+                worksheet.Cells[5, 29].Value = "TowFlight-AirState";
+                worksheet.Cells[5, 30].Value = "TowFlight-ProcessState";
+
+                int row = 6;
+
+                foreach(var flight in flightReport.Flights.Items)
+                {
+                    worksheet.Cells[row, 1].Value = flight.FlightId;
+                    worksheet.Cells[row, 2].Value = flight.FlightDate;
+                    worksheet.Cells[row, 3].Value = flight.Immatriculation;
+                    worksheet.Cells[row, 4].Value = flight.PilotName;
+                    worksheet.Cells[row, 5].Value = flight.SecondCrewName;
+                    worksheet.Cells[row, 6].Value = flight.AirState;
+                    worksheet.Cells[row, 7].Value = flight.ProcessState;
+                    worksheet.Cells[row, 8].Value = flight.FlightCode;
+                    worksheet.Cells[row, 9].Value = flight.FlightTypeName;
+                    worksheet.Cells[row, 10].Value = flight.StartDateTime;
+                    worksheet.Cells[row, 10].Style.Numberformat.Format = "HH:MM";
+                    worksheet.Cells[row, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
+                    worksheet.Cells[row, 11].Value = flight.LdgDateTime;
+                    worksheet.Cells[row, 11].Style.Numberformat.Format = "HH:MM";
+                    worksheet.Cells[row, 11].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
+                    worksheet.Cells[row, 12].Value = flight.FlightDuration;
+                    worksheet.Cells[row, 12].Style.Numberformat.Format = "[H]:MM";
+                    worksheet.Cells[row, 12].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
+                    if (flight.IsSoloFlight)
+                    {
+                        worksheet.Cells[row, 13].Value = 1;
+                    }
+                    else
+                    {
+                        worksheet.Cells[row, 13].Value = 0;
+                    }
+
+                    worksheet.Cells[row, 14].Value = flight.StartType;
+                    worksheet.Cells[row, 15].Value = flight.StartLocation;
+                    worksheet.Cells[row, 16].Value = flight.LdgLocation;
+                    worksheet.Cells[row, 18].Value = flight.FlightComment;
+
+                    if (flight.TowFlight != null)
+                    {
+                        worksheet.Cells[row, 19].Value = flight.TowFlight.TowFlightId;
+                        worksheet.Cells[row, 20].Value = flight.TowFlight.Immatriculation;
+                        worksheet.Cells[row, 21].Value = flight.TowFlight.PilotName;
+                        worksheet.Cells[row, 22].Value = flight.TowFlight.StartDateTime;
+                        worksheet.Cells[row, 22].Style.Numberformat.Format = "HH:MM";
+                        worksheet.Cells[row, 22].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
+                        worksheet.Cells[row, 23].Value = flight.TowFlight.LdgDateTime;
+                        worksheet.Cells[row, 23].Style.Numberformat.Format = "HH:MM";
+                        worksheet.Cells[row, 23].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
+                        worksheet.Cells[row, 24].Value = flight.TowFlight.FlightDuration;
+                        worksheet.Cells[row, 24].Style.Numberformat.Format = "[H]:MM";
+                        worksheet.Cells[row, 24].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
+                        worksheet.Cells[row, 25].Value = flight.TowFlight.StartLocation;
+                        worksheet.Cells[row, 26].Value = flight.TowFlight.LdgLocation;
+                        worksheet.Cells[row, 27].Value = flight.TowFlight.FlightCode;
+                        worksheet.Cells[row, 28].Value = flight.TowFlight.FlightTypeName;
+                        worksheet.Cells[row, 29].Value = flight.TowFlight.AirState;
+                        worksheet.Cells[row, 30].Value = flight.TowFlight.ProcessState;
+                    }
+
+                    row++;
+                }
+
+                return package.GetAsByteArray();
             }
         }
     }

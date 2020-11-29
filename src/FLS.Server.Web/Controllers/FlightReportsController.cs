@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web.Http;
 using System.Web.Http.Description;
 using FLS.Data.WebApi;
@@ -41,6 +43,33 @@ namespace FLS.Server.WebApi.Controllers
         {
             var result = _flightReportService.GetPagedFlightReport(pageStart, pageSize, pageableSearchFilter);
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the flight reports as excel.
+        /// </summary>
+        /// <seealso cref="https://stackoverflow.com/questions/9541351/returning-binary-file-from-controller-in-asp-net-web-api"/>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("export/excel/{pageStart:int?}/{pageSize:int?}")]
+        [ResponseType(typeof(FlightReportResult))]
+        public IHttpActionResult GetExcelFlightReport([FromBody] PageableSearchFilter<FlightReportFilterCriteria> pageableSearchFilter, int? pageStart = 0, int? pageSize = 100)
+        {
+            var report = _flightReportService.ExportExcel(pageStart, pageSize, pageableSearchFilter);
+
+#if DEBUG
+            var filename = $"FlightReport-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.xlsx";
+
+            var fullfilename = @"C:\temp\" + filename;
+
+            System.IO.File.WriteAllBytes(fullfilename, report);
+
+#endif
+            var response = new HttpResponseMessage();
+            response.Content = new ByteArrayContent(report);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.ms-excel");
+
+            return Ok(response);
         }
     }
 }

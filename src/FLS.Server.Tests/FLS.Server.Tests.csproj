@@ -208,6 +208,7 @@
     <Compile Include="WebApiControllerTests\AircraftsControllerTest.cs" />
     <Compile Include="WebApiControllerTests\AircraftStatesControllerTest.cs" />
     <Compile Include="WebApiControllerTests\AuditLogsControllerTest.cs" />
+    <Compile Include="WebApiControllerTests\FlightReportsControllerTest.cs" />
     <Compile Include="WebApiControllerTests\SettingsControllerTest.cs" />
     <Compile Include="WebApiControllerTests\DashboardsControllerTest.cs" />
     <Compile Include="WebApiControllerTests\AircraftTypesControllerTest.cs" />
