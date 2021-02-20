@@ -23,6 +23,7 @@ namespace FLS.Server.Data.DbEntities
             AircraftReservations = new HashSet<AircraftReservation>();
             SecondCrewAssignedAircraftReservations = new HashSet<AircraftReservation>();
             PlanningDayAssignments = new HashSet<PlanningDayAssignment>();
+            PersonFlightTimeCredits = new HashSet<PersonFlightTimeCredit>();
         }
 
         public Guid PersonId { get; set; }
@@ -179,6 +180,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual ICollection<AircraftReservation> SecondCrewAssignedAircraftReservations { get; set; }
 
         public virtual ICollection<PlanningDayAssignment> PlanningDayAssignments { get; set; }
+
+        public virtual ICollection<PersonFlightTimeCredit> PersonFlightTimeCredits { get; set; }
 
         /// <summary>
         /// returns if this person has a connection to given club.

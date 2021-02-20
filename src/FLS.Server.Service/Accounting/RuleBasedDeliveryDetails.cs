@@ -29,5 +29,8 @@ namespace FLS.Server.Service.Accounting
 
         [JsonIgnore]
         public bool NoLandingTaxForFlight { get; set; }
+
+        [JsonIgnore]
+        public PersonFlightTimeCredit PersonFlightTimeCredit { get; set; }
     }
 }

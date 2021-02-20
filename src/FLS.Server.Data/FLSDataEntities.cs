@@ -84,6 +84,8 @@ namespace FLS.Server.Data
         public virtual DbSet<MemberState> MemberStates { get; set; }
         public virtual DbSet<PersonCategory> PersonCategories { get; set; }
         public virtual DbSet<PersonClub> PersonClubs { get; set; }
+
+        public virtual DbSet<PersonFlightTimeCredit> PersonFlightTimeCredits { get; set; }
         public virtual DbSet<PersonPersonCategory> PersonPersonCategories { get; set; }
         public virtual DbSet<PlanningDay> PlanningDays { get; set; }
         public virtual DbSet<PlanningDayAssignment> PlanningDayAssignments { get; set; }
@@ -166,6 +168,7 @@ namespace FLS.Server.Data
             modelBuilder.Entity<PersonCategory>().Ignore(t => t.Id);
             modelBuilder.Entity<PersonClub>().Ignore(t => t.Id);
             modelBuilder.Entity<PersonClub>().Ignore(t => t.DoNotUpdateTimeStampsInMetaData);
+            modelBuilder.Entity<PersonFlightTimeCredit>().Ignore(t => t.Id); 
             modelBuilder.Entity<PersonPersonCategory>().Ignore(t => t.Id);
             modelBuilder.Entity<Role>().Ignore(t => t.Id);
             modelBuilder.Entity<Role>().Ignore(t => t.Name);
@@ -551,6 +554,11 @@ namespace FLS.Server.Data
                 .WithRequired(e => e.AssignedPerson)
                 .HasForeignKey(e => e.AssignedPersonId);
 
+            modelBuilder.Entity<Person>()
+                .HasMany(e => e.PersonFlightTimeCredits)
+                .WithRequired(e => e.Person)
+                .HasForeignKey(e => e.PersonId);
+
             modelBuilder.Entity<PlanningDay>()
                 .HasMany(e => e.PlanningDayAssignments)
                 .WithRequired(e => e.AssignedPlanningDay)
@@ -799,6 +807,16 @@ namespace FLS.Server.Data
                 .And(x => x.OwnershipType)
                 .And(x => x.RecordState);
             EntityTracker.TrackAllProperties<PersonPersonCategory>().Except(x => x.Id)
+                .And(x => x.CreatedByUserId)
+                .And(x => x.CreatedOn)
+                .And(x => x.ModifiedByUserId)
+                .And(x => x.ModifiedOn)
+                .And(x => x.DeletedByUserId)
+                .And(x => x.DeletedOn)
+                .And(x => x.OwnerId)
+                .And(x => x.OwnershipType)
+                .And(x => x.RecordState);
+            EntityTracker.TrackAllProperties<PersonFlightTimeCredit>().Except(x => x.Id)
                 .And(x => x.CreatedByUserId)
                 .And(x => x.CreatedOn)
                 .And(x => x.ModifiedByUserId)

@@ -118,6 +118,8 @@
     <Compile Include="Emails\EmailTemplateOverview.cs" />
     <Compile Include="Emails\EmailTemplateDetails.cs" />
     <Compile Include="Exceptions\FLSServerException.cs" />
+    <Compile Include="FlightTimeCredit\PersonFlightTimeCreditDetails.cs" />
+    <Compile Include="FlightTimeCredit\PersonFlightTimeCreditOverview.cs" />
     <Compile Include="Flight\FlightCategory.cs" />
     <Compile Include="Flight\FlightCrewTypeListItem.cs" />
     <Compile Include="Flight\FlightExchangeData.cs" />

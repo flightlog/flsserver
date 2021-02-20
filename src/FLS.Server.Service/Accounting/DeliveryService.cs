@@ -99,6 +99,10 @@ namespace FLS.Server.Service.Accounting
 
                     Logger.Debug($"Queried Flights for accounting and got {flights.Count} flights back.");
 
+                    var personFlightTimeCredits = context.PersonFlightTimeCredits
+                        .Where(x => x.Person.PersonClubs.Any(y => y.ClubId == clubId)
+                            && x.ValidUntil <= DateTime.Now)
+                        .ToList();
 
                     var accountingRuleFilters =
                         _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(clubId);
@@ -134,7 +138,7 @@ namespace FLS.Server.Service.Accounting
                     {
                         try
                         {
-                            var deliveryDetails = CreateDeliveryDetailsForFlight(flight, clubId, accountingRuleFilters);
+                            var deliveryDetails = CreateDeliveryDetailsForFlight(flight, clubId, accountingRuleFilters, personFlightTimeCredits);
 
                             if (deliveryDetails.DoNotInvoiceFlight)
                             {
@@ -222,7 +226,7 @@ namespace FLS.Server.Service.Accounting
             }
         }
 
-        private DeliveryDetails CreateDeliveryDetailsForFlight(Flight flight, Guid clubId, List<RuleBasedAccountingRuleFilterDetails> accountingRuleFilters)
+        private DeliveryDetails CreateDeliveryDetailsForFlight(Flight flight, Guid clubId, List<RuleBasedAccountingRuleFilterDetails> accountingRuleFilters, List<PersonFlightTimeCredit> personFlightTimeCredits)
         {
             Logger.Debug(
                 $"Start creating accounting for flight: {flight} using {accountingRuleFilters.Count} recipient rule filters and {accountingRuleFilters.Count} accounting line rule filters.");
@@ -271,6 +275,15 @@ namespace FLS.Server.Service.Accounting
 
             var accountingDetailsRuleEngine = new DeliveryDetailsRulesEngine(ruleBasedDelivery, flight);
             accountingDetailsRuleEngine.Run();
+
+            //assign possible person flight time credit to delivery details
+            if (ruleBasedDelivery.RecipientDetails != null && ruleBasedDelivery.RecipientDetails.PersonId.HasValue)
+            {
+                ruleBasedDelivery.PersonFlightTimeCredit = personFlightTimeCredits
+                    .Where(x => x.PersonId == ruleBasedDelivery.RecipientDetails.PersonId)
+                    .OrderByDescending(x => x.BalanceDateTime)
+                    .FirstOrDefault();
+            }
 
             var accountingLineRulesEngine = new DeliveryItemRulesEngine(ruleBasedDelivery, flight,
                 _personService,
@@ -364,6 +377,10 @@ namespace FLS.Server.Service.Accounting
                             .OrderBy(c => c.StartDateTime)
                             .FirstOrDefault(f => f.FlightId == flightId);
 
+                    var personFlightTimeCredits = context.PersonFlightTimeCredits
+                        .Where(x => x.ValidUntil <= DateTime.Now)
+                        .ToList(); 
+                    
                     var accountingRuleFilters =
                         _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(
                             CurrentAuthenticatedFLSUserClubId);
@@ -372,7 +389,7 @@ namespace FLS.Server.Service.Accounting
 
 
                     var deliveryDetails = CreateDeliveryDetailsForFlight(flight, CurrentAuthenticatedFLSUserClubId,
-                        accountingRuleFilters);
+                        accountingRuleFilters, personFlightTimeCredits);
 
                     deliveryCreationResult.CreatedDeliveryDetails = deliveryDetails;
 
@@ -471,6 +488,11 @@ namespace FLS.Server.Service.Accounting
                             .OrderBy(c => c.StartDateTime)
                             .FirstOrDefault(f => f.FlightId == deliveryCreationTest.FlightId);
 
+
+                    var personFlightTimeCredits = context.PersonFlightTimeCredits
+                        .Where(x => x.ValidUntil <= DateTime.Now)
+                        .ToList();
+
                     var accountingRuleFilters =
                         _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(
                             CurrentAuthenticatedFLSUserClubId);
@@ -479,7 +501,7 @@ namespace FLS.Server.Service.Accounting
 
 
                     var createdDeliveryDetails = CreateDeliveryDetailsForFlight(flight, CurrentAuthenticatedFLSUserClubId,
-                        accountingRuleFilters);
+                        accountingRuleFilters, personFlightTimeCredits);
 
                     var matchedAccountingRuleFilters = accountingRuleFilters.Where(x => x.HasMatched).ToList();
 
