@@ -99,7 +99,7 @@ namespace FLS.Server.Service.Accounting
 
                     Logger.Debug($"Queried Flights for accounting and got {flights.Count} flights back.");
 
-                    var personFlightTimeCredits = context.PersonFlightTimeCredits
+                    var personFlightTimeCredits = context.PersonFlightTimeCredits.AsNoTracking()    //just load it read-only
                         .Where(x => x.Person.PersonClubs.Any(y => y.ClubId == clubId)
                             && x.ValidUntil <= DateTime.Now)
                         .ToList();
@@ -186,6 +186,19 @@ namespace FLS.Server.Service.Accounting
                                     (int) FLS.Data.WebApi.Flight.FlightProcessState.DeliveryPrepared;
                                 flight.TowFlight.DeliveryCreatedOn = DateTime.UtcNow;
                                 flight.TowFlight.DoNotUpdateMetaData = true;
+                            }
+
+                            //create new flight time credit entry
+
+                            var flightTimeCredit = ((RuleBasedDeliveryDetails)deliveryDetails).PersonFlightTimeCredit;
+
+                            if (flightTimeCredit != null)
+                            {
+                                var flighttimeCreditEntry = new PersonFlightTimeCredit(flightTimeCredit);
+                                flighttimeCreditEntry.BalanceDateTime = flight.DeliveryCreatedOn.Value; //set the BalanceDateTime to the same as delivery creation time of flight
+                                
+                                //add it to the db context
+                                context.PersonFlightTimeCredits.Add(flighttimeCreditEntry);
                             }
 
                             context.SaveChanges();

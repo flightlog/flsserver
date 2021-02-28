@@ -271,7 +271,7 @@ namespace FLS.Server.Tests.ServiceTests
         [DeploymentItem(@"Resources\AccountingRuleFilters_SGN.xlsx")]
         [DeploymentItem(@"Resources\FlightTypes_SGN.xlsx")]
         [DataSource("System.Data.Odbc",
-             @"Dsn=Excel Files;dbq=.\FlightInvoiceTestdata_SGN.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5",
+             @"Dsn=Excel Files;dbq=.\TestData\FlightInvoiceTestdata_SGN.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5",
              "FlightInvoiceTestdata_SGN$", DataAccessMethod.Sequential)]
         public void SGNProffixGliderInvoiceTest()
         {
@@ -508,7 +508,7 @@ namespace FLS.Server.Tests.ServiceTests
         [DeploymentItem(@"Resources\AccountingRuleFilters_SGN.xlsx")]
         [DeploymentItem(@"Resources\FlightTypes_SGN.xlsx")]
         [DataSource("System.Data.Odbc",
-             @"Dsn=Excel Files;dbq=.\MotorFlightInvoiceTestdata_SGN.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5",
+             @"Dsn=Excel Files;dbq=.\TestData\MotorFlightInvoiceTestdata_SGN.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5",
              "FlightInvoiceTestdata$", DataAccessMethod.Sequential)]
         public void SGNProffixMotorInvoiceTest()
         {

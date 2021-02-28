@@ -33,6 +33,7 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
         public override RuleBasedDeliveryDetails Apply(RuleBasedDeliveryDetails ruleBasedDelivery)
         {
             var lineQuantity = 0.0m;
+            var lineFlightTimeInSec = ruleBasedDelivery.ActiveFlightTimeInSeconds;
 
             if (_minFlightTimeInSecondsMatchingValue == 0)
             {
@@ -43,6 +44,42 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
             {
                 lineQuantity = Convert.ToDecimal(ruleBasedDelivery.ActiveFlightTimeInSeconds - _minFlightTimeInSecondsMatchingValue);
                 ruleBasedDelivery.ActiveFlightTimeInSeconds = _minFlightTimeInSecondsMatchingValue;
+            }
+
+            var discount = 0;
+            long currentFlightTimeCredit = long.MaxValue;
+
+            if (ruleBasedDelivery.PersonFlightTimeCredit != null)
+            {
+                if (ruleBasedDelivery.PersonFlightTimeCredit.UseRuleForAllAircraftsExceptListed)
+                {
+                    if (ruleBasedDelivery.PersonFlightTimeCredit.MatchedAircraftImmatriculations != null && ruleBasedDelivery.PersonFlightTimeCredit.MatchedAircraftImmatriculations.Any())
+                    {
+                        if (ruleBasedDelivery.PersonFlightTimeCredit.MatchedAircraftImmatriculations.Contains(Flight.AircraftImmatriculation) == false)
+                        {
+                            //rule applies
+                            discount = ruleBasedDelivery.PersonFlightTimeCredit.DiscountInPercent;
+
+                            if (ruleBasedDelivery.PersonFlightTimeCredit.NoFlightTimeLimit == false)
+                            {
+                                currentFlightTimeCredit = ruleBasedDelivery.PersonFlightTimeCredit.CurrentFlightTimeBalanceInSeconds;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (ruleBasedDelivery.PersonFlightTimeCredit.MatchedAircraftImmatriculations.Contains(Flight.AircraftImmatriculation))
+                    {
+                        //rule applies
+                        discount = ruleBasedDelivery.PersonFlightTimeCredit.DiscountInPercent;
+
+                        if (ruleBasedDelivery.PersonFlightTimeCredit.NoFlightTimeLimit == false)
+                        {
+                            currentFlightTimeCredit = ruleBasedDelivery.PersonFlightTimeCredit.CurrentFlightTimeBalanceInSeconds;
+                        }
+                    }
+                }
             }
 
             if (ruleBasedDelivery.DeliveryItems.Any(x => x.ArticleNumber == AccountingRuleFilter.ArticleTarget.ArticleNumber))
@@ -89,6 +126,35 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 ruleBasedDelivery.DeliveryItems.Add(line);
 
                 Logger.Debug($"Added new delivery item line to Delivery. Line: {line}");
+
+                //handle flight time credit
+                if (ruleBasedDelivery.PersonFlightTimeCredit != null)
+                {
+                    if (lineQuantity > currentFlightTimeCredit)
+                    {
+                        var overCreditLineQuantity = lineQuantity - currentFlightTimeCredit;
+                        lineQuantity = currentFlightTimeCredit;
+                        ruleBasedDelivery.PersonFlightTimeCredit.CurrentFlightTimeBalanceInSeconds = 0;
+                        line.Quantity = GetUnitQuantity(lineQuantity, FLS.Data.WebApi.Accounting.AccountingUnitType.Sec);
+                        line.DiscountInPercent = discount;
+                        var itemText = line.ItemText;
+
+                        line = new DeliveryItemDetails();
+                        line.Position = ruleBasedDelivery.DeliveryItems.Count + 1;
+                        line.ArticleNumber = AccountingRuleFilter.ArticleTarget.ArticleNumber;
+                        line.Quantity = GetUnitQuantity(overCreditLineQuantity, FLS.Data.WebApi.Accounting.AccountingUnitType.Sec);
+                        line.UnitType = GetUnitTypeString();
+                        line.DiscountInPercent = 0;
+                        line.ItemText = itemText;
+
+                        ruleBasedDelivery.DeliveryItems.Add(line);
+                    }
+                    else
+                    {
+                        line.DiscountInPercent = discount;
+                        ruleBasedDelivery.PersonFlightTimeCredit.CurrentFlightTimeBalanceInSeconds = currentFlightTimeCredit - lineFlightTimeInSec;
+                    }
+                }
             }
 
             AccountingRuleFilter.HasMatched = true;

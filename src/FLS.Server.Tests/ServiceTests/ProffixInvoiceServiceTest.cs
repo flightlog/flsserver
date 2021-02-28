@@ -69,7 +69,7 @@ namespace FLS.Server.Tests.ServiceTests
         //important: schema.ini must be saved as US-ASCII (in VS)
         [TestMethod]
         [DeploymentItem(@"TestData\FlightInvoiceTestdata.xlsx")]
-        [DataSource("System.Data.Odbc", @"Dsn=Excel Files;dbq=.\FlightInvoiceTestdata.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5", "FlightInvoiceTestdata$", DataAccessMethod.Sequential)]
+        [DataSource("System.Data.Odbc", @"Dsn=Excel Files;dbq=.\TestData\FlightInvoiceTestdata.xlsx;defaultdir=.; driverid=790;maxbuffersize=2048;pagetimeout=5", "FlightInvoiceTestdata$", DataAccessMethod.Sequential)]
         public void ProffixInvoiceTest()
         {
             

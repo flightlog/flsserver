@@ -15,6 +15,24 @@ namespace FLS.Server.Data.DbEntities
             
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PersonFlightTimeCredit"/> class, 
+        /// sets the properties to the same values as the object given,
+        /// except for Id, BalanceDateTime (UtcNow) and Metadata.
+        /// </summary>
+        /// <param name="personFlightTimeCredit">The person flight time credit.</param>
+        public PersonFlightTimeCredit(PersonFlightTimeCredit personFlightTimeCredit)
+        {
+            BalanceDateTime = DateTime.UtcNow;
+            NoFlightTimeLimit = personFlightTimeCredit.NoFlightTimeLimit;
+            CurrentFlightTimeBalanceInSeconds = personFlightTimeCredit.CurrentFlightTimeBalanceInSeconds;
+            ValidUntil = personFlightTimeCredit.ValidUntil;
+            PersonId = personFlightTimeCredit.PersonId;
+            UseRuleForAllAircraftsExceptListed = personFlightTimeCredit.UseRuleForAllAircraftsExceptListed;
+            MatchedAircraftImmatriculations = personFlightTimeCredit.MatchedAircraftImmatriculations;
+            DiscountInPercent = personFlightTimeCredit.DiscountInPercent;
+        }
+
         public Guid PersonFlightTimeCreditId { get; set; }
 
         [Column(TypeName = "datetime2")]
