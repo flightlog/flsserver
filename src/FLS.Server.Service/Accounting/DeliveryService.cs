@@ -1238,6 +1238,21 @@ namespace FLS.Server.Service.Accounting
                     flight.EntityNotNull("Flight", flightId);
                     flight.DeletedDeliveryForFlight(); //reset process state to locked
 
+                    //handle person flight time credit
+                    var flightTimeCredit = context.PersonFlightTimeCredits
+                        .FirstOrDefault(x => x.PersonId == delivery.RecipientPersonId 
+                            && x.BalanceDateTime == flight.DeliveryCreatedOn.Value);
+
+                    if (flightTimeCredit != null)
+                    {
+                        var flighttimeCreditEntry = new PersonFlightTimeCredit(flightTimeCredit);
+                        flighttimeCreditEntry.BalanceDateTime = DateTime.UtcNow;
+                        flighttimeCreditEntry.CurrentFlightTimeBalanceInSeconds -= (long)flight.FlightDurationZeroBased.TotalSeconds;
+
+                        //add it to the db context
+                        context.PersonFlightTimeCredits.Add(flighttimeCreditEntry);
+                    }
+
                     if (flight.TowFlightId.HasValue)
                     {
                         flightId = flight.TowFlightId.Value;
