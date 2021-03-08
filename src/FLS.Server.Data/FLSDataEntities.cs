@@ -86,6 +86,8 @@ namespace FLS.Server.Data
         public virtual DbSet<PersonClub> PersonClubs { get; set; }
 
         public virtual DbSet<PersonFlightTimeCredit> PersonFlightTimeCredits { get; set; }
+
+        public virtual DbSet<PersonFlightTimeCreditTransaction> PersonFlightTimeCreditTransactions { get; set; }
         public virtual DbSet<PersonPersonCategory> PersonPersonCategories { get; set; }
         public virtual DbSet<PlanningDay> PlanningDays { get; set; }
         public virtual DbSet<PlanningDayAssignment> PlanningDayAssignments { get; set; }
@@ -168,7 +170,8 @@ namespace FLS.Server.Data
             modelBuilder.Entity<PersonCategory>().Ignore(t => t.Id);
             modelBuilder.Entity<PersonClub>().Ignore(t => t.Id);
             modelBuilder.Entity<PersonClub>().Ignore(t => t.DoNotUpdateTimeStampsInMetaData);
-            modelBuilder.Entity<PersonFlightTimeCredit>().Ignore(t => t.Id); 
+            modelBuilder.Entity<PersonFlightTimeCredit>().Ignore(t => t.Id);
+            modelBuilder.Entity<PersonFlightTimeCreditTransaction>().Ignore(t => t.Id);
             modelBuilder.Entity<PersonPersonCategory>().Ignore(t => t.Id);
             modelBuilder.Entity<Role>().Ignore(t => t.Id);
             modelBuilder.Entity<Role>().Ignore(t => t.Name);
@@ -353,6 +356,11 @@ namespace FLS.Server.Data
                 .WithRequired(e => e.Delivery)
                 .HasForeignKey(e => e.DeliveryId)
                 .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<Delivery>()
+                .HasMany(e => e.PersonFlightTimeCreditTransactions)
+                .WithOptional(e => e.BalancedDelivery)
+                .HasForeignKey(e => e.BalancedDeliveryId);
 
             modelBuilder.Entity<ElevationUnitType>()
                 .HasMany(e => e.Locations)
@@ -558,6 +566,11 @@ namespace FLS.Server.Data
                 .HasMany(e => e.PersonFlightTimeCredits)
                 .WithRequired(e => e.Person)
                 .HasForeignKey(e => e.PersonId);
+
+            modelBuilder.Entity<PersonFlightTimeCredit>()
+                .HasMany(e => e.PersonFlightTimeCreditTransactions)
+                .WithRequired(e => e.PersonFlightTimeCredit)
+                .HasForeignKey(e => e.PersonFlightTimeCreditId);
 
             modelBuilder.Entity<PlanningDay>()
                 .HasMany(e => e.PlanningDayAssignments)

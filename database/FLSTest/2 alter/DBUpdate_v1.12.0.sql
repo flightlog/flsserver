@@ -24,9 +24,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].PersonFlightTimeCredits(
 	[PersonFlightTimeCreditId] [uniqueidentifier] NOT NULL,
-	[BalanceDateTime] [datetime2](7) NOT NULL,
 	[NoFlightTimeLimit] [bit] NOT NULL,
-	[CurrentFlightTimeBalanceInSeconds] [bigint] NOT NULL,
 	[ValidUntil] [datetime2](7) NULL,
 	[PersonId] [uniqueidentifier] NOT NULL,
 	[UseRuleForAllAircraftsExceptListed] [bit] NOT NULL,
@@ -52,5 +50,41 @@ GO
 
 ALTER TABLE [dbo].[PersonFlightTimeCredits]  WITH CHECK ADD  CONSTRAINT [FK_dbo.PersonFlightTimeCredits_dbo.Persons_PersonId] FOREIGN KEY([PersonId])
 REFERENCES [dbo].[Persons] ([PersonId])
+GO
+
+CREATE TABLE [dbo].PersonFlightTimeCreditTransactions(
+	[PersonFlightTimeCreditTransactionId] [uniqueidentifier] NOT NULL,
+	[BalanceDateTime] [datetime2](7) NOT NULL,
+	[NoFlightTimeLimit] [bit] NOT NULL,
+	[CurrentFlightTimeBalanceInSeconds] [bigint] NULL,
+	[FlightTimeBalanceInSeconds] [bigint] NOT NULL,
+	[OldFlightTimeBalanceInSeconds] [bigint] NULL,
+	[IsCurrent] [bit] NOT NULL,
+	[PersonFlightTimeCreditId] [uniqueidentifier] NOT NULL,
+	[BalancedDeliveryId] [uniqueidentifier] NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[CreatedByUserId] [uniqueidentifier] NOT NULL,
+	[ModifiedOn] [datetime2](7) NULL,
+	[ModifiedByUserId] [uniqueidentifier] NULL,
+	[DeletedOn] [datetime2](7) NULL,
+	[DeletedByUserId] [uniqueidentifier] NULL,
+	[RecordState] [int] NULL,
+	[OwnerId] [uniqueidentifier] NOT NULL,
+	[OwnershipType] [int] NOT NULL,
+	[IsDeleted] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.PersonFlightTimeCreditTransactions] PRIMARY KEY CLUSTERED 
+(
+	[PersonFlightTimeCreditTransactionId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[PersonFlightTimeCreditTransactions]  WITH CHECK ADD  CONSTRAINT [FK_dbo.PersonFlightTimeCreditTransactions_dbo.PersonFlightTimeCredits_PersonFlightTimeCreditId] FOREIGN KEY([PersonFlightTimeCreditId])
+REFERENCES [dbo].[PersonFlightTimeCredits] ([PersonFlightTimeCreditId])
+GO
+
+ALTER TABLE [dbo].[PersonFlightTimeCreditTransactions]  WITH CHECK ADD  CONSTRAINT [FK_dbo.PersonFlightTimeCreditTransactions_dbo.Deliveries_DeliveryId] FOREIGN KEY([BalancedDeliveryId])
+REFERENCES [dbo].[Deliveries] ([DeliveryId])
 GO
 PRINT 'Finished update to Version 1.12.0'

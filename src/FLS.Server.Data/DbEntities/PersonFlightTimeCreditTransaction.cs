@@ -8,42 +8,48 @@ using FLS.Data.WebApi;
 
 namespace FLS.Server.Data.DbEntities
 {
-    public class PersonFlightTimeCredit : IFLSMetaData
+    public class PersonFlightTimeCreditTransaction : IFLSMetaData
     {
-        public PersonFlightTimeCredit()
+        public PersonFlightTimeCreditTransaction()
         {
-            PersonFlightTimeCreditTransactions = new HashSet<PersonFlightTimeCreditTransaction>();
+            
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PersonFlightTimeCredit"/> class, 
         /// sets the properties to the same values as the object given,
-        /// except for Id, BalanceDateTime (UtcNow) and Metadata.
+        /// except for Id, BalanceDateTime (UtcNow), IsCurrent and Metadata.
         /// </summary>
-        /// <param name="personFlightTimeCredit">The person flight time credit.</param>
-        public PersonFlightTimeCredit(PersonFlightTimeCredit personFlightTimeCredit)
+        /// <param name="personFlightTimeCreditTransaction">The person flight time credit.</param>
+        public PersonFlightTimeCreditTransaction(PersonFlightTimeCreditTransaction personFlightTimeCreditTransaction)
         {
-            NoFlightTimeLimit = personFlightTimeCredit.NoFlightTimeLimit;
-            ValidUntil = personFlightTimeCredit.ValidUntil;
-            PersonId = personFlightTimeCredit.PersonId;
-            UseRuleForAllAircraftsExceptListed = personFlightTimeCredit.UseRuleForAllAircraftsExceptListed;
-            MatchedAircraftImmatriculations = personFlightTimeCredit.MatchedAircraftImmatriculations;
-            DiscountInPercent = personFlightTimeCredit.DiscountInPercent;
+            PersonFlightTimeCreditId = personFlightTimeCreditTransaction.PersonFlightTimeCreditId;
+            BalancedDeliveryId = personFlightTimeCreditTransaction.BalancedDeliveryId;
+            BalanceDateTime = DateTime.UtcNow;
+            NoFlightTimeLimit = personFlightTimeCreditTransaction.NoFlightTimeLimit;
+            CurrentFlightTimeBalanceInSeconds = personFlightTimeCreditTransaction.CurrentFlightTimeBalanceInSeconds;
+            OldFlightTimeBalanceInSeconds = personFlightTimeCreditTransaction.CurrentFlightTimeBalanceInSeconds;
+            FlightTimeBalanceInSeconds = personFlightTimeCreditTransaction.FlightTimeBalanceInSeconds;
         }
 
-        public Guid PersonFlightTimeCreditId { get; set; }
+        public Guid PersonFlightTimeCreditTransactionId { get; set; }
+
+        [Column(TypeName = "datetime2")]
+        public DateTime BalanceDateTime { get; set; }
 
         public bool NoFlightTimeLimit { get; set; }
 
-        [Column(TypeName = "datetime2")]
-        public DateTime ValidUntil { get; set; }
+        public long? CurrentFlightTimeBalanceInSeconds { get; set; }
 
-        public Guid PersonId { get; set; }
+        public long FlightTimeBalanceInSeconds { get; set; }
 
-        public bool UseRuleForAllAircraftsExceptListed { get; set; }
-        public string MatchedAircraftImmatriculations { get; set; }
+        public long? OldFlightTimeBalanceInSeconds { get; set; }
 
-        public int DiscountInPercent { get; set; }
+        public bool IsCurrent { get; set; }
+        
+        public Guid PersonFlightTimeCreditId { get; set; }
+
+        public Guid? BalancedDeliveryId { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime CreatedOn { get; set; }
@@ -57,8 +63,8 @@ namespace FLS.Server.Data.DbEntities
 
         public Guid Id 
         {
-            get { return PersonFlightTimeCreditId; }
-            private set { PersonFlightTimeCreditId = value; }
+            get { return PersonFlightTimeCreditTransactionId; }
+            private set { PersonFlightTimeCreditTransactionId = value; }
         }
 
         [Column(TypeName = "datetime2")]
@@ -74,9 +80,9 @@ namespace FLS.Server.Data.DbEntities
 
         public bool IsDeleted { get; set; }
 
-        public virtual Person Person { get; set; }
+        public virtual PersonFlightTimeCredit PersonFlightTimeCredit { get; set; }
 
-        public virtual ICollection<PersonFlightTimeCreditTransaction> PersonFlightTimeCreditTransactions { get; set; }
+        public virtual Delivery BalancedDelivery { get; set; }
 
         public override string ToString()
         {

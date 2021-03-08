@@ -99,10 +99,12 @@ namespace FLS.Server.Service.Accounting
 
                     Logger.Debug($"Queried Flights for accounting and got {flights.Count} flights back.");
 
-                    var personFlightTimeCredits = context.PersonFlightTimeCredits.AsNoTracking()    //just load it read-only
-                        .Where(x => x.Person.PersonClubs.Any(y => y.ClubId == clubId)
-                            && x.ValidUntil <= DateTime.Now)
-                        .ToList();
+                    var firstFlight = flights.FirstOrDefault();
+
+                    var startDateTime = DateTime.Now;
+
+                    if (firstFlight != null && firstFlight.StartDateTime.HasValue) 
+                        startDateTime = firstFlight.StartDateTime.Value;
 
                     var accountingRuleFilters =
                         _accountingRuleService.GetRuleBasedAccountingRuleFilterDetailsListByClubId(clubId);
@@ -138,6 +140,12 @@ namespace FLS.Server.Service.Accounting
                     {
                         try
                         {
+                            var personFlightTimeCredits = context.PersonFlightTimeCredits
+                                .Include("PersonFlightTimeCreditTransactions")
+                                .Where(x => x.Person.PersonClubs.Any(y => y.ClubId == clubId)
+                                    && x.ValidUntil >= startDateTime)
+                                .ToList();
+
                             var deliveryDetails = CreateDeliveryDetailsForFlight(flight, clubId, accountingRuleFilters, personFlightTimeCredits);
 
                             if (deliveryDetails.DoNotInvoiceFlight)
@@ -188,17 +196,23 @@ namespace FLS.Server.Service.Accounting
                                 flight.TowFlight.DoNotUpdateMetaData = true;
                             }
 
-                            //create new flight time credit entry
+                            //create new flight time credit transaction entry and update old
 
-                            var flightTimeCredit = ((RuleBasedDeliveryDetails)deliveryDetails).PersonFlightTimeCredit;
+                            var newTransaction = ((RuleBasedDeliveryDetails)deliveryDetails).NewPersonFlightTimeCreditTransaction;
+                            var oldTransaction = ((RuleBasedDeliveryDetails)deliveryDetails).OldPersonFlightTimeCreditTransaction;
 
-                            if (flightTimeCredit != null)
+                            if (newTransaction != null)
                             {
-                                var flighttimeCreditEntry = new PersonFlightTimeCredit(flightTimeCredit);
-                                flighttimeCreditEntry.BalanceDateTime = flight.DeliveryCreatedOn.Value; //set the BalanceDateTime to the same as delivery creation time of flight
-                                
-                                //add it to the db context
-                                context.PersonFlightTimeCredits.Add(flighttimeCreditEntry);
+                                context.PersonFlightTimeCreditTransactions.Add(newTransaction);
+                                newTransaction.BalancedDelivery = delivery;
+                                newTransaction.BalanceDateTime = flight.DeliveryCreatedOn.Value; //set the BalanceDateTime to the same as delivery creation time of flight
+                                newTransaction.IsCurrent = true;
+
+                                if (oldTransaction != null)
+                                {
+                                    var oldEntry = context.PersonFlightTimeCreditTransactions.First(x => x.PersonFlightTimeCreditTransactionId == oldTransaction.PersonFlightTimeCreditTransactionId);
+                                    oldEntry.IsCurrent = false;
+                                }
                             }
 
                             context.SaveChanges();
@@ -292,10 +306,9 @@ namespace FLS.Server.Service.Accounting
             //assign possible person flight time credit to delivery details
             if (ruleBasedDelivery.RecipientDetails != null && ruleBasedDelivery.RecipientDetails.PersonId.HasValue)
             {
-                ruleBasedDelivery.PersonFlightTimeCredit = personFlightTimeCredits
+                ruleBasedDelivery.PersonFlightTimeCredits = personFlightTimeCredits
                     .Where(x => x.PersonId == ruleBasedDelivery.RecipientDetails.PersonId)
-                    .OrderByDescending(x => x.BalanceDateTime)
-                    .FirstOrDefault();
+                    .ToList();
             }
 
             var accountingLineRulesEngine = new DeliveryItemRulesEngine(ruleBasedDelivery, flight,
@@ -390,8 +403,9 @@ namespace FLS.Server.Service.Accounting
                             .OrderBy(c => c.StartDateTime)
                             .FirstOrDefault(f => f.FlightId == flightId);
 
-                    var personFlightTimeCredits = context.PersonFlightTimeCredits
-                        .Where(x => x.ValidUntil <= DateTime.Now)
+                    var personFlightTimeCredits = context.PersonFlightTimeCredits.AsNoTracking()
+                        .Include("PersonFlightTimeCreditTransactions").AsNoTracking()
+                        .Where(x => x.ValidUntil >= flight.StartDateTime)
                         .ToList(); 
                     
                     var accountingRuleFilters =
@@ -502,8 +516,9 @@ namespace FLS.Server.Service.Accounting
                             .FirstOrDefault(f => f.FlightId == deliveryCreationTest.FlightId);
 
 
-                    var personFlightTimeCredits = context.PersonFlightTimeCredits
-                        .Where(x => x.ValidUntil <= DateTime.Now)
+                    var personFlightTimeCredits = context.PersonFlightTimeCredits.AsNoTracking()
+                        .Include("PersonFlightTimeCreditTransactions").AsNoTracking()
+                        .Where(x => x.ValidUntil >= flight.StartDateTime)
                         .ToList();
 
                     var accountingRuleFilters =
@@ -1239,18 +1254,19 @@ namespace FLS.Server.Service.Accounting
                     flight.DeletedDeliveryForFlight(); //reset process state to locked
 
                     //handle person flight time credit
-                    var flightTimeCredit = context.PersonFlightTimeCredits
-                        .FirstOrDefault(x => x.PersonId == delivery.RecipientPersonId 
-                            && x.BalanceDateTime == flight.DeliveryCreatedOn.Value);
+                    var transaction = context.PersonFlightTimeCreditTransactions.FirstOrDefault(x => x.BalancedDeliveryId == delivery.DeliveryId);
 
-                    if (flightTimeCredit != null)
+                    if (transaction != null)
                     {
-                        var flighttimeCreditEntry = new PersonFlightTimeCredit(flightTimeCredit);
-                        flighttimeCreditEntry.BalanceDateTime = DateTime.UtcNow;
-                        flighttimeCreditEntry.CurrentFlightTimeBalanceInSeconds -= (long)flight.FlightDurationZeroBased.TotalSeconds;
+                        var latestTransaction = context.PersonFlightTimeCreditTransactions.FirstOrDefault(x => x.PersonFlightTimeCreditId == transaction.PersonFlightTimeCreditId && x.IsCurrent);
+                        var reverseTransaction = new PersonFlightTimeCreditTransaction(transaction);
+                        reverseTransaction.OldFlightTimeBalanceInSeconds = latestTransaction.CurrentFlightTimeBalanceInSeconds;
+                        reverseTransaction.CurrentFlightTimeBalanceInSeconds = reverseTransaction.OldFlightTimeBalanceInSeconds - transaction.FlightTimeBalanceInSeconds;
+                        reverseTransaction.FlightTimeBalanceInSeconds = -transaction.FlightTimeBalanceInSeconds;
+                        reverseTransaction.IsCurrent = true;
+                        latestTransaction.IsCurrent = false;
 
-                        //add it to the db context
-                        context.PersonFlightTimeCredits.Add(flighttimeCreditEntry);
+                        context.PersonFlightTimeCreditTransactions.Add(reverseTransaction);
                     }
 
                     if (flight.TowFlightId.HasValue)

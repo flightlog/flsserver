@@ -48,36 +48,48 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
 
             var discount = 0;
             long currentFlightTimeCredit = long.MaxValue;
+            PersonFlightTimeCredit matchedCredit = null;
 
-            if (ruleBasedDelivery.PersonFlightTimeCredit != null)
+            if (ruleBasedDelivery.PersonFlightTimeCredits != null)
             {
-                if (ruleBasedDelivery.PersonFlightTimeCredit.UseRuleForAllAircraftsExceptListed)
+                foreach (var credit in ruleBasedDelivery.PersonFlightTimeCredits)
                 {
-                    if (ruleBasedDelivery.PersonFlightTimeCredit.MatchedAircraftImmatriculations != null && ruleBasedDelivery.PersonFlightTimeCredit.MatchedAircraftImmatriculations.Any())
-                    {
-                        if (ruleBasedDelivery.PersonFlightTimeCredit.MatchedAircraftImmatriculations.Contains(Flight.AircraftImmatriculation) == false)
-                        {
-                            //rule applies
-                            discount = ruleBasedDelivery.PersonFlightTimeCredit.DiscountInPercent;
+                    matchedCredit = MatchesPersonFlightTimeCredit(credit);
 
-                            if (ruleBasedDelivery.PersonFlightTimeCredit.NoFlightTimeLimit == false)
+                    if (matchedCredit != null)
+                    {
+                        var balance = credit.PersonFlightTimeCreditTransactions.First(x => x.IsCurrent);
+
+                        if (balance.NoFlightTimeLimit == false && balance.CurrentFlightTimeBalanceInSeconds.GetValueOrDefault(0) == 0)
+                        {
+                            currentFlightTimeCredit = 0;
+                            continue;
+                        }
+
+                        //rule applies
+                        ruleBasedDelivery.MatchedPersonFlightTimeCredit = matchedCredit;
+                        discount = credit.DiscountInPercent;
+
+                        var newTransaction = new PersonFlightTimeCreditTransaction(balance);
+                        newTransaction.CurrentFlightTimeBalanceInSeconds = balance.CurrentFlightTimeBalanceInSeconds;
+                        newTransaction.OldFlightTimeBalanceInSeconds = balance.CurrentFlightTimeBalanceInSeconds;
+                        ruleBasedDelivery.NewPersonFlightTimeCreditTransaction = newTransaction;
+                        ruleBasedDelivery.OldPersonFlightTimeCreditTransaction = balance;
+
+                        if (credit.NoFlightTimeLimit == false)
+                        {
+                            if (credit.PersonFlightTimeCreditTransactions.Any())
                             {
-                                currentFlightTimeCredit = ruleBasedDelivery.PersonFlightTimeCredit.CurrentFlightTimeBalanceInSeconds;
+                                currentFlightTimeCredit = balance.CurrentFlightTimeBalanceInSeconds.Value;
                             }
                         }
-                    }
-                }
-                else
-                {
-                    if (ruleBasedDelivery.PersonFlightTimeCredit.MatchedAircraftImmatriculations.Contains(Flight.AircraftImmatriculation))
-                    {
-                        //rule applies
-                        discount = ruleBasedDelivery.PersonFlightTimeCredit.DiscountInPercent;
-
-                        if (ruleBasedDelivery.PersonFlightTimeCredit.NoFlightTimeLimit == false)
+                        else
                         {
-                            currentFlightTimeCredit = ruleBasedDelivery.PersonFlightTimeCredit.CurrentFlightTimeBalanceInSeconds;
+                            newTransaction.CurrentFlightTimeBalanceInSeconds = null;
+                            newTransaction.OldFlightTimeBalanceInSeconds = null;
                         }
+
+                        break;
                     }
                 }
             }
@@ -128,13 +140,21 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                 Logger.Debug($"Added new delivery item line to Delivery. Line: {line}");
 
                 //handle flight time credit
-                if (ruleBasedDelivery.PersonFlightTimeCredit != null)
+                if (matchedCredit != null && currentFlightTimeCredit > 0)
                 {
-                    if (lineQuantity > currentFlightTimeCredit)
+                    if (lineFlightTimeInSec > currentFlightTimeCredit)
                     {
                         var overCreditLineQuantity = lineQuantity - currentFlightTimeCredit;
                         lineQuantity = currentFlightTimeCredit;
-                        ruleBasedDelivery.PersonFlightTimeCredit.CurrentFlightTimeBalanceInSeconds = 0;
+
+                        if (ruleBasedDelivery.NewPersonFlightTimeCreditTransaction.NoFlightTimeLimit == false)
+                        {
+                            //set only if flight time limmit
+                            ruleBasedDelivery.NewPersonFlightTimeCreditTransaction.CurrentFlightTimeBalanceInSeconds = 0;
+                        }
+
+                        ruleBasedDelivery.NewPersonFlightTimeCreditTransaction.FlightTimeBalanceInSeconds = -currentFlightTimeCredit;
+
                         line.Quantity = GetUnitQuantity(lineQuantity, FLS.Data.WebApi.Accounting.AccountingUnitType.Sec);
                         line.DiscountInPercent = discount;
                         var itemText = line.ItemText;
@@ -152,13 +172,45 @@ namespace FLS.Server.Service.Accounting.Rules.ItemRules
                     else
                     {
                         line.DiscountInPercent = discount;
-                        ruleBasedDelivery.PersonFlightTimeCredit.CurrentFlightTimeBalanceInSeconds = currentFlightTimeCredit - lineFlightTimeInSec;
+
+                        if (ruleBasedDelivery.NewPersonFlightTimeCreditTransaction.NoFlightTimeLimit == false)
+                        {
+                            //set only if flight time limit
+                            ruleBasedDelivery.NewPersonFlightTimeCreditTransaction.CurrentFlightTimeBalanceInSeconds = currentFlightTimeCredit - lineFlightTimeInSec;
+                        }
+
+                        ruleBasedDelivery.NewPersonFlightTimeCreditTransaction.FlightTimeBalanceInSeconds = -lineFlightTimeInSec;
                     }
                 }
             }
 
             AccountingRuleFilter.HasMatched = true;
             return base.Apply(ruleBasedDelivery);
+        }
+
+        private PersonFlightTimeCredit MatchesPersonFlightTimeCredit(PersonFlightTimeCredit credit)
+        {
+            if (credit.UseRuleForAllAircraftsExceptListed)
+            {
+                if (credit.MatchedAircraftImmatriculations != null && credit.MatchedAircraftImmatriculations.Any())
+                {
+                    if (credit.MatchedAircraftImmatriculations.Contains(Flight.AircraftImmatriculation) == false)
+                    {
+                        //rule applies
+                        return credit;
+                    }
+                }
+            }
+            else
+            {
+                if (credit.MatchedAircraftImmatriculations.Contains(Flight.AircraftImmatriculation))
+                {
+                    //rule applies
+                    return credit;
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace FLS.Server.Data.DbEntities
         public Delivery()
         {
             DeliveryItems = new HashSet<DeliveryItem>();
+            PersonFlightTimeCreditTransactions = new HashSet<PersonFlightTimeCreditTransaction>();
         }
 
         public Guid DeliveryId { get; set; }
@@ -97,6 +98,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual Flight Flight { get; set; }
 
         public virtual ICollection<DeliveryItem> DeliveryItems { get; set; }
+
+        public virtual ICollection<PersonFlightTimeCreditTransaction> PersonFlightTimeCreditTransactions { get; set; }
 
         public Guid Id
         {

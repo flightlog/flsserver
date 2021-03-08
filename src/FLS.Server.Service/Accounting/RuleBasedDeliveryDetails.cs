@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FLS.Data.WebApi.Accounting;
 using FLS.Server.Data.DbEntities;
 using Newtonsoft.Json;
@@ -31,6 +32,15 @@ namespace FLS.Server.Service.Accounting
         public bool NoLandingTaxForFlight { get; set; }
 
         [JsonIgnore]
-        public PersonFlightTimeCredit PersonFlightTimeCredit { get; set; }
+        public List<PersonFlightTimeCredit> PersonFlightTimeCredits { get; set; }
+
+        [JsonIgnore]
+        public PersonFlightTimeCredit MatchedPersonFlightTimeCredit { get; set; }
+
+        [JsonIgnore]
+        public PersonFlightTimeCreditTransaction NewPersonFlightTimeCreditTransaction { get; set; }
+
+        [JsonIgnore]
+        public PersonFlightTimeCreditTransaction OldPersonFlightTimeCreditTransaction { get; set; }
     }
 }
