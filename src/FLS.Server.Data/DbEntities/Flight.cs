@@ -293,7 +293,7 @@ namespace FLS.Server.Data.DbEntities
             get
             {
                 if (EngineStartOperatingCounterInSeconds.HasValue
-                    || EngineEndOperatingCounterInSeconds.HasValue)
+                    && EngineEndOperatingCounterInSeconds.HasValue)
                 {
                     return
                         TimeSpan.FromSeconds(EngineEndOperatingCounterInSeconds.Value -
