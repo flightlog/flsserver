@@ -1,6 +1,7 @@
 ﻿using FLS.Server.Tests.Infrastructure.WebApi;
 using Microsoft.Owin.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace FLS.Server.Tests.WebApiControllerTests
 {
@@ -32,6 +33,15 @@ namespace FLS.Server.Tests.WebApiControllerTests
         public void ExecuteMonthlyReportJobWebApiTest()
         {
             var response = GetAsync(RoutePrefix + "monthlyreports").Result;
+
+            Assert.IsTrue(response.IsSuccessStatusCode);
+        }
+
+        [TestMethod]
+        public void ExecutePreMonthlyReportJobWebApiTest()
+        {
+            var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-2);
+            var response = GetAsync(RoutePrefix + "monthlyreports/" + startDate.Year + "/" + startDate.Month).Result;
 
             Assert.IsTrue(response.IsSuccessStatusCode);
         }

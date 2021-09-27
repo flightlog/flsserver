@@ -18,6 +18,10 @@ namespace FLS.Server.Service.Jobs
         private readonly FlightService _flightService;
         private readonly AircraftService _aircraftService;
         private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly int _year;
+        private readonly int _month;
+        private readonly DateTime _startDate;
+        private readonly DateTime _endDate;
 
         protected Logger Logger
         {
@@ -30,6 +34,18 @@ namespace FLS.Server.Service.Jobs
             _aircraftReportEmailService = aircraftReportEmailService;
             _flightService = flightService;
             _aircraftService = aircraftService;
+            _startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
+            _endDate = _startDate.AddMonths(1).AddTicks(-1);
+        }
+
+        public AircraftStatisticReportJob(AircraftReportEmailBuildService aircraftReportEmailService, FlightService flightService, AircraftService aircraftService, int year, int month)
+        {
+            _aircraftReportEmailService = aircraftReportEmailService;
+            _flightService = flightService;
+            _aircraftService = aircraftService;
+
+            _startDate = new DateTime(year, month, 1);
+            _endDate = _startDate.AddMonths(1).AddTicks(-1);
         }
 
         /// <summary>
@@ -108,12 +124,9 @@ namespace FLS.Server.Service.Jobs
         {
             try
             {
-                var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
-                var endDate = startDate.AddMonths(1).AddTicks(-1);
-
                 var filterCriteria = new AircraftFlightReportFilterCriteria();
-                filterCriteria.StatisticStartDateTime = startDate;
-                filterCriteria.StatisticEndDateTime = endDate;
+                filterCriteria.StatisticStartDateTime = _startDate;
+                filterCriteria.StatisticEndDateTime = _endDate;
 
                 foreach (var aircraftOwner in aircraftOwnerDictionary.Keys)
                 {
@@ -127,7 +140,7 @@ namespace FLS.Server.Service.Jobs
                         }
 
                         var aircraftFlightReport = _flightService.GetAircraftFlightReport(filterCriteria);
-                    
+
                         var message =
                             _aircraftReportEmailService.CreateAircraftStatisticInformationEmail(aircraftFlightReport,
                                                                                                 aircraftOwner);

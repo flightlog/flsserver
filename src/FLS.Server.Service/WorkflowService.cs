@@ -92,6 +92,13 @@ namespace FLS.Server.Service
             job.Execute();
         }
 
+        public void ExecuteAircraftStatisticReportJob(int year, int month)
+        {
+            Logger.Info("Execute monthly report job.");
+            var job = new AircraftStatisticReportJob(_aircraftReportEmailService, _flightService, _aircraftService, year, month);
+            job.Execute();
+        }
+
         public void ExecutePlanningDayMailJob()
         {
             Logger.Info("Execute planning day mail job.");

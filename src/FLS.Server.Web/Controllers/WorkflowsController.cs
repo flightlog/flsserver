@@ -61,6 +61,19 @@ namespace FLS.Server.WebApi.Controllers
         }
 
         /// <summary>
+        /// Executes the monthly report job.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("monthlyreports/{year:int}/{month:int}")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult ExecuteMonthlyReportJob(int year, int month)
+        {
+            _workflowService.ExecuteAircraftStatisticReportJob(year, month);
+            return Ok();
+        }
+
+        /// <summary>
         /// Executes the flight validation.
         /// </summary>
         /// <returns></returns>
