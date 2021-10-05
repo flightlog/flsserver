@@ -334,8 +334,8 @@ namespace FLS.Server.Service
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
-                var flightTypes = context.FlightTypes.ToList();
-                var reservationTypes = context.AircraftReservationTypes.ToList();
+                var flightTypes = context.FlightTypes.Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId).ToList();
+                var reservationTypes = context.AircraftReservationTypes.Where(x => x.ClubId == CurrentAuthenticatedFLSUserClubId).ToList();
 
                 var aircraftReservation = aircraftReservationDetails.ToAircraftReservation(reservationTypes, flightTypes);
                 aircraftReservation.ClubId = CurrentAuthenticatedFLSUserClubId;
