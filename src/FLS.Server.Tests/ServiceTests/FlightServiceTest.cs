@@ -4,9 +4,12 @@ using System.Linq;
 using FLS.Common.Comparer;
 using FLS.Common.Extensions;
 using FLS.Data.WebApi;
+using FLS.Data.WebApi.AircraftReservation;
 using FLS.Data.WebApi.Flight;
 using FLS.Data.WebApi.Reporting;
+using FLS.Data.WebApi.Settings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 
 namespace FLS.Server.Tests.ServiceTests
 {
@@ -152,5 +155,156 @@ namespace FLS.Server.Tests.ServiceTests
 
         }
 
+        [TestMethod]
+        [TestCategory("Service")]
+        public void TakeOffTestForOnePreparedFlight()
+        {
+            var location = GetFirstLocation();
+
+            var settingDetails = new SettingDetails()
+            {
+                ClubId = CurrentIdentityUser.ClubId,
+                SettingKey = "FLSOgnAnalyser.Allowed",
+                SettingValue = JsonConvert.SerializeObject(true)
+            };
+
+            SettingService.InsertOrUpdateSettingDetails(settingDetails);
+
+            var interestedLocationList = new List<string>()
+            {
+                location.IcaoCode
+            };
+
+            settingDetails = new SettingDetails()
+            {
+                ClubId = CurrentIdentityUser.ClubId,
+                SettingKey = "FLSOgnAnalyser.InterestedLocations",
+                SettingValue = JsonConvert.SerializeObject(interestedLocationList)
+            };
+            
+            SettingService.InsertOrUpdateSettingDetails(settingDetails);
+
+            var flightDetails = CreateGliderFlightDetails(CurrentIdentityUser.ClubId);
+            flightDetails.GliderFlightDetailsData.CoPilotPersonId = GetDifferentPerson(GetFirstPerson().PersonId).PersonId;
+            flightDetails.GliderFlightDetailsData.StartDateTime = null;
+            flightDetails.GliderFlightDetailsData.StartLocationId = location.LocationId;
+            FlightService.InsertFlightDetails(flightDetails);
+
+            var aircraft = AircraftService.GetAircraft(flightDetails.GliderFlightDetailsData.AircraftId);
+
+            Assert.IsTrue(flightDetails.FlightId.IsValid());
+            Assert.IsFalse(flightDetails.GliderFlightDetailsData.StartDateTime.HasValue);
+            Assert.IsTrue(flightDetails.GliderFlightDetailsData.StartLocationId.HasValue);
+
+            var takeOffDetails = new TakeOffDetails();
+
+            takeOffDetails.Immatriculation = aircraft.Immatriculation;
+            takeOffDetails.TakeOffLocationIcaoCode = location.IcaoCode;
+            takeOffDetails.TakeOffTimeUtc = DateTime.UtcNow;
+
+            var updatedFlights = FlightService.TakeOff(takeOffDetails);
+
+            Assert.IsTrue(updatedFlights.Any());
+
+            foreach (var updatedFlight in updatedFlights)
+            {
+                var updatedFlightDetails = FlightService.GetFlightDetails(updatedFlight.FlightId);
+
+                Assert.IsTrue(updatedFlightDetails.GliderFlightDetailsData.StartDateTime.HasValue);
+                Assert.IsTrue(updatedFlightDetails.FlightDate.HasValue);
+                Assert.IsTrue(updatedFlightDetails.GliderFlightDetailsData.StartLocationId.HasValue);
+                Assert.AreEqual((int)FlightAirState.Started, updatedFlightDetails.GliderFlightDetailsData.AirStateId);
+                Assert.AreEqual(takeOffDetails.TakeOffTimeUtc.Date, updatedFlightDetails.FlightDate.Value.Date);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Service")]
+        public void TakeOffTestForReservationFlight()
+        {
+            var location = GetLocation("LSZK");
+
+            var settingDetails = new SettingDetails()
+            {
+                ClubId = CurrentIdentityUser.ClubId,
+                SettingKey = "FLSOgnAnalyser.Allowed",
+                SettingValue = JsonConvert.SerializeObject(true)
+            };
+
+            SettingService.InsertOrUpdateSettingDetails(settingDetails);
+
+            var interestedLocationList = new List<string>()
+            {
+                location.IcaoCode
+            };
+
+            settingDetails = new SettingDetails()
+            {
+                ClubId = CurrentIdentityUser.ClubId,
+                SettingKey = "FLSOgnAnalyser.InterestedLocations",
+                SettingValue = JsonConvert.SerializeObject(interestedLocationList)
+            };
+
+            SettingService.InsertOrUpdateSettingDetails(settingDetails);
+
+            var interestedImmatriculations = new List<string>()
+            {
+                "HB-3256",
+                "HB-1841",
+                "HB-3300",
+                "HB-1824",
+                "HB-3407"
+            };
+
+            settingDetails = new SettingDetails()
+            {
+                ClubId = CurrentIdentityUser.ClubId,
+                SettingKey = "FLSOgnAnalyser.InterestedImmatriculations",
+                SettingValue = JsonConvert.SerializeObject(interestedImmatriculations)
+            };
+
+            SettingService.InsertOrUpdateSettingDetails(settingDetails);
+
+            var aircraft = AircraftService.GetAircraft(interestedImmatriculations[0]);
+            Assert.IsNotNull(aircraft);
+
+            DeleteFlights(FlightAirState.New);
+            DeleteFlights(FlightAirState.FlightPlanOpen);
+            DeleteReservations(DateTime.Today);
+
+            var reservation = new AircraftReservationDetails();
+            reservation.AircraftId = aircraft.AircraftId;
+            reservation.Start = DateTime.UtcNow.Date;
+            reservation.End = DateTime.UtcNow.Date;
+            reservation.Remarks = "Test for Takeoff";
+            reservation.IsAllDayReservation = true;
+            reservation.PilotPersonId = GetFirstPerson().PersonId;
+            reservation.LocationId = location.LocationId;
+            reservation.SecondCrewPersonId = GetFirstPerson().PersonId;
+            reservation.ReservationTypeId = GetFlightType("60").FlightTypeId;
+
+            AircraftReservationService.InsertAircraftReservationDetails(reservation);
+
+            var takeOffDetails = new TakeOffDetails();
+
+            takeOffDetails.Immatriculation = aircraft.Immatriculation;
+            takeOffDetails.TakeOffLocationIcaoCode = location.IcaoCode;
+            takeOffDetails.TakeOffTimeUtc = DateTime.UtcNow;
+
+            var updatedFlights = FlightService.TakeOff(takeOffDetails);
+
+            Assert.IsTrue(updatedFlights.Any());
+
+            foreach (var updatedFlight in updatedFlights)
+            {
+                var updatedFlightDetails = FlightService.GetFlightDetails(updatedFlight.FlightId);
+
+                Assert.IsTrue(updatedFlightDetails.GliderFlightDetailsData.StartDateTime.HasValue);
+                Assert.IsTrue(updatedFlightDetails.FlightDate.HasValue);
+                Assert.IsTrue(updatedFlightDetails.GliderFlightDetailsData.StartLocationId.HasValue);
+                Assert.AreEqual((int)FlightAirState.Started, updatedFlightDetails.GliderFlightDetailsData.AirStateId);
+                Assert.AreEqual(takeOffDetails.TakeOffTimeUtc.Date, updatedFlightDetails.FlightDate.Value.Date);
+            }
+        }
     }
 }

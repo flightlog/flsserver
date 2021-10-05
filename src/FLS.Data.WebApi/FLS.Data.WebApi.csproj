@@ -215,6 +215,7 @@
     <Compile Include="System\SystemDataDetails.cs" />
     <Compile Include="System\SystemLogDetails.cs" />
     <Compile Include="System\SystemLogOverview.cs" />
+    <Compile Include="Flight\TakeOffDetails.cs" />
     <Compile Include="User\EmailConfirmationResult.cs" />
     <Compile Include="User\PasswordResetRequest.cs" />
     <Compile Include="User\LostPasswordRequest.cs" />

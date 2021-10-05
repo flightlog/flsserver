@@ -332,5 +332,20 @@ namespace FLS.Server.WebApi.Controllers
             var flightDetails = _flightService.ManuallySetFlightProcessState(flightId, (int)flightProcessRequest.NewFlightProcessState);
             return Ok(flightDetails);
         }
+
+        /// <summary>
+        /// Insert a take off. This can create a new flight or update a pre-insert flight.
+        /// </summary>
+        /// <param name="takeOffDetails">The take off details (from OGN analyser.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("takeoff")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult TakeOff([FromBody] TakeOffDetails takeOffDetails)
+        {
+            _flightService.TakeOff(takeOffDetails);
+
+            return Ok();
+        }
     }
 }

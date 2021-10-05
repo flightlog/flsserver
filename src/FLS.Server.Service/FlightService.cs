@@ -11,6 +11,7 @@ using FLS.Common.Validators;
 using FLS.Data.WebApi;
 using FLS.Data.WebApi.Aircraft;
 using FLS.Data.WebApi.Flight;
+using FLS.Data.WebApi.Location;
 using FLS.Data.WebApi.Processing;
 using FLS.Data.WebApi.Reporting;
 using FLS.Server.Data.DbEntities;
@@ -30,15 +31,17 @@ namespace FLS.Server.Service
         private readonly AircraftService _aircraftService;
         private readonly LanguageService _languageService;
         private readonly ClubService _clubService;
+        private readonly SettingService _settingService;
 
         public FlightService(DataAccessService dataAccessService, AircraftService aircraftService,
-            LanguageService languageService, ClubService clubService, IdentityService identityService)
+            LanguageService languageService, ClubService clubService, IdentityService identityService, SettingService settingService)
             : base(dataAccessService, identityService)
         {
             _dataAccessService = dataAccessService;
             _aircraftService = aircraftService;
             _languageService = languageService;
             _clubService = clubService;
+            _settingService = settingService;
             Logger = LogManager.GetCurrentClassLogger();
         }
 
@@ -343,6 +346,358 @@ namespace FLS.Server.Service
             return startTypeListItems;
         }
 
+        public List<FlightDetails> TakeOff(TakeOffDetails takeOffDetails)
+        {
+            var clubs = _clubService.GetClubs(false);
+            bool flsOgnAnalyserAllowed;
+            List<string> interestedLocationIcaoCodes = new List<string>();
+            List<string> interestedImmatriculations = new List<string>();
+            var updatedFlights = new List<FlightDetails>();
+
+            takeOffDetails.Immatriculation = takeOffDetails.Immatriculation.Replace("-", "").ToUpper();
+            takeOffDetails.TakeOffLocationIcaoCode = takeOffDetails.TakeOffLocationIcaoCode.ToUpper();
+
+            foreach (var club in clubs)
+            {
+                if (_settingService.TryGetSettingValue("FLSOgnAnalyser.Allowed", club.ClubId, null, out flsOgnAnalyserAllowed))
+                {
+                    if (flsOgnAnalyserAllowed == false) continue;
+
+                    _settingService.TryGetSettingValue("FLSOgnAnalyser.InterestedLocations", club.ClubId, null, out interestedLocationIcaoCodes);
+                    _settingService.TryGetSettingValue("FLSOgnAnalyser.InterestedImmatriculations", club.ClubId, null, out interestedImmatriculations);
+
+                    var formattedInterestedIcaoCodes = new List<string>();
+
+                    if (interestedLocationIcaoCodes != null && interestedLocationIcaoCodes.Any())
+                    {
+                        foreach (var icaoCode in interestedLocationIcaoCodes)
+                        {
+                            formattedInterestedIcaoCodes.Add(icaoCode.ToUpper());
+                        }
+                    }
+
+                    var formattedImmatriculations = new List<string>();
+
+                    if (interestedImmatriculations != null && interestedImmatriculations.Any())
+                    {
+                        foreach (var immatriculation in interestedImmatriculations)
+                        {
+                            formattedImmatriculations.Add(immatriculation.Replace("-", "").ToUpper());
+                        }
+                    }
+
+                    if (formattedInterestedIcaoCodes.Contains(takeOffDetails.TakeOffLocationIcaoCode)
+                        || formattedImmatriculations.Contains(takeOffDetails.Immatriculation))
+                    {
+                        //the club is interested for this take off!
+                        updatedFlights.Add(InsertOrUpdateFlightFromTakeOff(takeOffDetails, club.ClubId));
+                    }
+                }
+            }
+
+            return updatedFlights;
+        }
+
+        private FlightDetails InsertOrUpdateFlightFromTakeOff(TakeOffDetails takeOffDetails, Guid clubId)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var aircraftId = context.Aircrafts
+                    .Where(x => x.Immatriculation.Replace("-", "").ToUpper() == takeOffDetails.Immatriculation)
+                    .Select(s => s.AircraftId)
+                    .FirstOrDefault();
+
+                if (aircraftId == Guid.Empty)
+                {
+                    Logger.Info("No aircraft found in database for take off at {location} of aircraft {immatriculation}", takeOffDetails.TakeOffLocationIcaoCode, takeOffDetails.Immatriculation);
+                }
+
+                var locationId = context.Locations
+                    .Where(x => x.IcaoCode.ToUpper() == takeOffDetails.TakeOffLocationIcaoCode)
+                    .Select(s => s.LocationId)
+                    .FirstOrDefault();
+
+                if (locationId == Guid.Empty)
+                {
+                    Logger.Info("No location found in database for take off at {location} of aircraft {immatriculation}", takeOffDetails.TakeOffLocationIcaoCode, takeOffDetails.Immatriculation);
+                }
+
+                var flights = context.Flights
+                    .Where(x => x.StartDateTime.HasValue == false
+                        && x.OwnerId == clubId)
+                    .WhereIf(locationId != Guid.Empty, x => x.StartLocationId == locationId)
+                    .WhereIf(aircraftId != Guid.Empty, x => x.AircraftId == aircraftId)
+                    .ToList();
+
+                Logger.Debug("Found {number} of flights for setting takeoff for clubId={clubId}", flights.Count, clubId);
+
+                if (flights.Count > 1)
+                {
+                    var flight = flights
+                                    .OrderBy(x => x.CreatedOn)
+                                    .First();
+
+                    flight.StartDateTime = takeOffDetails.TakeOffTimeUtc;
+                    flight.FlightDate = takeOffDetails.TakeOffTimeUtc.Date;
+                    flight.AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started;
+                    flight.ModifiedOn = DateTime.UtcNow;
+                    flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
+                    flight.DoNotUpdateMetaData = true;
+                    context.SaveChanges();
+
+                    return GetFlightDetails(flight.FlightId);
+                }
+
+                if (flights.Count == 1)
+                {
+                    var flight = context.Flights
+                                        .First(x => x.FlightId == flights[0].FlightId);
+                    flight.StartDateTime = takeOffDetails.TakeOffTimeUtc;
+                    flight.FlightDate = takeOffDetails.TakeOffTimeUtc.Date;
+                    flight.AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started;
+                    flight.ModifiedOn = DateTime.UtcNow;
+                    flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
+                    flight.DoNotUpdateMetaData = true;
+                    context.SaveChanges();
+
+                    return GetFlightDetails(flight.FlightId);
+                }
+
+                //no flights available for setting take off...
+                //walk through aircraft reservations
+
+                var reservations = context.AircraftReservations
+                                        .Where(x => DbFunctions.TruncateTime(x.Start) == DbFunctions.TruncateTime(takeOffDetails.TakeOffTimeUtc)
+                                            && x.ClubId == clubId)
+                                        .WhereIf(locationId != Guid.Empty, x => x.LocationId == locationId)
+                                        .WhereIf(aircraftId != Guid.Empty, x => x.AircraftId == aircraftId)
+                                        .ToList();
+                
+                Logger.Debug("Found {number} of reservations for setting takeoff for clubId={clubId}", reservations.Count, clubId);
+
+                if (reservations.Any() == false)
+                {
+                    //no reservation found
+                    //create flight without pilot and minimal data
+
+                    var flight = new Flight()
+                    {
+                        AircraftId = aircraftId,
+                        StartLocationId = locationId,
+                        StartDateTime = takeOffDetails.TakeOffTimeUtc,
+                        FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
+                        AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
+                        ModifiedOn = DateTime.UtcNow,
+                        ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
+                        DoNotUpdateMetaData = true,
+                        FlightAircraftType = (int)FlightAircraftTypeValue.GliderFlight  //we can not set this flag correct if we don't know the aircraft type
+                        //TODO: check aircraft type for setting FlightAircraftType correct
+                    };
+
+                    context.Flights.Add(flight);
+
+                    context.SaveChanges();
+
+                    return GetFlightDetails(flight.FlightId);
+                }
+
+                if (reservations.Count == 1)
+                {
+                    var reservation = reservations[0];
+
+                    var flight = new Flight()
+                    {
+                        AircraftId = aircraftId,
+                        StartLocationId = locationId,
+                        StartDateTime = takeOffDetails.TakeOffTimeUtc,
+                        FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
+                        AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
+                        FlightTypeId = reservation.FlightTypeId,
+                        ModifiedOn = DateTime.UtcNow,
+                        ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
+                        DoNotUpdateMetaData = true,
+                        FlightAircraftType = (int)FlightAircraftTypeValue.GliderFlight //TODO: set correct
+                    };
+
+                    var flightCrews = new List<FlightCrew>();
+
+                    var flightCrew = new FlightCrew()
+                    {
+                        FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent,
+                        PersonId = reservation.PilotPersonId
+                    };
+
+                    flightCrews.Add(flightCrew);
+
+                    if (reservation.SecondCrewPersonId != Guid.Empty)
+                    {
+                        flightCrew = new FlightCrew()
+                        {
+                            FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot,
+                            PersonId = reservation.SecondCrewPersonId.Value
+                        };
+
+                        var flightType = context.FlightTypes.First(x => x.FlightTypeId == reservation.FlightTypeId);
+
+                        if (flightType.InstructorRequired)
+                        {
+                            flightCrew.FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor;
+                        }
+                        else if (flightType.ObserverPilotOrInstructorRequired)
+                        {
+                            flightCrew.FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer;
+                        }
+                        else if (flightType.IsPassengerFlight)
+                        {
+                            flightCrew.FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger;
+                        }
+
+                        flightCrews.Add(flightCrew);
+                    }
+
+                    flight.FlightCrews = flightCrews;
+
+                    context.Flights.Add(flight);
+
+                    context.SaveChanges();
+
+                    return GetFlightDetails(flight.FlightId);
+                }
+                else
+                {
+                    if (reservations.Any(x => x.IsAllDayReservation == false) 
+                        && reservations.Any(x => x.Start <= takeOffDetails.TakeOffTimeUtc && x.End >= takeOffDetails.TakeOffTimeUtc))
+                    {
+                        var reservation = reservations.First(x => x.IsAllDayReservation == false
+                            && x.Start <= takeOffDetails.TakeOffTimeUtc && x.End >= takeOffDetails.TakeOffTimeUtc);
+
+                        var flight = new Flight()
+                        {
+                            AircraftId = aircraftId,
+                            StartLocationId = locationId,
+                            StartDateTime = takeOffDetails.TakeOffTimeUtc,
+                            FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
+                            AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
+                            FlightTypeId = reservation.FlightTypeId,
+                            ModifiedOn = DateTime.UtcNow,
+                            ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
+                            DoNotUpdateMetaData = true,
+                            FlightAircraftType = (int)FlightAircraftTypeValue.GliderFlight //TODO: set correct
+                        };
+
+                        var flightCrews = new List<FlightCrew>();
+
+                        var flightCrew = new FlightCrew()
+                        {
+                            FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent,
+                            PersonId = reservation.PilotPersonId
+                        };
+
+                        flightCrews.Add(flightCrew);
+
+                        if (reservation.SecondCrewPersonId != Guid.Empty)
+                        {
+                            flightCrew = new FlightCrew()
+                            {
+                                FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot,
+                                PersonId = reservation.SecondCrewPersonId.Value
+                            };
+
+                            var flightType = context.FlightTypes.First(x => x.FlightTypeId == reservation.FlightTypeId);
+
+                            if (flightType.InstructorRequired)
+                            {
+                                flightCrew.FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor;
+                            }
+                            else if (flightType.ObserverPilotOrInstructorRequired)
+                            {
+                                flightCrew.FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer;
+                            }
+                            else if (flightType.IsPassengerFlight)
+                            {
+                                flightCrew.FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger;
+                            }
+
+                            flightCrews.Add(flightCrew);
+                        }
+
+                        flight.FlightCrews = flightCrews;
+
+                        context.Flights.Add(flight);
+
+                        context.SaveChanges();
+
+                        return GetFlightDetails(flight.FlightId);
+                    }
+
+                    if (reservations.Any(x => x.IsAllDayReservation))
+                    {
+                        var reservation = reservations.First();
+
+                        var flight = new Flight()
+                        {
+                            AircraftId = aircraftId,
+                            StartLocationId = locationId,
+                            StartDateTime = takeOffDetails.TakeOffTimeUtc,
+                            FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
+                            AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
+                            FlightTypeId = reservation.FlightTypeId,
+                            ModifiedOn = DateTime.UtcNow,
+                            ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
+                            DoNotUpdateMetaData = true,
+                            FlightAircraftType = (int)FlightAircraftTypeValue.GliderFlight //TODO: set correct
+                        };
+
+                        var flightCrews = new List<FlightCrew>();
+
+                        var flightCrew = new FlightCrew()
+                        {
+                            FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.PilotOrStudent,
+                            PersonId = reservation.PilotPersonId
+                        };
+
+                        flightCrews.Add(flightCrew);
+
+                        if (reservation.SecondCrewPersonId != Guid.Empty)
+                        {
+                            flightCrew = new FlightCrew()
+                            {
+                                FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.CoPilot,
+                                PersonId = reservation.SecondCrewPersonId.Value
+                            };
+
+                            var flightType = context.FlightTypes.First(x => x.FlightTypeId == reservation.FlightTypeId);
+
+                            if (flightType.InstructorRequired)
+                            {
+                                flightCrew.FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.FlightInstructor;
+                            }
+                            else if (flightType.ObserverPilotOrInstructorRequired)
+                            {
+                                flightCrew.FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.Observer;
+                            }
+                            else if (flightType.IsPassengerFlight)
+                            {
+                                flightCrew.FlightCrewTypeId = (int)FLS.Data.WebApi.Flight.FlightCrewType.Passenger;
+                            }
+
+                            flightCrews.Add(flightCrew);
+                        }
+
+                        flight.FlightCrews = flightCrews;
+
+                        context.Flights.Add(flight);
+
+                        context.SaveChanges();
+
+                        return GetFlightDetails(flight.FlightId);
+                    }
+                }
+            }
+
+            return null;
+        }
+
         internal List<StartType> GetStartTypes(Expression<Func<StartType, bool>> startTypeFilter)
         {
             using (var context = _dataAccessService.CreateDbContext())
@@ -421,7 +776,7 @@ namespace FLS.Server.Service
             var flights = GetPagedFlightOverview(0, 10000, filter, false);
             return flights.Items;
         }
-        
+
         public PagedList<FlightOverview> GetPagedFlightOverview(int? pageStart, int? pageSize, PageableSearchFilter<FlightOverviewSearchFilter> pageableSearchFilter, bool motorFlightsOnly)
         {
             if (pageableSearchFilter == null) pageableSearchFilter = new PageableSearchFilter<FlightOverviewSearchFilter>();

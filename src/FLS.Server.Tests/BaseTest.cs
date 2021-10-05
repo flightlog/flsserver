@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using FLS.Common.Exceptions;
 using FLS.Common.Extensions;
@@ -448,7 +449,7 @@ namespace FLS.Server.Tests
         {
             using (var context = DataAccessService.CreateDbContext())
             {
-                if (context.AircraftReservationTypes.Any() == false)
+                if (context.AircraftReservationTypes.Any(x => x.ClubId == CurrentIdentityUser.ClubId) == false)
                 {
                     var aircraftReservationType = new AircraftReservationType()
                     {
@@ -461,7 +462,7 @@ namespace FLS.Server.Tests
                     context.SaveChanges();
                 }
 
-                return context.AircraftReservationTypes.FirstOrDefault();
+                return context.AircraftReservationTypes.FirstOrDefault(x => x.ClubId == CurrentIdentityUser.ClubId);
             }
         }
 
@@ -623,6 +624,33 @@ namespace FLS.Server.Tests
             Assert.IsTrue(flight.FlightId.IsValid());
 
             return flight;
+        }
+
+        public void DeleteFlights(FLS.Data.WebApi.Flight.FlightAirState flightAirState)
+        {
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                var flights = context.Flights
+                    .Where(x => x.AirStateId == (int)flightAirState)
+                    .ToList();
+
+                context.Flights.RemoveRange(flights);
+                context.SaveChanges();
+            }
+        }
+
+        public void DeleteReservations(DateTime ofDate)
+        {
+            using (var context = DataAccessService.CreateDbContext())
+            {
+                var reservations = context.AircraftReservations
+                    .Where(x => DbFunctions.TruncateTime(x.Start) == DbFunctions.TruncateTime(ofDate)
+                        && x.ClubId == CurrentIdentityUser.ClubId)
+                    .ToList();
+
+                context.AircraftReservations.RemoveRange(reservations);
+                context.SaveChanges();
+            }
         }
 
         public GliderFlightDetailsData CreateSchoolGliderFlightDetailsData(Guid clubId, string immatriculation,
@@ -788,7 +816,7 @@ namespace FLS.Server.Tests
         {
             using (var context = DataAccessService.CreateDbContext())
             {
-                return context.Locations.FirstOrDefault();
+                return context.Locations.FirstOrDefault(x => string.IsNullOrEmpty(x.IcaoCode) == false);
             }
         }
 
