@@ -410,6 +410,7 @@ namespace FLS.Server.Service
                 if (aircraftId == Guid.Empty)
                 {
                     Logger.Info("No aircraft found in database for take off at {location} of aircraft {immatriculation}", takeOffDetails.TakeOffLocationIcaoCode, takeOffDetails.Immatriculation);
+                    return null;
                 }
 
                 var locationId = context.Locations
@@ -420,13 +421,14 @@ namespace FLS.Server.Service
                 if (locationId == Guid.Empty)
                 {
                     Logger.Info("No location found in database for take off at {location} of aircraft {immatriculation}", takeOffDetails.TakeOffLocationIcaoCode, takeOffDetails.Immatriculation);
+                    return null;
                 }
 
                 var flights = context.Flights
                     .Where(x => x.StartDateTime.HasValue == false
-                        && x.OwnerId == clubId)
-                    .WhereIf(locationId != Guid.Empty, x => x.StartLocationId == locationId)
-                    .WhereIf(aircraftId != Guid.Empty, x => x.AircraftId == aircraftId)
+                        && x.OwnerId == clubId
+                        && (x.StartLocationId.HasValue == false || x.StartLocationId.Value == locationId)
+                        && x.AircraftId == aircraftId)
                     .ToList();
 
                 Logger.Debug("Found {number} of flights for setting takeoff for clubId={clubId}", flights.Count, clubId);
@@ -693,6 +695,135 @@ namespace FLS.Server.Service
                         return GetFlightDetails(flight.FlightId);
                     }
                 }
+            }
+
+            return null;
+        }
+
+        public List<FlightDetails> Landing(LandingDetails landingDetails)
+        {
+            var clubs = _clubService.GetClubs(false);
+            bool flsOgnAnalyserAllowed;
+            List<string> interestedLocationIcaoCodes = new List<string>();
+            List<string> interestedImmatriculations = new List<string>();
+            var updatedFlights = new List<FlightDetails>();
+
+            landingDetails.Immatriculation = landingDetails.Immatriculation.Replace("-", "").ToUpper();
+            landingDetails.LandingLocationIcaoCode = landingDetails.LandingLocationIcaoCode.ToUpper();
+
+            foreach (var club in clubs)
+            {
+                if (_settingService.TryGetSettingValue("FLSOgnAnalyser.Allowed", club.ClubId, null, out flsOgnAnalyserAllowed))
+                {
+                    if (flsOgnAnalyserAllowed == false) continue;
+
+                    _settingService.TryGetSettingValue("FLSOgnAnalyser.InterestedLocations", club.ClubId, null, out interestedLocationIcaoCodes);
+                    _settingService.TryGetSettingValue("FLSOgnAnalyser.InterestedImmatriculations", club.ClubId, null, out interestedImmatriculations);
+
+                    var formattedInterestedIcaoCodes = new List<string>();
+
+                    if (interestedLocationIcaoCodes != null && interestedLocationIcaoCodes.Any())
+                    {
+                        foreach (var icaoCode in interestedLocationIcaoCodes)
+                        {
+                            formattedInterestedIcaoCodes.Add(icaoCode.ToUpper());
+                        }
+                    }
+
+                    var formattedImmatriculations = new List<string>();
+
+                    if (interestedImmatriculations != null && interestedImmatriculations.Any())
+                    {
+                        foreach (var immatriculation in interestedImmatriculations)
+                        {
+                            formattedImmatriculations.Add(immatriculation.Replace("-", "").ToUpper());
+                        }
+                    }
+
+                    if (formattedInterestedIcaoCodes.Contains(landingDetails.LandingLocationIcaoCode)
+                        || formattedImmatriculations.Contains(landingDetails.Immatriculation))
+                    {
+                        //the club is interested for this landing!
+                        updatedFlights.Add(InsertOrUpdateFlightFromLanding(landingDetails, club.ClubId));
+                    }
+                }
+            }
+
+            return updatedFlights;
+        }
+
+        private FlightDetails InsertOrUpdateFlightFromLanding(LandingDetails landingDetails, Guid clubId)
+        {
+            using (var context = _dataAccessService.CreateDbContext())
+            {
+                var aircraftId = context.Aircrafts
+                    .Where(x => x.Immatriculation.Replace("-", "").ToUpper() == landingDetails.Immatriculation)
+                    .Select(s => s.AircraftId)
+                    .FirstOrDefault();
+
+                if (aircraftId == Guid.Empty)
+                {
+                    Logger.Info("No aircraft found in database for landing at {location} of aircraft {immatriculation}", landingDetails.LandingLocationIcaoCode, landingDetails.Immatriculation);
+                    return null;
+                }
+
+                var locationId = context.Locations
+                    .Where(x => x.IcaoCode.ToUpper() == landingDetails.LandingLocationIcaoCode)
+                    .Select(s => s.LocationId)
+                    .FirstOrDefault();
+
+                if (locationId == Guid.Empty)
+                {
+                    Logger.Info("No location found in database for landing at {location} of aircraft {immatriculation}", landingDetails.LandingLocationIcaoCode, landingDetails.Immatriculation);
+                    return null;
+                }
+
+                var flights = context.Flights
+                    .Where(x => x.StartDateTime.HasValue
+                        && x.LdgDateTime.HasValue == false
+                        && x.OwnerId == clubId
+                        && x.AircraftId == aircraftId)
+                    .ToList();
+
+                Logger.Debug("Found {number} of flights for setting landing for clubId={clubId}", flights.Count, clubId);
+
+                if (flights.Count > 1)
+                {
+                    var flight = flights
+                                    .OrderBy(x => x.CreatedOn)
+                                    .First();
+
+                    flight.LdgLocationId = locationId;
+                    flight.LdgDateTime = landingDetails.LandingTimeUtc;
+                    flight.FlightDate = landingDetails.LandingTimeUtc.Date;
+                    flight.AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Landed;
+                    flight.ModifiedOn = DateTime.UtcNow;
+                    flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
+                    flight.DoNotUpdateMetaData = true;
+                    context.SaveChanges();
+
+                    return GetFlightDetails(flight.FlightId);
+                }
+
+                if (flights.Count == 1)
+                {
+                    var flight = context.Flights
+                                        .First(x => x.FlightId == flights[0].FlightId);
+                    flight.LdgLocationId = locationId; 
+                    flight.LdgDateTime = landingDetails.LandingTimeUtc;
+                    flight.FlightDate = landingDetails.LandingTimeUtc.Date;
+                    flight.AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Landed;
+                    flight.ModifiedOn = DateTime.UtcNow;
+                    flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
+                    flight.DoNotUpdateMetaData = true;
+                    context.SaveChanges();
+
+                    return GetFlightDetails(flight.FlightId);
+                }
+
+                //no flights available for setting landing...
+                //will not walk through aircraft reservations
+
             }
 
             return null;

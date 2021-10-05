@@ -129,6 +129,7 @@
     <Compile Include="Flight\FlightProcessState.cs" />
     <Compile Include="Flight\FlightCrewData.cs" />
     <Compile Include="Flight\GliderFlightOverviewSearchFilter.cs" />
+    <Compile Include="Flight\LandingDetails.cs" />
     <Compile Include="FLSBaseData.cs" />
     <Compile Include="Flight\FlightCostBalanceType.cs" />
     <Compile Include="Flight\FlightCostBalanceTypeListItem.cs" />

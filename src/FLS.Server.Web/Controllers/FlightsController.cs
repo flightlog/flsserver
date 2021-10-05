@@ -347,5 +347,20 @@ namespace FLS.Server.WebApi.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Insert a landing. This can create a new flight or update a pre-insert flight.
+        /// </summary>
+        /// <param name="landingDetails">The landing details (from OGN analyser.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("landing")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult Landing([FromBody] LandingDetails landingDetails)
+        {
+            _flightService.Landing(landingDetails);
+
+            return Ok();
+        }
     }
 }

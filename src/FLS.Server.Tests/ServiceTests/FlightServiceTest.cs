@@ -306,5 +306,96 @@ namespace FLS.Server.Tests.ServiceTests
                 Assert.AreEqual(takeOffDetails.TakeOffTimeUtc.Date, updatedFlightDetails.FlightDate.Value.Date);
             }
         }
+
+        [TestMethod]
+        [TestCategory("Service")]
+        public void LandingTestForOneFlight()
+        {
+            #region Create flight and Start date time
+            var location = GetFirstLocation();
+
+            var settingDetails = new SettingDetails()
+            {
+                ClubId = CurrentIdentityUser.ClubId,
+                SettingKey = "FLSOgnAnalyser.Allowed",
+                SettingValue = JsonConvert.SerializeObject(true)
+            };
+
+            SettingService.InsertOrUpdateSettingDetails(settingDetails);
+
+            var interestedLocationList = new List<string>()
+            {
+                location.IcaoCode
+            };
+
+            settingDetails = new SettingDetails()
+            {
+                ClubId = CurrentIdentityUser.ClubId,
+                SettingKey = "FLSOgnAnalyser.InterestedLocations",
+                SettingValue = JsonConvert.SerializeObject(interestedLocationList)
+            };
+
+            SettingService.InsertOrUpdateSettingDetails(settingDetails);
+
+            var flightDetails = CreateGliderFlightDetails(CurrentIdentityUser.ClubId);
+            flightDetails.GliderFlightDetailsData.CoPilotPersonId = GetDifferentPerson(GetFirstPerson().PersonId).PersonId;
+            flightDetails.GliderFlightDetailsData.StartDateTime = null;
+            flightDetails.GliderFlightDetailsData.StartLocationId = location.LocationId;
+            FlightService.InsertFlightDetails(flightDetails);
+
+            var aircraft = AircraftService.GetAircraft(flightDetails.GliderFlightDetailsData.AircraftId);
+
+            Assert.IsTrue(flightDetails.FlightId.IsValid());
+            Assert.IsFalse(flightDetails.GliderFlightDetailsData.StartDateTime.HasValue);
+            Assert.IsTrue(flightDetails.GliderFlightDetailsData.StartLocationId.HasValue);
+
+            var takeOffDetails = new TakeOffDetails();
+
+            takeOffDetails.Immatriculation = aircraft.Immatriculation;
+            takeOffDetails.TakeOffLocationIcaoCode = location.IcaoCode;
+            takeOffDetails.TakeOffTimeUtc = DateTime.UtcNow;
+
+            var updatedFlights = FlightService.TakeOff(takeOffDetails);
+
+            Assert.IsTrue(updatedFlights.Any());
+
+            foreach (var updatedFlight in updatedFlights)
+            {
+                var updatedFlightDetails = FlightService.GetFlightDetails(updatedFlight.FlightId);
+
+                Assert.IsTrue(updatedFlightDetails.GliderFlightDetailsData.StartDateTime.HasValue);
+                Assert.IsTrue(updatedFlightDetails.FlightDate.HasValue);
+                Assert.IsTrue(updatedFlightDetails.GliderFlightDetailsData.StartLocationId.HasValue);
+                Assert.AreEqual((int)FlightAirState.Started, updatedFlightDetails.GliderFlightDetailsData.AirStateId);
+                Assert.AreEqual(takeOffDetails.TakeOffTimeUtc.Date, updatedFlightDetails.FlightDate.Value.Date);
+
+                Assert.IsFalse(updatedFlightDetails.GliderFlightDetailsData.LdgDateTime.HasValue);
+            }
+            #endregion 
+
+            var landingDetails = new LandingDetails();
+
+            landingDetails.Immatriculation = aircraft.Immatriculation;
+            landingDetails.LandingLocationIcaoCode = location.IcaoCode;
+            landingDetails.LandingTimeUtc = DateTime.UtcNow;
+
+            updatedFlights = FlightService.Landing(landingDetails);
+
+            Assert.IsTrue(updatedFlights.Any());
+
+            foreach (var updatedFlight in updatedFlights)
+            {
+                var updatedFlightDetails = FlightService.GetFlightDetails(updatedFlight.FlightId);
+
+                Assert.IsTrue(updatedFlightDetails.GliderFlightDetailsData.StartDateTime.HasValue);
+                Assert.IsTrue(updatedFlightDetails.FlightDate.HasValue);
+                Assert.IsTrue(updatedFlightDetails.GliderFlightDetailsData.StartLocationId.HasValue);
+                Assert.AreEqual(takeOffDetails.TakeOffTimeUtc.Date, updatedFlightDetails.FlightDate.Value.Date);
+
+                Assert.IsTrue(updatedFlightDetails.GliderFlightDetailsData.LdgDateTime.HasValue);
+                Assert.IsTrue(updatedFlightDetails.GliderFlightDetailsData.LdgLocationId.HasValue);
+                Assert.AreEqual((int)FlightAirState.Landed, updatedFlightDetails.GliderFlightDetailsData.AirStateId);
+            }
+        }
     }
 }
