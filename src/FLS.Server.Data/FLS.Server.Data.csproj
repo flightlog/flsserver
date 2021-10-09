@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="DbEntities\AccountingUnitType.cs" />
     <Compile Include="DbEntities\AircraftOperatingCounter.cs" />
+    <Compile Include="DbEntities\Movement.cs" />
     <Compile Include="DbEntities\PersonFlightTimeCreditTransaction.cs" />
     <Compile Include="DbEntities\PersonFlightTimeCredit.cs" />
     <Compile Include="DbEntities\Setting.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="DbEntities\FlightType.cs" />
     <Compile Include="DbEntities\PlanningDay.cs" />
     <Compile Include="DeletedFLSDataEntities.cs" />
+    <Compile Include="Enums\MovementType.cs" />
     <Compile Include="Exceptions\DataRecordNotFoundException.cs" />
     <Compile Include="Exceptions\DeleteEntityException.cs" />
     <Compile Include="Exceptions\DatabaseException.cs" />
