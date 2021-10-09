@@ -442,9 +442,9 @@ namespace FLS.Server.Service
                     flight.StartDateTime = takeOffDetails.TakeOffTimeUtc;
                     flight.FlightDate = takeOffDetails.TakeOffTimeUtc.Date;
                     flight.AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started;
-                    flight.ModifiedOn = DateTime.UtcNow;
-                    flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
-                    flight.DoNotUpdateMetaData = true;
+                    //flight.ModifiedOn = DateTime.UtcNow;
+                    //flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
+                    //flight.DoNotUpdateMetaData = true;
                     context.SaveChanges();
 
                     return GetFlightDetails(flight.FlightId);
@@ -457,9 +457,9 @@ namespace FLS.Server.Service
                     flight.StartDateTime = takeOffDetails.TakeOffTimeUtc;
                     flight.FlightDate = takeOffDetails.TakeOffTimeUtc.Date;
                     flight.AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started;
-                    flight.ModifiedOn = DateTime.UtcNow;
-                    flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
-                    flight.DoNotUpdateMetaData = true;
+                    //flight.ModifiedOn = DateTime.UtcNow;
+                    //flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
+                    //flight.DoNotUpdateMetaData = true;
                     context.SaveChanges();
 
                     return GetFlightDetails(flight.FlightId);
@@ -477,11 +477,20 @@ namespace FLS.Server.Service
                 
                 Logger.Debug("Found {number} of reservations for setting takeoff for clubId={clubId}", reservations.Count, clubId);
 
+                var flightAircraftType = FlightAircraftTypeValue.GliderFlight;
+
+                if (takeOffDetails.AircraftType == AprsAircraftType.TowPlane)
+                    flightAircraftType = FlightAircraftTypeValue.TowFlight;
+                else if (takeOffDetails.AircraftType == AprsAircraftType.PoweredPiston
+                    || takeOffDetails.AircraftType == AprsAircraftType.PoweredJet
+                    || takeOffDetails.AircraftType == AprsAircraftType.DropPlane)
+                    flightAircraftType = FlightAircraftTypeValue.MotorFlight;
+
                 if (reservations.Any() == false)
                 {
                     //no reservation found
                     //create flight without pilot and minimal data
-
+                    
                     var flight = new Flight()
                     {
                         AircraftId = aircraftId,
@@ -489,10 +498,10 @@ namespace FLS.Server.Service
                         StartDateTime = takeOffDetails.TakeOffTimeUtc,
                         FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
                         AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
-                        ModifiedOn = DateTime.UtcNow,
-                        ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
-                        DoNotUpdateMetaData = true,
-                        FlightAircraftType = (int)FlightAircraftTypeValue.GliderFlight  //we can not set this flag correct if we don't know the aircraft type
+                        //CreatedOn = DateTime.UtcNow,
+                        //CreatedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
+                        //DoNotUpdateMetaData = true,
+                        FlightAircraftType = (int)flightAircraftType
                         //TODO: check aircraft type for setting FlightAircraftType correct
                     };
 
@@ -515,10 +524,10 @@ namespace FLS.Server.Service
                         FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
                         AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
                         FlightTypeId = reservation.FlightTypeId,
-                        ModifiedOn = DateTime.UtcNow,
-                        ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
-                        DoNotUpdateMetaData = true,
-                        FlightAircraftType = (int)FlightAircraftTypeValue.GliderFlight //TODO: set correct
+                        //CreatedOn = DateTime.UtcNow,
+                        //CreatedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
+                        //DoNotUpdateMetaData = true,
+                        FlightAircraftType = (int)flightAircraftType
                     };
 
                     var flightCrews = new List<FlightCrew>();
@@ -581,10 +590,10 @@ namespace FLS.Server.Service
                             FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
                             AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
                             FlightTypeId = reservation.FlightTypeId,
-                            ModifiedOn = DateTime.UtcNow,
-                            ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
-                            DoNotUpdateMetaData = true,
-                            FlightAircraftType = (int)FlightAircraftTypeValue.GliderFlight //TODO: set correct
+                            //CreatedOn = DateTime.UtcNow,
+                            //CreatedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
+                            //DoNotUpdateMetaData = true,
+                            FlightAircraftType = (int)flightAircraftType
                         };
 
                         var flightCrews = new List<FlightCrew>();
@@ -644,10 +653,10 @@ namespace FLS.Server.Service
                             FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
                             AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
                             FlightTypeId = reservation.FlightTypeId,
-                            ModifiedOn = DateTime.UtcNow,
-                            ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
-                            DoNotUpdateMetaData = true,
-                            FlightAircraftType = (int)FlightAircraftTypeValue.GliderFlight //TODO: set correct
+                            //CreatedOn = DateTime.UtcNow,
+                            //CreatedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
+                            //DoNotUpdateMetaData = true,
+                            FlightAircraftType = (int)flightAircraftType
                         };
 
                         var flightCrews = new List<FlightCrew>();
@@ -797,9 +806,9 @@ namespace FLS.Server.Service
                     flight.LdgDateTime = landingDetails.LandingTimeUtc;
                     flight.FlightDate = landingDetails.LandingTimeUtc.Date;
                     flight.AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Landed;
-                    flight.ModifiedOn = DateTime.UtcNow;
-                    flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
-                    flight.DoNotUpdateMetaData = true;
+                    //flight.ModifiedOn = DateTime.UtcNow;
+                    //flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
+                    //flight.DoNotUpdateMetaData = true;
                     context.SaveChanges();
 
                     return GetFlightDetails(flight.FlightId);
@@ -813,9 +822,9 @@ namespace FLS.Server.Service
                     flight.LdgDateTime = landingDetails.LandingTimeUtc;
                     flight.FlightDate = landingDetails.LandingTimeUtc.Date;
                     flight.AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Landed;
-                    flight.ModifiedOn = DateTime.UtcNow;
-                    flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
-                    flight.DoNotUpdateMetaData = true;
+                    //flight.ModifiedOn = DateTime.UtcNow;
+                    //flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
+                    //flight.DoNotUpdateMetaData = true;
                     context.SaveChanges();
 
                     return GetFlightDetails(flight.FlightId);
