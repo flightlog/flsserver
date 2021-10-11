@@ -20,6 +20,7 @@ using FLS.Server.Data.Exceptions;
 using FLS.Server.Data.Mapping;
 using FLS.Server.Data.Resources;
 using LinqKit;
+using Newtonsoft.Json;
 using NLog;
 using FlightProcessState = FLS.Data.WebApi.Flight.FlightProcessState;
 
@@ -354,9 +355,6 @@ namespace FLS.Server.Service
             List<string> interestedImmatriculations = new List<string>();
             var updatedFlights = new List<FlightDetails>();
 
-            takeOffDetails.Immatriculation = takeOffDetails.Immatriculation.Replace("-", "").ToUpper();
-            takeOffDetails.TakeOffLocationIcaoCode = takeOffDetails.TakeOffLocationIcaoCode.ToUpper();
-
             foreach (var club in clubs)
             {
                 if (_settingService.TryGetSettingValue("FLSOgnAnalyser.Allowed", club.ClubId, null, out flsOgnAnalyserAllowed))
@@ -386,8 +384,8 @@ namespace FLS.Server.Service
                         }
                     }
 
-                    if (formattedInterestedIcaoCodes.Contains(takeOffDetails.TakeOffLocationIcaoCode)
-                        || formattedImmatriculations.Contains(takeOffDetails.Immatriculation))
+                    if (formattedInterestedIcaoCodes.Contains(takeOffDetails.TakeOffLocationIcaoCode.ToUpper())
+                        || formattedImmatriculations.Contains(takeOffDetails.Immatriculation.Replace("-", "").ToUpper()))
                     {
                         //the club is interested for this take off!
                         updatedFlights.Add(InsertOrUpdateFlightFromTakeOff(takeOffDetails, club.ClubId));
@@ -402,8 +400,28 @@ namespace FLS.Server.Service
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
+                var movement = new Movement()
+                {
+                    MovementId = Guid.NewGuid(),
+                    Immatriculation = takeOffDetails.Immatriculation,
+                    DeviceId = takeOffDetails.OgnDeviceId,
+                    AircraftType = (int)takeOffDetails.AircraftType,
+                    LocationIcaoCode = takeOffDetails.TakeOffLocationIcaoCode,
+                    MovementType = (int)MovementType.Landing,
+                    MovementDateTimeUtc = takeOffDetails.TakeOffTimeUtc,
+                    CreatedOn = DateTime.UtcNow,
+                    CreatedByUserId = CurrentAuthenticatedFLSUser.UserId,
+                    OwnerId = clubId,
+                    OwnershipType = (int)OwnershipType.Club,
+                    RecordState = (int)EntityRecordState.Active,
+                    DoNotUpdateMetaData = true
+                };
+
+                context.Movements.Add(movement);
+                context.SaveChanges();
+
                 var aircraftId = context.Aircrafts
-                    .Where(x => x.Immatriculation.Replace("-", "").ToUpper() == takeOffDetails.Immatriculation)
+                    .Where(x => x.Immatriculation.Replace("-", "").ToUpper() == takeOffDetails.Immatriculation.Replace("-", "").ToUpper())
                     .Select(s => s.AircraftId)
                     .FirstOrDefault();
 
@@ -414,7 +432,7 @@ namespace FLS.Server.Service
                 }
 
                 var locationId = context.Locations
-                    .Where(x => x.IcaoCode.ToUpper() == takeOffDetails.TakeOffLocationIcaoCode)
+                    .Where(x => x.IcaoCode.ToUpper() == takeOffDetails.TakeOffLocationIcaoCode.ToUpper())
                     .Select(s => s.LocationId)
                     .FirstOrDefault();
 
@@ -445,6 +463,15 @@ namespace FLS.Server.Service
                     //flight.ModifiedOn = DateTime.UtcNow;
                     //flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
                     //flight.DoNotUpdateMetaData = true;
+
+                    //Update Movement
+                    movement.DoNotUpdateMetaData = false;
+                    movement.FlightId = flight.FlightId;
+                    var flightIds = flights
+                                        .Select(x => x.FlightId)
+                                        .ToList();
+                    flightIds.Remove(flight.FlightId);
+                    movement.FurtherFlightIdsFound = JsonConvert.SerializeObject(flightIds);
                     context.SaveChanges();
 
                     return GetFlightDetails(flight.FlightId);
@@ -460,6 +487,11 @@ namespace FLS.Server.Service
                     //flight.ModifiedOn = DateTime.UtcNow;
                     //flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
                     //flight.DoNotUpdateMetaData = true;
+
+                    //Update Movement
+                    movement.DoNotUpdateMetaData = false;
+                    movement.FlightId = flight.FlightId;
+
                     context.SaveChanges();
 
                     return GetFlightDetails(flight.FlightId);
@@ -506,6 +538,10 @@ namespace FLS.Server.Service
                     };
 
                     context.Flights.Add(flight);
+
+                    //Update Movement
+                    movement.DoNotUpdateMetaData = false;
+                    movement.FlightId = flight.FlightId;
 
                     context.SaveChanges();
 
@@ -569,6 +605,10 @@ namespace FLS.Server.Service
                     flight.FlightCrews = flightCrews;
 
                     context.Flights.Add(flight);
+
+                    //Update Movement
+                    movement.DoNotUpdateMetaData = false;
+                    movement.FlightId = flight.FlightId;
 
                     context.SaveChanges();
 
@@ -636,6 +676,10 @@ namespace FLS.Server.Service
 
                         context.Flights.Add(flight);
 
+                        //Update Movement
+                        movement.DoNotUpdateMetaData = false;
+                        movement.FlightId = flight.FlightId;
+
                         context.SaveChanges();
 
                         return GetFlightDetails(flight.FlightId);
@@ -699,6 +743,10 @@ namespace FLS.Server.Service
 
                         context.Flights.Add(flight);
 
+                        //Update Movement
+                        movement.DoNotUpdateMetaData = false;
+                        movement.FlightId = flight.FlightId;
+
                         context.SaveChanges();
 
                         return GetFlightDetails(flight.FlightId);
@@ -716,9 +764,6 @@ namespace FLS.Server.Service
             List<string> interestedLocationIcaoCodes = new List<string>();
             List<string> interestedImmatriculations = new List<string>();
             var updatedFlights = new List<FlightDetails>();
-
-            landingDetails.Immatriculation = landingDetails.Immatriculation.Replace("-", "").ToUpper();
-            landingDetails.LandingLocationIcaoCode = landingDetails.LandingLocationIcaoCode.ToUpper();
 
             foreach (var club in clubs)
             {
@@ -749,8 +794,8 @@ namespace FLS.Server.Service
                         }
                     }
 
-                    if (formattedInterestedIcaoCodes.Contains(landingDetails.LandingLocationIcaoCode)
-                        || formattedImmatriculations.Contains(landingDetails.Immatriculation))
+                    if (formattedInterestedIcaoCodes.Contains(landingDetails.LandingLocationIcaoCode.ToUpper())
+                        || formattedImmatriculations.Contains(landingDetails.Immatriculation.Replace("-", "").ToUpper()))
                     {
                         //the club is interested for this landing!
                         updatedFlights.Add(InsertOrUpdateFlightFromLanding(landingDetails, club.ClubId));
@@ -765,8 +810,28 @@ namespace FLS.Server.Service
         {
             using (var context = _dataAccessService.CreateDbContext())
             {
+                var movement = new Movement()
+                {
+                    MovementId = Guid.NewGuid(),
+                    Immatriculation = landingDetails.Immatriculation,
+                    DeviceId = landingDetails.OgnDeviceId,
+                    AircraftType = (int)landingDetails.AircraftType,
+                    LocationIcaoCode = landingDetails.LandingLocationIcaoCode,
+                    MovementType = (int)MovementType.Landing,
+                    MovementDateTimeUtc = landingDetails.LandingTimeUtc,
+                    CreatedOn = DateTime.UtcNow,
+                    CreatedByUserId = CurrentAuthenticatedFLSUser.UserId,
+                    OwnerId = clubId,
+                    OwnershipType = (int)OwnershipType.Club,
+                    RecordState = (int)EntityRecordState.Active,
+                    DoNotUpdateMetaData = true
+                };
+
+                context.Movements.Add(movement);
+                context.SaveChanges();
+
                 var aircraftId = context.Aircrafts
-                    .Where(x => x.Immatriculation.Replace("-", "").ToUpper() == landingDetails.Immatriculation)
+                    .Where(x => x.Immatriculation.Replace("-", "").ToUpper() == landingDetails.Immatriculation.Replace("-", "").ToUpper())
                     .Select(s => s.AircraftId)
                     .FirstOrDefault();
 
@@ -777,7 +842,7 @@ namespace FLS.Server.Service
                 }
 
                 var locationId = context.Locations
-                    .Where(x => x.IcaoCode.ToUpper() == landingDetails.LandingLocationIcaoCode)
+                    .Where(x => x.IcaoCode.ToUpper() == landingDetails.LandingLocationIcaoCode.ToUpper())
                     .Select(s => s.LocationId)
                     .FirstOrDefault();
 
@@ -809,6 +874,16 @@ namespace FLS.Server.Service
                     //flight.ModifiedOn = DateTime.UtcNow;
                     //flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
                     //flight.DoNotUpdateMetaData = true;
+
+                    //Update Movement
+                    movement.DoNotUpdateMetaData = false;
+                    movement.FlightId = flight.FlightId;
+                    var flightIds = flights
+                                        .Select(x => x.FlightId)
+                                        .ToList();
+                    flightIds.Remove(flight.FlightId);
+                    movement.FurtherFlightIdsFound = JsonConvert.SerializeObject(flightIds);
+
                     context.SaveChanges();
 
                     return GetFlightDetails(flight.FlightId);
@@ -825,6 +900,11 @@ namespace FLS.Server.Service
                     //flight.ModifiedOn = DateTime.UtcNow;
                     //flight.ModifiedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"); // System-Admin
                     //flight.DoNotUpdateMetaData = true;
+
+                    //Update Movement
+                    movement.DoNotUpdateMetaData = false;
+                    movement.FlightId = flight.FlightId;
+
                     context.SaveChanges();
 
                     return GetFlightDetails(flight.FlightId);

@@ -82,11 +82,10 @@ namespace FLS.Server.Data
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<LocationType> LocationTypes { get; set; }
         public virtual DbSet<MemberState> MemberStates { get; set; }
+        public virtual DbSet<Movement> Movements { get; set; }
         public virtual DbSet<PersonCategory> PersonCategories { get; set; }
         public virtual DbSet<PersonClub> PersonClubs { get; set; }
-
         public virtual DbSet<PersonFlightTimeCredit> PersonFlightTimeCredits { get; set; }
-
         public virtual DbSet<PersonFlightTimeCreditTransaction> PersonFlightTimeCreditTransactions { get; set; }
         public virtual DbSet<PersonPersonCategory> PersonPersonCategories { get; set; }
         public virtual DbSet<PlanningDay> PlanningDays { get; set; }
@@ -158,6 +157,8 @@ namespace FLS.Server.Data
             modelBuilder.Entity<Location>().Ignore(t => t.Id);
             modelBuilder.Entity<LocationType>().Ignore(t => t.Id);
             modelBuilder.Entity<MemberState>().Ignore(t => t.Id);
+            modelBuilder.Entity<Movement>().Ignore(t => t.Id);
+            modelBuilder.Entity<Movement>().Ignore(t => t.DoNotUpdateMetaData);
             modelBuilder.Entity<PlanningDay>().Ignore(t => t.Id);
             modelBuilder.Entity<PlanningDayAssignment>().Ignore(t => t.Id);
             modelBuilder.Entity<PlanningDayAssignment>().Ignore(t => t.EntityState);
@@ -415,6 +416,15 @@ namespace FLS.Server.Data
                 .WithRequired(e => e.Flight)
                 .HasForeignKey(e => e.FlightId)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Flight>()
+                .HasMany(e => e.Movements)
+                .WithOptional(e => e.Flight)
+                .HasForeignKey(e => e.FlightId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Movement>()
+                .HasOptional(e => e.Flight);
 
             modelBuilder.Entity<FlightCrew>()
                 .HasRequired(e => e.Flight);
@@ -1123,7 +1133,9 @@ namespace FLS.Server.Data
                 if ((entry.Entity.GetType() == typeof(Flight)
                      && ((Flight) entry.Entity).DoNotUpdateMetaData)
                     || (entry.Entity.GetType() == typeof(User)
-                        && ((User) entry.Entity).DoNotUpdateMetaData))
+                        && ((User) entry.Entity).DoNotUpdateMetaData)
+                    || (entry.Entity.GetType() == typeof(Movement)
+                        && ((Movement)entry.Entity).DoNotUpdateMetaData))
                 {
                     //check next entry
                 }
@@ -1174,7 +1186,9 @@ namespace FLS.Server.Data
                         if ((entry.Entity.GetType() == typeof(Person)
                              && ((Person) entry.Entity).DoNotUpdateTimeStampsInMetaData)
                             || (entry.Entity.GetType() == typeof(PersonClub)
-                                && ((PersonClub) entry.Entity).DoNotUpdateTimeStampsInMetaData))
+                                && ((PersonClub) entry.Entity).DoNotUpdateTimeStampsInMetaData)
+                            || (entry.Entity.GetType() == typeof(Movement)
+                                && ((Movement)entry.Entity).DoNotUpdateMetaData))
                         {
                             //don't update created on metadata
                         }
@@ -1220,7 +1234,9 @@ namespace FLS.Server.Data
                             || (entry.Entity.GetType() == typeof(User)
                                 && ((User) entry.Entity).DoNotUpdateMetaData)
                             || (entry.Entity.GetType() == typeof(Club)
-                                && ((Club) entry.Entity).DoNotUpdateMetaData))
+                                && ((Club) entry.Entity).DoNotUpdateMetaData)
+                            || (entry.Entity.GetType() == typeof(Movement)
+                                && ((Movement)entry.Entity).DoNotUpdateMetaData))
                         {
                             //don't update metadata when workflow process set flag "DoNotUpdateMetaData" on flight
                             //or when user resets passwords

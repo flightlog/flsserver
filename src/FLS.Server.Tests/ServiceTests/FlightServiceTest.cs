@@ -201,6 +201,8 @@ namespace FLS.Server.Tests.ServiceTests
             takeOffDetails.Immatriculation = aircraft.Immatriculation;
             takeOffDetails.TakeOffLocationIcaoCode = location.IcaoCode;
             takeOffDetails.TakeOffTimeUtc = DateTime.UtcNow;
+            takeOffDetails.AircraftType = AprsAircraftType.Glider;
+            takeOffDetails.OgnDeviceId = aircraft.Immatriculation;
 
             var updatedFlights = FlightService.TakeOff(takeOffDetails);
 
@@ -290,6 +292,8 @@ namespace FLS.Server.Tests.ServiceTests
             takeOffDetails.Immatriculation = aircraft.Immatriculation;
             takeOffDetails.TakeOffLocationIcaoCode = location.IcaoCode;
             takeOffDetails.TakeOffTimeUtc = DateTime.UtcNow;
+            takeOffDetails.AircraftType = AprsAircraftType.Glider;
+            takeOffDetails.OgnDeviceId = aircraft.Immatriculation;
 
             var updatedFlights = FlightService.TakeOff(takeOffDetails);
 
@@ -354,6 +358,8 @@ namespace FLS.Server.Tests.ServiceTests
             takeOffDetails.Immatriculation = aircraft.Immatriculation;
             takeOffDetails.TakeOffLocationIcaoCode = location.IcaoCode;
             takeOffDetails.TakeOffTimeUtc = DateTime.UtcNow;
+            takeOffDetails.AircraftType = AprsAircraftType.Glider;
+            takeOffDetails.OgnDeviceId = aircraft.Immatriculation;
 
             var updatedFlights = FlightService.TakeOff(takeOffDetails);
 
@@ -378,6 +384,8 @@ namespace FLS.Server.Tests.ServiceTests
             landingDetails.Immatriculation = aircraft.Immatriculation;
             landingDetails.LandingLocationIcaoCode = location.IcaoCode;
             landingDetails.LandingTimeUtc = DateTime.UtcNow;
+            landingDetails.AircraftType = AprsAircraftType.Glider;
+            landingDetails.OgnDeviceId = aircraft.Immatriculation;
 
             updatedFlights = FlightService.Landing(landingDetails);
 

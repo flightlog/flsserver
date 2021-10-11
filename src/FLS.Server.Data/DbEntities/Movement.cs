@@ -1,12 +1,8 @@
 ﻿using FLS.Data.WebApi;
 using FLS.Data.WebApi.Flight;
-using FLS.Server.Data.Enums;
 using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FLS.Server.Data.DbEntities
 {
@@ -21,15 +17,24 @@ namespace FLS.Server.Data.DbEntities
         [Column(TypeName = "datetime2")]
         public DateTime MovementDateTimeUtc { get; set; }
 
+        [StringLength(20)]
         public string DeviceId { get; set; }
 
+        [StringLength(15)]
         public string Immatriculation { get; set; }
 
-        public AprsAircraftType AircraftType { get; set; }
+        /// <summary>
+        /// Gets or sets the aircraft type according the APRS message using enum <seealso cref="AprsAircraftType"/>
+        /// </summary>
+        public int AircraftType { get; set; }
 
+        [StringLength(10)]
         public string LocationIcaoCode { get; set; }
 
-        public MovementType MovementType { get; set; }
+        /// <summary>
+        /// Gets or sets the movement type (take off or landing) according the FLS OGN Analyser.
+        /// </summary>
+        public int MovementType { get; set; }
 
         public Guid? FlightId { get; set; }
 
@@ -70,5 +75,14 @@ namespace FLS.Server.Data.DbEntities
             get { return MovementId; }
             set { MovementId = value; }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [do not update meta data].
+        /// Used for workflow processes to not create a modified user error when trying to save records.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [do not update meta data]; otherwise, <c>false</c>.
+        /// </value>
+        public bool DoNotUpdateMetaData { get; set; }
     }
 }

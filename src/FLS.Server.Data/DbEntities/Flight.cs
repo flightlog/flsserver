@@ -18,6 +18,7 @@ namespace FLS.Server.Data.DbEntities
             Deliveries = new HashSet<Delivery>();
             DeliveryCreationTests = new HashSet<DeliveryCreationTest>();
             ProcessStateId = (int) FLS.Data.WebApi.Flight.FlightProcessState.NotProcessed;
+            Movements = new HashSet<Movement>();
         }
 
         public Guid FlightId { get; set; }
@@ -156,6 +157,8 @@ namespace FLS.Server.Data.DbEntities
         public virtual ICollection<Delivery> Deliveries { get; set; }
 
         public virtual ICollection<DeliveryCreationTest> DeliveryCreationTests { get; set; }
+
+        public virtual ICollection<Movement> Movements { get; set; }
 
         public virtual Flight TowFlight { get; set; }
 
