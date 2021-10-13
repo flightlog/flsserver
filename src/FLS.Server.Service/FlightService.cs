@@ -530,9 +530,12 @@ namespace FLS.Server.Service
                         StartDateTime = takeOffDetails.TakeOffTimeUtc,
                         FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
                         AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
-                        //CreatedOn = DateTime.UtcNow,
-                        //CreatedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
-                        //DoNotUpdateMetaData = true,
+                        CreatedOn = DateTime.UtcNow,
+                        CreatedByUserId = CurrentAuthenticatedFLSUser.UserId, //should be OGN user
+                        OwnerId = clubId,
+                        OwnershipType = (int)OwnershipType.Club,
+                        RecordState = (int)EntityRecordState.Active,
+                        DoNotUpdateMetaData = true,
                         FlightAircraftType = (int)flightAircraftType
                         //TODO: check aircraft type for setting FlightAircraftType correct
                     };
@@ -560,9 +563,12 @@ namespace FLS.Server.Service
                         FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
                         AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
                         FlightTypeId = reservation.FlightTypeId,
-                        //CreatedOn = DateTime.UtcNow,
-                        //CreatedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
-                        //DoNotUpdateMetaData = true,
+                        CreatedOn = DateTime.UtcNow,
+                        CreatedByUserId = CurrentAuthenticatedFLSUser.UserId, //should be OGN user
+                        OwnerId = clubId,
+                        OwnershipType = (int)OwnershipType.Club,
+                        RecordState = (int)EntityRecordState.Active,
+                        DoNotUpdateMetaData = true,
                         FlightAircraftType = (int)flightAircraftType
                     };
 
@@ -630,9 +636,12 @@ namespace FLS.Server.Service
                             FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
                             AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
                             FlightTypeId = reservation.FlightTypeId,
-                            //CreatedOn = DateTime.UtcNow,
-                            //CreatedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
-                            //DoNotUpdateMetaData = true,
+                            CreatedOn = DateTime.UtcNow,
+                            CreatedByUserId = CurrentAuthenticatedFLSUser.UserId, //should be OGN user
+                            OwnerId = clubId,
+                            OwnershipType = (int)OwnershipType.Club,
+                            RecordState = (int)EntityRecordState.Active,
+                            DoNotUpdateMetaData = true,
                             FlightAircraftType = (int)flightAircraftType
                         };
 
@@ -697,9 +706,12 @@ namespace FLS.Server.Service
                             FlightDate = takeOffDetails.TakeOffTimeUtc.Date,
                             AirStateId = (int)FLS.Data.WebApi.Flight.FlightAirState.Started,
                             FlightTypeId = reservation.FlightTypeId,
-                            //CreatedOn = DateTime.UtcNow,
-                            //CreatedByUserId = Guid.Parse("13731EE2-C1D8-455C-8AD1-C39399893FFF"), // System-Admin
-                            //DoNotUpdateMetaData = true,
+                            CreatedOn = DateTime.UtcNow,
+                            CreatedByUserId = CurrentAuthenticatedFLSUser.UserId, //should be OGN user
+                            OwnerId = clubId,
+                            OwnershipType = (int)OwnershipType.Club,
+                            RecordState = (int)EntityRecordState.Active,
+                            DoNotUpdateMetaData = true,
                             FlightAircraftType = (int)flightAircraftType
                         };
 
